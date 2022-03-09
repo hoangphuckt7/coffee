@@ -1,0 +1,22 @@
+version: '1'
+services:
+  
+  bluebirdcoffee-api:
+    image: bluebirdcoffee-api
+    build:
+         context: ./bluebirdcoffeeapi
+         dockerfile: ./bluebirdcoffeeapi/Dockerfile
+    container_name: bluebirdcoffeeapi
+    ports:
+       - "8000:80"
+    environment:  
+      - ASPNETCORE_ENVIRONMENT=Development
+    restart: "no"
+
+  postgreslq:
+    image: postgres
+    ports:
+       - "8001:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: Bluebird@123456
