@@ -1,4 +1,6 @@
 using BlueBirdCoffeeAPI.Extensions;
+using Hub;
+using Service.MapperProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -8,10 +10,13 @@ ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddControllers((opt) => opt.Filters.Add<ExceptionFilter>());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.ConfigCors();
+builder.Services.ConfigJwt(configuration);
 builder.Services.AddSwaggerGen(opt => opt.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Blue Bird Coffee API", Version = "v1.0" }));
 builder.Services.ConfigIdentityDbContext(configuration.GetConnectionString("BlueBirdCoffeeDatabase"));
+builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.BusinessServices();
-
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,8 +28,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowAll");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

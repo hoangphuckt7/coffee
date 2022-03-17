@@ -14,6 +14,24 @@ namespace BlueBirdCoffeeAPI.Extensions
         public static void BusinessServices(this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IFloorService, FloorService>();
+        }
+
+        public static void ConfigCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                      builder =>
+                      {
+                          builder
+                                 //.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .SetIsOriginAllowed((host) => true)
+                                 .AllowAnyMethod()
+                                 .AllowCredentials();
+                      });
+            });
         }
     }
 }
