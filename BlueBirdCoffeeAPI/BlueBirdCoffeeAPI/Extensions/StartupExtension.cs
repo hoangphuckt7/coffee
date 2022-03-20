@@ -15,6 +15,9 @@ namespace BlueBirdCoffeeAPI.Extensions
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFloorService, FloorService>();
+            services.AddScoped<ITableService, TableService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IItemService, ItemService>();
         }
 
         public static void ConfigCors(this IServiceCollection services)

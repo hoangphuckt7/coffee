@@ -14,7 +14,7 @@ namespace Data.Entities
         public Guid Id { get; set; }
         public string? Description { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.UtcNow.AddHours(7);
-        public DateTime DatUpdated { get; set; } = DateTime.UtcNow.AddHours(7);
+        public DateTime DateUpdated { get; set; } = DateTime.UtcNow.AddHours(7);
         public bool IsDeleted { get; set; } = false;
     }
 }

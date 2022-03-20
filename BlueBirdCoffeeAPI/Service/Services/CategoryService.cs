@@ -11,19 +11,19 @@ using System.Threading.Tasks;
 
 namespace Service.Services
 {
-    public interface IFloorService
+    public interface ICategoryService
     {
         List<DescriptionViewModel> Get(Guid? id);
         Guid Add(DescriptionModel model);
         Guid Update(Guid id, DescriptionModel model);
         Guid Delete(Guid id);
     }
-    public class FloorService : IFloorService
+    public class CategoryService : ICategoryService
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public FloorService(AppDbContext dbContext, IMapper mapper)
+        public CategoryService(AppDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -31,23 +31,23 @@ namespace Service.Services
 
         public List<DescriptionViewModel> Get(Guid? id)
         {
-            var floors = _dbContext.Floors.Where(f => id == null || f.Id == id).Where(f => f.IsDeleted == false).ToList();
+            var floors = _dbContext.Categories.Where(f => id == null || f.Id == id).Where(f => f.IsDeleted == false).ToList();
             return _mapper.Map<List<DescriptionViewModel>>(floors);
         }
 
         public Guid Add(DescriptionModel model)
         {
-            var newFloor = new Floor() { Description = model.Description };
+            var newCategory = new Category() { Description = model.Description };
 
-            _dbContext.Add(newFloor);
+            _dbContext.Add(newCategory);
             _dbContext.SaveChanges();
 
-            return newFloor.Id;
+            return newCategory.Id;
         }
 
         public Guid Update(Guid id, DescriptionModel model)
         {
-            var data = _dbContext.Floors.FirstOrDefault(f => f.Id == id);
+            var data = _dbContext.Categories.FirstOrDefault(f => f.Id == id);
             if (data == null)
             {
                 throw new AppException("Invalid Id");
@@ -64,7 +64,7 @@ namespace Service.Services
 
         public Guid Delete(Guid id)
         {
-            var data = _dbContext.Floors.FirstOrDefault(f => f.Id == id);
+            var data = _dbContext.Categories.FirstOrDefault(f => f.Id == id);
             if (data == null)
             {
                 throw new AppException("Invalid Id");

@@ -33,9 +33,9 @@ namespace Data.DataAccessLayer
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Bill>().HasOne(x => x.Customer).WithMany().HasForeignKey(x => x.CustomerId);
-            modelBuilder.Entity<Bill>().HasOne(x => x.Casher).WithMany().HasForeignKey(x => x.CasherId);
-            modelBuilder.Entity<Bill>().HasOne(x => x.Order).WithMany().HasForeignKey(x => x.OrderId);
+            //modelBuilder.Entity<Bill>().HasOne(x => x.Customer).WithMany().HasForeignKey(x => x.CustomerId);
+            //modelBuilder.Entity<Bill>().HasOne(x => x.Casher).WithMany().HasForeignKey(x => x.CasherId);
+            //modelBuilder.Entity<Bill>().HasOne(x => x.Order).WithMany().HasForeignKey(x => x.OrderId);
 
             #region Double FK, PK
             modelBuilder.Entity<OrderDetail>().HasKey(s => new { s.OrderId, s.ItemId });

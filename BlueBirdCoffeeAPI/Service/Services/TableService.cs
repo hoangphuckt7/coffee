@@ -11,49 +11,54 @@ using System.Threading.Tasks;
 
 namespace Service.Services
 {
-    public interface IFloorService
+    public interface ITableService
     {
-        List<DescriptionViewModel> Get(Guid? id);
-        Guid Add(DescriptionModel model);
-        Guid Update(Guid id, DescriptionModel model);
+        List<TableViewModel> Get(Guid? id, Guid? floorId);
+        Guid Add(TableAddModel model);
+        Guid Update(Guid id, TableAddModel model);
         Guid Delete(Guid id);
     }
-    public class FloorService : IFloorService
+    public class TableService : ITableService
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public FloorService(AppDbContext dbContext, IMapper mapper)
+        public TableService(AppDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
 
-        public List<DescriptionViewModel> Get(Guid? id)
+        public List<TableViewModel> Get(Guid? id, Guid? floorId)
         {
-            var floors = _dbContext.Floors.Where(f => id == null || f.Id == id).Where(f => f.IsDeleted == false).ToList();
-            return _mapper.Map<List<DescriptionViewModel>>(floors);
+            var tables = _dbContext.Tables
+                .Where(t => id == null || t.Id == id)
+                .Where(f => f.IsDeleted == false)
+                .Where(f => floorId == null || f.FloorId == floorId)
+                .ToList();
+            return _mapper.Map<List<TableViewModel>>(tables);
         }
 
-        public Guid Add(DescriptionModel model)
+        public Guid Add(TableAddModel model)
         {
-            var newFloor = new Floor() { Description = model.Description };
+            var newTable = new Table() { Description = model.Description, FloorId = model.FloorId };
 
-            _dbContext.Add(newFloor);
+            _dbContext.Add(newTable);
             _dbContext.SaveChanges();
 
-            return newFloor.Id;
+            return newTable.Id;
         }
 
-        public Guid Update(Guid id, DescriptionModel model)
+        public Guid Update(Guid id, TableAddModel model)
         {
-            var data = _dbContext.Floors.FirstOrDefault(f => f.Id == id);
+            var data = _dbContext.Tables.FirstOrDefault(f => f.Id == id);
             if (data == null)
             {
                 throw new AppException("Invalid Id");
             }
 
             data.Description = model.Description;
+            data.FloorId = model.FloorId;
             data.DateUpdated = DateTime.UtcNow.AddHours(7);
 
             _dbContext.Update(data);
@@ -64,7 +69,7 @@ namespace Service.Services
 
         public Guid Delete(Guid id)
         {
-            var data = _dbContext.Floors.FirstOrDefault(f => f.Id == id);
+            var data = _dbContext.Tables.FirstOrDefault(f => f.Id == id);
             if (data == null)
             {
                 throw new AppException("Invalid Id");

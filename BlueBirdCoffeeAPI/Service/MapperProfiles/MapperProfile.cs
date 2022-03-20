@@ -14,6 +14,16 @@ namespace Service.MapperProfiles
         public MapperProfile()
         {
             CreateMap<Floor, DescriptionViewModel>().ReverseMap();
+            CreateMap<Category, DescriptionViewModel>().ReverseMap();
+            CreateMap<Table, TableViewModel>()
+                .ForMember(f => f.Floor, map => map.MapFrom(f => f.Floor));
+
+            //Item
+            CreateMap<ItemAddModel, Item>()
+                .ForMember(f => f.Id, map => map.Ignore())
+                .ForMember(f => f.DateCreated, map => map.Ignore());
+
+            CreateMap<Item, ItemViewModel>().ForMember(f => f.Images, map => map.Ignore());
         }
     }
 }
