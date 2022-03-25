@@ -1,6 +1,7 @@
 using BlueBirdCoffeeAPI.Extensions;
 using Hub;
 using Service.MapperProfiles;
+using Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -17,6 +18,8 @@ builder.Services.ConfigIdentityDbContext(configuration.GetConnectionString("Blue
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.BusinessServices();
 builder.Services.AddSignalR();
+//builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

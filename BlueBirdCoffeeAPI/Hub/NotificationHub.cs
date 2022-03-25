@@ -1,4 +1,5 @@
-﻿using Hubs;
+﻿using Data.ViewModels;
+using Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -14,8 +15,8 @@ namespace Hub
 {
     public interface INotificationHub
     {
-        //Task NewNotification(NotificationViewModel model, string userId);
-        //Task NewNotificationCount(int count, string userId);
+        Task NewTaskNotification(OrderViewModel model, string userId);
+        Task NewNotificationCount(int count, string userId);
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -29,26 +30,26 @@ namespace Hub
             Current = current;
         }
 
-        //public async Task NewNotification(NotificationViewModel model, string userId)
-        //{
-        //    try
-        //    {
-        //        List<string> ReceiverConnectionids;
-        //        ConnectedUsers.TryGetValue(userId, out ReceiverConnectionids);
-        //        await Current.Clients.Clients(ReceiverConnectionids).SendAsync("newNotify", model);
-        //    }
-        //    catch (Exception) { }
-        //}
-        //public async Task NewNotificationCount(int count, string userId)
-        //{
-        //    try
-        //    {
-        //        List<string> ReceiverConnectionids;
-        //        ConnectedUsers.TryGetValue(userId, out ReceiverConnectionids);
-        //        await Current.Clients.Clients(ReceiverConnectionids).SendAsync("newNotifyCount", count);
-        //    }
-        //    catch (Exception) { }
-        //}
+        public async Task NewTaskNotification(OrderViewModel model, string userId)
+        {
+            try
+            {
+                List<string> ReceiverConnectionids;
+                ConnectedUsers.TryGetValue(userId, out ReceiverConnectionids);
+                await Current.Clients.Clients(ReceiverConnectionids).SendAsync("newNotify", model);
+            }
+            catch (Exception) { }
+        }
+        public async Task NewNotificationCount(int count, string userId)
+        {
+            try
+            {
+                List<string> ReceiverConnectionids;
+                ConnectedUsers.TryGetValue(userId, out ReceiverConnectionids);
+                await Current.Clients.Clients(ReceiverConnectionids).SendAsync("newNotifyCount", count);
+            }
+            catch (Exception) { }
+        }
 
         public override Task OnConnectedAsync()
         {

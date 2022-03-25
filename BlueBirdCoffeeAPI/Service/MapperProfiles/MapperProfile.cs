@@ -24,6 +24,16 @@ namespace Service.MapperProfiles
                 .ForMember(f => f.DateCreated, map => map.Ignore());
 
             CreateMap<Item, ItemViewModel>().ForMember(f => f.Images, map => map.Ignore());
+
+            //Pair
+            CreateMap<SystemSetting, PairModel>()
+                .ForMember(f => f.Key, map => map.MapFrom(f => f.Key))
+                .ForMember(f => f.Value, map => map.MapFrom(f => f.Value))
+                .ReverseMap();
+
+            CreateMap<OrderCreateModel, OrderViewModel>()
+                .ForMember(f => f.Id, map => map.Ignore())
+                .ReverseMap();
         }
     }
 }

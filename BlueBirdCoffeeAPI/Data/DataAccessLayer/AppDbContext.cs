@@ -1,6 +1,9 @@
-﻿using Data.Entities;
+﻿using Data.Cache;
+using Data.Entities;
+using Data.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +25,7 @@ namespace Data.DataAccessLayer
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Table> Tables { get; set; }
+        public virtual DbSet<SystemSetting> SystemSettings { get; set; }
         #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -42,11 +46,12 @@ namespace Data.DataAccessLayer
             #endregion
 
             #region Seed User
-            //modelBuilder.Entity<UserStatus>().HasData(
-            //    new UserStatus() { Id = -1, Description = "Rejected" },
-            //    new UserStatus() { Id = 0, Description = "Pending" },
-            //    new UserStatus() { Id = 1, Description = "Active" },
-            //    new UserStatus() { Id = 2, Description = "Banned" });
+            modelBuilder.Entity<SystemSetting>().HasData(
+                new SystemSetting()
+                {
+                    Key = MandatorySettings.ORDER_RECEIVER.ToString(),
+                    Value = JsonConvert.SerializeObject(new List<string>() { SystemRoles.BARTENDER })
+                });
             #endregion
         }
     }

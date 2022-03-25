@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220320112134_20")]
-    partial class _20
+    [Migration("20220321080221_121")]
+    partial class _121
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -237,6 +237,26 @@ namespace Data.Migrations
                     b.HasIndex("ItemId");
 
                     b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("Data.Entities.SystemSetting", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("SystemSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Key = "ORDER_RECEIVER",
+                            Value = "[\"BARTENDER\"]"
+                        });
                 });
 
             modelBuilder.Entity("Data.Entities.Table", b =>

@@ -8,16 +8,9 @@ using System.Threading.Tasks;
 
 namespace Data.Entities
 {
-    public class OrderDetail
+    public class BartenderTask: BaseEntity
     {
-        public int Quantity { get; set; }
-        public double Price { get; set; }
-        public bool? IsMissing { get; set; }
-        public string? Description { get; set; }
-
-        [Key, ForeignKey("Item")]
-        public Guid ItemId { get; set; }
-        public virtual Item? Item { get; set; }
+        public bool IsCompleted { get; set; }
 
         [Key, ForeignKey("Order")]
         public Guid OrderId { get; set; }

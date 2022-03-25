@@ -9,6 +9,7 @@ namespace Data.Entities
 {
     public class Table : BaseEntity
     {
+        public bool IsAvailable { get; set; } = true;
 
         [ForeignKey("Floor")]
         public Guid FloorId { get; set; }

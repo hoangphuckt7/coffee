@@ -237,6 +237,26 @@ namespace Data.Migrations
                     b.ToTable("OrderDetails");
                 });
 
+            modelBuilder.Entity("Data.Entities.SystemSetting", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("SystemSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Key = "ORDER_RECEIVER",
+                            Value = "[\"BARTENDER\"]"
+                        });
+                });
+
             modelBuilder.Entity("Data.Entities.Table", b =>
                 {
                     b.Property<Guid>("Id")
