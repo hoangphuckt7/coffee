@@ -201,14 +201,26 @@ namespace Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsRejected")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("RejectedReason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid?>("TableId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("UserRejectedId")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
 
                     b.HasIndex("TableId");
+
+                    b.HasIndex("UserRejectedId");
 
                     b.ToTable("Orders");
                 });
@@ -220,6 +232,9 @@ namespace Data.Migrations
 
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
 
                     b.Property<bool?>("IsMissing")
                         .HasColumnType("boolean");
@@ -274,6 +289,9 @@ namespace Data.Migrations
 
                     b.Property<Guid>("FloorId")
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -536,9 +554,15 @@ namespace Data.Migrations
                         .WithMany()
                         .HasForeignKey("TableId");
 
+                    b.HasOne("Data.Entities.User", "UserRejected")
+                        .WithMany()
+                        .HasForeignKey("UserRejectedId");
+
                     b.Navigation("Employee");
 
                     b.Navigation("Table");
+
+                    b.Navigation("UserRejected");
                 });
 
             modelBuilder.Entity("Data.Entities.OrderDetail", b =>

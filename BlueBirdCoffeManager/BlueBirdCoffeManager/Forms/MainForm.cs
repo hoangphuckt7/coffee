@@ -34,8 +34,6 @@ namespace BlueBirdCoffeManager.Forms
             this.dataPanel.Left = 0;
             this.dataPanel.Top = menuPanel.Height;
             this.dataPanel.Size = new Size(Width, (Height - menuPanel.Height));
-            //this.dataPanel.BackColor = Color.FromArgb(192, 210, 240);
-            this.dataPanel.BackColor = Color.White;
 
             this.btnTable.Top = 0;
             this.btnTable.ForeColor = Color.White;
@@ -47,7 +45,7 @@ namespace BlueBirdCoffeManager.Forms
             this.btnTable.Font = MAIN_MENU_BUTTON_FONT;
 
             this.btnOrder.Top = 0;
-            this.btnOrder.Left = btnTable.Left + btnTable.Width;
+            this.btnOrder.Left = btnTable.Left + btnTable.Width + (int)((0.07 * Width) / 100);
             this.btnOrder.ForeColor = Color.White;
             this.btnOrder.Size = new Size(menuPanel.Width * 10 / 100, menuPanel.Height);
             this.btnOrder.BackColor = MENU_BACK_COLOR;
@@ -56,18 +54,34 @@ namespace BlueBirdCoffeManager.Forms
             this.btnOrder.FlatStyle = FlatStyle.Flat;
             this.btnOrder.Font = MAIN_MENU_BUTTON_FONT;
             #endregion
+
+            dataPanel.Controls.Clear();
+            TableForm myForm = new TableForm();
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            dataPanel.Controls.Add(myForm);
+            myForm.Show();
         }
 
         private void btnTable_Click(object sender, EventArgs e)
         {
             ActiveButton(this.btnTable);
             DeactiveButton(this.btnOrder);
+
+            dataPanel.Controls.Clear();
+            TableForm myForm = new TableForm();
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            dataPanel.Controls.Add(myForm);
+            myForm.Show();
         }
 
         private void btnOrder_Click(object sender, EventArgs e)
         {
             ActiveButton(this.btnOrder);
             DeactiveButton(this.btnTable);
+
+            dataPanel.Controls.Clear();
         }
 
         #region Helper

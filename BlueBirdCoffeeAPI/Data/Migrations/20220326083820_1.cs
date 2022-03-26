@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Data.Migrations
 {
-    public partial class _121 : Migration
+    public partial class _1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -227,6 +227,7 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "boolean", nullable: false),
                     FloorId = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -272,8 +273,11 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsRejected = table.Column<bool>(type: "boolean", nullable: false),
+                    RejectedReason = table.Column<string>(type: "text", nullable: false),
                     TableId = table.Column<Guid>(type: "uuid", nullable: true),
                     EmployeeId = table.Column<string>(type: "text", nullable: true),
+                    UserRejectedId = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -285,6 +289,11 @@ namespace Data.Migrations
                     table.ForeignKey(
                         name: "FK_Orders_AspNetUsers_EmployeeId",
                         column: x => x.EmployeeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_UserRejectedId",
+                        column: x => x.UserRejectedId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -338,7 +347,8 @@ namespace Data.Migrations
                     OrderId = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<double>(type: "double precision", nullable: false),
-                    IsMissing = table.Column<bool>(type: "boolean", nullable: true)
+                    IsMissing = table.Column<bool>(type: "boolean", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -438,6 +448,11 @@ namespace Data.Migrations
                 name: "IX_Orders_TableId",
                 table: "Orders",
                 column: "TableId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserRejectedId",
+                table: "Orders",
+                column: "UserRejectedId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tables_FloorId",
