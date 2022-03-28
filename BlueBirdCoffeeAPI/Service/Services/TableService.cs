@@ -15,7 +15,7 @@ namespace Service.Services
     {
         List<TableViewModel> Get(Guid? id, Guid? floorId);
         Guid Add(TableAddModel model);
-        Guid Update(Guid id, TableAddModel model);
+        int UpdateOrAdd(List<TableUpdateModel> models);
         Guid Delete(Guid id);
     }
     public class TableService : ITableService
@@ -41,7 +41,7 @@ namespace Service.Services
 
         public Guid Add(TableAddModel model)
         {
-            var newTable = new Table() { Description = model.Description, FloorId = model.FloorId };
+            var newTable = _mapper.Map<Table>(model);
 
             _dbContext.Add(newTable);
             _dbContext.SaveChanges();
@@ -49,22 +49,32 @@ namespace Service.Services
             return newTable.Id;
         }
 
-        public Guid Update(Guid id, TableAddModel model)
+        public int UpdateOrAdd(List<TableUpdateModel> models)
         {
-            var data = _dbContext.Tables.FirstOrDefault(f => f.Id == id);
-            if (data == null)
+            foreach (var model in models)
             {
-                throw new AppException("Invalid Id");
+                var table = _dbContext.Tables.FirstOrDefault(t => t.Id == model.Id);
+                if (table == null)
+                {
+                    var newTable = _mapper.Map<Table>(model);
+                    _dbContext.Add(newTable);
+                }
+                else
+                {
+                    table.Description = model.Description;
+                    table.Position = model.Position;
+                    table.Size = model.Size;
+                    table.Shape = model.Shape;
+                    table.FloorId = model.FloorId;
+                    table.DateUpdated = DateTime.UtcNow.AddHours(7);
+
+                    _dbContext.Update(table);
+                }
             }
 
-            data.Description = model.Description;
-            data.FloorId = model.FloorId;
-            data.DateUpdated = DateTime.UtcNow.AddHours(7);
-
-            _dbContext.Update(data);
             _dbContext.SaveChanges();
 
-            return data.Id;
+            return models.Count;
         }
 
         public Guid Delete(Guid id)

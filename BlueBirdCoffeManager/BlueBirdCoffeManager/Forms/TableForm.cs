@@ -16,8 +16,12 @@ namespace BlueBirdCoffeManager.Forms
     public partial class TableForm : Form
     {
         private List<DescriptionViewModel> FLOORS = new List<DescriptionViewModel>();
-        public TableForm()
+        Panel _dataPanel;
+        Guid? floorId;
+        public TableForm(Panel dataPanel, Guid? floorId)
         {
+            _dataPanel = dataPanel;
+            this.floorId = floorId;
             InitializeComponent();
         }
 
@@ -43,6 +47,15 @@ namespace BlueBirdCoffeManager.Forms
             this.cbFloors.Font = Sessions.Sessions.NOMAL_FONT;
             this.cbFloors.Top = lbArea.Top + lbArea.Height + Height * 3 / 100;
             this.cbFloors.Left = (floorPanel.Width - cbFloors.Width) / 2;
+
+            if (floorId != null)
+            {
+                cbFloors.SelectedIndex = FLOORS.IndexOf(FLOORS.First(s => s.Id == floorId));
+            }
+            else
+            {
+                cbFloors.SelectedIndex = FLOORS.IndexOf(FLOORS[0]);
+            }
 
             this.tablePanel.Left = floorPanel.Width;
             this.tablePanel.Top = 0;
@@ -76,9 +89,11 @@ namespace BlueBirdCoffeManager.Forms
                 {
                     g.SmoothingMode = SmoothingMode.AntiAlias;
                     g.Clear(Color.White);
-                    
-                    g.FillEllipse(Brushes.Red, new Rectangle(10, 10, 32, 32));
-                    g.FillEllipse(Brushes.Red, new Rectangle(50, 50, 32, 32));
+
+                    var br = new SolidBrush(Color.FromArgb(38, 37, 37));
+                    //if(table)
+                    g.FillEllipse(br, new Rectangle(10, 10, 32, 32));
+                    g.FillEllipse(Brushes.Black, new Rectangle(50, 50, 32, 32));
                 }
                 tablePanel.Invalidate();
             }
@@ -87,6 +102,16 @@ namespace BlueBirdCoffeManager.Forms
         private void tablePanel_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.DrawImage(bmp, new Point(0, 0));
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            tablePanel.Controls.Clear();
+            UpdateTableForm myForm = new UpdateTableForm(FLOORS[cbFloors.SelectedIndex].Id, _dataPanel);
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            tablePanel.Controls.Add(myForm);
+            myForm.Show();
         }
     }
 }

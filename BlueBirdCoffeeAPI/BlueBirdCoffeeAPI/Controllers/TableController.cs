@@ -28,10 +28,10 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_tableService.Add(model));
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Update(Guid id, TableAddModel model)
+        [HttpPut("UpdateOrAdd")]
+        public IActionResult Update(List<TableUpdateModel> model)
         {
-            return Ok(_tableService.Update(id, model));
+            return Ok(_tableService.UpdateOrAdd(model));
         }
 
         [HttpDelete("{id}")]

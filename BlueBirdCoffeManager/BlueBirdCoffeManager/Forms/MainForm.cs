@@ -56,7 +56,7 @@ namespace BlueBirdCoffeManager.Forms
             #endregion
 
             dataPanel.Controls.Clear();
-            TableForm myForm = new TableForm();
+            TableForm myForm = new TableForm(dataPanel, null);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             dataPanel.Controls.Add(myForm);
@@ -69,7 +69,7 @@ namespace BlueBirdCoffeManager.Forms
             DeactiveButton(this.btnOrder);
 
             dataPanel.Controls.Clear();
-            TableForm myForm = new TableForm();
+            TableForm myForm = new TableForm(dataPanel, null);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             dataPanel.Controls.Add(myForm);

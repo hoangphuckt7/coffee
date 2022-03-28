@@ -31,6 +31,7 @@ namespace BlueBirdCoffeManager.DataAccessLayer
                     responseMessage = await client.PostAsync(Sessions.Sessions.HOST + apiPath, BuildRequestBody(requestBody));
                     break;
                 case RequestMethod.PUT:
+                    var ra = BuildRequestBody(requestBody);
                     responseMessage = await client.PutAsync(Sessions.Sessions.HOST + apiPath, BuildRequestBody(requestBody));
                     break;
                 case RequestMethod.DELETE:
@@ -45,7 +46,15 @@ namespace BlueBirdCoffeManager.DataAccessLayer
             }
             else
             {
-                throw new Exception(await responseMessage.Content.ReadAsStringAsync());
+                //const string message = "Đã xảy ra lỗi trong quá trình cập nhật!!";
+                //const string caption = "Lỗi";
+                //var rr = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //// If the no button was pressed ...
+                //if (rr == DialogResult.OK)
+                //{
+                //}
+                //throw new Exception(await responseMessage.Content.ReadAsStringAsync());
+                return JsonConvert.DeserializeObject<T>("[]");
             }
         }
     }

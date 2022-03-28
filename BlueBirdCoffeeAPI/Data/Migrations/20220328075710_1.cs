@@ -228,6 +228,9 @@ namespace Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     IsAvailable = table.Column<bool>(type: "boolean", nullable: false),
+                    Position = table.Column<string>(type: "text", nullable: false),
+                    Size = table.Column<string>(type: "text", nullable: false),
+                    Shape = table.Column<string>(type: "text", nullable: false),
                     FloorId = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -365,6 +368,15 @@ namespace Data.Migrations
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Floors",
+                columns: new[] { "Id", "DateCreated", "DateUpdated", "Description", "IsDeleted" },
+                values: new object[,]
+                {
+                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"), new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5458), new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5458), "Tầng 2", false },
+                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"), new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5446), new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5449), "Tầng 1", false }
                 });
 
             migrationBuilder.InsertData(

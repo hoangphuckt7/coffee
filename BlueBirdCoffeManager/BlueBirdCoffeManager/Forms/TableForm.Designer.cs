@@ -33,7 +33,10 @@
             this.cbFloors = new System.Windows.Forms.ComboBox();
             this.areaPanel = new System.Windows.Forms.Panel();
             this.tablePanel = new System.Windows.Forms.Panel();
+            this.btnEdit = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.floorPanel.SuspendLayout();
+            this.tablePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // floorPanel
@@ -74,11 +77,22 @@
             // 
             // tablePanel
             // 
+            this.tablePanel.Controls.Add(this.btnEdit);
             this.tablePanel.Location = new System.Drawing.Point(581, 52);
             this.tablePanel.Name = "tablePanel";
             this.tablePanel.Size = new System.Drawing.Size(191, 378);
             this.tablePanel.TabIndex = 1;
             this.tablePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.tablePanel_Paint);
+            // 
+            // btnEdit
+            // 
+            this.btnEdit.Location = new System.Drawing.Point(113, 348);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(75, 23);
+            this.btnEdit.TabIndex = 0;
+            this.btnEdit.Text = "Chỉnh sửa";
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
             // TableForm
             // 
@@ -92,6 +106,7 @@
             this.Load += new System.EventHandler(this.TableForm_Load);
             this.floorPanel.ResumeLayout(false);
             this.floorPanel.PerformLayout();
+            this.tablePanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -103,5 +118,7 @@
         private ComboBox cbFloors;
         private Label lbArea;
         private Panel areaPanel;
+        private Button btnEdit;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

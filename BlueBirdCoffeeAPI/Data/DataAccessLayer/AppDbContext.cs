@@ -45,12 +45,23 @@ namespace Data.DataAccessLayer
             modelBuilder.Entity<OrderDetail>().HasKey(s => new { s.OrderId, s.ItemId });
             #endregion
 
-            #region Seed User
+            #region Seed
             modelBuilder.Entity<SystemSetting>().HasData(
                 new SystemSetting()
                 {
                     Key = MandatorySettings.ORDER_RECEIVER.ToString(),
                     Value = JsonConvert.SerializeObject(new List<string>() { SystemRoles.BARTENDER })
+                });
+
+            modelBuilder.Entity<Floor>().HasData(
+                new Floor()
+                {
+                    Id = Guid.Parse("eb22e2ea-0305-4778-a129-f400e6a64447"),
+                    Description = "Tầng 1"
+                }, new Floor()
+                {
+                    Id = Guid.Parse("eb22e2ea-0305-4778-a129-f400e6a64445"),
+                    Description = "Tầng 2"
                 });
             #endregion
         }

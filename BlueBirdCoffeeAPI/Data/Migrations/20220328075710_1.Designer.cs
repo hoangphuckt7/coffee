@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220326083820_1")]
+    [Migration("20220328075710_1")]
     partial class _1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,6 +112,24 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Floors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"),
+                            DateCreated = new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5446),
+                            DateUpdated = new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5449),
+                            Description = "Tầng 1",
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            Id = new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"),
+                            DateCreated = new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5458),
+                            DateUpdated = new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5458),
+                            Description = "Tầng 2",
+                            IsDeleted = false
+                        });
                 });
 
             modelBuilder.Entity("Data.Entities.Item", b =>
@@ -297,6 +315,18 @@ namespace Data.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Shape")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

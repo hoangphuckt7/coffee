@@ -15,6 +15,8 @@ namespace Service.MapperProfiles
         {
             CreateMap<Floor, DescriptionViewModel>().ReverseMap();
             CreateMap<Category, DescriptionViewModel>().ReverseMap();
+            CreateMap<TableViewModel, Table>();
+            CreateMap<TableUpdateModel, Table>().ReverseMap();
             CreateMap<Table, TableViewModel>()
                 .ForMember(f => f.Floor, map => map.MapFrom(f => f.Floor));
 
