@@ -1,6 +1,7 @@
 ﻿using Data.Cache;
 using Data.Entities;
 using Data.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -52,6 +53,13 @@ namespace Data.DataAccessLayer
                     Key = MandatorySettings.ORDER_RECEIVER.ToString(),
                     Value = JsonConvert.SerializeObject(new List<string>() { SystemRoles.BARTENDER })
                 });
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole() { Id = SystemRoles.ADMIN, Name = SystemRoles.ADMIN, NormalizedName = SystemRoles.ADMIN, ConcurrencyStamp = SystemRoles.ADMIN },
+                new IdentityRole() { Id = SystemRoles.BARTENDER, Name = SystemRoles.BARTENDER, NormalizedName = SystemRoles.BARTENDER, ConcurrencyStamp = SystemRoles.BARTENDER },
+                new IdentityRole() { Id = SystemRoles.CUSTOMER, Name = SystemRoles.CUSTOMER, NormalizedName = SystemRoles.CUSTOMER, ConcurrencyStamp = SystemRoles.CUSTOMER },
+                new IdentityRole() { Id = SystemRoles.EMPLOYEE, Name = SystemRoles.EMPLOYEE, NormalizedName = SystemRoles.EMPLOYEE, ConcurrencyStamp = SystemRoles.EMPLOYEE },
+                new IdentityRole() { Id = SystemRoles.CASHER, Name = SystemRoles.CASHER, NormalizedName = SystemRoles.CASHER, ConcurrencyStamp = SystemRoles.CASHER });
 
             modelBuilder.Entity<Floor>().HasData(
                 new Floor()

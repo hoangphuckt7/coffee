@@ -1,5 +1,6 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
 using BlueBirdCoffeManager.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,8 +17,9 @@ namespace BlueBirdCoffeManager.Forms
     public partial class TableForm : Form
     {
         private List<DescriptionViewModel> FLOORS = new List<DescriptionViewModel>();
-        Panel _dataPanel;
-        Guid? floorId;
+        private readonly Panel _dataPanel;
+        private readonly Guid? floorId;
+
         public TableForm(Panel dataPanel, Guid? floorId)
         {
             _dataPanel = dataPanel;
@@ -28,6 +30,7 @@ namespace BlueBirdCoffeManager.Forms
         private async void TableForm_Load(object sender, EventArgs e)
         {
             #region screen setup
+
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
@@ -37,11 +40,17 @@ namespace BlueBirdCoffeManager.Forms
             this.floorPanel.Size = new Size(Width * 20 / 100, Height);
             this.floorPanel.BackColor = Color.White;
 
+            this.tablePanel.Left = floorPanel.Width;
+            this.tablePanel.Top = 0;
+            this.tablePanel.Size = new Size(Width - floorPanel.Width, Height);
+
             lbArea.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
             lbArea.Top = floorPanel.Height * 5 / 100;
             lbArea.Left = (floorPanel.Width - lbArea.Width) / 2;
 
-            FLOORS = await ApiBuilder.SendRequest<List<DescriptionViewModel>>("api/Floor", null, RequestMethod.GET);
+            var data = await ApiBuilder.SendRequest<List<DescriptionViewModel>>("api/Floor", null, RequestMethod.GET);
+            FLOORS = JsonConvert.DeserializeObject<List<DescriptionViewModel>>(data);
+
             cbFloors.DataSource = FLOORS.Select(s => s.Description).ToList();
             this.cbFloors.DropDownStyle = ComboBoxStyle.DropDownList;
             this.cbFloors.Font = Sessions.Sessions.NOMAL_FONT;
@@ -57,9 +66,7 @@ namespace BlueBirdCoffeManager.Forms
                 cbFloors.SelectedIndex = FLOORS.IndexOf(FLOORS[0]);
             }
 
-            this.tablePanel.Left = floorPanel.Width;
-            this.tablePanel.Top = 0;
-            this.tablePanel.Size = new Size(Width - floorPanel.Width, Height);
+            Refresh();
             #endregion
         }
 
@@ -76,32 +83,16 @@ namespace BlueBirdCoffeManager.Forms
             Color.DimGray, 1, ButtonBorderStyle.Solid);// bottom
         }
 
-        Bitmap bmp = new Bitmap(500, 500);
+        //Bitmap bmp = new Bitmap(500, 500);
 
-        private async void cbFloors_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbFloors_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bmp = new Bitmap(tablePanel.Width, tablePanel.Height);
-            var tables = await ApiBuilder.SendRequest<List<DescriptionViewModel>>("api/Table?floorId=" + FLOORS[cbFloors.SelectedIndex].Id, null, RequestMethod.GET);
-
-            foreach (var table in tables)
-            {
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    g.SmoothingMode = SmoothingMode.AntiAlias;
-                    g.Clear(Color.White);
-
-                    var br = new SolidBrush(Color.FromArgb(38, 37, 37));
-                    //if(table)
-                    g.FillEllipse(br, new Rectangle(10, 10, 32, 32));
-                    g.FillEllipse(Brushes.Black, new Rectangle(50, 50, 32, 32));
-                }
-                tablePanel.Invalidate();
-            }
-        }
-
-        private void tablePanel_Paint(object sender, PaintEventArgs e)
-        {
-            e.Graphics.DrawImage(bmp, new Point(0, 0));
+            tablePanel.Controls.Clear();
+            TableDataForm myForm = new TableDataForm(tablePanel, FLOORS[cbFloors.SelectedIndex].Id);
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            tablePanel.Controls.Add(myForm);
+            myForm.Show();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)

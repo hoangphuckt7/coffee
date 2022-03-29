@@ -16,7 +16,7 @@ namespace BlueBirdCoffeManager.DataAccessLayer
             return new StringContent(dataConvert, Encoding.UTF8, "application/json");
         }
 
-        public static async Task<T> SendRequest<T>(string apiPath, T? requestBody, RequestMethod method)
+        public static async Task<string> SendRequest<T>(string apiPath, T? requestBody, RequestMethod method)
         {
             HttpClient client = new();
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Sessions.Sessions.TOKEN);
@@ -42,7 +42,7 @@ namespace BlueBirdCoffeManager.DataAccessLayer
             if (responseMessage.IsSuccessStatusCode)
             {
                 string json = await responseMessage.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(json);
+                return json;
             }
             else
             {
@@ -54,7 +54,7 @@ namespace BlueBirdCoffeManager.DataAccessLayer
                 //{
                 //}
                 //throw new Exception(await responseMessage.Content.ReadAsStringAsync());
-                return JsonConvert.DeserializeObject<T>("[]");
+                return "";
             }
         }
     }

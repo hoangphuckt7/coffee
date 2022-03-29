@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Data.Cache;
+using Data.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
 
@@ -15,11 +17,16 @@ namespace BlueBirdCoffeeAPI.Controllers
             _userService = userService;
         }
 
-        [HttpPost("Auth")]
-        public IActionResult Login()
+        [HttpPost("Register")]
+        public async Task<IActionResult> Login(UserRegisterModel model)
         {
-            _userService.Test();
-            return Ok("Ok");
+            return Ok(await _userService.Register(model, SystemRoles.EMPLOYEE));
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(UserLoginModel model)
+        {
+            return Ok(await _userService.Login(model));
         }
     }
 }

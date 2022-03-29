@@ -16,7 +16,7 @@ namespace Service.Services
         List<TableViewModel> Get(Guid? id, Guid? floorId);
         Guid Add(TableAddModel model);
         int UpdateOrAdd(List<TableUpdateModel> models);
-        Guid Delete(Guid id);
+        int Delete(List<Guid> ids);
     }
     public class TableService : ITableService
     {
@@ -35,6 +35,7 @@ namespace Service.Services
                 .Where(t => id == null || t.Id == id)
                 .Where(f => f.IsDeleted == false)
                 .Where(f => floorId == null || f.FloorId == floorId)
+                .OrderBy(f => f.DateCreated)
                 .ToList();
             return _mapper.Map<List<TableViewModel>>(tables);
         }
@@ -77,21 +78,25 @@ namespace Service.Services
             return models.Count;
         }
 
-        public Guid Delete(Guid id)
+        public int Delete(List<Guid> ids)
         {
-            var data = _dbContext.Tables.FirstOrDefault(f => f.Id == id);
-            if (data == null)
+            foreach (var id in ids)
             {
-                throw new AppException("Invalid Id");
+                var data = _dbContext.Tables.FirstOrDefault(f => f.Id == id);
+                if (data == null)
+                {
+                    throw new AppException("Invalid Id");
+                }
+
+                data.DateUpdated = DateTime.UtcNow.AddHours(7);
+                data.IsDeleted = true;
+
+                _dbContext.Update(data);
             }
 
-            data.DateUpdated = DateTime.UtcNow.AddHours(7);
-            data.IsDeleted = true;
-
-            _dbContext.Update(data);
             _dbContext.SaveChanges();
 
-            return data.Id;
+            return ids.Count;
         }
     }
 }

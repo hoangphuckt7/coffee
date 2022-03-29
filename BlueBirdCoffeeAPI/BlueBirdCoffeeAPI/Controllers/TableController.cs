@@ -34,10 +34,10 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_tableService.UpdateOrAdd(model));
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        [HttpPut("Remove")]
+        public IActionResult Delete(List<Guid> ids)
         {
-            return Ok(_tableService.Delete(id));
+            return Ok(_tableService.Delete(ids));
         }
     }
 }

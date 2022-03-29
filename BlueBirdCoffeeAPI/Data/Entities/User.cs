@@ -9,5 +9,6 @@ namespace Data.Entities
 {
     public class User : IdentityUser
     {
+        public string Fullname { get; set; }
     }
 }

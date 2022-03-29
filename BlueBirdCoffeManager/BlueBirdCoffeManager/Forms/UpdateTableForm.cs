@@ -1,5 +1,6 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
 using BlueBirdCoffeManager.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +17,7 @@ namespace BlueBirdCoffeManager.Forms
     {
         List<TableViewModel> tables = new List<TableViewModel>();
         List<Rectangle> rectangles = new List<Rectangle>();
+        List<Guid> deletedItem = new List<Guid>();
 
         bool isMouseDown = false;
         Rectangle selected_item;
@@ -24,8 +26,8 @@ namespace BlueBirdCoffeManager.Forms
         int x = 0;
         int y = 0;
 
-        Panel _dataPanel;
-        Guid floorId;
+        private readonly Panel _dataPanel;
+        private readonly Guid floorId;
 
         public UpdateTableForm(Guid id, Panel dataPanel)
         {
@@ -36,7 +38,9 @@ namespace BlueBirdCoffeManager.Forms
 
         private async void UpdateTableForm_Load(object sender, EventArgs e)
         {
-            tables = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + floorId, null, RequestMethod.GET);
+            var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + floorId, null, RequestMethod.GET);
+            tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
+
             foreach (var item in tables)
             {
                 item.ConvertToRectangle();
@@ -63,19 +67,21 @@ namespace BlueBirdCoffeManager.Forms
                 StringFormat sf = new StringFormat();
                 sf.LineAlignment = StringAlignment.Center;
                 sf.Alignment = StringAlignment.Center;
+                Pen pen = new(Sessions.Sessions.MENU_COLOR);
+
                 switch (tables[i].Shape)
                 {
                     case "Rectangle":
-                        e.Graphics.FillRectangle(new SolidBrush(Color.RoyalBlue), item);
-                        e.Graphics.DrawRectangle(Pens.RoyalBlue, Rectangle.Round(item));
+                        e.Graphics.FillRectangle(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
+                        e.Graphics.DrawRectangle(pen, Rectangle.Round(item));
                         break;
                     case "Ellipse":
-                        e.Graphics.FillEllipse(new SolidBrush(Color.RoyalBlue), item);
-                        e.Graphics.DrawEllipse(Pens.RoyalBlue, Rectangle.Round(item));
+                        e.Graphics.FillEllipse(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
+                        e.Graphics.DrawEllipse(pen, Rectangle.Round(item));
                         break;
                     default: break;
                 }
-                e.Graphics.DrawString(tables[i].Description, Sessions.Sessions.NOMAL_FONT, Brushes.Black, item, sf);
+                e.Graphics.DrawString(tables[i].Description, Sessions.Sessions.NOMAL_FONT, Brushes.White, item, sf);
             }
         }
 
@@ -172,7 +178,13 @@ namespace BlueBirdCoffeManager.Forms
                 // If the no button was pressed ...
                 if (rr == DialogResult.Yes)
                 {
+                    if (tables[selected_index].Id != Guid.Empty && tables[selected_index].Id != null)
+                    {
+                        deletedItem.Add(tables[selected_index].Id.Value);
+                    }
+
                     rectangles.Remove(rectangles[selected_index]);
+                    tables.Remove(tables[selected_index]);
                     Refresh();
                 }
                 else
@@ -192,7 +204,7 @@ namespace BlueBirdCoffeManager.Forms
             if (rr == DialogResult.Yes)
             {
                 _dataPanel.Controls.Clear();
-                TableForm myForm = new(_dataPanel, floorId);
+                TableDataForm myForm = new(_dataPanel, floorId);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 _dataPanel.Controls.Add(myForm);
@@ -215,9 +227,10 @@ namespace BlueBirdCoffeManager.Forms
                 var models = new List<TableUpdateModel>();
                 for (int i = 0; i < rectangles.Count; i++)
                 {
+
                     var tableUpdate = new TableUpdateModel()
                     {
-                        Id = tables[i].Id,
+                        Id = (tables[i].Id == null || tables[i].Id == Guid.Empty) ? Guid.NewGuid() : tables[i].Id,
                         Description = tables[i].Description,
                         FloorId = floorId,
                         Position = rectangles[i].X + "," + rectangles[i].Y,
@@ -227,10 +240,15 @@ namespace BlueBirdCoffeManager.Forms
                     models.Add(tableUpdate);
                 }
 
+                if (deletedItem != null || deletedItem.Count > 0)
+                {
+                    await ApiBuilder.SendRequest("api/Table/Remove", deletedItem, RequestMethod.PUT);
+                }
+
                 await ApiBuilder.SendRequest("api/Table/UpdateOrAdd", models, RequestMethod.PUT);
 
                 _dataPanel.Controls.Clear();
-                TableForm myForm = new(_dataPanel, floorId);
+                TableDataForm myForm = new(_dataPanel, floorId);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 _dataPanel.Controls.Add(myForm);
@@ -253,8 +271,8 @@ namespace BlueBirdCoffeManager.Forms
             }
             int x = 0;
             int y = 0;
-            int width = 50;
-            int height = 50;
+            int width = 100;
+            int height = 100;
 
             var table = new TableViewModel()
             {
@@ -266,6 +284,8 @@ namespace BlueBirdCoffeManager.Forms
             };
             tables.Add(table);
             rectangles.Add(table.Rectangle.Value);
+
+            txtName.Text = "";
             Refresh();
         }
 
@@ -284,8 +304,8 @@ namespace BlueBirdCoffeManager.Forms
             }
             int x = 0;
             int y = 0;
-            int width = 50;
-            int height = 50;
+            int width = 100;
+            int height = 100;
 
             var table = new TableViewModel()
             {
@@ -297,7 +317,8 @@ namespace BlueBirdCoffeManager.Forms
             };
             tables.Add(table);
             rectangles.Add(table.Rectangle.Value);
-            Refresh();
+
+            txtName.Text = "";
             Refresh();
         }
     }
