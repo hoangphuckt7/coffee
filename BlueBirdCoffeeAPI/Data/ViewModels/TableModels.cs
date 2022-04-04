@@ -20,7 +20,7 @@ namespace Data.ViewModels
     {
         public Guid Id { get; set; }
         public string Description { get; set; }
-        public bool IsAvailable { get; set; }
+        public int CurrentOrder { get; set; }
         public string Position { get; set; }
         public string Size { get; set; }
         public string Shape { get; set; }

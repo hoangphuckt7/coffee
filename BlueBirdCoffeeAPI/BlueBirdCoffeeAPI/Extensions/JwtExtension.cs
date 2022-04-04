@@ -66,7 +66,7 @@ namespace BlueBirdCoffeeAPI.Extensions
 
                             // If the request is for our hub...
                             var path = context.HttpContext.Request.Path;
-                            if (path.StartsWithSegments("/notificationHub"))
+                            if (path.StartsWithSegments("/notificationHub") || path.StartsWithSegments("/tableHub"))
                             {
                                 // Read the token out of the query string
                                 context.Token = accessToken;

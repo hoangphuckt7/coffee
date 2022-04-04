@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220328075710_1")]
-    partial class _1
+    [Migration("20220404024800_2")]
+    partial class _2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -117,16 +117,16 @@ namespace Data.Migrations
                         new
                         {
                             Id = new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"),
-                            DateCreated = new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5446),
-                            DateUpdated = new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5449),
+                            DateCreated = new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3741),
+                            DateUpdated = new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3744),
                             Description = "Tầng 1",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"),
-                            DateCreated = new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5458),
-                            DateUpdated = new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5458),
+                            DateCreated = new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3753),
+                            DateUpdated = new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3754),
                             Description = "Tầng 2",
                             IsDeleted = false
                         });
@@ -298,6 +298,9 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("CurrentOrder")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("timestamp with time zone");
 
@@ -309,9 +312,6 @@ namespace Data.Migrations
 
                     b.Property<Guid>("FloorId")
                         .HasColumnType("uuid");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -353,6 +353,10 @@ namespace Data.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Fullname")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -423,6 +427,43 @@ namespace Data.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "ADMIN",
+                            ConcurrencyStamp = "ADMIN",
+                            Name = "ADMIN",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "BARTENDER",
+                            ConcurrencyStamp = "BARTENDER",
+                            Name = "BARTENDER",
+                            NormalizedName = "BARTENDER"
+                        },
+                        new
+                        {
+                            Id = "CUSTOMER",
+                            ConcurrencyStamp = "CUSTOMER",
+                            Name = "CUSTOMER",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = "EMPLOYEE",
+                            ConcurrencyStamp = "EMPLOYEE",
+                            Name = "EMPLOYEE",
+                            NormalizedName = "EMPLOYEE"
+                        },
+                        new
+                        {
+                            Id = "CASHER",
+                            ConcurrencyStamp = "CASHER",
+                            Name = "CASHER",
+                            NormalizedName = "CASHER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

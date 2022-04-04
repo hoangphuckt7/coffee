@@ -1,6 +1,8 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
 using BlueBirdCoffeManager.Models;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -22,11 +25,39 @@ namespace BlueBirdCoffeManager.Forms
         List<TableViewModel> tables = new List<TableViewModel>();
         List<Rectangle> rectangles = new List<Rectangle>();
 
+        HubConnection connection;
+
         public TableDataForm(Panel dataPanel, Guid floorId)
         {
             _tablePanel = dataPanel;
             this.floorId = floorId;
             InitializeComponent();
+
+            var urlSignalR = Sessions.Sessions.HOST + "tableHub";
+
+            connection = new HubConnectionBuilder()
+               .WithUrl(urlSignalR, opt =>
+               {
+                   opt.AccessTokenProvider = () => Task.FromResult(Sessions.Sessions.TOKEN);
+               })
+               .Build();
+
+            connection.Closed += async (error) =>
+            {
+                await Task.Delay(new Random().Next(0, 5) * 1000);
+                await connection.StartAsync();
+            };
+
+            connection.On<TableViewModel>("ChangeStatus", (model) =>
+            {
+                this.Invoke((Action)(() =>
+                {
+                    var table = tables.First(f => f.Id == model.Id);
+                    tables.Remove(table);
+                    tables.Add(model);
+                    Refresh();
+                }));
+            });
         }
 
         private async void TableDataForm_Load(object sender, EventArgs e)
@@ -50,38 +81,15 @@ namespace BlueBirdCoffeManager.Forms
             rbtnEdit.Text = "Chỉnh sửa";
             rbtnEdit.Top = this.Height - rbtnEdit.Height - 2 * Height / 100;
             rbtnEdit.Left = this.Width - rbtnEdit.Width - 2 * Height / 100;
-
-
-            var urlSignalR = Sessions.Sessions.HOST + "/tableHub";
-
-            var connection = new HubConnectionBuilder()
-                .WithUrl(urlSignalR)
-                .Build();
-
-            connection.Closed += async (error) =>
-            {
-                await Task.Delay(new Random().Next(0, 5) * 1000);
-                await connection.StartAsync();
-            };
-
-            connection.On<Guid>("ChangeStatus", (tableId) =>
-            {
-                this.Invoke((Action)(() =>
-                {
-                    var table = tables.First(f => f.Id == tableId);
-                    tables.Remove(table);
-                    table.IsAvailable = false;
-                    tables.Add(table);
-                }));
-            });
+            rbtnEdit.Visible = true;
 
             try
             {
                 await connection.StartAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //messagesList.Items.Add(ex.Message);
+                //listBox1.Items.Add(ex.Message);
             }
 
             Refresh();
@@ -103,26 +111,36 @@ namespace BlueBirdCoffeManager.Forms
                 switch (tables[i].Shape)
                 {
                     case "Rectangle":
-                        if (tables[i].IsAvailable == true)
+                        if (tables[i].CurrentOrder == 0)
                         {
                             e.Graphics.FillRectangle(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
                             e.Graphics.DrawRectangle(penAvai, Rectangle.Round(item));
                         }
-                        else
+                        else if (tables[i].CurrentOrder == 1)
                         {
                             e.Graphics.FillRectangle(new SolidBrush(Sessions.Sessions.BUTTON_COLOR), item);
                             e.Graphics.DrawRectangle(penActive, Rectangle.Round(item));
                         }
+                        else
+                        {
+                            e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(52, 94, 235)), item);
+                            e.Graphics.DrawRectangle(penActive, Rectangle.Round(item));
+                        }
                         break;
                     case "Ellipse":
-                        if (tables[i].IsAvailable == true)
+                        if (tables[i].CurrentOrder == 0)
                         {
                             e.Graphics.FillEllipse(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
                             e.Graphics.DrawEllipse(penAvai, Rectangle.Round(item));
                         }
-                        else
+                        else if (tables[i].CurrentOrder == 1)
                         {
                             e.Graphics.FillEllipse(new SolidBrush(Sessions.Sessions.BUTTON_COLOR), item);
+                            e.Graphics.DrawEllipse(penActive, Rectangle.Round(item));
+                        }
+                        else
+                        {
+                            e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(52, 94, 235)), item);
                             e.Graphics.DrawEllipse(penActive, Rectangle.Round(item));
                         }
                         break;

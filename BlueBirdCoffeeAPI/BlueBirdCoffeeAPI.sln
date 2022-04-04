@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{CD015BCF-4923-46E4-9573-E10BDF77A990}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hub", "Hub\Hub.csproj", "{19215406-C84A-42B7-AD4F-3C2F8F156E30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hubs", "Hub\Hubs.csproj", "{19215406-C84A-42B7-AD4F-3C2F8F156E30}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{16B28751-5161-430B-9DF0-E4FA3635F44D}"
 	ProjectSection(SolutionItems) = preProject

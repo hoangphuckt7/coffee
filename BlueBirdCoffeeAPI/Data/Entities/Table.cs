@@ -9,7 +9,7 @@ namespace Data.Entities
 {
     public class Table : BaseEntity
     {
-        public bool IsAvailable { get; set; } = true;
+        public int CurrentOrder { get; set; } = 0;
         public string Position { get; set; }
         public string Size { get; set; }
         public string Shape { get; set; }

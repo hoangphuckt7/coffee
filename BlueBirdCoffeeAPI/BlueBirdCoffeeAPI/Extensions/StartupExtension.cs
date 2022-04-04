@@ -1,5 +1,6 @@
 ﻿using Data.DataAccessLayer;
 using Data.Entities;
+using Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service.Services;
@@ -27,7 +28,11 @@ namespace BlueBirdCoffeeAPI.Extensions
 
         public static void BusinessServices(this IServiceCollection services)
         {
+            services.AddSingleton<ITableHub, TableHub>();
+            services.AddSingleton<INotificationHub, NotificationHub>();
+
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IFloorService, FloorService>();
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<ICategoryService, CategoryService>();

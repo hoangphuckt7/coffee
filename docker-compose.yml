@@ -1,4 +1,4 @@
-version: '1'
+version: '2'
 services:
   
   bluebirdcoffee-api:
@@ -13,10 +13,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     restart: "no"
 
-  postgreslq:
-    image: postgres
-    ports:
-       - "8001:5432"
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: Bluebird@123456
+  # postgreslq:
+  #   image: postgres
+  #   ports:
+  #      - "8001:5432"
+  #   restart: always
+  #   environment:
+  #     POSTGRES_PASSWORD: Bluebird@123456

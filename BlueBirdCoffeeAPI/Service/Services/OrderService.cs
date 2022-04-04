@@ -5,7 +5,7 @@ using Data.DataAccessLayer;
 using Data.Entities;
 using Data.Enums;
 using Data.ViewModels;
-using Hub;
+using Hubs;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System;
@@ -26,17 +26,20 @@ namespace Service.Services
         private readonly IMapper _mapper;
         private readonly INotificationHub _notificationHub;
         private readonly UserManager<User> _userManager;
+        private readonly ITableHub _tableHub;
 
-        public OrderService(AppDbContext dbContext, IMapper mapper, INotificationHub notificationHub, UserManager<User> userManager)
+        public OrderService(AppDbContext dbContext, IMapper mapper, INotificationHub notificationHub, UserManager<User> userManager, ITableHub tableHub)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _notificationHub = notificationHub;
             _userManager = userManager;
+            _tableHub = tableHub;
         }
 
         public async Task<Guid> CreateOrder(string employeeId, OrderCreateModel models)
         {
+            Table? table;
             var transaction = _dbContext.Database.BeginTransaction();
 
             var order = new Order()
@@ -67,37 +70,45 @@ namespace Service.Services
 
                 _dbContext.SaveChanges();
 
-                var table = _dbContext.Tables.FirstOrDefault(f => f.Id == order.TableId);
-                if (table != null) throw new AppException("Mã số bàn không hợp lệ!");
+                table = _dbContext.Tables.FirstOrDefault(f => f.Id == order.TableId);
+                if (table == null) throw new AppException("Mã số bàn không hợp lệ!");
 
-                table.IsAvailable = false;
+                table.CurrentOrder += 1;
+                _dbContext.Tables.Update(table);
                 _dbContext.SaveChanges();
 
                 transaction.Commit();
-
-                var notify = _mapper.Map<OrderViewModel>(order);
-                notify.Id = order.Id;
-
-                var orderReceivers = CacheSetting.CacheSettings.FirstOrDefault(f => f.Key == MandatorySettings.ORDER_RECEIVER.ToString());
-
-                var roles = JsonConvert.DeserializeObject<List<string>>(orderReceivers.Value);
-
-                foreach (var role in roles)
-                {
-                    var users = await _userManager.GetUsersInRoleAsync(role);
-                    foreach (var user in users)
-                    {
-                        await _notificationHub.NewTaskNotification(notify, user.Id);
-                    }
-                }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 transaction.Rollback();
+                throw e;
             }
             finally
             {
                 transaction.Dispose();
+            }
+
+            var notify = _mapper.Map<OrderViewModel>(order);
+            notify.Id = order.Id;
+
+            var orderReceivers = CacheSetting.CacheSettings.FirstOrDefault(f => f.Key == MandatorySettings.ORDER_RECEIVER.ToString());
+
+            var roles = JsonConvert.DeserializeObject<List<string>>(orderReceivers.Value);
+
+            foreach (var role in roles)
+            {
+                var users = await _userManager.GetUsersInRoleAsync(role);
+                foreach (var user in users)
+                {
+                    await _notificationHub.NewTaskNotification(notify, user.Id);
+                }
+            }
+
+            var cashers = await _userManager.GetUsersInRoleAsync(SystemRoles.CASHER);
+            foreach (var casher in cashers)
+            {
+                await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(table), casher.Id);
             }
 
             return order.Id;

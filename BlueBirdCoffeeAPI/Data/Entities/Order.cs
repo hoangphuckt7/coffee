@@ -10,7 +10,7 @@ namespace Data.Entities
     public class Order : BaseEntity
     {
         public bool IsRejected { get; set; }
-        public string RejectedReason { get; set; }
+        public string? RejectedReason { get; set; }
 
         [ForeignKey("Table")]
         public Guid? TableId { get; set; }

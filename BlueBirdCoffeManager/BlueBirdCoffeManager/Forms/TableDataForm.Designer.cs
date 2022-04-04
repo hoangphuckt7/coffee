@@ -59,6 +59,7 @@
             this.rbtnEdit.Text = "roundedButton1";
             this.rbtnEdit.TextColor = System.Drawing.Color.White;
             this.rbtnEdit.UseVisualStyleBackColor = false;
+            this.rbtnEdit.Visible = false;
             this.rbtnEdit.Click += new System.EventHandler(this.rbtnEdit_Click_1);
             // 
             // TableDataForm

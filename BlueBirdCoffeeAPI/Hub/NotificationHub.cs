@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hub
+namespace Hubs
 {
     public interface INotificationHub
     {
@@ -20,7 +20,7 @@ namespace Hub
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class NotificationHub : DynamicHub, INotificationHub
+    public class NotificationHub : Hub, INotificationHub
     {
         public static ConcurrentDictionary<string, List<string>> ConnectedUsers = new ConcurrentDictionary<string, List<string>>();
         public IHubContext<NotificationHub> Current { get; set; }

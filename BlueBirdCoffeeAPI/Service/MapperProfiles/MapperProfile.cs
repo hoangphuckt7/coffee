@@ -33,7 +33,7 @@ namespace Service.MapperProfiles
                 .ForMember(f => f.Value, map => map.MapFrom(f => f.Value))
                 .ReverseMap();
 
-            CreateMap<OrderCreateModel, OrderViewModel>()
+            CreateMap<Order, OrderViewModel>()
                 .ForMember(f => f.Id, map => map.Ignore())
                 .ReverseMap();
         }

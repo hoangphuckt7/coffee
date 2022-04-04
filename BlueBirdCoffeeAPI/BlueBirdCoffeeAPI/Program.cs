@@ -1,5 +1,5 @@
 using BlueBirdCoffeeAPI.Extensions;
-using Hub;
+using Hubs;
 using Service.MapperProfiles;
 using Service.Services;
 
@@ -18,7 +18,7 @@ builder.Services.ConfigIdentityDbContext(configuration.GetConnectionString("Blue
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.BusinessServices();
 builder.Services.AddSignalR();
-//builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
+builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
 
 var app = builder.Build();
 
@@ -39,5 +39,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<TableHub>("/tableHub");
 
 app.Run();

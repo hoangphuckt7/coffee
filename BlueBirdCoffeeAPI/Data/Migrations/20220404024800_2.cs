@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Data.Migrations
 {
-    public partial class _1 : Migration
+    public partial class _2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,6 +29,7 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    Fullname = table.Column<string>(type: "text", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -227,7 +228,7 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "boolean", nullable: false),
+                    CurrentOrder = table.Column<int>(type: "integer", nullable: false),
                     Position = table.Column<string>(type: "text", nullable: false),
                     Size = table.Column<string>(type: "text", nullable: false),
                     Shape = table.Column<string>(type: "text", nullable: false),
@@ -371,12 +372,24 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "ADMIN", "ADMIN", "ADMIN", "ADMIN" },
+                    { "BARTENDER", "BARTENDER", "BARTENDER", "BARTENDER" },
+                    { "CASHER", "CASHER", "CASHER", "CASHER" },
+                    { "CUSTOMER", "CUSTOMER", "CUSTOMER", "CUSTOMER" },
+                    { "EMPLOYEE", "EMPLOYEE", "EMPLOYEE", "EMPLOYEE" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Floors",
                 columns: new[] { "Id", "DateCreated", "DateUpdated", "Description", "IsDeleted" },
                 values: new object[,]
                 {
-                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"), new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5458), new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5458), "Tầng 2", false },
-                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"), new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5446), new DateTime(2022, 3, 28, 14, 57, 10, 176, DateTimeKind.Utc).AddTicks(5449), "Tầng 1", false }
+                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"), new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3753), new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3754), "Tầng 2", false },
+                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"), new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3741), new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3744), "Tầng 1", false }
                 });
 
             migrationBuilder.InsertData(

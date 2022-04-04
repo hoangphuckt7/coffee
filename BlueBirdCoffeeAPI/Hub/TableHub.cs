@@ -3,6 +3,7 @@ using Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,31 +12,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hub
+namespace Hubs
 {
     public interface ITableHub
     {
-        Task ChangeStatus(OrderViewModel model, string userId);
+        Task ChangeStatus(TableViewModel model, string userId);
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class TableHub : DynamicHub, ITableHub
+    public class TableHub : Hub, ITableHub
     {
         public static ConcurrentDictionary<string, List<string>> ConnectedUsers = new ConcurrentDictionary<string, List<string>>();
-        public IHubContext<NotificationHub> Current { get; set; }
+        public IHubContext<TableHub> Current { get; set; }
 
-        public TableHub(IHubContext<NotificationHub> current)
+        public TableHub(IHubContext<TableHub> current)
         {
             Current = current;
         }
 
-        public async Task ChangeStatus(OrderViewModel model, string userId)
+        public async Task ChangeStatus(TableViewModel model, string userId)
         {
             try
             {
                 List<string> ReceiverConnectionids;
                 ConnectedUsers.TryGetValue(userId, out ReceiverConnectionids);
-                await Current.Clients.Clients(ReceiverConnectionids).SendAsync("newNotify", model);
+                await Current.Clients.Clients(ReceiverConnectionids).SendAsync("ChangeStatus", model);
             }
             catch (Exception) { }
         }

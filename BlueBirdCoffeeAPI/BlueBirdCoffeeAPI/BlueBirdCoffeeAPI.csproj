@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
-    <ProjectReference Include="..\Hub\Hub.csproj" />
+    <ProjectReference Include="..\Hub\Hubs.csproj" />
     <ProjectReference Include="..\Service\Service.csproj" />
   </ItemGroup>
 
