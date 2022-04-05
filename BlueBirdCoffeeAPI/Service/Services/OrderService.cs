@@ -7,6 +7,7 @@ using Data.Enums;
 using Data.ViewModels;
 using Hubs;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace Service.Services
     public interface IOrderService
     {
         Task<Guid> CreateOrder(string employeeId, OrderCreateModel models);
+        List<OrderViewModel> GetByTable(Guid tableId);
     }
     public class OrderService : IOrderService
     {
@@ -112,6 +114,14 @@ namespace Service.Services
             }
 
             return order.Id;
+        }
+        public List<OrderViewModel> GetByTable(Guid tableId)
+        {
+            var orders = _dbContext.Orders
+                //.Include(f => f.OrderDetails)
+                .Where(o => o.TableId == tableId && o.IsDeleted == false)
+                .ToList();
+            return _mapper.Map<List<OrderViewModel>>(orders);
         }
     }
 }

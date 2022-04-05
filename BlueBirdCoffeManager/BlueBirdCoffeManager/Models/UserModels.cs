@@ -1,26 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.ViewModels
+namespace BlueBirdCoffeManager.Models
 {
-    public class UserRegisterModel
-    {
-        [Required]
-        public string FullName { get; set; }
-
-        [Required, Phone]
-        public string Phone { get; set; }
-    }
-
     public class UserLoginModel
     {
-        [Required]
         public string Phone { get; set; }
-        [Required]
         public string Password { get; set; }
     }
 

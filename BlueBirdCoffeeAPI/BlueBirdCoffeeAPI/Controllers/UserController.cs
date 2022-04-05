@@ -18,7 +18,7 @@ namespace BlueBirdCoffeeAPI.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Login(UserRegisterModel model)
+        public async Task<IActionResult> Register(UserRegisterModel model)
         {
             return Ok(await _userService.Register(model, SystemRoles.CASHER));
         }

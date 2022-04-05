@@ -37,7 +37,7 @@ namespace BlueBirdCoffeManager.Forms
 
             this.floorPanel.Left = 0;
             this.floorPanel.Top = 0;
-            this.floorPanel.Size = new Size(Width * 20 / 100, Height);
+            this.floorPanel.Size = new Size(Width * 30 / 100, Height);
             this.floorPanel.BackColor = Color.White;
 
             this.tablePanel.Left = floorPanel.Width;
@@ -52,8 +52,8 @@ namespace BlueBirdCoffeManager.Forms
             FLOORS = JsonConvert.DeserializeObject<List<DescriptionViewModel>>(data);
 
             cbFloors.DataSource = FLOORS.Select(s => s.Description).ToList();
+            this.cbFloors.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
             this.cbFloors.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.cbFloors.Font = Sessions.Sessions.NOMAL_FONT;
             this.cbFloors.Top = lbArea.Top + lbArea.Height + Height * 3 / 100;
             this.cbFloors.Left = (floorPanel.Width - cbFloors.Width) / 2;
 
@@ -65,22 +65,35 @@ namespace BlueBirdCoffeManager.Forms
             {
                 cbFloors.SelectedIndex = FLOORS.IndexOf(FLOORS[0]);
             }
+            areaPanel.Top = lbArea.Top + lbArea.Height / 2;
+            areaPanel.Size = new Size(floorPanel.Width * 90 / 100, cbFloors.Height + lbArea.Height / 2 + Height * 3 / 100 + Height * 2 / 100);
+            areaPanel.Left = floorPanel.Width * 5 / 100;
 
+            tableOrderPanel.Top = areaPanel.Top + areaPanel.Height + 7 * Height / 100;
+            tableOrderPanel.Size = new Size(floorPanel.Width * 90 / 100, cbFloors.Height + lbArea.Height / 2 + Height * 3 / 100 + Height * 2 / 100);
+            tableOrderPanel.Left = floorPanel.Width * 5 / 100;
+
+            lbOrder.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            lbOrder.Top = areaPanel.Top + areaPanel.Height + 6 * Height / 100;
+            lbOrder.Left = lbArea.Left;
+
+            lbArea.Visible = true;
+            areaPanel.Visible = true;
+            cbFloors.Visible = true;
+
+            tableOrderPanel.Visible = true;
+            lbOrder.Visible = true;
             Refresh();
             #endregion
         }
 
         private void areaPanel_Paint(object sender, PaintEventArgs e)
         {
-            areaPanel.Top = lbArea.Top + lbArea.Height / 2;
-            areaPanel.Size = new Size(floorPanel.Width * 90 / 100, cbFloors.Height + lbArea.Height / 2 + Height * 3 / 100 + Height * 2 / 100);
-            areaPanel.Left = floorPanel.Width * 5 / 100;
-
             ControlPaint.DrawBorder(e.Graphics, areaPanel.ClientRectangle,
-            Color.DimGray, 1, ButtonBorderStyle.Solid, // left
-            Color.DimGray, 1, ButtonBorderStyle.Solid, // top
-            Color.DimGray, 1, ButtonBorderStyle.Solid, // right
-            Color.DimGray, 1, ButtonBorderStyle.Solid);// bottom
+            Color.DimGray, 3, ButtonBorderStyle.Solid, // left
+            Color.DimGray, 3, ButtonBorderStyle.Solid, // top
+            Color.DimGray, 3, ButtonBorderStyle.Solid, // right
+            Color.DimGray, 3, ButtonBorderStyle.Solid);// bottom
         }
 
         //Bitmap bmp = new Bitmap(500, 500);
@@ -103,6 +116,15 @@ namespace BlueBirdCoffeManager.Forms
             myForm.AutoScroll = true;
             tablePanel.Controls.Add(myForm);
             myForm.Show();
+        }
+
+        private void tableOrderPanel_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, tableOrderPanel.ClientRectangle,
+            Color.DimGray, 0, ButtonBorderStyle.Solid, // left
+            Color.DimGray, 3, ButtonBorderStyle.Solid, // top
+            Color.DimGray, 0, ButtonBorderStyle.Solid, // right
+            Color.DimGray, 0, ButtonBorderStyle.Solid);// bottom
         }
     }
 }

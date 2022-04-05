@@ -9,7 +9,9 @@ namespace Data.Entities
 {
     public class Order : BaseEntity
     {
-        public bool IsRejected { get; set; }
+        public bool IsCompleted { get; set; } = false;
+        public bool IsRejected { get; set; } = false;
+
         public string? RejectedReason { get; set; }
 
         [ForeignKey("Table")]
@@ -23,5 +25,7 @@ namespace Data.Entities
         [ForeignKey("UserRejected")]
         public string? UserRejectedId { get; set; }
         public virtual User? UserRejected { get; set; }
+
+        public virtual List<OrderDetail>? OrderDetails { get; set; }
     }
 }

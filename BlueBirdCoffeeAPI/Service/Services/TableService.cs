@@ -35,7 +35,7 @@ namespace Service.Services
                 .Where(t => id == null || t.Id == id)
                 .Where(f => f.IsDeleted == false)
                 .Where(f => floorId == null || f.FloorId == floorId)
-                .OrderBy(f => f.DateCreated)
+                //.OrderByDescending(f => f.Description)
                 .ToList();
             return _mapper.Map<List<TableViewModel>>(tables);
         }

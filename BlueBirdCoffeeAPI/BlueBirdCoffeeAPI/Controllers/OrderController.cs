@@ -21,5 +21,11 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(await _orderService.CreateOrder("93336e7f-4425-4c7a-948b-c4b8e18f5ff6", model));
         }
+
+        [HttpGet("Table/{id}")]
+        public IActionResult GetByTable(Guid id)
+        {
+            return Ok(_orderService.GetByTable(id));
+        }
     }
 }

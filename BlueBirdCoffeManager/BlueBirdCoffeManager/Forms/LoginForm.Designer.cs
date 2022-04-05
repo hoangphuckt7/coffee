@@ -33,6 +33,7 @@
             this.txtUserName = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.btnLogin = new System.Windows.Forms.Button();
+            this.lbError = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -77,11 +78,21 @@
             this.btnLogin.UseVisualStyleBackColor = true;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
+            // lbError
+            // 
+            this.lbError.AutoSize = true;
+            this.lbError.Location = new System.Drawing.Point(154, 89);
+            this.lbError.Name = "lbError";
+            this.lbError.Size = new System.Drawing.Size(38, 15);
+            this.lbError.TabIndex = 5;
+            this.lbError.Text = "label3";
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(379, 390);
+            this.Controls.Add(this.lbError);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.txtUserName);
@@ -89,6 +100,7 @@
             this.Controls.Add(this.label1);
             this.Name = "LoginForm";
             this.Text = "Đăng nhập";
+            this.Load += new System.EventHandler(this.LoginForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -101,5 +113,6 @@
         private TextBox txtUserName;
         private TextBox txtPassword;
         private Button btnLogin;
+        private Label lbError;
     }
 }

@@ -87,7 +87,7 @@ namespace BlueBirdCoffeManager.Forms
             {
                 await connection.StartAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //listBox1.Items.Add(ex.Message);
             }
@@ -158,6 +158,24 @@ namespace BlueBirdCoffeManager.Forms
             myForm.AutoScroll = true;
             _tablePanel.Controls.Add(myForm);
             myForm.Show();
+        }
+
+        private void pictureBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            int selectedIndex = -1;
+            for (int i = 0; i < rectangles.Count; i++)
+            {
+                var item = rectangles[i];
+
+                if (item.Contains(e.Location))
+                {
+                    selectedIndex = i;
+                };
+            }
+            if (selectedIndex > -1)
+            {
+
+            }
         }
     }
 }
