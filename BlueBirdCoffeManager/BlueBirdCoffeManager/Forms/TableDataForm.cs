@@ -20,6 +20,7 @@ namespace BlueBirdCoffeManager.Forms
     public partial class TableDataForm : Form
     {
         private readonly Panel _tablePanel;
+        private readonly Panel _tableOrderPanel;
         private readonly Guid floorId;
 
         List<TableViewModel> tables = new List<TableViewModel>();
@@ -27,10 +28,11 @@ namespace BlueBirdCoffeManager.Forms
 
         HubConnection connection;
 
-        public TableDataForm(Panel dataPanel, Guid floorId)
+        public TableDataForm(Panel dataPanel, Guid floorId, Panel tableOrderPanel)
         {
             _tablePanel = dataPanel;
             this.floorId = floorId;
+            _tableOrderPanel = tableOrderPanel;
             InitializeComponent();
 
             var urlSignalR = Sessions.Sessions.HOST + "tableHub";
@@ -153,7 +155,7 @@ namespace BlueBirdCoffeManager.Forms
         private void rbtnEdit_Click_1(object sender, EventArgs e)
         {
             _tablePanel.Controls.Clear();
-            UpdateTableForm myForm = new UpdateTableForm(floorId, _tablePanel);
+            UpdateTableForm myForm = new UpdateTableForm(floorId, _tablePanel, _tableOrderPanel);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             _tablePanel.Controls.Add(myForm);
@@ -174,7 +176,12 @@ namespace BlueBirdCoffeManager.Forms
             }
             if (selectedIndex > -1)
             {
-
+                _tableOrderPanel.Controls.Clear();
+                TableOrdersForm myForm = new TableOrdersForm(tables[selectedIndex].Id.Value);
+                myForm.TopLevel = false;
+                myForm.AutoScroll = true;
+                _tableOrderPanel.Controls.Add(myForm);
+                myForm.Show();
             }
         }
     }

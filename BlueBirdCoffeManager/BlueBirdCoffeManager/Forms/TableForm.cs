@@ -70,7 +70,7 @@ namespace BlueBirdCoffeManager.Forms
             areaPanel.Left = floorPanel.Width * 5 / 100;
 
             tableOrderPanel.Top = areaPanel.Top + areaPanel.Height + 7 * Height / 100;
-            tableOrderPanel.Size = new Size(floorPanel.Width * 90 / 100, cbFloors.Height + lbArea.Height / 2 + Height * 3 / 100 + Height * 2 / 100);
+            tableOrderPanel.Size = new Size(floorPanel.Width * 90 / 100, Height - tableOrderPanel.Top - Height * 1 /100);
             tableOrderPanel.Left = floorPanel.Width * 5 / 100;
 
             lbOrder.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
@@ -101,17 +101,19 @@ namespace BlueBirdCoffeManager.Forms
         private void cbFloors_SelectedIndexChanged(object sender, EventArgs e)
         {
             tablePanel.Controls.Clear();
-            TableDataForm myForm = new TableDataForm(tablePanel, FLOORS[cbFloors.SelectedIndex].Id);
+            TableDataForm myForm = new TableDataForm(tablePanel, FLOORS[cbFloors.SelectedIndex].Id, tableOrderPanel);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             tablePanel.Controls.Add(myForm);
             myForm.Show();
+
+            tableOrderPanel.Controls.Clear();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
             tablePanel.Controls.Clear();
-            UpdateTableForm myForm = new UpdateTableForm(FLOORS[cbFloors.SelectedIndex].Id, _dataPanel);
+            UpdateTableForm myForm = new UpdateTableForm(FLOORS[cbFloors.SelectedIndex].Id, _dataPanel, tableOrderPanel);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             tablePanel.Controls.Add(myForm);

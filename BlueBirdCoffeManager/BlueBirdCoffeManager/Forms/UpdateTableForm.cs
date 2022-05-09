@@ -27,12 +27,14 @@ namespace BlueBirdCoffeManager.Forms
         int y = 0;
 
         private readonly Panel _dataPanel;
+        private readonly Panel _tableOrderPanel;
         private readonly Guid floorId;
 
-        public UpdateTableForm(Guid id, Panel dataPanel)
+        public UpdateTableForm(Guid id, Panel dataPanel, Panel tableOrderPanel)
         {
             _dataPanel = dataPanel;
             floorId = id;
+            _tableOrderPanel = tableOrderPanel;
             InitializeComponent();
         }
 
@@ -204,7 +206,7 @@ namespace BlueBirdCoffeManager.Forms
             if (rr == DialogResult.Yes)
             {
                 _dataPanel.Controls.Clear();
-                TableDataForm myForm = new(_dataPanel, floorId);
+                TableDataForm myForm = new(_dataPanel, floorId, _tableOrderPanel);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 _dataPanel.Controls.Add(myForm);
@@ -248,7 +250,7 @@ namespace BlueBirdCoffeManager.Forms
                 await ApiBuilder.SendRequest("api/Table/UpdateOrAdd", models, RequestMethod.PUT);
 
                 _dataPanel.Controls.Clear();
-                TableDataForm myForm = new(_dataPanel, floorId);
+                TableDataForm myForm = new(_dataPanel, floorId, _tableOrderPanel);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 _dataPanel.Controls.Add(myForm);
