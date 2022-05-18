@@ -35,7 +35,6 @@ namespace BlueBirdCoffeManager.Forms
 
             mainData.Width = 97 * this.Width / 100;
 
-
             var data = await ApiBuilder.SendRequest<List<OrderViewModel>>("api/Order/Table/" + _tableId, null, RequestMethod.GET);
             var orders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
 
@@ -48,17 +47,28 @@ namespace BlueBirdCoffeManager.Forms
                 orderData.Left = 0;
                 orderData.Width = mainData.Width;
                 orderData.Height = this.Height * 6 / 100;
-                orderData.BackColor = Color.Red;
 
-                
-
-                Label timeLb = new Label();
-                timeLb.Font = Sessions.Sessions.NOMAL_FONT;
+                Label timeLb = new();
+                timeLb.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
                 timeLb.Text = "Giờ vào: " + order.DateCreated.Hour + ":" + order.DateCreated.Minute;
                 timeLb.Top = 0;
                 timeLb.Left = 0;
+                timeLb.Width = orderData.Width * 20 / 100;
+
+                Label quantity = new();
+                var quantityNumber = 0;
+                foreach (var detail in order.OrderDetails)
+                {
+                    quantityNumber += detail.Quantity;
+                }
+                quantity.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+                quantity.Text = "Số món: " + quantityNumber;
+                quantity.Top = timeLb.Height;
+                quantity.Left = 0;
+                quantity.Width = orderData.Width * 20 / 100;
 
                 orderData.Controls.Add(timeLb);
+                orderData.Controls.Add(quantity);
 
                 Panel space = new();
                 space.Top = orderData.Top + orderData.Height;
@@ -66,7 +76,6 @@ namespace BlueBirdCoffeManager.Forms
                 space.Width = Width;
                 space.Height = this.Height * 1 / 100;
                 space.BackColor = Color.White;
-
 
                 mainData.Controls.Add(orderData);
                 mainData.Controls.Add(space);
