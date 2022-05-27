@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Data.Migrations
 {
-    public partial class _2 : Migration
+    public partial class _201111 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -277,8 +277,9 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "boolean", nullable: false),
                     IsRejected = table.Column<bool>(type: "boolean", nullable: false),
-                    RejectedReason = table.Column<string>(type: "text", nullable: false),
+                    RejectedReason = table.Column<string>(type: "text", nullable: true),
                     TableId = table.Column<Guid>(type: "uuid", nullable: true),
                     EmployeeId = table.Column<string>(type: "text", nullable: true),
                     UserRejectedId = table.Column<string>(type: "text", nullable: true),
@@ -388,8 +389,8 @@ namespace Data.Migrations
                 columns: new[] { "Id", "DateCreated", "DateUpdated", "Description", "IsDeleted" },
                 values: new object[,]
                 {
-                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"), new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3753), new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3754), "Tầng 2", false },
-                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"), new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3741), new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3744), "Tầng 1", false }
+                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"), new DateTime(2022, 5, 27, 9, 36, 35, 284, DateTimeKind.Utc).AddTicks(2465), new DateTime(2022, 5, 27, 9, 36, 35, 284, DateTimeKind.Utc).AddTicks(2465), "Tầng 2", false },
+                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"), new DateTime(2022, 5, 27, 9, 36, 35, 284, DateTimeKind.Utc).AddTicks(2448), new DateTime(2022, 5, 27, 9, 36, 35, 284, DateTimeKind.Utc).AddTicks(2452), "Tầng 1", false }
                 });
 
             migrationBuilder.InsertData(

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220404024800_2")]
-    partial class _2
+    [Migration("20220527023635_2011-1-1")]
+    partial class _201111
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -117,16 +117,16 @@ namespace Data.Migrations
                         new
                         {
                             Id = new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"),
-                            DateCreated = new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3741),
-                            DateUpdated = new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3744),
+                            DateCreated = new DateTime(2022, 5, 27, 9, 36, 35, 284, DateTimeKind.Utc).AddTicks(2448),
+                            DateUpdated = new DateTime(2022, 5, 27, 9, 36, 35, 284, DateTimeKind.Utc).AddTicks(2452),
                             Description = "Tầng 1",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"),
-                            DateCreated = new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3753),
-                            DateUpdated = new DateTime(2022, 4, 4, 9, 48, 0, 138, DateTimeKind.Utc).AddTicks(3754),
+                            DateCreated = new DateTime(2022, 5, 27, 9, 36, 35, 284, DateTimeKind.Utc).AddTicks(2465),
+                            DateUpdated = new DateTime(2022, 5, 27, 9, 36, 35, 284, DateTimeKind.Utc).AddTicks(2465),
                             Description = "Tầng 2",
                             IsDeleted = false
                         });
@@ -218,6 +218,9 @@ namespace Data.Migrations
                     b.Property<string>("EmployeeId")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -225,7 +228,6 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("RejectedReason")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid?>("TableId")
@@ -647,7 +649,7 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Data.Entities.Order", "Order")
-                        .WithMany()
+                        .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -717,6 +719,11 @@ namespace Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Entities.Order", b =>
+                {
+                    b.Navigation("OrderDetails");
                 });
 #pragma warning restore 612, 618
         }

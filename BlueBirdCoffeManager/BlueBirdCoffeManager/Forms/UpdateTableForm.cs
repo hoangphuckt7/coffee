@@ -74,17 +74,40 @@ namespace BlueBirdCoffeManager.Forms
                 switch (tables[i].Shape)
                 {
                     case "Rectangle":
-                        e.Graphics.FillRectangle(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
-                        e.Graphics.DrawRectangle(pen, Rectangle.Round(item));
+                        var table_rect_black = Properties.Resources.table_rect_black;
+                        Bitmap bit_table_rect_black = new Bitmap(table_rect_black, new Size(250, 250));
+                        //e.Graphics.FillRectangle(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
+                        e.Graphics.DrawImage(RotateImage(bit_table_rect_black, 90), Rectangle.Round(item));
                         break;
                     case "Ellipse":
-                        e.Graphics.FillEllipse(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
-                        e.Graphics.DrawEllipse(pen, Rectangle.Round(item));
+                        var table_round_black = Properties.Resources.table_round_black;
+                        Bitmap bit_table_round_black = new Bitmap(table_round_black, new Size(250, 250));
+                        //e.Graphics.FillEllipse(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
+                        e.Graphics.DrawImage(RotateImage(bit_table_round_black, 90), Rectangle.Round(item));
                         break;
                     default: break;
                 }
-                e.Graphics.DrawString(tables[i].Description, Sessions.Sessions.NOMAL_FONT, Brushes.White, item, sf);
+                e.Graphics.DrawString(tables[i].Description, Sessions.Sessions.NOMAL_FONT, Brushes.Black, item, sf);
             }
+        }
+
+        public static Bitmap RotateImage(Bitmap b, float angle)
+        {
+            //create a new empty bitmap to hold rotated image
+            Bitmap returnBitmap = new Bitmap(b.Width, b.Height);
+            //make a graphics object from the empty bitmap
+            using (Graphics g = Graphics.FromImage(returnBitmap))
+            {
+                //move rotation point to center of image
+                g.TranslateTransform((float)b.Width / 2, (float)b.Height / 2);
+                //rotate
+                g.RotateTransform(angle);
+                //move image back
+                g.TranslateTransform(-(float)b.Width / 2, -(float)b.Height / 2);
+                //draw passed in image onto graphics object
+                g.DrawImage(b, new Point(0, 0));
+            }
+            return returnBitmap;
         }
 
         private void pictureBox_MouseDown(object sender, MouseEventArgs e)
