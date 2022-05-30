@@ -13,6 +13,7 @@ namespace BlueBirdCoffeManager.Models
         public string Shape { get; set; }
         public Guid FloorId { get; set; }
         public string Description { get; set; }
+        public int Rotation { get; set; }
     }
 
     public class TableViewModel
@@ -25,6 +26,7 @@ namespace BlueBirdCoffeManager.Models
         public string? Shape { get; set; }
         public DescriptionViewModel? Floor { get; set; }
         public Rectangle? Rectangle { get; set; }
+        public int Rotation { get; set; } = 0;
 
         public void ConvertToRectangle()
         {
@@ -44,5 +46,6 @@ namespace BlueBirdCoffeManager.Models
         public string Size { get; set; }
         public string? Shape { get; set; }
         public Guid FloorId { get; set; }
+        public int Rotation { get; set; } = 0;
     }
 }

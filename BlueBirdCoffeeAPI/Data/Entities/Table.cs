@@ -13,6 +13,7 @@ namespace Data.Entities
         public string Position { get; set; }
         public string Size { get; set; }
         public string Shape { get; set; }
+        public int Rotation { get; set; }
 
         [ForeignKey("Floor")]
         public Guid FloorId { get; set; }

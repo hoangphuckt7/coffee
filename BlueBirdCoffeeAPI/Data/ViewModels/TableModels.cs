@@ -10,6 +10,7 @@ namespace Data.ViewModels
     public class TableAddModel
     {
         public string Position { get; set; }
+        public int Rotation { get; set; }
         public string Size { get; set; }
         public string Shape { get; set; }
         public Guid FloorId { get; set; }
@@ -24,6 +25,7 @@ namespace Data.ViewModels
         public string Position { get; set; }
         public string Size { get; set; }
         public string Shape { get; set; }
+        public int Rotation { get; set; }
         public DescriptionViewModel Floor { get; set; }
     }
 
@@ -34,6 +36,7 @@ namespace Data.ViewModels
         public string Position { get; set; }
         public string Size { get; set; }
         public string Shape { get; set; }
+        public int Rotation { get; set; }
         public Guid FloorId { get; set; }
     }
 }

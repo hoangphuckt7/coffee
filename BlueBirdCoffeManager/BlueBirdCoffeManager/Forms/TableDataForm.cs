@@ -107,48 +107,51 @@ namespace BlueBirdCoffeManager.Forms
                 sf.LineAlignment = StringAlignment.Center;
                 sf.Alignment = StringAlignment.Center;
 
-                Pen penAvai = new(Sessions.Sessions.MENU_COLOR);
-                Pen penActive = new(Sessions.Sessions.BUTTON_COLOR);
+                Bitmap? table_image = null;
+                var tlbSize = tables[i].Size.Split(",");
+                int w = int.Parse(tlbSize[0]);
+                int h = int.Parse(tlbSize[1]);
+
+                if (tables[i].Rotation == 90 || tables[i].Rotation == 270)
+                {
+                    h = w;
+                }
 
                 switch (tables[i].Shape)
                 {
                     case "Rectangle":
                         if (tables[i].CurrentOrder == 0)
                         {
-                            e.Graphics.FillRectangle(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
-                            e.Graphics.DrawRectangle(penAvai, Rectangle.Round(item));
+                            table_image = new Bitmap(Properties.Resources.table_rect_black, new Size(w, h));
                         }
                         else if (tables[i].CurrentOrder == 1)
                         {
-                            e.Graphics.FillRectangle(new SolidBrush(Sessions.Sessions.BUTTON_COLOR), item);
-                            e.Graphics.DrawRectangle(penActive, Rectangle.Round(item));
+                            table_image = new Bitmap(Properties.Resources.table_rect_green, new Size(w, h));
                         }
                         else
                         {
-                            e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(52, 94, 235)), item);
-                            e.Graphics.DrawRectangle(penActive, Rectangle.Round(item));
+                            table_image = new Bitmap(Properties.Resources.table_rect_red, new Size(w, h));
                         }
                         break;
                     case "Ellipse":
                         if (tables[i].CurrentOrder == 0)
                         {
-                            e.Graphics.FillEllipse(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
-                            e.Graphics.DrawEllipse(penAvai, Rectangle.Round(item));
+                            table_image = new Bitmap(Properties.Resources.table_round_black, new Size(w, h));
                         }
                         else if (tables[i].CurrentOrder == 1)
                         {
-                            e.Graphics.FillEllipse(new SolidBrush(Sessions.Sessions.BUTTON_COLOR), item);
-                            e.Graphics.DrawEllipse(penActive, Rectangle.Round(item));
+                            table_image = new Bitmap(Properties.Resources.table_round_green, new Size(w, h));
                         }
                         else
                         {
-                            e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(52, 94, 235)), item);
-                            e.Graphics.DrawEllipse(penActive, Rectangle.Round(item));
+                            table_image = new Bitmap(Properties.Resources.table_round_red, new Size(w, h));
                         }
                         break;
                     default: break;
                 }
-                e.Graphics.DrawString(tables[i].Description, Sessions.Sessions.NOMAL_FONT, Brushes.White, item, sf);
+
+                e.Graphics.DrawImage(Utils.ImagUtils.RotateImage(table_image, tables[i].Rotation), Rectangle.Round(item));
+                e.Graphics.DrawString(tables[i].Description, Sessions.Sessions.NOMAL_FONT, Brushes.Black, item, sf);
             }
         }
 

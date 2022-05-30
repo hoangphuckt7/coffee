@@ -68,6 +68,7 @@ namespace Service.Services
                     table.Shape = model.Shape;
                     table.FloorId = model.FloorId;
                     table.DateUpdated = DateTime.UtcNow.AddHours(7);
+                    table.Rotation = model.Rotation;
 
                     _dbContext.Update(table);
                 }

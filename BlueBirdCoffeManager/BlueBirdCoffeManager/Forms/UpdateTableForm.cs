@@ -55,9 +55,21 @@ namespace BlueBirdCoffeManager.Forms
 
             this.pictureBox.Top = 0;
             this.pictureBox.Left = 0;
-            this.pictureBox.Size = new Size(this.Width, this.Height);
 
             this.btnMove.Checked = true;
+
+            pnTool.Height = 10 * Height / 100;
+            pnTool.Top = Height - pnTool.Height;
+            pnTool.Width = Width;
+            pnTool.Left = 0;
+
+            this.pictureBox.Size = new Size(this.Width, this.Height - pnTool.Height);
+
+            btnCancel.Top = pnTool.Height - btnCancel.Height - ((int)(0.5 * Height) / 100);
+            btnCancel.Left = pnTool.Width - btnCancel.Width - ((int)(0.5 * Width) / 100);
+
+            btnSave.Left = btnCancel.Left - ((int)(0.5 * Width) / 100) - btnSave.Width;
+            btnSave.Top = btnCancel.Top;
         }
 
         private void pictureBox_Paint(object sender, PaintEventArgs e)
@@ -66,48 +78,35 @@ namespace BlueBirdCoffeManager.Forms
             {
                 var item = rectangles[i];
 
-                StringFormat sf = new StringFormat();
+                StringFormat sf = new();
                 sf.LineAlignment = StringAlignment.Center;
                 sf.Alignment = StringAlignment.Center;
-                Pen pen = new(Sessions.Sessions.MENU_COLOR);
 
+                var tlbSize = tables[i].Size.Split(",");
+                int w = int.Parse(tlbSize[0]);
+                int h = int.Parse(tlbSize[1]);
+
+                if (tables[i].Rotation == 90 || tables[i].Rotation == 270)
+                {
+                    h = w;
+                }
+
+                Bitmap? bit_table_round_black = null;
                 switch (tables[i].Shape)
                 {
                     case "Rectangle":
                         var table_rect_black = Properties.Resources.table_rect_black;
-                        Bitmap bit_table_rect_black = new Bitmap(table_rect_black, new Size(250, 250));
-                        //e.Graphics.FillRectangle(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
-                        e.Graphics.DrawImage(RotateImage(bit_table_rect_black, 90), Rectangle.Round(item));
+                        bit_table_round_black = new Bitmap(table_rect_black, new Size(w, h));
                         break;
                     case "Ellipse":
                         var table_round_black = Properties.Resources.table_round_black;
-                        Bitmap bit_table_round_black = new Bitmap(table_round_black, new Size(250, 250));
-                        //e.Graphics.FillEllipse(new SolidBrush(Sessions.Sessions.MENU_COLOR), item);
-                        e.Graphics.DrawImage(RotateImage(bit_table_round_black, 90), Rectangle.Round(item));
+                        bit_table_round_black = new Bitmap(table_round_black, new Size(w, h));
                         break;
                     default: break;
                 }
+                e.Graphics.DrawImage(Utils.ImagUtils.RotateImage(bit_table_round_black, tables[i].Rotation), Rectangle.Round(item));
                 e.Graphics.DrawString(tables[i].Description, Sessions.Sessions.NOMAL_FONT, Brushes.Black, item, sf);
             }
-        }
-
-        public static Bitmap RotateImage(Bitmap b, float angle)
-        {
-            //create a new empty bitmap to hold rotated image
-            Bitmap returnBitmap = new Bitmap(b.Width, b.Height);
-            //make a graphics object from the empty bitmap
-            using (Graphics g = Graphics.FromImage(returnBitmap))
-            {
-                //move rotation point to center of image
-                g.TranslateTransform((float)b.Width / 2, (float)b.Height / 2);
-                //rotate
-                g.RotateTransform(angle);
-                //move image back
-                g.TranslateTransform(-(float)b.Width / 2, -(float)b.Height / 2);
-                //draw passed in image onto graphics object
-                g.DrawImage(b, new Point(0, 0));
-            }
-            return returnBitmap;
         }
 
         private void pictureBox_MouseDown(object sender, MouseEventArgs e)
@@ -181,7 +180,15 @@ namespace BlueBirdCoffeManager.Forms
 
                 Refresh();
             }
-
+            else if (isMouseDown == true && selected_index != -1 && rbRotate.Checked)
+            {
+                if (selected_index > -1 && tables[selected_index].Shape.Equals("Rectangle"))
+                {
+                    tables[selected_index].Rotation += 90;
+                    if (tables[selected_index].Rotation == 360) tables[selected_index].Rotation = 0;
+                    Refresh();
+                }
+            }
         }
 
         private void pictureBox_MouseUp(object sender, MouseEventArgs e)
@@ -260,7 +267,8 @@ namespace BlueBirdCoffeManager.Forms
                         FloorId = floorId,
                         Position = rectangles[i].X + "," + rectangles[i].Y,
                         Shape = tables[i].Shape,
-                        Size = rectangles[i].Width + "," + rectangles[i].Height
+                        Size = rectangles[i].Width + "," + rectangles[i].Height,
+                        Rotation = tables[i].Rotation
                     };
                     models.Add(tableUpdate);
                 }
@@ -296,8 +304,9 @@ namespace BlueBirdCoffeManager.Forms
             }
             int x = 0;
             int y = 0;
-            int width = 100;
-            int height = 100;
+
+            int width = Screen.PrimaryScreen.Bounds.Width * 4/100;
+            int height = Screen.PrimaryScreen.Bounds.Height * 6/100;
 
             var table = new TableViewModel()
             {
@@ -329,8 +338,8 @@ namespace BlueBirdCoffeManager.Forms
             }
             int x = 0;
             int y = 0;
-            int width = 100;
-            int height = 100;
+            int width = Screen.PrimaryScreen.Bounds.Height * 10 / 100;
+            int height = Screen.PrimaryScreen.Bounds.Height * 10 / 100;
 
             var table = new TableViewModel()
             {
@@ -345,6 +354,15 @@ namespace BlueBirdCoffeManager.Forms
 
             txtName.Text = "";
             Refresh();
+        }
+
+        private void pnTool_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, pnTool.ClientRectangle,
+            Color.DimGray, 3, ButtonBorderStyle.Solid, // left
+            Color.DimGray, 3, ButtonBorderStyle.Solid, // top
+            Color.DimGray, 3, ButtonBorderStyle.Solid, // right
+            Color.DimGray, 3, ButtonBorderStyle.Solid);// bottom
         }
     }
 }

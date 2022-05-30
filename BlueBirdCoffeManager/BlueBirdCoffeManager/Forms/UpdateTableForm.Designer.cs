@@ -39,12 +39,15 @@
             this.btnAddElipse = new System.Windows.Forms.Button();
             this.txtName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.rbRotate = new System.Windows.Forms.RadioButton();
+            this.pnTool = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            this.pnTool.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox
             // 
-            this.pictureBox.Location = new System.Drawing.Point(12, 12);
+            this.pictureBox.Location = new System.Drawing.Point(1, 12);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(776, 426);
             this.pictureBox.TabIndex = 0;
@@ -57,7 +60,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(632, 411);
+            this.btnSave.Location = new System.Drawing.Point(784, 39);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 1;
@@ -68,7 +71,7 @@
             // btnResize
             // 
             this.btnResize.AutoSize = true;
-            this.btnResize.Location = new System.Drawing.Point(175, 415);
+            this.btnResize.Location = new System.Drawing.Point(329, 78);
             this.btnResize.Name = "btnResize";
             this.btnResize.Size = new System.Drawing.Size(111, 19);
             this.btnResize.TabIndex = 2;
@@ -79,7 +82,7 @@
             // btnMove
             // 
             this.btnMove.AutoSize = true;
-            this.btnMove.Location = new System.Drawing.Point(292, 415);
+            this.btnMove.Location = new System.Drawing.Point(446, 78);
             this.btnMove.Name = "btnMove";
             this.btnMove.Size = new System.Drawing.Size(91, 19);
             this.btnMove.TabIndex = 3;
@@ -90,7 +93,7 @@
             // rbDelete
             // 
             this.rbDelete.AutoSize = true;
-            this.rbDelete.Location = new System.Drawing.Point(389, 415);
+            this.rbDelete.Location = new System.Drawing.Point(543, 78);
             this.rbDelete.Name = "rbDelete";
             this.rbDelete.Size = new System.Drawing.Size(45, 19);
             this.rbDelete.TabIndex = 4;
@@ -100,7 +103,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(713, 411);
+            this.btnCancel.Location = new System.Drawing.Point(998, 51);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 5;
@@ -110,7 +113,7 @@
             // 
             // btnAddRec
             // 
-            this.btnAddRec.Location = new System.Drawing.Point(611, 98);
+            this.btnAddRec.Location = new System.Drawing.Point(164, 14);
             this.btnAddRec.Name = "btnAddRec";
             this.btnAddRec.Size = new System.Drawing.Size(123, 23);
             this.btnAddRec.TabIndex = 7;
@@ -120,7 +123,7 @@
             // 
             // btnAddElipse
             // 
-            this.btnAddElipse.Location = new System.Drawing.Point(611, 146);
+            this.btnAddElipse.Location = new System.Drawing.Point(164, 52);
             this.btnAddElipse.Name = "btnAddElipse";
             this.btnAddElipse.Size = new System.Drawing.Size(123, 23);
             this.btnAddElipse.TabIndex = 8;
@@ -130,7 +133,7 @@
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(611, 56);
+            this.txtName.Location = new System.Drawing.Point(24, 39);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(123, 23);
             this.txtName.TabIndex = 9;
@@ -138,33 +141,55 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(611, 38);
+            this.label1.Location = new System.Drawing.Point(24, 14);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(48, 15);
             this.label1.TabIndex = 10;
             this.label1.Text = "Tên bàn";
             // 
+            // rbRotate
+            // 
+            this.rbRotate.AutoSize = true;
+            this.rbRotate.Location = new System.Drawing.Point(594, 78);
+            this.rbRotate.Name = "rbRotate";
+            this.rbRotate.Size = new System.Drawing.Size(51, 19);
+            this.rbRotate.TabIndex = 13;
+            this.rbRotate.TabStop = true;
+            this.rbRotate.Text = "Xoay";
+            this.rbRotate.UseVisualStyleBackColor = true;
+            // 
+            // pnTool
+            // 
+            this.pnTool.Controls.Add(this.btnSave);
+            this.pnTool.Controls.Add(this.rbRotate);
+            this.pnTool.Controls.Add(this.btnCancel);
+            this.pnTool.Controls.Add(this.rbDelete);
+            this.pnTool.Controls.Add(this.btnAddRec);
+            this.pnTool.Controls.Add(this.btnMove);
+            this.pnTool.Controls.Add(this.btnAddElipse);
+            this.pnTool.Controls.Add(this.btnResize);
+            this.pnTool.Controls.Add(this.label1);
+            this.pnTool.Controls.Add(this.txtName);
+            this.pnTool.Location = new System.Drawing.Point(26, 602);
+            this.pnTool.Name = "pnTool";
+            this.pnTool.Size = new System.Drawing.Size(1135, 100);
+            this.pnTool.TabIndex = 14;
+            this.pnTool.Paint += new System.Windows.Forms.PaintEventHandler(this.pnTool_Paint);
+            // 
             // UpdateTableForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.txtName);
-            this.Controls.Add(this.btnAddElipse);
-            this.Controls.Add(this.btnAddRec);
-            this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.rbDelete);
-            this.Controls.Add(this.btnMove);
-            this.Controls.Add(this.btnResize);
-            this.Controls.Add(this.btnSave);
+            this.ClientSize = new System.Drawing.Size(1236, 714);
+            this.Controls.Add(this.pnTool);
             this.Controls.Add(this.pictureBox);
             this.Name = "UpdateTableForm";
             this.Text = "UpdateTableForm";
             this.Load += new System.EventHandler(this.UpdateTableForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            this.pnTool.ResumeLayout(false);
+            this.pnTool.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -181,5 +206,7 @@
         private Button btnAddElipse;
         private TextBox txtName;
         private Label label1;
+        private RadioButton rbRotate;
+        private Panel pnTool;
     }
 }
