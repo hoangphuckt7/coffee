@@ -101,6 +101,12 @@ namespace BlueBirdCoffeManager.Forms
             DeactiveButton(this.btnTable);
 
             dataPanel.Controls.Clear();
+
+            OrderForm myForm = new OrderForm();
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            dataPanel.Controls.Add(myForm);
+            myForm.Show();
         }
 
         #region Helper

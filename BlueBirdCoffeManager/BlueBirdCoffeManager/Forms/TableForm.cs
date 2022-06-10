@@ -70,7 +70,7 @@ namespace BlueBirdCoffeManager.Forms
             areaPanel.Left = floorPanel.Width * 5 / 100;
 
             tableOrderPanel.Top = areaPanel.Top + areaPanel.Height + 7 * Height / 100;
-            tableOrderPanel.Size = new Size(floorPanel.Width * 90 / 100, Height - tableOrderPanel.Top - Height * 1 /100);
+            tableOrderPanel.Size = new Size(floorPanel.Width * 90 / 100, Height - tableOrderPanel.Top - Height * 1 / 100);
             tableOrderPanel.Left = floorPanel.Width * 5 / 100;
 
             lbOrder.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
@@ -90,10 +90,10 @@ namespace BlueBirdCoffeManager.Forms
         private void areaPanel_Paint(object sender, PaintEventArgs e)
         {
             ControlPaint.DrawBorder(e.Graphics, areaPanel.ClientRectangle,
-            Color.DimGray, 3, ButtonBorderStyle.Solid, // left
-            Color.DimGray, 3, ButtonBorderStyle.Solid, // top
-            Color.DimGray, 3, ButtonBorderStyle.Solid, // right
-            Color.DimGray, 3, ButtonBorderStyle.Solid);// bottom
+            Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid, // left
+            Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid, // top
+            Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid, // right
+            Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid);// bottom
         }
 
         //Bitmap bmp = new Bitmap(500, 500);
