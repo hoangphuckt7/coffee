@@ -59,5 +59,34 @@ namespace BlueBirdCoffeManager.DataAccessLayer
             }
             return "";
         }
+
+        public static async Task<byte[]> SendImageRequest(string apiPath)
+        {
+            try
+            {
+                HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Sessions.Sessions.TOKEN);
+                HttpResponseMessage responseMessage = new();
+
+                responseMessage = await client.GetAsync(Sessions.Sessions.HOST + apiPath);
+
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    var json = await responseMessage.Content.ReadAsByteArrayAsync();
+                    return json;
+                }
+            }
+            catch (HttpRequestException)
+            {
+                const string message = "Lỗi kết nối. Vui lòng kiểm tra lại đường truyền.";
+                const string caption = "Lỗi";
+                var rr = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // If the no button was pressed ...
+                if (rr == DialogResult.OK)
+                {
+                }
+            }
+            return null;
+        }
     }
 }

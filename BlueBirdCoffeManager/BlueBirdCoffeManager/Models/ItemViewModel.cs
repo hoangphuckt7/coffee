@@ -8,9 +8,9 @@ namespace BlueBirdCoffeManager.Models
 {
     public class ItemViewModel
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         public string Description { get; set; }
-        public object Name { get; set; }
+        public string Name { get; set; }
         public double Price { get; set; }
         public bool Available { get; set; }
         public DescriptionViewModel Category { get; set; }

@@ -1,5 +1,7 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
 using BlueBirdCoffeManager.Models;
+using BlueBirdCoffeManager.Sessions;
+using BlueBirdCoffeManager.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -84,20 +86,33 @@ namespace BlueBirdCoffeManager.Forms
             this.cbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
             this.txtSearch.Focus();
 
-            var itemWidth = 25 * itemDataPanel.Width / 100;
-            var itemHeigh = 20 * Height / 100;
+            var itemsRequest = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET);
+            ITEMS = JsonConvert.DeserializeObject<List<ItemViewModel>>(itemsRequest);
 
-            foreach (var item in ITEMS)
+            if (ItemSession.Items.Count == 0)
             {
-                Panel itemPanel = new();
-                itemPanel.Top = 0;
-                itemPanel.Left = 0;
-                itemPanel.Width = itemWidth;
-                itemPanel.Height = itemHeigh;
-                itemPanel.BackColor = Color.RebeccaPurple;
-
-                itemDataPanel.Controls.Add(itemPanel);
+                List<ItemImages> items = new List<ItemImages>();
+                foreach (var item in ITEMS)
+                {
+                    var itemImage = new ItemImages() { Id = item.Id };
+                    foreach (var imageId in item.Images)
+                    {
+                        var imageRequest = await ApiBuilder.SendImageRequest("api/Item/Image/" + imageId);
+                        Image image = ImageUtils.ByteArrayToImage(imageRequest);
+                        itemImage.Images.Add(image);
+                    }
+                    items.Add(itemImage);
+                }
+                ItemSession.Items = items;
             }
+
+            itemDataPanel.Controls.Clear();
+            ItemDataForm myForm = new ItemDataForm(ITEMS, txtSearch.Text, null);
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            itemDataPanel.Controls.Add(myForm);
+            myForm.Show();
+
             #endregion
         }
 
@@ -110,22 +125,41 @@ namespace BlueBirdCoffeManager.Forms
             //Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid);// bottom
         }
 
-        private async Task cbCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             CATEGORY_INDEX = cbCategory.SelectedIndex;
-            //OrderForm_Load(this, e);
-            //Refresh();
 
-            string requestParam = "api/Item" + "?name=" + txtSearch.Text;
+            Guid? categoryId = null;
             if (CATEGORY_INDEX > 0)
             {
-                requestParam += "&categoryId=" + CATEGORIES[CATEGORY_INDEX - 1];
+                categoryId = CATEGORIES[CATEGORY_INDEX - 1].Id;
             }
 
-            var itemsRequest = await ApiBuilder.SendRequest<object>(requestParam, null, RequestMethod.GET);
-            ITEMS = JsonConvert.DeserializeObject<List<ItemViewModel>>(itemsRequest);
+            itemDataPanel.Controls.Clear();
+            ItemDataForm myForm = new ItemDataForm(ITEMS, txtSearch.Text, categoryId);
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            itemDataPanel.Controls.Add(myForm);
+            myForm.Show();
+        }
 
-            Refresh();
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            CATEGORY_INDEX = cbCategory.SelectedIndex;
+
+            Guid? categoryId = null;
+            if (CATEGORY_INDEX > 0)
+            {
+                categoryId = CATEGORIES[CATEGORY_INDEX - 1].Id;
+            }
+
+            itemDataPanel.Controls.Clear();
+            ItemDataForm myForm = new ItemDataForm(ITEMS, txtSearch.Text, categoryId);
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            itemDataPanel.Controls.Add(myForm);
+            myForm.Show();
+            txtSearch.Focus();
         }
     }
 }
