@@ -46,7 +46,6 @@ namespace BlueBirdCoffeManager.Forms
             this.toolboxPanel.Left = 0;
             this.toolboxPanel.Width = itemPanel.Width;
             this.toolboxPanel.Height = 7 * itemPanel.Width / 100;
-            //this.toolboxPanel.BackColor = Color.;
 
             this.itemDataPanel.Top = toolboxPanel.Height;
             this.itemDataPanel.Left = 0;
@@ -118,11 +117,11 @@ namespace BlueBirdCoffeManager.Forms
 
         private void toolboxPanel_Paint(object sender, PaintEventArgs e)
         {
-            //ControlPaint.DrawBorder(e.Graphics, toolboxPanel.ClientRectangle,
-            //Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid, // left
-            //Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid, // top
-            //Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // right
-            //Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid);// bottom
+            ControlPaint.DrawBorder(e.Graphics, toolboxPanel.ClientRectangle,
+            Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // left
+            Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // top
+            Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // right
+            Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid);// bottom
         }
 
         private void cbCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -152,13 +151,15 @@ namespace BlueBirdCoffeManager.Forms
             {
                 categoryId = CATEGORIES[CATEGORY_INDEX - 1].Id;
             }
-
+            itemDataPanel.Visible = false;
             itemDataPanel.Controls.Clear();
             ItemDataForm myForm = new ItemDataForm(ITEMS, txtSearch.Text, categoryId);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             itemDataPanel.Controls.Add(myForm);
             myForm.Show();
+
+            itemDataPanel.Visible = true;
             txtSearch.Focus();
         }
     }
