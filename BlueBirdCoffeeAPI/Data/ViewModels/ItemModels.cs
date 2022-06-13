@@ -17,6 +17,14 @@ namespace Data.ViewModels
         public List<IFormFile>? Images { get; set; }
     }
 
+    public class ItemUpdateModel
+    {
+        public string? Description { get; set; }
+        public string? Name { get; set; }
+        public double Price { get; set; }
+        public Guid CategoryId { get; set; }
+    }
+
     public class ItemViewModel
     {
         public Guid Id { get; set; }

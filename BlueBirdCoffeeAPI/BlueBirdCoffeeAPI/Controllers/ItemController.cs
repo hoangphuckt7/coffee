@@ -31,8 +31,8 @@ namespace BlueBirdCoffeeAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [Consumes("multipart/form-data")]
-        public IActionResult Update(Guid id, [FromForm] ItemAddModel model)
+        //[Consumes("multipart/form-data")]
+        public IActionResult Update(Guid id, [FromBody] ItemUpdateModel model)
         {
             return Ok(_itemService.Update(id, model));
         }

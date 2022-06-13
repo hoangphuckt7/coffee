@@ -18,7 +18,7 @@ namespace Service.Services
     {
         Guid Add(ItemAddModel model);
         List<ItemViewModel> Search(Guid? id, string? name, Guid? categoryId);
-        Guid Update(Guid id, ItemAddModel model);
+        Guid Update(Guid id, ItemUpdateModel model);
         Guid Delete(Guid id);
 
         FileViewModel GetItemImage(Guid id);
@@ -79,26 +79,26 @@ namespace Service.Services
             _dbContext.SaveChanges();
             return data.Id;
         }
-        public Guid Update(Guid id, ItemAddModel model)
+        public Guid Update(Guid id, ItemUpdateModel model)
         {
             var data = _dbContext.Items.FirstOrDefault(f => f.Id == id);
             if (data == null) throw new AppException("Invalid id");
 
             data = _mapper.Map<Item>(model);
 
-            if (model.Images != null)
-            {
-                foreach (var item in model.Images)
-                {
-                    var itemImage = new ItemImage()
-                    {
-                        ItemId = data.Id,
-                        Image = ImageToBytes(item)
-                    };
+            //if (model.Images != null)
+            //{
+            //    foreach (var item in model.Images)
+            //    {
+            //        var itemImage = new ItemImage()
+            //        {
+            //            ItemId = data.Id,
+            //            Image = ImageToBytes(item)
+            //        };
 
-                    _dbContext.Add(itemImage);
-                }
-            }
+            //        _dbContext.Add(itemImage);
+            //    }
+            //}
 
             _dbContext.Update(data);
             _dbContext.SaveChanges();

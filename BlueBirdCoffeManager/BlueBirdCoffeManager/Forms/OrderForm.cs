@@ -28,15 +28,25 @@ namespace BlueBirdCoffeManager.Forms
 
         private async void OrderForm_Load(object sender, EventArgs e)
         {
-            #region screen setup
+            #region Item screen setup
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
 
+            //Disable everything
+            this.orderPanel.Visible = false;
+            this.itemPanel.Visible = false;
+            this.toolboxPanel.Visible = false;
+            this.itemDataPanel.Visible = false;
+            this.cbCategory.Visible = false;
+            this.lbCategory.Visible = false;
+            this.txtSearch.Visible = false;
+            this.btnRemoveFilter.Visible = false;
+
             this.orderPanel.Left = 0;
             this.orderPanel.Top = 0;
             this.orderPanel.Size = new Size(Width * 30 / 100, Height);
-            this.orderPanel.BackColor = Color.White;
+            this.orderPanel.BackColor = Color.Black;
 
             this.itemPanel.Left = orderPanel.Width;
             this.itemPanel.Top = 0;
@@ -83,7 +93,6 @@ namespace BlueBirdCoffeManager.Forms
             this.cbCategory.Left = lbCategory.Left + lbCategory.Width + 1 * toolboxPanel.Width / 100;
 
             this.cbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.txtSearch.Focus();
 
             var itemsRequest = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET);
             ITEMS = JsonConvert.DeserializeObject<List<ItemViewModel>>(itemsRequest);
@@ -105,12 +114,62 @@ namespace BlueBirdCoffeManager.Forms
                 ItemSession.Items = items;
             }
 
+            this.btnRemoveFilter.BackColor = Color.DarkGray;
+            this.btnRemoveFilter.Text = "Xóa lọc";
+            this.btnRemoveFilter.Width = (int)4 * Width / 100;
+            this.btnRemoveFilter.Height = (int)2.5 * Height / 100;
+            this.btnRemoveFilter.Top = 50 * toolboxPanel.Height / 100 - btnRemoveFilter.Height * 50 / 100;
+            this.btnRemoveFilter.Left = cbCategory.Left + cbCategory.Width + 5 * toolboxPanel.Width / 100;
+
             itemDataPanel.Controls.Clear();
             ItemDataForm myForm = new ItemDataForm(ITEMS, txtSearch.Text, null);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             itemDataPanel.Controls.Add(myForm);
             myForm.Show();
+
+            //Enable everything
+            this.orderPanel.Visible = true;
+            this.itemPanel.Visible = true;
+            this.toolboxPanel.Visible = true;
+            this.itemDataPanel.Visible = true;
+            this.cbCategory.Visible = true;
+            this.lbCategory.Visible = true;
+            this.txtSearch.Visible = true;
+            this.btnRemoveFilter.Visible = true;
+
+            this.txtSearch.Focus();
+            #endregion
+            #region Order Screen setup
+            this.lbName.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            this.lbQuantity.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            this.lbPrice.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            this.lbSubTotal.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+
+            this.oHeaderPanel.Top = 0;
+            this.oHeaderPanel.Left = 0;
+            this.oHeaderPanel.Width = orderPanel.Width;
+            this.oHeaderPanel.Height = orderPanel.Height * 10 / 100;
+            this.oHeaderPanel.BackColor = Color.White;
+
+            this.oDataPanel.Top = oHeaderPanel.Height + 1;
+            this.oDataPanel.Left = 0;
+            this.oDataPanel.BackColor = Color.White;
+            this.oDataPanel.Width = orderPanel.Width;
+            this.oDataPanel.Height = orderPanel.Height * 70 / 100;
+
+            this.oFooterPanel.Top = oDataPanel.Top + oDataPanel.Height + 1;
+            this.oFooterPanel.Left = 0;
+            this.oFooterPanel.Width = orderPanel.Width;
+            this.oFooterPanel.Height = orderPanel.Height * 20 / 100;
+            this.oFooterPanel.BackColor = Color.White;
+
+            this.lbName.Top = oHeaderPanel.Height - lbName.Height;
+            this.lbQuantity.Top = oHeaderPanel.Height - lbName.Height;
+            this.lbPrice.Top = oHeaderPanel.Height - lbName.Height;
+            this.lbSubTotal.Top = oHeaderPanel.Height - lbName.Height;
+
+            this.lbName.Left = (int)2 * orderPanel.Width / 100;
 
             #endregion
         }
@@ -121,7 +180,7 @@ namespace BlueBirdCoffeManager.Forms
             Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // left
             Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // top
             Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // right
-            Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid);// bottom
+            Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid);// bottom
         }
 
         private void cbCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -151,16 +210,30 @@ namespace BlueBirdCoffeManager.Forms
             {
                 categoryId = CATEGORIES[CATEGORY_INDEX - 1].Id;
             }
-            itemDataPanel.Visible = false;
             itemDataPanel.Controls.Clear();
             ItemDataForm myForm = new ItemDataForm(ITEMS, txtSearch.Text, categoryId);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             itemDataPanel.Controls.Add(myForm);
             myForm.Show();
-
-            itemDataPanel.Visible = true;
             txtSearch.Focus();
+        }
+
+        private void roundedButton1_Click(object sender, EventArgs e)
+        {
+            if (txtSearch.Text != "" || this.cbCategory.SelectedIndex != 0)
+            {
+                this.txtSearch.Text = "";
+                this.cbCategory.SelectedIndex = 0;
+
+                itemDataPanel.Controls.Clear();
+                ItemDataForm myForm = new ItemDataForm(ITEMS, "", null);
+                myForm.TopLevel = false;
+                myForm.AutoScroll = true;
+                itemDataPanel.Controls.Add(myForm);
+                myForm.Show();
+                txtSearch.Focus();
+            }
         }
     }
 }

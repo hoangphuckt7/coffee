@@ -48,45 +48,61 @@ namespace BlueBirdCoffeManager.Forms
 
             foreach (var item in _matchItem)
             {
-                Image image = Sessions.ItemSession.Items.FirstOrDefault(s => s.Id == item.Id).Images.First();
+                Image? image = Sessions.ItemSession.Items.FirstOrDefault(s => s.Id == item.Id).Images.FirstOrDefault();
 
+                //Panel
                 Panel itemPanel = new();
                 itemPanel.Top = curTop;
                 itemPanel.Left = curLeft;
                 itemPanel.Width = itemWidth;
                 itemPanel.Height = itemHeigh;
-                itemPanel.BackColor = Color.Aqua;
+                itemPanel.BackColor = Color.White;
 
+                //Image
                 PictureBox pictureBox = new();
                 pictureBox.Width = itemPanel.Width;
                 pictureBox.Height = this.Height * 25 / 100;
-                pictureBox.Image = image;
+                if (image != null) pictureBox.Image = ImageUtils.ResizeImageAsync(image, pictureBox.Width, pictureBox.Height);
                 pictureBox.Top = 0;
                 pictureBox.Left = 0;
-                itemPanel.Controls.Add(pictureBox);
 
+                //Name
                 Label lbName = new();
                 lbName.Text = item.Name;
                 lbName.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
-                lbName.Width = itemWidth;
+                lbName.Width = itemPanel.Width * 50 / 100;
                 lbName.Height = 5 * this.Height / 100;
                 lbName.Top = pictureBox.Height;
                 lbName.TextAlign = ContentAlignment.MiddleLeft;
                 lbName.Left = 0;
 
-                itemPanel.Controls.Add(lbName);
+                //Price
+                Label lbPrice = new();
+                lbPrice.Text = "Giá: " + item.Price.ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
+                lbPrice.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+                lbPrice.Height = 5 * this.Height / 100;
+                lbPrice.Top = pictureBox.Height;
+                lbPrice.TextAlign = ContentAlignment.MiddleLeft;
+                lbPrice.Width = itemPanel.Width * 30 / 100;
+                lbPrice.Left = lbName.Width;
 
-                RoundedButton roundedButton = new RoundedButton();
+                //Button
+                RoundedButton roundedButton = new();
                 roundedButton.Text = "Thêm";
+                roundedButton.Width = itemPanel.Width * 20 / 100;
+                roundedButton.Top = pictureBox.Height + 50 * (this.Height * 5 / 100) / 100 - roundedButton.Height * 50 / 100;
+                roundedButton.Left = itemPanel.Width - roundedButton.Width - itemPanel.Width * 1 / 100;
+                roundedButton.BackColor = Sessions.Sessions.BUTTON_COLOR;
                 roundedButton.Click += (sender, e) =>
                 {
-                    var x = item.Id;
-                    MessageBox.Show("Hihi" + item.Id);
+                    //var x = item.Id;
+                    //MessageBox.Show("Hihi" + item.Id);
                 };
-                roundedButton.Top = pictureBox.Height;
-                roundedButton.Left = 0;
-                //roundedButton.Click += new EventHandler(rbtnEdit_Click_1(item.Id));
 
+                //Add to panel
+                itemPanel.Controls.Add(pictureBox);
+                itemPanel.Controls.Add(lbName);
+                itemPanel.Controls.Add(lbPrice);
                 itemPanel.Controls.Add(roundedButton);
 
                 this.Controls.Add(itemPanel);
@@ -102,7 +118,6 @@ namespace BlueBirdCoffeManager.Forms
                     curLeft = 1 * Width / 100;
                     curPos = 0;
                 }
-
             }
         }
     }

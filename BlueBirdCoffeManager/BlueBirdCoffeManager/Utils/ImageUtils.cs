@@ -15,5 +15,43 @@ namespace BlueBirdCoffeManager.Utils
                 return Image.FromStream(ms);
             }
         }
+
+        public static Image ResizeImageAsync(Image img, int tarWidth, int tarHeigh)
+        {
+            int x, y, w, h;
+
+            // Vertical
+            if (img.Height > img.Width)
+            {
+                w = (img.Width * tarHeigh) / img.Height;
+                h = tarHeigh;
+                x = (tarWidth - w) / 2;
+                y = 0;
+            }
+            else
+            {
+                //Horizontal
+                w = tarWidth;
+                h = (img.Height * tarWidth) / img.Width;
+                x = 0;
+                y = (tarHeigh - h) / 2;
+            }
+
+            var bmp = new Bitmap(tarWidth, tarHeigh);
+            try
+            {
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(img, x, y, w, h);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Bitmap faild");
+            }
+            return bmp;
+        }
     }
 }
