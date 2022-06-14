@@ -19,7 +19,6 @@ namespace BlueBirdCoffeManager.Forms
     {
         private List<DescriptionViewModel> CATEGORIES = new();
         private int CATEGORY_INDEX = 0;
-        private List<ItemViewModel> ITEMS = new();
 
         public OrderForm()
         {
@@ -46,7 +45,7 @@ namespace BlueBirdCoffeManager.Forms
             this.orderPanel.Left = 0;
             this.orderPanel.Top = 0;
             this.orderPanel.Size = new Size(Width * 30 / 100, Height);
-            this.orderPanel.BackColor = Color.Black;
+            //this.orderPanel.BackColor = Color.Black;
 
             this.itemPanel.Left = orderPanel.Width;
             this.itemPanel.Top = 0;
@@ -94,13 +93,16 @@ namespace BlueBirdCoffeManager.Forms
 
             this.cbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            var itemsRequest = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET);
-            ITEMS = JsonConvert.DeserializeObject<List<ItemViewModel>>(itemsRequest);
+            if (ItemSession.ItemData.Count == 0)
+            {
+                var itemsRequest = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET);
+                ItemSession.ItemData = JsonConvert.DeserializeObject<List<ItemViewModel>>(itemsRequest);
+            }
 
             if (ItemSession.Items.Count == 0)
             {
                 List<ItemImages> items = new List<ItemImages>();
-                foreach (var item in ITEMS)
+                foreach (var item in ItemSession.ItemData)
                 {
                     var itemImage = new ItemImages() { Id = item.Id };
                     foreach (var imageId in item.Images)
@@ -122,7 +124,7 @@ namespace BlueBirdCoffeManager.Forms
             this.btnRemoveFilter.Left = cbCategory.Left + cbCategory.Width + 5 * toolboxPanel.Width / 100;
 
             itemDataPanel.Controls.Clear();
-            ItemDataForm myForm = new ItemDataForm(ITEMS, txtSearch.Text, null);
+            ItemDataForm myForm = new ItemDataForm(txtSearch.Text, null, oDataPanel);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             itemDataPanel.Controls.Add(myForm);
@@ -156,13 +158,13 @@ namespace BlueBirdCoffeManager.Forms
             this.oDataPanel.Left = 0;
             this.oDataPanel.BackColor = Color.White;
             this.oDataPanel.Width = orderPanel.Width;
-            this.oDataPanel.Height = orderPanel.Height * 70 / 100;
+            this.oDataPanel.Height = orderPanel.Height * 90 / 100;
 
-            this.oFooterPanel.Top = oDataPanel.Top + oDataPanel.Height + 1;
-            this.oFooterPanel.Left = 0;
-            this.oFooterPanel.Width = orderPanel.Width;
-            this.oFooterPanel.Height = orderPanel.Height * 20 / 100;
-            this.oFooterPanel.BackColor = Color.White;
+            //this.oFooterPanel.Top = oDataPanel.Top + oDataPanel.Height + 1;
+            //this.oFooterPanel.Left = 0;
+            //this.oFooterPanel.Width = orderPanel.Width;
+            //this.oFooterPanel.Height = orderPanel.Height * 20 / 100;
+            //this.oFooterPanel.BackColor = Color.White;
 
             this.lbName.Top = oHeaderPanel.Height - lbName.Height;
             this.lbQuantity.Top = oHeaderPanel.Height - lbName.Height;
@@ -170,7 +172,16 @@ namespace BlueBirdCoffeManager.Forms
             this.lbSubTotal.Top = oHeaderPanel.Height - lbName.Height;
 
             this.lbName.Left = (int)2 * orderPanel.Width / 100;
+            this.lbQuantity.Left = orderPanel.Width * 40 / 100;
+            this.lbPrice.Left = orderPanel.Width * 60 / 100;
+            this.lbSubTotal.Left = orderPanel.Width * 80 / 100;
 
+            oDataPanel.Controls.Clear();
+            OrderDataForm orderDataForm = new OrderDataForm(oDataPanel);
+            orderDataForm.TopLevel = false;
+            orderDataForm.AutoScroll = true;
+            oDataPanel.Controls.Add(orderDataForm);
+            orderDataForm.Show();
             #endregion
         }
 
@@ -194,7 +205,7 @@ namespace BlueBirdCoffeManager.Forms
             }
 
             itemDataPanel.Controls.Clear();
-            ItemDataForm myForm = new ItemDataForm(ITEMS, txtSearch.Text, categoryId);
+            ItemDataForm myForm = new ItemDataForm(txtSearch.Text, categoryId, oDataPanel);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             itemDataPanel.Controls.Add(myForm);
@@ -211,7 +222,7 @@ namespace BlueBirdCoffeManager.Forms
                 categoryId = CATEGORIES[CATEGORY_INDEX - 1].Id;
             }
             itemDataPanel.Controls.Clear();
-            ItemDataForm myForm = new ItemDataForm(ITEMS, txtSearch.Text, categoryId);
+            ItemDataForm myForm = new ItemDataForm(txtSearch.Text, categoryId, oDataPanel);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             itemDataPanel.Controls.Add(myForm);
@@ -227,7 +238,7 @@ namespace BlueBirdCoffeManager.Forms
                 this.cbCategory.SelectedIndex = 0;
 
                 itemDataPanel.Controls.Clear();
-                ItemDataForm myForm = new ItemDataForm(ITEMS, "", null);
+                ItemDataForm myForm = new ItemDataForm("", null, oDataPanel);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 itemDataPanel.Controls.Add(myForm);

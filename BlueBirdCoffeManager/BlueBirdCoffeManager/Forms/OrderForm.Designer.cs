@@ -34,7 +34,6 @@
             this.lbName = new System.Windows.Forms.Label();
             this.lbSubTotal = new System.Windows.Forms.Label();
             this.lbQuantity = new System.Windows.Forms.Label();
-            this.oDataPanel = new System.Windows.Forms.Panel();
             this.itemPanel = new System.Windows.Forms.Panel();
             this.itemDataPanel = new System.Windows.Forms.Panel();
             this.toolboxPanel = new System.Windows.Forms.Panel();
@@ -43,7 +42,7 @@
             this.cbCategory = new System.Windows.Forms.ComboBox();
             this.lbSearch = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
-            this.oFooterPanel = new System.Windows.Forms.Panel();
+            this.oDataPanel = new System.Windows.Forms.Panel();
             this.orderPanel.SuspendLayout();
             this.oHeaderPanel.SuspendLayout();
             this.itemPanel.SuspendLayout();
@@ -52,9 +51,8 @@
             // 
             // orderPanel
             // 
-            this.orderPanel.Controls.Add(this.oFooterPanel);
-            this.orderPanel.Controls.Add(this.oHeaderPanel);
             this.orderPanel.Controls.Add(this.oDataPanel);
+            this.orderPanel.Controls.Add(this.oHeaderPanel);
             this.orderPanel.Location = new System.Drawing.Point(18, 9);
             this.orderPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.orderPanel.Name = "orderPanel";
@@ -107,13 +105,6 @@
             this.lbQuantity.Size = new System.Drawing.Size(54, 15);
             this.lbQuantity.TabIndex = 1;
             this.lbQuantity.Text = "Số lượng";
-            // 
-            // oDataPanel
-            // 
-            this.oDataPanel.Location = new System.Drawing.Point(5, 77);
-            this.oDataPanel.Name = "oDataPanel";
-            this.oDataPanel.Size = new System.Drawing.Size(199, 317);
-            this.oDataPanel.TabIndex = 4;
             // 
             // itemPanel
             // 
@@ -203,12 +194,12 @@
             this.txtSearch.TabIndex = 0;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
-            // oFooterPanel
+            // oDataPanel
             // 
-            this.oFooterPanel.Location = new System.Drawing.Point(8, 417);
-            this.oFooterPanel.Name = "oFooterPanel";
-            this.oFooterPanel.Size = new System.Drawing.Size(200, 100);
-            this.oFooterPanel.TabIndex = 6;
+            this.oDataPanel.Location = new System.Drawing.Point(5, 77);
+            this.oDataPanel.Name = "oDataPanel";
+            this.oDataPanel.Size = new System.Drawing.Size(200, 440);
+            this.oDataPanel.TabIndex = 6;
             // 
             // OrderForm
             // 
@@ -246,8 +237,7 @@
         private Label lbPrice;
         private Label lbQuantity;
         private Label lbName;
-        private Panel oDataPanel;
         private Panel oHeaderPanel;
-        private Panel oFooterPanel;
+        private Panel oDataPanel;
     }
 }

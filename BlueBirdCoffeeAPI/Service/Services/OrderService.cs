@@ -41,7 +41,7 @@ namespace Service.Services
 
         public async Task<Guid> CreateOrder(string employeeId, OrderCreateModel models)
         {
-            Table? table;
+            Table? table = null;
             var transaction = _dbContext.Database.BeginTransaction();
 
             var order = new Order()
@@ -72,11 +72,14 @@ namespace Service.Services
 
                 _dbContext.SaveChanges();
 
-                table = _dbContext.Tables.FirstOrDefault(f => f.Id == order.TableId);
-                if (table == null) throw new AppException("Mã số bàn không hợp lệ!");
+                if (models.TableId != null)
+                {
+                    table = _dbContext.Tables.FirstOrDefault(f => f.Id == order.TableId);
+                    if (table == null) throw new AppException("Mã số bàn không hợp lệ!");
+                    table.CurrentOrder += 1;
+                    _dbContext.Tables.Update(table);
+                }
 
-                table.CurrentOrder += 1;
-                _dbContext.Tables.Update(table);
                 _dbContext.SaveChanges();
 
                 transaction.Commit();
@@ -107,10 +110,13 @@ namespace Service.Services
                 }
             }
 
-            var cashers = await _userManager.GetUsersInRoleAsync(SystemRoles.CASHER);
-            foreach (var casher in cashers)
+            if (table != null)
             {
-                await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(table), casher.Id);
+                var cashers = await _userManager.GetUsersInRoleAsync(SystemRoles.CASHER);
+                foreach (var casher in cashers)
+                {
+                    await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(table), casher.Id);
+                }
             }
 
             return order.Id;

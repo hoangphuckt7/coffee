@@ -8,7 +8,7 @@ namespace Data.ViewModels
 {
     public class OrderCreateModel
     {
-        public Guid TableId { get; set; }
+        public Guid? TableId { get; set; }
         public List<OrderDetailModel> OrderDetail { get; set; }
     }
 

@@ -18,15 +18,16 @@ namespace BlueBirdCoffeManager.Forms
     {
         private readonly string _searchItem;
         private readonly Guid? _categoryId;
-        private readonly List<ItemViewModel> ITEMS = new();
+        private readonly List<ItemViewModel> ITEMS = Sessions.ItemSession.ItemData;
         private List<ItemViewModel> _matchItem = new();
+        private readonly Panel _orderDataPanel;
 
-        public ItemDataForm(List<ItemViewModel> items, string searchItem, Guid? categoryId)
+        public ItemDataForm(string searchItem, Guid? categoryId, Panel oDataPanel)
         {
             InitializeComponent();
-            ITEMS = items;
             _searchItem = searchItem;
             _categoryId = categoryId;
+            _orderDataPanel = oDataPanel;
         }
 
         private void ItemDataForm_Load(object sender, EventArgs e)
@@ -95,8 +96,29 @@ namespace BlueBirdCoffeManager.Forms
                 roundedButton.BackColor = Sessions.Sessions.BUTTON_COLOR;
                 roundedButton.Click += (sender, e) =>
                 {
-                    //var x = item.Id;
-                    //MessageBox.Show("Hihi" + item.Id);
+                    var curItem = Sessions.Order.CurrentOrder.OrderDetail.FirstOrDefault(f => f.ItemId == item.Id);
+                    if (curItem != null)
+                    {
+                        Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
+                        curItem.Quantity += 1;
+                        Sessions.Order.CurrentOrder.OrderDetail.Add(curItem);
+                    }
+                    else
+                    {
+                        OrderDetailViewModel orderDetailViewModel = new OrderDetailViewModel()
+                        {
+                            ItemId = item.Id,
+                            Quantity = 1,
+                            Description = ""
+                        };
+                        Sessions.Order.CurrentOrder.OrderDetail.Add(orderDetailViewModel);
+                    }
+                    _orderDataPanel.Controls.Clear();
+                    OrderDataForm myForm = new OrderDataForm(_orderDataPanel);
+                    myForm.TopLevel = false;
+                    myForm.AutoScroll = true;
+                    _orderDataPanel.Controls.Add(myForm);
+                    myForm.Show();
                 };
 
                 //Add to panel

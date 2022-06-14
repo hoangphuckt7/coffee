@@ -19,5 +19,19 @@ namespace BlueBirdCoffeManager.Models
         public Guid ItemId { get; set; }
         public int Quantity { get; set; }
         public string? Description { get; set; }
+        public DateTime DateCreated { get; set; } = DateTime.Now;
+    }
+
+    public class OrderDetailModel
+    {
+        public Guid ItemId { get; set; }
+        public int Quantity { get; set; }
+        public string? Description { get; set; }
+    }
+
+    public class OrderCreateModel
+    {
+        public Guid? TableId { get; set; }
+        public List<OrderDetailViewModel> OrderDetail { get; set; } = new List<OrderDetailViewModel>();
     }
 }
