@@ -24,5 +24,7 @@ namespace BlueBirdCoffeManager.Sessions
 
         public static int MINIMUM_HEIGH = 0;
         public static int MINIMUM_WIDTH = 0;
+
+        public static bool SHOW_ORDER_ITEM_DETAILS = false;
     }
 }

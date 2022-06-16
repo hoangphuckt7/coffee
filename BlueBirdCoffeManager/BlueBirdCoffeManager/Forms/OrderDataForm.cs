@@ -55,10 +55,10 @@ namespace BlueBirdCoffeManager.Forms
                 borderPanel.Paint += (sender, e) =>
                 {
                     ControlPaint.DrawBorder(e.Graphics, borderPanel.ClientRectangle,
-                    Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // left
-                    Sessions.Sessions.MENU_COLOR, 1, ButtonBorderStyle.Solid, // top
-                    Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // right
-                    Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid);// bottom
+                    Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // left
+                    Color.FromKnownColor(KnownColor.Control), 1, ButtonBorderStyle.Solid, // top
+                    Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // right
+                    Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid);// bottom
                 };
                 borderPanel.Top = curTop - 10;
 
@@ -125,128 +125,131 @@ namespace BlueBirdCoffeManager.Forms
                 curTop += lbName.Height + 10;
 
                 #region Quantity
-                for (int i = 0; i < lbQuantity.Value; i++)
+                if (Sessions.Sessions.SHOW_ORDER_ITEM_DETAILS)
                 {
-                    var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(item.Description);
-
-                    var curValuePos = i;
-                    int iceValue = numValue[curValuePos].Ice;
-                    int sgValue = numValue[curValuePos].Sugar;
-
-                    Label lbsugar = new();
-                    lbsugar.Text = "Đường";
-                    lbsugar.Left = lbQuantity.Left;
-                    lbsugar.Top = curTop;
-                    lbsugar.Font = Sessions.Sessions.NOMAL_FONT;
-                    lbsugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
-
-                    NumericUpDown numSugar = new();
-                    numSugar.Value = sgValue;
-                    numSugar.Top = curTop;
-                    numSugar.Left = lbsugar.Left + lbsugar.Width + 2;
-                    numSugar.Font = Sessions.Sessions.NOMAL_FONT;
-                    numSugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
-                    numSugar.Maximum = 100;
-                    numSugar.Minimum = 0;
-                    numSugar.ValueChanged += (sender, e) =>
+                    for (int i = 0; i < lbQuantity.Value; i++)
                     {
-                        if (numSugar.Value > sgValue)
+                        var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(item.Description);
+
+                        var curValuePos = i;
+                        int iceValue = numValue[curValuePos].Ice;
+                        int sgValue = numValue[curValuePos].Sugar;
+
+                        Label lbsugar = new();
+                        lbsugar.Text = "Đường";
+                        lbsugar.Left = lbQuantity.Left;
+                        lbsugar.Top = curTop;
+                        lbsugar.Font = Sessions.Sessions.NOMAL_FONT;
+                        lbsugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
+
+                        NumericUpDown numSugar = new();
+                        numSugar.Value = sgValue;
+                        numSugar.Top = curTop;
+                        numSugar.Left = lbsugar.Left + lbsugar.Width + 2;
+                        numSugar.Font = Sessions.Sessions.NOMAL_FONT;
+                        numSugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
+                        numSugar.Maximum = 100;
+                        numSugar.Minimum = 0;
+                        numSugar.ValueChanged += (sender, e) =>
                         {
-                            if (numSugar.Value != 0 && numSugar.Value != 25 && numSugar.Value != 50 && numSugar.Value != 75 && numSugar.Value != 100)
+                            if (numSugar.Value > sgValue)
                             {
-                                numSugar.Value += 24;
-                                sgValue = int.Parse(numSugar.Value.ToString());
+                                if (numSugar.Value != 0 && numSugar.Value != 25 && numSugar.Value != 50 && numSugar.Value != 75 && numSugar.Value != 100)
+                                {
+                                    numSugar.Value += 24;
+                                    sgValue = int.Parse(numSugar.Value.ToString());
 
                                 //Save change
-                                var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
-                                numValue[curValuePos] = changedValue;
-                                Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
-                                item.Description = JsonConvert.SerializeObject(numValue);
-                                Sessions.Order.CurrentOrder.OrderDetail.Add(item);
+                                    var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
+                                    numValue[curValuePos] = changedValue;
+                                    Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
+                                    item.Description = JsonConvert.SerializeObject(numValue);
+                                    Sessions.Order.CurrentOrder.OrderDetail.Add(item);
 
-                                this.oDataPanel.Focus();
+                                    this.oDataPanel.Focus();
+                                }
                             }
-                        }
-                        else if (numSugar.Value < sgValue)
-                        {
-                            if (numSugar.Value != 0 && numSugar.Value != 25 && numSugar.Value != 50 && numSugar.Value != 75 && numSugar.Value != 100)
+                            else if (numSugar.Value < sgValue)
                             {
-                                numSugar.Value -= 24;
-                                sgValue = int.Parse(numSugar.Value.ToString());
+                                if (numSugar.Value != 0 && numSugar.Value != 25 && numSugar.Value != 50 && numSugar.Value != 75 && numSugar.Value != 100)
+                                {
+                                    numSugar.Value -= 24;
+                                    sgValue = int.Parse(numSugar.Value.ToString());
 
                                 //Save change
-                                var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
-                                numValue[curValuePos] = changedValue;
-                                Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
-                                item.Description = JsonConvert.SerializeObject(numValue);
-                                Sessions.Order.CurrentOrder.OrderDetail.Add(item);
+                                    var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
+                                    numValue[curValuePos] = changedValue;
+                                    Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
+                                    item.Description = JsonConvert.SerializeObject(numValue);
+                                    Sessions.Order.CurrentOrder.OrderDetail.Add(item);
 
-                                this.oDataPanel.Focus();
+                                    this.oDataPanel.Focus();
+                                }
                             }
-                        }
-                    };
+                        };
 
-                    Label lbIce = new();
-                    lbIce.Text = "Đá";
-                    lbIce.Left = numSugar.Left + numSugar.Width;
-                    lbIce.Top = curTop;
-                    lbIce.Font = Sessions.Sessions.NOMAL_FONT;
-                    lbIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
-                    lbIce.TextAlign = ContentAlignment.MiddleRight;
+                        Label lbIce = new();
+                        lbIce.Text = "Đá";
+                        lbIce.Left = numSugar.Left + numSugar.Width;
+                        lbIce.Top = curTop;
+                        lbIce.Font = Sessions.Sessions.NOMAL_FONT;
+                        lbIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
+                        lbIce.TextAlign = ContentAlignment.MiddleRight;
 
-                    NumericUpDown numIce = new();
-                    numIce.Value = iceValue;
-                    numIce.Top = curTop;
-                    numIce.Left = lbIce.Left + lbIce.Width + 2;
-                    numIce.Font = Sessions.Sessions.NOMAL_FONT;
-                    numIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
-                    numIce.Maximum = 100;
-                    numIce.Minimum = 0;
-                    numIce.ValueChanged += (sender, e) =>
-                    {
-                        if (numIce.Value > iceValue)
+                        NumericUpDown numIce = new();
+                        numIce.Value = iceValue;
+                        numIce.Top = curTop;
+                        numIce.Left = lbIce.Left + lbIce.Width + 2;
+                        numIce.Font = Sessions.Sessions.NOMAL_FONT;
+                        numIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
+                        numIce.Maximum = 100;
+                        numIce.Minimum = 0;
+                        numIce.ValueChanged += (sender, e) =>
                         {
-                            if (numIce.Value != 0 && numIce.Value != 25 && numIce.Value != 50 && numIce.Value != 75 && numIce.Value != 100)
+                            if (numIce.Value > iceValue)
                             {
-                                numIce.Value += 24;
-                                iceValue = int.Parse(numIce.Value.ToString());
+                                if (numIce.Value != 0 && numIce.Value != 25 && numIce.Value != 50 && numIce.Value != 75 && numIce.Value != 100)
+                                {
+                                    numIce.Value += 24;
+                                    iceValue = int.Parse(numIce.Value.ToString());
 
                                 //Save change
-                                var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
-                                numValue[curValuePos] = changedValue;
-                                Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
-                                item.Description = JsonConvert.SerializeObject(numValue);
-                                Sessions.Order.CurrentOrder.OrderDetail.Add(item);
+                                    var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
+                                    numValue[curValuePos] = changedValue;
+                                    Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
+                                    item.Description = JsonConvert.SerializeObject(numValue);
+                                    Sessions.Order.CurrentOrder.OrderDetail.Add(item);
 
-                                this.oDataPanel.Focus();
+                                    this.oDataPanel.Focus();
+                                }
                             }
-                        }
-                        else if (numIce.Value < iceValue)
-                        {
-                            if (numIce.Value != 0 && numIce.Value != 25 && numIce.Value != 50 && numIce.Value != 75 && numIce.Value != 100)
+                            else if (numIce.Value < iceValue)
                             {
-                                numIce.Value -= 24;
+                                if (numIce.Value != 0 && numIce.Value != 25 && numIce.Value != 50 && numIce.Value != 75 && numIce.Value != 100)
+                                {
+                                    numIce.Value -= 24;
 
-                                iceValue = int.Parse(numIce.Value.ToString());
+                                    iceValue = int.Parse(numIce.Value.ToString());
 
                                 //Save change
-                                var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
-                                numValue[curValuePos] = changedValue;
-                                Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
-                                item.Description = JsonConvert.SerializeObject(numValue);
-                                Sessions.Order.CurrentOrder.OrderDetail.Add(item);
+                                    var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
+                                    numValue[curValuePos] = changedValue;
+                                    Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
+                                    item.Description = JsonConvert.SerializeObject(numValue);
+                                    Sessions.Order.CurrentOrder.OrderDetail.Add(item);
 
-                                this.oDataPanel.Focus();
+                                    this.oDataPanel.Focus();
+                                }
                             }
-                        }
-                    };
+                        };
 
-                    pnData.Controls.Add(lbsugar);
-                    pnData.Controls.Add(numSugar);
-                    pnData.Controls.Add(lbIce);
-                    pnData.Controls.Add(numIce);
+                        pnData.Controls.Add(lbsugar);
+                        pnData.Controls.Add(numSugar);
+                        pnData.Controls.Add(lbIce);
+                        pnData.Controls.Add(numIce);
 
-                    curTop += lbsugar.Height + 10;
+                        curTop += lbsugar.Height + 10;
+                    }
                 }
                 #endregion
 

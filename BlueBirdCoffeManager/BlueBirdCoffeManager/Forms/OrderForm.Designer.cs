@@ -29,7 +29,9 @@
         private void InitializeComponent()
         {
             this.orderPanel = new System.Windows.Forms.Panel();
+            this.oDataPanel = new System.Windows.Forms.Panel();
             this.oHeaderPanel = new System.Windows.Forms.Panel();
+            this.cbDetails = new System.Windows.Forms.CheckBox();
             this.lbPrice = new System.Windows.Forms.Label();
             this.lbName = new System.Windows.Forms.Label();
             this.lbSubTotal = new System.Windows.Forms.Label();
@@ -42,7 +44,6 @@
             this.cbCategory = new System.Windows.Forms.ComboBox();
             this.lbSearch = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
-            this.oDataPanel = new System.Windows.Forms.Panel();
             this.orderPanel.SuspendLayout();
             this.oHeaderPanel.SuspendLayout();
             this.itemPanel.SuspendLayout();
@@ -59,8 +60,16 @@
             this.orderPanel.Size = new System.Drawing.Size(219, 538);
             this.orderPanel.TabIndex = 0;
             // 
+            // oDataPanel
+            // 
+            this.oDataPanel.Location = new System.Drawing.Point(5, 77);
+            this.oDataPanel.Name = "oDataPanel";
+            this.oDataPanel.Size = new System.Drawing.Size(200, 440);
+            this.oDataPanel.TabIndex = 6;
+            // 
             // oHeaderPanel
             // 
+            this.oHeaderPanel.Controls.Add(this.cbDetails);
             this.oHeaderPanel.Controls.Add(this.lbPrice);
             this.oHeaderPanel.Controls.Add(this.lbName);
             this.oHeaderPanel.Controls.Add(this.lbSubTotal);
@@ -69,6 +78,16 @@
             this.oHeaderPanel.Name = "oHeaderPanel";
             this.oHeaderPanel.Size = new System.Drawing.Size(200, 25);
             this.oHeaderPanel.TabIndex = 5;
+            // 
+            // cbDetails
+            // 
+            this.cbDetails.AutoSize = true;
+            this.cbDetails.Location = new System.Drawing.Point(91, 5);
+            this.cbDetails.Name = "cbDetails";
+            this.cbDetails.Size = new System.Drawing.Size(15, 14);
+            this.cbDetails.TabIndex = 4;
+            this.cbDetails.UseVisualStyleBackColor = true;
+            this.cbDetails.CheckedChanged += new System.EventHandler(this.cbDetails_CheckedChanged);
             // 
             // lbPrice
             // 
@@ -162,9 +181,9 @@
             this.lbCategory.AutoSize = true;
             this.lbCategory.Location = new System.Drawing.Point(239, 16);
             this.lbCategory.Name = "lbCategory";
-            this.lbCategory.Size = new System.Drawing.Size(29, 15);
+            this.lbCategory.Size = new System.Drawing.Size(62, 15);
             this.lbCategory.TabIndex = 3;
-            this.lbCategory.Text = "Loại";
+            this.lbCategory.Text = "Danh mục";
             // 
             // cbCategory
             // 
@@ -193,13 +212,6 @@
             this.txtSearch.Size = new System.Drawing.Size(110, 23);
             this.txtSearch.TabIndex = 0;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            // 
-            // oDataPanel
-            // 
-            this.oDataPanel.Location = new System.Drawing.Point(5, 77);
-            this.oDataPanel.Name = "oDataPanel";
-            this.oDataPanel.Size = new System.Drawing.Size(200, 440);
-            this.oDataPanel.TabIndex = 6;
             // 
             // OrderForm
             // 
@@ -239,5 +251,6 @@
         private Label lbName;
         private Panel oHeaderPanel;
         private Panel oDataPanel;
+        private CheckBox cbDetails;
     }
 }

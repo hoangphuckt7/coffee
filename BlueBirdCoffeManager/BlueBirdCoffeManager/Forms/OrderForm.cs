@@ -41,6 +41,7 @@ namespace BlueBirdCoffeManager.Forms
             this.lbCategory.Visible = false;
             this.txtSearch.Visible = false;
             this.btnRemoveFilter.Visible = false;
+            this.cbDetails.Visible = false;
 
             this.orderPanel.Left = 0;
             this.orderPanel.Top = 0;
@@ -139,6 +140,7 @@ namespace BlueBirdCoffeManager.Forms
             this.lbCategory.Visible = true;
             this.txtSearch.Visible = true;
             this.btnRemoveFilter.Visible = true;
+            this.cbDetails.Visible = true;
 
             this.txtSearch.Focus();
             #endregion
@@ -147,6 +149,7 @@ namespace BlueBirdCoffeManager.Forms
             this.lbQuantity.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
             this.lbPrice.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
             this.lbSubTotal.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            this.cbDetails.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
 
             this.oHeaderPanel.Top = 0;
             this.oHeaderPanel.Left = 0;
@@ -171,11 +174,14 @@ namespace BlueBirdCoffeManager.Forms
             this.lbPrice.Top = oHeaderPanel.Height - lbName.Height;
             this.lbSubTotal.Top = oHeaderPanel.Height - lbName.Height;
             this.lbSubTotal.TextAlign = ContentAlignment.MiddleRight;
+            this.cbDetails.Top = oHeaderPanel.Height - cbDetails.Height;
 
             this.lbName.Left = (int)2 * orderPanel.Width / 100;
             this.lbQuantity.Left = orderPanel.Width * 40 / 100;
+            this.cbDetails.Left = lbQuantity.Left + lbQuantity.Width;
             this.lbPrice.Left = orderPanel.Width * 60 / 100;
             this.lbSubTotal.Left = orderPanel.Width - 20 * orderPanel.Width / 100;
+
 
             oDataPanel.Controls.Clear();
             OrderDataForm orderDataForm = new OrderDataForm(oDataPanel);
@@ -246,6 +252,18 @@ namespace BlueBirdCoffeManager.Forms
                 myForm.Show();
                 txtSearch.Focus();
             }
+        }
+
+        private void cbDetails_CheckedChanged(object sender, EventArgs e)
+        {
+            Sessions.Sessions.SHOW_ORDER_ITEM_DETAILS = cbDetails.Checked;
+
+            oDataPanel.Controls.Clear();
+            OrderDataForm orderDataForm = new(oDataPanel);
+            orderDataForm.TopLevel = false;
+            orderDataForm.AutoScroll = true;
+            oDataPanel.Controls.Add(orderDataForm);
+            orderDataForm.Show();
         }
     }
 }
