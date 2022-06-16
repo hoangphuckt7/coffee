@@ -21,5 +21,8 @@ namespace BlueBirdCoffeManager.Sessions
         public static readonly Color MENU_COLOR = Color.FromArgb(38, 37, 37);
         public static readonly Color BUTTON_COLOR = Color.FromArgb(35, 214, 15);
         public static readonly CultureInfo CULTURE_INFO = new CultureInfo("vi-VN");
+
+        public static int MINIMUM_HEIGH = 0;
+        public static int MINIMUM_WIDTH = 0;
     }
 }

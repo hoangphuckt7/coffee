@@ -119,7 +119,7 @@ namespace BlueBirdCoffeManager.Forms
             this.btnRemoveFilter.BackColor = Color.DarkGray;
             this.btnRemoveFilter.Text = "Xóa lọc";
             this.btnRemoveFilter.Width = (int)4 * Width / 100;
-            this.btnRemoveFilter.Height = (int)2.5 * Height / 100;
+            this.btnRemoveFilter.Height = ((int)2.5 * Height / 100 > Sessions.Sessions.MINIMUM_HEIGH) ? (int)2.5 * Height / 100 : Sessions.Sessions.MINIMUM_HEIGH;
             this.btnRemoveFilter.Top = 50 * toolboxPanel.Height / 100 - btnRemoveFilter.Height * 50 / 100;
             this.btnRemoveFilter.Left = cbCategory.Left + cbCategory.Width + 5 * toolboxPanel.Width / 100;
 
@@ -170,11 +170,12 @@ namespace BlueBirdCoffeManager.Forms
             this.lbQuantity.Top = oHeaderPanel.Height - lbName.Height;
             this.lbPrice.Top = oHeaderPanel.Height - lbName.Height;
             this.lbSubTotal.Top = oHeaderPanel.Height - lbName.Height;
+            this.lbSubTotal.TextAlign = ContentAlignment.MiddleRight;
 
             this.lbName.Left = (int)2 * orderPanel.Width / 100;
             this.lbQuantity.Left = orderPanel.Width * 40 / 100;
             this.lbPrice.Left = orderPanel.Width * 60 / 100;
-            this.lbSubTotal.Left = orderPanel.Width * 80 / 100;
+            this.lbSubTotal.Left = orderPanel.Width - 20 * orderPanel.Width / 100;
 
             oDataPanel.Controls.Clear();
             OrderDataForm orderDataForm = new OrderDataForm(oDataPanel);

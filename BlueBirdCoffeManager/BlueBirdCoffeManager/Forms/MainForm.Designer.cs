@@ -36,6 +36,7 @@
             this.btnOrder = new System.Windows.Forms.Button();
             this.btnTable = new System.Windows.Forms.Button();
             this.dataPanel = new System.Windows.Forms.Panel();
+            this.dataLable = new System.Windows.Forms.Label();
             this.menuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -107,11 +108,21 @@
             this.dataPanel.Size = new System.Drawing.Size(723, 232);
             this.dataPanel.TabIndex = 3;
             // 
+            // dataLable
+            // 
+            this.dataLable.AutoSize = true;
+            this.dataLable.Location = new System.Drawing.Point(741, 121);
+            this.dataLable.Name = "dataLable";
+            this.dataLable.Size = new System.Drawing.Size(32, 15);
+            this.dataLable.TabIndex = 4;
+            this.dataLable.Text = "label";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(919, 465);
+            this.Controls.Add(this.dataLable);
             this.Controls.Add(this.dataPanel);
             this.Controls.Add(this.menuPanel);
             this.Name = "MainForm";
@@ -121,6 +132,7 @@
             this.menuPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -132,5 +144,6 @@
         private Label lbDot;
         private Label lbUsername;
         private PictureBox pictureBox1;
+        private Label dataLable;
     }
 }

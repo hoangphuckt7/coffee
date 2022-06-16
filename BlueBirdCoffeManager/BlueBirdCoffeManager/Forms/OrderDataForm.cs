@@ -102,7 +102,7 @@ namespace BlueBirdCoffeManager.Forms
                     _orderDataPanel.Controls.Add(myForm);
                     myForm.Show();
                 };
-                lbQuantity.Width = 7 * Width / 100;
+                lbQuantity.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
 
                 //Price
                 double itemPrice = Sessions.ItemSession.ItemData.First(f => f.Id == item.ItemId).Price;
@@ -138,14 +138,14 @@ namespace BlueBirdCoffeManager.Forms
                     lbsugar.Left = lbQuantity.Left;
                     lbsugar.Top = curTop;
                     lbsugar.Font = Sessions.Sessions.NOMAL_FONT;
-                    lbsugar.Width = 7 * Width / 100;
+                    lbsugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
 
                     NumericUpDown numSugar = new();
                     numSugar.Value = sgValue;
                     numSugar.Top = curTop;
                     numSugar.Left = lbsugar.Left + lbsugar.Width + 2;
                     numSugar.Font = Sessions.Sessions.NOMAL_FONT;
-                    numSugar.Width = 7 * Width / 100;
+                    numSugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
                     numSugar.Maximum = 100;
                     numSugar.Minimum = 0;
                     numSugar.ValueChanged += (sender, e) =>
@@ -191,7 +191,7 @@ namespace BlueBirdCoffeManager.Forms
                     lbIce.Left = numSugar.Left + numSugar.Width;
                     lbIce.Top = curTop;
                     lbIce.Font = Sessions.Sessions.NOMAL_FONT;
-                    lbIce.Width = 7 * Width / 100;
+                    lbIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
                     lbIce.TextAlign = ContentAlignment.MiddleRight;
 
                     NumericUpDown numIce = new();
@@ -199,7 +199,7 @@ namespace BlueBirdCoffeManager.Forms
                     numIce.Top = curTop;
                     numIce.Left = lbIce.Left + lbIce.Width + 2;
                     numIce.Font = Sessions.Sessions.NOMAL_FONT;
-                    numIce.Width = 7 * Width / 100;
+                    numIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
                     numIce.Maximum = 100;
                     numIce.Minimum = 0;
                     numIce.ValueChanged += (sender, e) =>
@@ -249,7 +249,6 @@ namespace BlueBirdCoffeManager.Forms
                     curTop += lbsugar.Height + 10;
                 }
                 #endregion
-
 
                 borderPanel.Height = curTop - borderPanel.Top;
                 borderPanel.Left = 0;
