@@ -34,4 +34,10 @@ namespace BlueBirdCoffeManager.Models
         public Guid? TableId { get; set; }
         public List<OrderDetailViewModel> OrderDetail { get; set; } = new List<OrderDetailViewModel>();
     }
+
+    public class DetailValue
+    {
+        public int Sugar { get; set; }
+        public int Ice { get; set; }
+    }
 }

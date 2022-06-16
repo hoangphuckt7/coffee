@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BlueBirdCoffeManager.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -31,6 +33,12 @@ namespace BlueBirdCoffeManager.Forms
             this.oDataPanel.Width = this.Width;
             this.oDataPanel.Height = this.Height * 70 / 100;
 
+            this.pnData.Top = 0;
+            this.pnData.Left = 0;
+            this.pnData.BackColor = Color.White;
+            this.pnData.Width = this.Width;
+            this.pnData.Height = this.Height * 70 / 100;
+
             this.oFooterPanel.Top = oDataPanel.Height + 1;
             this.oFooterPanel.Left = 0;
             this.oFooterPanel.Width = this.Width;
@@ -43,6 +51,17 @@ namespace BlueBirdCoffeManager.Forms
 
             foreach (var item in currentOrders)
             {
+                Panel borderPanel = new();
+                borderPanel.Paint += (sender, e) =>
+                {
+                    ControlPaint.DrawBorder(e.Graphics, borderPanel.ClientRectangle,
+                    Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // left
+                    Sessions.Sessions.MENU_COLOR, 1, ButtonBorderStyle.Solid, // top
+                    Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid, // right
+                    Sessions.Sessions.MENU_COLOR, 0, ButtonBorderStyle.Solid);// bottom
+                };
+                borderPanel.Top = curTop - 10;
+
                 //Name
                 Label lbName = new();
                 lbName.Text = Sessions.ItemSession.ItemData.First(f => f.Id == item.ItemId).Name;
@@ -63,7 +82,12 @@ namespace BlueBirdCoffeManager.Forms
                     if (lbQuantity.Value > 0)
                     {
                         Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
+
                         curItem.Quantity = int.Parse(lbQuantity.Value.ToString());
+                        var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(curItem.Description);
+                        numValue.Add(new DetailValue() { Ice = 100, Sugar = 100 });
+                        curItem.Description = JsonConvert.SerializeObject(numValue);
+
                         Sessions.Order.CurrentOrder.OrderDetail.Add(curItem);
                     }
                     else
@@ -99,8 +123,16 @@ namespace BlueBirdCoffeManager.Forms
                 lbSubtotal.TextAlign = ContentAlignment.MiddleRight;
 
                 curTop += lbName.Height + 10;
+
+                #region Quantity
                 for (int i = 0; i < lbQuantity.Value; i++)
                 {
+                    var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(item.Description);
+
+                    var curValuePos = i;
+                    int iceValue = numValue[curValuePos].Ice;
+                    int sgValue = numValue[curValuePos].Sugar;
+
                     Label lbsugar = new();
                     lbsugar.Text = "Đường";
                     lbsugar.Left = lbQuantity.Left;
@@ -108,7 +140,6 @@ namespace BlueBirdCoffeManager.Forms
                     lbsugar.Font = Sessions.Sessions.NOMAL_FONT;
                     lbsugar.Width = 7 * Width / 100;
 
-                    int sgValue = 100;
                     NumericUpDown numSugar = new();
                     numSugar.Value = sgValue;
                     numSugar.Top = curTop;
@@ -125,6 +156,15 @@ namespace BlueBirdCoffeManager.Forms
                             {
                                 numSugar.Value += 24;
                                 sgValue = int.Parse(numSugar.Value.ToString());
+
+                                //Save change
+                                var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
+                                numValue[curValuePos] = changedValue;
+                                Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
+                                item.Description = JsonConvert.SerializeObject(numValue);
+                                Sessions.Order.CurrentOrder.OrderDetail.Add(item);
+
+                                this.oDataPanel.Focus();
                             }
                         }
                         else if (numSugar.Value < sgValue)
@@ -133,32 +173,105 @@ namespace BlueBirdCoffeManager.Forms
                             {
                                 numSugar.Value -= 24;
                                 sgValue = int.Parse(numSugar.Value.ToString());
+
+                                //Save change
+                                var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
+                                numValue[curValuePos] = changedValue;
+                                Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
+                                item.Description = JsonConvert.SerializeObject(numValue);
+                                Sessions.Order.CurrentOrder.OrderDetail.Add(item);
+
+                                this.oDataPanel.Focus();
                             }
                         }
                     };
 
                     Label lbIce = new();
                     lbIce.Text = "Đá";
-                    lbIce.Left = lbQuantity.Left;
+                    lbIce.Left = numSugar.Left + numSugar.Width;
                     lbIce.Top = curTop;
                     lbIce.Font = Sessions.Sessions.NOMAL_FONT;
+                    lbIce.Width = 7 * Width / 100;
+                    lbIce.TextAlign = ContentAlignment.MiddleRight;
 
+                    NumericUpDown numIce = new();
+                    numIce.Value = iceValue;
+                    numIce.Top = curTop;
+                    numIce.Left = lbIce.Left + lbIce.Width + 2;
+                    numIce.Font = Sessions.Sessions.NOMAL_FONT;
+                    numIce.Width = 7 * Width / 100;
+                    numIce.Maximum = 100;
+                    numIce.Minimum = 0;
+                    numIce.ValueChanged += (sender, e) =>
+                    {
+                        if (numIce.Value > iceValue)
+                        {
+                            if (numIce.Value != 0 && numIce.Value != 25 && numIce.Value != 50 && numIce.Value != 75 && numIce.Value != 100)
+                            {
+                                numIce.Value += 24;
+                                iceValue = int.Parse(numIce.Value.ToString());
 
-                    oDataPanel.Controls.Add(lbsugar);
-                    oDataPanel.Controls.Add(numSugar);
-                    oDataPanel.Controls.Add(lbIce);
+                                //Save change
+                                var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
+                                numValue[curValuePos] = changedValue;
+                                Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
+                                item.Description = JsonConvert.SerializeObject(numValue);
+                                Sessions.Order.CurrentOrder.OrderDetail.Add(item);
+
+                                this.oDataPanel.Focus();
+                            }
+                        }
+                        else if (numIce.Value < iceValue)
+                        {
+                            if (numIce.Value != 0 && numIce.Value != 25 && numIce.Value != 50 && numIce.Value != 75 && numIce.Value != 100)
+                            {
+                                numIce.Value -= 24;
+
+                                iceValue = int.Parse(numIce.Value.ToString());
+
+                                //Save change
+                                var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
+                                numValue[curValuePos] = changedValue;
+                                Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
+                                item.Description = JsonConvert.SerializeObject(numValue);
+                                Sessions.Order.CurrentOrder.OrderDetail.Add(item);
+
+                                this.oDataPanel.Focus();
+                            }
+                        }
+                    };
+
+                    pnData.Controls.Add(lbsugar);
+                    pnData.Controls.Add(numSugar);
+                    pnData.Controls.Add(lbIce);
+                    pnData.Controls.Add(numIce);
+
+                    curTop += lbsugar.Height + 10;
                 }
+                #endregion
+
+
+                borderPanel.Height = curTop - borderPanel.Top;
+                borderPanel.Left = 0;
+                borderPanel.Width = this.Width;
 
                 //Add to control
-                oDataPanel.Controls.Add(lbName);
-                oDataPanel.Controls.Add(lbQuantity);
-                oDataPanel.Controls.Add(lbPrice);
-                oDataPanel.Controls.Add(lbSubtotal);
+                pnData.Controls.Add(lbName);
+                pnData.Controls.Add(lbQuantity);
+                pnData.Controls.Add(lbPrice);
+                pnData.Controls.Add(lbSubtotal);
+                pnData.Controls.Add(borderPanel);
 
                 total += subTotal;
                 curTop += 10;
             }
             this.oDataPanel.Focus();
+            if (pnData.Height < curTop)
+            {
+                this.pnData.Height = curTop;
+                pnData.AutoScroll = true;
+                this.oDataPanel.AutoScroll = true;
+            }
         }
     }
 }

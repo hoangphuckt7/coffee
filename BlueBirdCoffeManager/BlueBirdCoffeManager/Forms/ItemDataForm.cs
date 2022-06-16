@@ -101,15 +101,20 @@ namespace BlueBirdCoffeManager.Forms
                     {
                         Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
                         curItem.Quantity += 1;
+                        var numValues = JsonConvert.DeserializeObject<List<DetailValue>>(curItem.Description);
+                        numValues.Add(new DetailValue() { Ice = 100, Sugar = 100 });
+                        curItem.Description = JsonConvert.SerializeObject(numValues);
                         Sessions.Order.CurrentOrder.OrderDetail.Add(curItem);
                     }
                     else
                     {
+                        var numValue = new List<DetailValue>() { new DetailValue() { Ice = 100, Sugar = 100 } };
+
                         OrderDetailViewModel orderDetailViewModel = new OrderDetailViewModel()
                         {
                             ItemId = item.Id,
                             Quantity = 1,
-                            Description = ""
+                            Description = JsonConvert.SerializeObject(numValue)
                         };
                         Sessions.Order.CurrentOrder.OrderDetail.Add(orderDetailViewModel);
                     }
