@@ -140,14 +140,14 @@ namespace BlueBirdCoffeManager.Forms
                         lbsugar.Left = lbQuantity.Left;
                         lbsugar.Top = curTop;
                         lbsugar.Font = Sessions.Sessions.NOMAL_FONT;
-                        lbsugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
+                        lbsugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
 
                         NumericUpDown numSugar = new();
                         numSugar.Value = sgValue;
                         numSugar.Top = curTop;
                         numSugar.Left = lbsugar.Left + lbsugar.Width + 2;
                         numSugar.Font = Sessions.Sessions.NOMAL_FONT;
-                        numSugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
+                        numSugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
                         numSugar.Maximum = 100;
                         numSugar.Minimum = 0;
                         numSugar.ValueChanged += (sender, e) =>
@@ -159,7 +159,7 @@ namespace BlueBirdCoffeManager.Forms
                                     numSugar.Value += 24;
                                     sgValue = int.Parse(numSugar.Value.ToString());
 
-                                //Save change
+                                    //Save change
                                     var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
                                     numValue[curValuePos] = changedValue;
                                     Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
@@ -176,7 +176,7 @@ namespace BlueBirdCoffeManager.Forms
                                     numSugar.Value -= 24;
                                     sgValue = int.Parse(numSugar.Value.ToString());
 
-                                //Save change
+                                    //Save change
                                     var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
                                     numValue[curValuePos] = changedValue;
                                     Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
@@ -193,7 +193,7 @@ namespace BlueBirdCoffeManager.Forms
                         lbIce.Left = numSugar.Left + numSugar.Width;
                         lbIce.Top = curTop;
                         lbIce.Font = Sessions.Sessions.NOMAL_FONT;
-                        lbIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
+                        lbIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
                         lbIce.TextAlign = ContentAlignment.MiddleRight;
 
                         NumericUpDown numIce = new();
@@ -201,7 +201,7 @@ namespace BlueBirdCoffeManager.Forms
                         numIce.Top = curTop;
                         numIce.Left = lbIce.Left + lbIce.Width + 2;
                         numIce.Font = Sessions.Sessions.NOMAL_FONT;
-                        numIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
+                        numIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
                         numIce.Maximum = 100;
                         numIce.Minimum = 0;
                         numIce.ValueChanged += (sender, e) =>
@@ -213,7 +213,7 @@ namespace BlueBirdCoffeManager.Forms
                                     numIce.Value += 24;
                                     iceValue = int.Parse(numIce.Value.ToString());
 
-                                //Save change
+                                    //Save change
                                     var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
                                     numValue[curValuePos] = changedValue;
                                     Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
@@ -231,7 +231,7 @@ namespace BlueBirdCoffeManager.Forms
 
                                     iceValue = int.Parse(numIce.Value.ToString());
 
-                                //Save change
+                                    //Save change
                                     var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
                                     numValue[curValuePos] = changedValue;
                                     Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
