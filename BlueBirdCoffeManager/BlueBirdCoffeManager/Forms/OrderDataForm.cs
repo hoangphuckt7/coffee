@@ -1,4 +1,5 @@
 ﻿using BlueBirdCoffeManager.Models;
+using BlueBirdCoffeManager.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -69,40 +70,50 @@ namespace BlueBirdCoffeManager.Forms
                 lbName.Left = 2 * Width / 100;
                 lbName.Font = Sessions.Sessions.NOMAL_FONT;
 
+                var roundButtonSize = new Size(20, 20);
+
+                PictureBox plusButton = new PictureBox();
+                plusButton.Paint += (sender, e) =>
+                {
+                    var plus_icon = Properties.Resources.plus_icon;
+                    Bitmap bit_plus = new(plus_icon, new Size(20, 20));
+                    e.Graphics.DrawImage(bit_plus, 0, 0);
+                };
+                plusButton.Click += (sender, e) =>
+                {
+                    ChangeQuantity(item.ItemId, false);
+                };
+                plusButton.Top = curTop;
+                plusButton.Left = 40 * Width / 100;
+                plusButton.Width = roundButtonSize.Width;
+                plusButton.Height = roundButtonSize.Width;
+
                 //Quantity
                 int itemQuantity = item.Quantity;
-                NumericUpDown lbQuantity = new();
+                Label lbQuantity = new();
                 lbQuantity.Text = itemQuantity.ToString();
                 lbQuantity.Font = Sessions.Sessions.NOMAL_FONT;
-                lbQuantity.Left = 40 * Width / 100;
+                lbQuantity.Left = plusButton.Left + plusButton.Width + 20;
                 lbQuantity.Top = curTop;
-                lbQuantity.ValueChanged += (sender, e) =>
+                lbQuantity.Width = (5 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 5 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
+
+                //Change quantity value
+                PictureBox minusButton = new PictureBox();
+                minusButton.Paint += (sender, e) =>
                 {
-                    var curItem = Sessions.Order.CurrentOrder.OrderDetail.FirstOrDefault(f => f.ItemId == item.ItemId);
-                    if (lbQuantity.Value > 0)
-                    {
-                        Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
+                    var minus_icon = Properties.Resources.minus_icon;
+                    Bitmap bit_minus = new(minus_icon, roundButtonSize);
 
-                        curItem.Quantity = int.Parse(lbQuantity.Value.ToString());
-                        var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(curItem.Description);
-                        numValue.Add(new DetailValue() { Ice = 100, Sugar = 100 });
-                        curItem.Description = JsonConvert.SerializeObject(numValue);
-
-                        Sessions.Order.CurrentOrder.OrderDetail.Add(curItem);
-                    }
-                    else
-                    {
-                        Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
-                    }
-
-                    _orderDataPanel.Controls.Clear();
-                    OrderDataForm myForm = new OrderDataForm(_orderDataPanel);
-                    myForm.TopLevel = false;
-                    myForm.AutoScroll = true;
-                    _orderDataPanel.Controls.Add(myForm);
-                    myForm.Show();
+                    e.Graphics.DrawImage(bit_minus, 0, 0);
                 };
-                lbQuantity.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH) ? 7 * Width / 100 : Sessions.Sessions.MINIMUM_WIDTH;
+                minusButton.Click += (sender, e) =>
+                {
+                    ChangeQuantity(item.ItemId, true);
+                };
+                minusButton.Top = curTop;
+                minusButton.Left = lbQuantity.Left + lbQuantity.Width;
+                minusButton.Width = roundButtonSize.Width;
+                minusButton.Height = roundButtonSize.Width;
 
                 //Price
                 double itemPrice = Sessions.ItemSession.ItemData.First(f => f.Id == item.ItemId).Price;
@@ -127,7 +138,7 @@ namespace BlueBirdCoffeManager.Forms
                 #region Quantity
                 if (Sessions.Sessions.SHOW_ORDER_ITEM_DETAILS)
                 {
-                    for (int i = 0; i < lbQuantity.Value; i++)
+                    for (int i = 0; i < int.Parse(lbQuantity.Text); i++)
                     {
                         var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(item.Description);
 
@@ -135,118 +146,120 @@ namespace BlueBirdCoffeManager.Forms
                         int iceValue = numValue[curValuePos].Ice;
                         int sgValue = numValue[curValuePos].Sugar;
 
-                        Label lbsugar = new();
-                        lbsugar.Text = "Đường";
-                        lbsugar.Left = lbQuantity.Left;
-                        lbsugar.Top = curTop;
-                        lbsugar.Font = Sessions.Sessions.NOMAL_FONT;
-                        lbsugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
-
-                        NumericUpDown numSugar = new();
-                        numSugar.Value = sgValue;
-                        numSugar.Top = curTop;
-                        numSugar.Left = lbsugar.Left + lbsugar.Width + 2;
-                        numSugar.Font = Sessions.Sessions.NOMAL_FONT;
-                        numSugar.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
-                        numSugar.Maximum = 100;
-                        numSugar.Minimum = 0;
-                        numSugar.ValueChanged += (sender, e) =>
+                        Label lbsugar = new()
                         {
-                            if (numSugar.Value > sgValue)
-                            {
-                                if (numSugar.Value != 0 && numSugar.Value != 25 && numSugar.Value != 50 && numSugar.Value != 75 && numSugar.Value != 100)
-                                {
-                                    numSugar.Value += 24;
-                                    sgValue = int.Parse(numSugar.Value.ToString());
-
-                                    //Save change
-                                    var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
-                                    numValue[curValuePos] = changedValue;
-                                    Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
-                                    item.Description = JsonConvert.SerializeObject(numValue);
-                                    Sessions.Order.CurrentOrder.OrderDetail.Add(item);
-
-                                    this.oDataPanel.Focus();
-                                }
-                            }
-                            else if (numSugar.Value < sgValue)
-                            {
-                                if (numSugar.Value != 0 && numSugar.Value != 25 && numSugar.Value != 50 && numSugar.Value != 75 && numSugar.Value != 100)
-                                {
-                                    numSugar.Value -= 24;
-                                    sgValue = int.Parse(numSugar.Value.ToString());
-
-                                    //Save change
-                                    var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
-                                    numValue[curValuePos] = changedValue;
-                                    Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
-                                    item.Description = JsonConvert.SerializeObject(numValue);
-                                    Sessions.Order.CurrentOrder.OrderDetail.Add(item);
-
-                                    this.oDataPanel.Focus();
-                                }
-                            }
+                            Text = "Đường",
+                            Left = plusButton.Left,
+                            Top = curTop,
+                            Font = Sessions.Sessions.NOMAL_FONT,
+                            Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5)
                         };
+
+                        Label numSugar = new();
+
+                        PictureBox plusSugar = new PictureBox();
+                        plusSugar.Paint += (sender, e) =>
+                        {
+                            var plus_icon = Properties.Resources.plus_icon;
+                            Bitmap bit_plus = new(plus_icon, new Size(20, 20));
+                            e.Graphics.DrawImage(bit_plus, 0, 0);
+                        };
+                        plusSugar.Click += (sender, e) =>
+                        {
+                            ChangeSugarIceNum(item, curValuePos, true, false, numSugar);
+                        };
+                        plusSugar.Top = curTop;
+                        plusSugar.Left = lbsugar.Left + lbsugar.Width;
+                        plusSugar.Width = roundButtonSize.Width;
+                        plusSugar.Height = roundButtonSize.Width;
+
+                        numSugar.Text = sgValue + "%";
+                        numSugar.Top = curTop;
+                        numSugar.Left = plusSugar.Left + plusSugar.Width + 10;
+                        numSugar.Font = Sessions.Sessions.NOMAL_FONT;
+                        numSugar.Width = (5 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 5 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
+
+                        PictureBox minusSugar = new PictureBox();
+                        minusSugar.Paint += (sender, e) =>
+                        {
+                            var minus_icon = Properties.Resources.minus_icon;
+                            Bitmap bit_minus = new(minus_icon, roundButtonSize);
+
+                            e.Graphics.DrawImage(bit_minus, 0, 0);
+                        };
+                        minusSugar.Click += (sender, e) =>
+                        {
+                            ChangeSugarIceNum(item, curValuePos, true, true, numSugar);
+                        };
+                        minusSugar.Top = curTop;
+                        minusSugar.Left = numSugar.Left + numSugar.Width;
+                        minusSugar.Width = roundButtonSize.Width;
+                        minusSugar.Height = roundButtonSize.Width;
+
+                        Label lbsplit = new();
+                        lbsplit.Text = "/";
+                        lbsplit.Left = minusSugar.Left + minusSugar.Width + 20;
+                        lbsplit.Top = curTop;
+                        lbsplit.Font = Sessions.Sessions.NOMAL_FONT;
+                        lbsplit.Width = 10;
 
                         Label lbIce = new();
                         lbIce.Text = "Đá";
-                        lbIce.Left = numSugar.Left + numSugar.Width;
+                        lbIce.Left = lbsplit.Left + lbsplit.Width + 5;
                         lbIce.Top = curTop;
                         lbIce.Font = Sessions.Sessions.NOMAL_FONT;
-                        lbIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
-                        lbIce.TextAlign = ContentAlignment.MiddleRight;
+                        lbIce.Width = (4 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 4 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
 
-                        NumericUpDown numIce = new();
-                        numIce.Value = iceValue;
-                        numIce.Top = curTop;
-                        numIce.Left = lbIce.Left + lbIce.Width + 2;
-                        numIce.Font = Sessions.Sessions.NOMAL_FONT;
-                        numIce.Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
-                        numIce.Maximum = 100;
-                        numIce.Minimum = 0;
-                        numIce.ValueChanged += (sender, e) =>
+                        Label numIce = new();
+
+                        PictureBox plusIce = new PictureBox();
+                        plusIce.Paint += (sender, e) =>
                         {
-                            if (numIce.Value > iceValue)
-                            {
-                                if (numIce.Value != 0 && numIce.Value != 25 && numIce.Value != 50 && numIce.Value != 75 && numIce.Value != 100)
-                                {
-                                    numIce.Value += 24;
-                                    iceValue = int.Parse(numIce.Value.ToString());
-
-                                    //Save change
-                                    var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
-                                    numValue[curValuePos] = changedValue;
-                                    Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
-                                    item.Description = JsonConvert.SerializeObject(numValue);
-                                    Sessions.Order.CurrentOrder.OrderDetail.Add(item);
-
-                                    this.oDataPanel.Focus();
-                                }
-                            }
-                            else if (numIce.Value < iceValue)
-                            {
-                                if (numIce.Value != 0 && numIce.Value != 25 && numIce.Value != 50 && numIce.Value != 75 && numIce.Value != 100)
-                                {
-                                    numIce.Value -= 24;
-
-                                    iceValue = int.Parse(numIce.Value.ToString());
-
-                                    //Save change
-                                    var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue };
-                                    numValue[curValuePos] = changedValue;
-                                    Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
-                                    item.Description = JsonConvert.SerializeObject(numValue);
-                                    Sessions.Order.CurrentOrder.OrderDetail.Add(item);
-
-                                    this.oDataPanel.Focus();
-                                }
-                            }
+                            var plus_icon = Properties.Resources.plus_icon;
+                            Bitmap bit_plus = new(plus_icon, new Size(20, 20));
+                            e.Graphics.DrawImage(bit_plus, 0, 0);
                         };
+                        plusIce.Click += (sender, e) =>
+                        {
+                            ChangeSugarIceNum(item, curValuePos, false, false, numIce);
+                        };
+                        plusIce.Top = curTop;
+                        plusIce.Left = lbIce.Left + lbIce.Width;
+                        plusIce.Width = roundButtonSize.Width;
+                        plusIce.Height = roundButtonSize.Width;
+
+                        numIce.Text = iceValue + "%";
+                        numIce.Top = curTop;
+                        numIce.Left = plusIce.Left + plusIce.Width + 10;
+                        numIce.Font = Sessions.Sessions.NOMAL_FONT;
+                        numIce.Width = (5 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 5 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
+
+                        PictureBox minusIce = new PictureBox();
+                        minusIce.Paint += (sender, e) =>
+                        {
+                            var minus_icon = Properties.Resources.minus_icon;
+                            Bitmap bit_minus = new(minus_icon, roundButtonSize);
+
+                            e.Graphics.DrawImage(bit_minus, 0, 0);
+                        };
+                        minusIce.Click += (sender, e) =>
+                        {
+                            ChangeSugarIceNum(item, curValuePos, false, true, numIce);
+                        };
+                        minusIce.Top = curTop;
+                        minusIce.Left = numIce.Left + numIce.Width;
+                        minusIce.Width = roundButtonSize.Width;
+                        minusIce.Height = roundButtonSize.Width;
 
                         pnData.Controls.Add(lbsugar);
+                        pnData.Controls.Add(plusSugar);
                         pnData.Controls.Add(numSugar);
+                        pnData.Controls.Add(minusSugar);
+                        pnData.Controls.Add(lbsplit);
                         pnData.Controls.Add(lbIce);
+                        pnData.Controls.Add(plusIce);
                         pnData.Controls.Add(numIce);
+                        pnData.Controls.Add(minusIce);
 
                         curTop += lbsugar.Height + 10;
                     }
@@ -258,8 +271,11 @@ namespace BlueBirdCoffeManager.Forms
                 borderPanel.Width = this.Width;
 
                 //Add to control
-                pnData.Controls.Add(lbName);
+
                 pnData.Controls.Add(lbQuantity);
+                pnData.Controls.Add(lbName);
+                pnData.Controls.Add(minusButton);
+                pnData.Controls.Add(plusButton);
                 pnData.Controls.Add(lbPrice);
                 pnData.Controls.Add(lbSubtotal);
                 pnData.Controls.Add(borderPanel);
@@ -274,6 +290,66 @@ namespace BlueBirdCoffeManager.Forms
                 pnData.AutoScroll = true;
                 this.oDataPanel.AutoScroll = true;
             }
+        }
+        private void ChangeQuantity(Guid itemId, bool minus)
+        {
+            var curItem = Sessions.Order.CurrentOrder.OrderDetail.FirstOrDefault(f => f.ItemId == itemId);
+
+            Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
+
+            if (minus)
+            {
+                curItem.Quantity -= 1;
+            }
+            else
+            {
+                curItem.Quantity += 1;
+            }
+            var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(curItem.Description);
+            numValue.Add(new DetailValue() { Ice = 100, Sugar = 100 });
+            curItem.Description = JsonConvert.SerializeObject(numValue);
+
+            if (curItem.Quantity > 0)
+            {
+                Sessions.Order.CurrentOrder.OrderDetail.Add(curItem);
+            }
+
+            _orderDataPanel.Controls.Clear();
+            OrderDataForm myForm = new OrderDataForm(_orderDataPanel);
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            _orderDataPanel.Controls.Add(myForm);
+            myForm.Show();
+        }
+
+        private void ChangeSugarIceNum(OrderDetailViewModel item, int curValuePos, bool sugar, bool minus, Label lb)
+        {
+            var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(item.Description);
+
+            int changedSugar = numValue[curValuePos].Sugar;
+            int changedIce = numValue[curValuePos].Ice;
+
+            if (sugar)
+            {
+                if (minus && changedSugar > 0) changedSugar -= 25;
+                if (!minus) changedSugar += 25;
+                lb.Text = changedSugar + "%";
+            }
+            else
+            {
+                if (minus && changedIce > 0) changedIce -= 25;
+                if (!minus) changedIce += 25;
+                lb.Text = changedIce + "%";
+            }
+
+            //Save change
+            var changedValue = new DetailValue() { Ice = changedIce, Sugar = changedSugar };
+            numValue[curValuePos] = changedValue;
+            Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
+            item.Description = JsonConvert.SerializeObject(numValue);
+            Sessions.Order.CurrentOrder.OrderDetail.Add(item);
+
+            this.oDataPanel.Focus();
         }
     }
 }
