@@ -70,6 +70,7 @@ namespace BlueBirdCoffeManager.Forms
 
             var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + floorId, null, RequestMethod.GET);
             tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
+
             foreach (var item in tables)
             {
                 item.ConvertToRectangle();

@@ -1,4 +1,5 @@
-﻿using BlueBirdCoffeManager.Models;
+﻿using BlueBirdCoffeManager.DataAccessLayer;
+using BlueBirdCoffeManager.Models;
 using BlueBirdCoffeManager.Utils;
 using Newtonsoft.Json;
 using System;
@@ -22,8 +23,9 @@ namespace BlueBirdCoffeManager.Forms
             _orderDataPanel = orderDataPanel;
         }
 
-        private void OrderDataForm_Load(object sender, EventArgs e)
+        private async void OrderDataForm_Load(object sender, EventArgs e)
         {
+            #region Order
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
@@ -118,7 +120,7 @@ namespace BlueBirdCoffeManager.Forms
                 //Price
                 double itemPrice = Sessions.ItemSession.ItemData.First(f => f.Id == item.ItemId).Price;
                 Label lbPrice = new();
-                lbPrice.Text = itemPrice.ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫"; ;
+                lbPrice.Text = itemPrice.ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
                 lbPrice.Font = Sessions.Sessions.NOMAL_FONT;
                 lbPrice.Left = 60 * Width / 100;
                 lbPrice.Top = curTop;
@@ -290,7 +292,206 @@ namespace BlueBirdCoffeManager.Forms
                 pnData.AutoScroll = true;
                 this.oDataPanel.AutoScroll = true;
             }
+            #endregion
+
+            #region Data
+            RoundedButton submitButton = new();
+            ComboBox cbArea = new();
+            ComboBox cbTable = new();
+
+            //First section
+            Label quanLable = new Label
+            {
+                Top = 1 * Height / 100,
+                Left = 2 * Width / 100,
+                Font = Sessions.Sessions.NOMAL_BOLD_FONT,
+                Text = "Số lượng: "
+            };
+
+            Label quanDataLable = new()
+            {
+                Width = oFooterPanel.Width - quanLable.Width - quanLable.Left - 2 * Width / 100,
+                Top = quanLable.Top,
+                Left = quanLable.Left + quanLable.Width,
+                Font = Sessions.Sessions.NOMAL_BOLD_FONT,
+                Text = Sessions.Order.CurrentOrder.OrderDetail.Select(s => s.Quantity).Sum() + "",
+                TextAlign = ContentAlignment.MiddleRight
+            };
+
+            double tt = 0;
+            foreach (var item in Sessions.Order.CurrentOrder.OrderDetail)
+            {
+                var curItem = Sessions.ItemSession.ItemData.First(f => f.Id == item.ItemId);
+                tt += item.Quantity * curItem.Price;
+            }
+
+            Label ttLabel = new()
+            {
+                Top = quanDataLable.Top + quanDataLable.Height + 10,
+                Left = 2 * Width / 100,
+                Font = Sessions.Sessions.NOMAL_BOLD_FONT,
+                Text = "Tổng: ",
+            };
+
+            Label ttDataLabel = new()
+            {
+                Top = ttLabel.Top,
+                Width = oFooterPanel.Width - ttLabel.Width - ttLabel.Left - 2 * Width / 100,
+                Left = ttLabel.Left + ttLabel.Width,
+                Font = Sessions.Sessions.NOMAL_BOLD_FONT,
+                Text = (tt == 0 ? "0" : tt.ToString("#,###", Application.CurrentCulture.NumberFormat)) + "₫",
+                TextAlign = ContentAlignment.MiddleRight
+            };
+
+            Panel splitPanel1 = new()
+            {
+                Width = oFooterPanel.Width * 96 / 100,
+                Height = 1,
+                Top = ttLabel.Top + ttLabel.Height + 10,
+                Left = Width * 2 / 100,
+                BackColor = Color.FromKnownColor(KnownColor.Control)
+            };
+
+            //Second Section
+            Label type = new()
+            {
+                Text = "Hình thức:",
+                Left = 2 * Width / 100,
+                Top = ttLabel.Top + ttLabel.Height + 20,
+                Font = Sessions.Sessions.NOMAL_BOLD_FONT,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            RadioButton isTable = new();
+            RadioButton isTakeAway = new();
+            RadioButton unknow = new();
+
+            int reWidth = oFooterPanel.Width - type.Width - type.Left - 2 * Width / 100;
+
+            isTable.Text = "Tại bàn";
+            isTable.Top = type.Top;
+            isTable.Checked = false;
+            isTable.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+
+            isTakeAway.Text = "Mang đi";
+            isTakeAway.Top = type.Top;
+            isTakeAway.Checked = false;
+            isTakeAway.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+
+            unknow.Text = "Chưa rõ bàn";
+            unknow.Top = type.Top;
+            unknow.Checked = true;
+            unknow.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+
+            isTable.Left = oFooterPanel.Width - reWidth;
+            isTakeAway.Left = oFooterPanel.Width - (reWidth - reWidth / 3);
+            unknow.Left = oFooterPanel.Width - (reWidth - (reWidth / 3) * 2);
+
+            Label lableArea = new()
+            {
+                Top = unknow.Top + unknow.Height + 10,
+                Left = 2 * Width / 100,
+                Font = Sessions.Sessions.NOMAL_BOLD_FONT,
+                Text = "Khu vực: ",
+                TextAlign = ContentAlignment.MiddleLeft,
+                Visible = false
+            };
+
+            cbArea.Top = unknow.Top + unknow.Height + 10;
+            cbArea.Left = lableArea.Left + lableArea.Width;
+            cbArea.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbArea.DataSource = Sessions.Area.Areas.Select(s => s.Description).ToList();
+            cbArea.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            cbArea.Visible = false;
+
+            cbArea.SelectedIndexChanged += async (sender, e) =>
+            {
+                var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[cbArea.SelectedIndex].Id, null, RequestMethod.GET);
+                var tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
+
+                cbTable.DataSource = tables.Select(s => s.Description).ToList();
+            };
+
+            Label lableTable = new()
+            {
+                Top = unknow.Top + unknow.Height + 10,
+                Left = cbArea.Left + cbArea.Width,
+                Font = Sessions.Sessions.NOMAL_BOLD_FONT,
+                Text = "Bàn: ",
+                TextAlign = ContentAlignment.MiddleLeft,
+                Visible = false
+            };
+
+            cbTable.Top = unknow.Top + unknow.Height + 10;
+            cbTable.Left = lableTable.Left + lableTable.Width;
+            cbTable.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbTable.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            cbTable.Visible = false;
+
+            var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[0].Id, null, RequestMethod.GET);
+            var tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
+
+            cbTable.DataSource = tables.Select(s => s.Description).ToList();
+
+            submitButton.Text = "Order";
+            submitButton.Height = 13 * oFooterPanel.Height / 100;
+            submitButton.Width = 96 * Width / 100;
+            submitButton.Left = 2 * Width / 100;
+            submitButton.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            submitButton.BackColor = Sessions.Sessions.BUTTON_COLOR;
+            submitButton.Top = oFooterPanel.Height - submitButton.Height - 10;
+
+            isTable.CheckedChanged += (sender, e) =>
+            {
+                submitButton.Text = "Order";
+                cbArea.Visible = true;
+                cbTable.Visible = true;
+                lableTable.Visible = true;
+                lableArea.Visible = true;
+            };
+
+            isTakeAway.CheckedChanged += (sender, e) =>
+            {
+                submitButton.Text = "Thanh toán";
+                cbArea.Visible = false;
+                cbTable.Visible = false;
+                lableTable.Visible = false;
+                lableArea.Visible = false;
+            };
+
+            unknow.CheckedChanged += (sender, e) =>
+            {
+                submitButton.Text = "Order";
+                cbArea.Visible = false;
+                cbTable.Visible = false;
+                lableTable.Visible = false;
+                lableArea.Visible = false;
+            };
+
+            oFooterPanel.Controls.Add(quanLable);
+            oFooterPanel.Controls.Add(quanDataLable);
+
+            oFooterPanel.Controls.Add(ttLabel);
+            oFooterPanel.Controls.Add(ttDataLabel);
+
+            //Split
+            oFooterPanel.Controls.Add(splitPanel1);
+
+
+            oFooterPanel.Controls.Add(type);
+            oFooterPanel.Controls.Add(isTable);
+            oFooterPanel.Controls.Add(isTakeAway);
+            oFooterPanel.Controls.Add(unknow);
+
+            oFooterPanel.Controls.Add(lableArea);
+            oFooterPanel.Controls.Add(cbArea);
+
+            oFooterPanel.Controls.Add(lableTable);
+            oFooterPanel.Controls.Add(cbTable);
+
+            oFooterPanel.Controls.Add(submitButton);
+            #endregion
         }
+
         private void ChangeQuantity(Guid itemId, bool minus)
         {
             var curItem = Sessions.Order.CurrentOrder.OrderDetail.FirstOrDefault(f => f.ItemId == itemId);
@@ -321,7 +522,6 @@ namespace BlueBirdCoffeManager.Forms
             _orderDataPanel.Controls.Add(myForm);
             myForm.Show();
         }
-
         private void ChangeSugarIceNum(OrderDetailViewModel item, int curValuePos, bool sugar, bool minus, Label lb)
         {
             var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(item.Description);
@@ -350,6 +550,7 @@ namespace BlueBirdCoffeManager.Forms
             Sessions.Order.CurrentOrder.OrderDetail.Add(item);
 
             this.oDataPanel.Focus();
+
         }
     }
 }

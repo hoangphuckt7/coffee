@@ -182,6 +182,7 @@ namespace BlueBirdCoffeManager.Forms
             this.lbPrice.Left = orderPanel.Width * 60 / 100;
             this.lbSubTotal.Left = orderPanel.Width - 20 * orderPanel.Width / 100;
 
+            this.cbDetails.Checked = Sessions.Sessions.SHOW_ORDER_ITEM_DETAILS;
 
             oDataPanel.Controls.Clear();
             OrderDataForm orderDataForm = new OrderDataForm(oDataPanel);

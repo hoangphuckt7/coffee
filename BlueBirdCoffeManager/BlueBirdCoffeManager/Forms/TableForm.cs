@@ -16,7 +16,7 @@ namespace BlueBirdCoffeManager.Forms
 {
     public partial class TableForm : Form
     {
-        private List<DescriptionViewModel> FLOORS = new List<DescriptionViewModel>();
+        private List<DescriptionViewModel> FLOORS = Sessions.Area.Areas;
         private readonly Panel _dataPanel;
         private readonly Guid? floorId;
 
@@ -48,8 +48,12 @@ namespace BlueBirdCoffeManager.Forms
             lbArea.Top = floorPanel.Height * 5 / 100;
             lbArea.Left = (floorPanel.Width - lbArea.Width) / 2;
 
-            var data = await ApiBuilder.SendRequest<List<DescriptionViewModel>>("api/Floor", null, RequestMethod.GET);
-            FLOORS = JsonConvert.DeserializeObject<List<DescriptionViewModel>>(data);
+            if (FLOORS == null || FLOORS.Count == 0)
+            {
+                var rawData = await ApiBuilder.SendRequest<List<DescriptionViewModel>>("api/Floor", null, RequestMethod.GET);
+                FLOORS = JsonConvert.DeserializeObject<List<DescriptionViewModel>>(rawData);
+                Sessions.Area.Areas = FLOORS;
+            }
 
             cbFloors.DataSource = FLOORS.Select(s => s.Description).ToList();
             this.cbFloors.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
