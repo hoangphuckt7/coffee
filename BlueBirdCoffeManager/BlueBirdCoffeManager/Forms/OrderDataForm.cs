@@ -467,6 +467,11 @@ namespace BlueBirdCoffeManager.Forms
                 lableArea.Visible = false;
             };
 
+            submitButton.Click += (sender, ev) =>
+            {
+                printBill.Print();
+            };
+
             oFooterPanel.Controls.Add(quanLable);
             oFooterPanel.Controls.Add(quanDataLable);
 
@@ -551,6 +556,13 @@ namespace BlueBirdCoffeManager.Forms
 
             this.oDataPanel.Focus();
 
+        }
+
+        private void printBill_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            var curImg = BillPrinter.SetupBill();
+            //var final = ImageUtils.ResizeImage(curImg, curImg.Width / 2, curImg.Height / 2);
+            e.Graphics.DrawImage(curImg, 0, 0);
         }
     }
 }

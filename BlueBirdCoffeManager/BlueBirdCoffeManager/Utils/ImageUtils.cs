@@ -16,7 +16,7 @@ namespace BlueBirdCoffeManager.Utils
             }
         }
 
-        public static Image ResizeImageAsync(Image img, int tarWidth, int tarHeigh)
+        public static Image ResizeImage(Image img, int tarWidth, int tarHeigh)
         {
             int x, y, w, h;
 

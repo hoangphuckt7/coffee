@@ -63,7 +63,7 @@ namespace BlueBirdCoffeManager.Forms
                 PictureBox pictureBox = new();
                 pictureBox.Width = itemPanel.Width;
                 pictureBox.Height = this.Height * 25 / 100;
-                if (image != null) pictureBox.Image = ImageUtils.ResizeImageAsync(image, pictureBox.Width, pictureBox.Height);
+                if (image != null) pictureBox.Image = ImageUtils.ResizeImage(image, pictureBox.Width, pictureBox.Height);
                 pictureBox.Top = 0;
                 pictureBox.Left = 0;
 

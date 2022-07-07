@@ -31,6 +31,7 @@
             this.oFooterPanel = new System.Windows.Forms.Panel();
             this.oDataPanel = new System.Windows.Forms.Panel();
             this.pnData = new System.Windows.Forms.Panel();
+            this.printBill = new System.Drawing.Printing.PrintDocument();
             this.oDataPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,11 +57,15 @@
             this.pnData.Size = new System.Drawing.Size(193, 314);
             this.pnData.TabIndex = 0;
             // 
+            // printBill
+            // 
+            this.printBill.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printBill_PrintPage);
+            // 
             // OrderDataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(222, 450);
+            this.ClientSize = new System.Drawing.Size(240, 450);
             this.Controls.Add(this.oFooterPanel);
             this.Controls.Add(this.oDataPanel);
             this.Name = "OrderDataForm";
@@ -76,5 +81,6 @@
         private Panel oFooterPanel;
         private Panel oDataPanel;
         private Panel pnData;
+        private System.Drawing.Printing.PrintDocument printBill;
     }
 }

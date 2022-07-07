@@ -40,4 +40,11 @@ namespace BlueBirdCoffeManager.Models
         public int Sugar { get; set; }
         public int Ice { get; set; }
     }
+
+    public class TempOrderDetailModel
+    {
+        public int Quantity { get; set; }
+        public string Name { get; set; }
+        public double Price { get; set; }
+    }
 }
