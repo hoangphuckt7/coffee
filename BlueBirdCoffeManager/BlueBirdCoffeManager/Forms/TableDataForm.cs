@@ -68,6 +68,15 @@ namespace BlueBirdCoffeManager.Forms
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
 
+            pictureBox.Top = 0;
+            pictureBox.Left = 0;
+            pictureBox.Size = new Size(Width, Height - 10 * Height / 100);
+
+            if (Sessions.Sessions.TABLE_WORK_SPACE == null)
+            {
+                Sessions.Sessions.TABLE_WORK_SPACE = new Point(pictureBox.Width, pictureBox.Height);
+            }
+
             var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + floorId, null, RequestMethod.GET);
             tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
 
@@ -76,9 +85,6 @@ namespace BlueBirdCoffeManager.Forms
                 item.ConvertToRectangle();
             }
             rectangles = tables.Select(s => s.Rectangle.Value).ToList();
-
-            pictureBox.Size = new Size(_tablePanel.Width - 5 * Width / 100, _tablePanel.Height - 15 * Height / 100);
-            pictureBox.Top = 10 * Height / 100;
 
             rbtnEdit.BackColor = Sessions.Sessions.BUTTON_COLOR;
             rbtnEdit.Text = "Chỉnh sửa";
@@ -100,6 +106,9 @@ namespace BlueBirdCoffeManager.Forms
 
         private void pictureBox_Paint(object sender, PaintEventArgs e)
         {
+            //e.Graphics.DrawImage(Properties.Resources._2px, 0, 0);
+            //e.Graphics.DrawImage(Utils.ImagUtils.RotateImage(Properties.Resources.door, 180), 150, 150, 50, 50);
+
             for (int i = 0; i < rectangles.Count; i++)
             {
                 var item = rectangles[i];
@@ -109,9 +118,13 @@ namespace BlueBirdCoffeManager.Forms
                 sf.Alignment = StringAlignment.Center;
 
                 Bitmap? table_image = null;
-                var tlbSize = tables[i].Size.Split(",");
-                int w = int.Parse(tlbSize[0]);
-                int h = int.Parse(tlbSize[1]);
+                var tlbSize = tables[i].Size.Split("-");
+
+                int w = (int)(double.Parse(tlbSize[0]) * Sessions.Sessions.TABLE_WORK_SPACE.Value.X / 100);
+                int h = (int)(double.Parse(tlbSize[1]) * Sessions.Sessions.TABLE_WORK_SPACE.Value.Y / 100);
+
+                //int w = int.Parse(tlbSize[0]);
+                //int h = int.Parse(tlbSize[1]);
 
                 if (tables[i].Rotation == 90 || tables[i].Rotation == 270)
                 {

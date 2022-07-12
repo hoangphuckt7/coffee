@@ -30,10 +30,10 @@
         {
             this.floorPanel = new System.Windows.Forms.Panel();
             this.lbOrder = new System.Windows.Forms.Label();
-            this.tableOrderPanel = new System.Windows.Forms.Panel();
             this.lbArea = new System.Windows.Forms.Label();
             this.cbFloors = new System.Windows.Forms.ComboBox();
             this.areaPanel = new System.Windows.Forms.Panel();
+            this.tableOrderPanel = new System.Windows.Forms.Panel();
             this.tablePanel = new System.Windows.Forms.Panel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.floorPanel.SuspendLayout();
@@ -60,15 +60,6 @@
             this.lbOrder.TabIndex = 4;
             this.lbOrder.Text = "Hóa đơn";
             this.lbOrder.Visible = false;
-            // 
-            // tableOrderPanel
-            // 
-            this.tableOrderPanel.Location = new System.Drawing.Point(22, 129);
-            this.tableOrderPanel.Name = "tableOrderPanel";
-            this.tableOrderPanel.Size = new System.Drawing.Size(155, 231);
-            this.tableOrderPanel.TabIndex = 3;
-            this.tableOrderPanel.Visible = false;
-            this.tableOrderPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.tableOrderPanel_Paint);
             // 
             // lbArea
             // 
@@ -99,11 +90,20 @@
             this.areaPanel.Visible = false;
             this.areaPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.areaPanel_Paint);
             // 
+            // tableOrderPanel
+            // 
+            this.tableOrderPanel.Location = new System.Drawing.Point(22, 129);
+            this.tableOrderPanel.Name = "tableOrderPanel";
+            this.tableOrderPanel.Size = new System.Drawing.Size(155, 231);
+            this.tableOrderPanel.TabIndex = 3;
+            this.tableOrderPanel.Visible = false;
+            this.tableOrderPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.tableOrderPanel_Paint);
+            // 
             // tablePanel
             // 
-            this.tablePanel.Location = new System.Drawing.Point(581, 52);
+            this.tablePanel.Location = new System.Drawing.Point(268, 52);
             this.tablePanel.Name = "tablePanel";
-            this.tablePanel.Size = new System.Drawing.Size(191, 378);
+            this.tablePanel.Size = new System.Drawing.Size(504, 378);
             this.tablePanel.TabIndex = 1;
             // 
             // TableForm

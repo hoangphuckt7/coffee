@@ -30,12 +30,12 @@ namespace BlueBirdCoffeManager.Models
 
         public void ConvertToRectangle()
         {
-            string[] pos = this.Position.Split(",");
-            string[] size = this.Size.Split(",");
-            Rectangle = new Rectangle(int.Parse(pos[0]), int.Parse(pos[1]), int.Parse(size[0]), int.Parse(size[1]));
+            var wW = Sessions.Sessions.TABLE_WORK_SPACE.Value.X;
+            var wH = Sessions.Sessions.TABLE_WORK_SPACE.Value.Y;
+            string[] pos = this.Position.Split("-");
+            string[] size = this.Size.Split("-");
+            Rectangle = new Rectangle((int)(double.Parse(pos[0]) * wW / 100), (int)(double.Parse(pos[1]) * wH / 100), (int)(double.Parse(size[0]) * wW / 100), (int)(double.Parse(size[1]) * wH / 100));
         }
-
-
     }
 
     public class TableUpdateModel

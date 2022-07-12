@@ -45,7 +45,7 @@ namespace BlueBirdCoffeManager.Forms
             var itemWidth = 25 * (this.Width - curLeft * 2 - marLeft * 3) / 100;
             var itemHeigh = 30 * Height / 100;
 
-            _matchItem = ITEMS.Where(s => s.Name.Contains(_searchItem)).Where(s => _categoryId == null || s.Category.Id == _categoryId.Value).ToList();
+            _matchItem = ITEMS.Where(s => s.Name.ToLower().Contains(_searchItem.ToLower())).Where(s => _categoryId == null || s.Category.Id == _categoryId.Value).ToList();
 
             foreach (var item in _matchItem)
             {

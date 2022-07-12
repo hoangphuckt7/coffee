@@ -21,9 +21,6 @@ namespace BlueBirdCoffeManager.Forms
         private void MainForm_Load(object sender, EventArgs e)
         {
             #region Setup Data
-            this.dataLable.Visible = false;
-            Sessions.Sessions.MINIMUM_HEIGH = dataLable.Height;
-            Sessions.Sessions.MINIMUM_WIDTH = dataLable.Width;
             #endregion
 
             #region screen setup

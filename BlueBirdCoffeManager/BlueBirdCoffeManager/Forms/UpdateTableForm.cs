@@ -82,9 +82,10 @@ namespace BlueBirdCoffeManager.Forms
                 sf.LineAlignment = StringAlignment.Center;
                 sf.Alignment = StringAlignment.Center;
 
-                var tlbSize = tables[i].Size.Split(",");
-                int w = int.Parse(tlbSize[0]);
-                int h = int.Parse(tlbSize[1]);
+                var tlbSize = tables[i].Size.Split("-");
+
+                int w = (int)(double.Parse(tlbSize[0]) * Sessions.Sessions.TABLE_WORK_SPACE.Value.X / 100);
+                int h = (int)(double.Parse(tlbSize[1]) * Sessions.Sessions.TABLE_WORK_SPACE.Value.Y / 100);
 
                 if (tables[i].Rotation == 90 || tables[i].Rotation == 270)
                 {
@@ -125,12 +126,21 @@ namespace BlueBirdCoffeManager.Forms
             isMouseDown = true;
         }
 
+        int? mCurX;
+        int? mCurY;
+
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
             if (isMouseDown == true && selected_index != -1 && btnMove.Checked)
             {
-                selected_item.X = e.X;
-                selected_item.Y = e.Y;
+                if (mCurX == null) mCurX = e.X;
+                if (mCurY == null) mCurY = e.Y;
+
+                selected_item.X -= mCurX.Value - e.X;
+                selected_item.Y -= mCurY.Value - e.Y;
+
+                mCurX = e.X;
+                mCurY = e.Y;
 
                 if (selected_item.Right > pictureBox.Width)
                 {
@@ -197,6 +207,8 @@ namespace BlueBirdCoffeManager.Forms
             selected_index = -1;
             x = 0;
             y = 0;
+            mCurX = null;
+            mCurY = null;
         }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
@@ -259,15 +271,14 @@ namespace BlueBirdCoffeManager.Forms
                 var models = new List<TableUpdateModel>();
                 for (int i = 0; i < rectangles.Count; i++)
                 {
-
                     var tableUpdate = new TableUpdateModel()
                     {
                         Id = (tables[i].Id == null || tables[i].Id == Guid.Empty) ? Guid.NewGuid() : tables[i].Id,
                         Description = tables[i].Description,
                         FloorId = floorId,
-                        Position = rectangles[i].X + "," + rectangles[i].Y,
+                        Position = ((double)rectangles[i].X * 100) / Sessions.Sessions.TABLE_WORK_SPACE.Value.X + "-" + ((double)rectangles[i].Y * 100) / Sessions.Sessions.TABLE_WORK_SPACE.Value.Y,
                         Shape = tables[i].Shape,
-                        Size = rectangles[i].Width + "," + rectangles[i].Height,
+                        Size = ((double)rectangles[i].Width * 100) / Sessions.Sessions.TABLE_WORK_SPACE.Value.X + "-" + ((double)rectangles[i].Height * 100) / Sessions.Sessions.TABLE_WORK_SPACE.Value.Y,
                         Rotation = tables[i].Rotation
                     };
                     models.Add(tableUpdate);
@@ -289,7 +300,7 @@ namespace BlueBirdCoffeManager.Forms
             }
         }
 
-        private void btnAddRec_Click(object sender, EventArgs e)
+        private void AddShape(string shape)
         {
             if (string.IsNullOrEmpty(txtName.Text))
             {
@@ -305,14 +316,14 @@ namespace BlueBirdCoffeManager.Forms
             int x = 0;
             int y = 0;
 
-            int width = Screen.PrimaryScreen.Bounds.Width * 4/100;
-            int height = Screen.PrimaryScreen.Bounds.Height * 6/100;
+            int width = 4;
+            int height = 6;
 
             var table = new TableViewModel()
             {
                 Description = txtName.Text,
                 Position = x + "," + y,
-                Shape = "Rectangle",
+                Shape = shape,
                 Size = width + "," + height,
                 Rectangle = new Rectangle(x, y, width, height)
             };
@@ -320,39 +331,17 @@ namespace BlueBirdCoffeManager.Forms
             rectangles.Add(table.Rectangle.Value);
 
             txtName.Text = "";
+        }
+
+        private void btnAddRec_Click(object sender, EventArgs e)
+        {
+            AddShape("Rectangle");
             Refresh();
         }
 
         private void btnAddElipse_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtName.Text))
-            {
-                const string message = "Vui lòng nhập tên bàn";
-                const string caption = "Thông tin";
-                var rr = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                // If the no button was pressed ...
-                if (rr == DialogResult.OK)
-                {
-                }
-                return;
-            }
-            int x = 0;
-            int y = 0;
-            int width = Screen.PrimaryScreen.Bounds.Height * 10 / 100;
-            int height = Screen.PrimaryScreen.Bounds.Height * 10 / 100;
-
-            var table = new TableViewModel()
-            {
-                Description = txtName.Text,
-                Position = x + "," + y,
-                Shape = "Ellipse",
-                Size = width + "," + height,
-                Rectangle = new Rectangle(x, y, width, height)
-            };
-            tables.Add(table);
-            rectangles.Add(table.Rectangle.Value);
-
-            txtName.Text = "";
+            AddShape("Ellipse");
             Refresh();
         }
 

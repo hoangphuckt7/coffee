@@ -151,10 +151,10 @@ namespace BlueBirdCoffeManager.Forms
                         Label lbsugar = new()
                         {
                             Text = "Đường",
-                            Left = plusButton.Left,
+                            Left = lbName.Left,
                             Top = curTop,
                             Font = Sessions.Sessions.NOMAL_FONT,
-                            Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5)
+                            Width = (7 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.7) ? 7 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.7)
                         };
 
                         Label numSugar = new();
@@ -177,7 +177,7 @@ namespace BlueBirdCoffeManager.Forms
 
                         numSugar.Text = sgValue + "%";
                         numSugar.Top = curTop;
-                        numSugar.Left = plusSugar.Left + plusSugar.Width + 10;
+                        numSugar.Left = plusSugar.Left + plusSugar.Width;
                         numSugar.Font = Sessions.Sessions.NOMAL_FONT;
                         numSugar.Width = (5 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 5 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
 
@@ -199,18 +199,18 @@ namespace BlueBirdCoffeManager.Forms
                         minusSugar.Height = roundButtonSize.Width;
 
                         Label lbsplit = new();
-                        lbsplit.Text = "/";
-                        lbsplit.Left = minusSugar.Left + minusSugar.Width + 20;
+                        lbsplit.Text = "-";
+                        lbsplit.Left = minusSugar.Left + minusSugar.Width;
                         lbsplit.Top = curTop;
                         lbsplit.Font = Sessions.Sessions.NOMAL_FONT;
                         lbsplit.Width = 10;
 
                         Label lbIce = new();
                         lbIce.Text = "Đá";
-                        lbIce.Left = lbsplit.Left + lbsplit.Width + 5;
+                        lbIce.Left = lbsplit.Left + lbsplit.Width;
                         lbIce.Top = curTop;
                         lbIce.Font = Sessions.Sessions.NOMAL_FONT;
-                        lbIce.Width = (4 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 4 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
+                        lbIce.Width = (4 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1) ? 4 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1);
 
                         Label numIce = new();
 
@@ -232,7 +232,7 @@ namespace BlueBirdCoffeManager.Forms
 
                         numIce.Text = iceValue + "%";
                         numIce.Top = curTop;
-                        numIce.Left = plusIce.Left + plusIce.Width + 10;
+                        numIce.Left = plusIce.Left + plusIce.Width;
                         numIce.Font = Sessions.Sessions.NOMAL_FONT;
                         numIce.Width = (5 * Width / 100 > Sessions.Sessions.MINIMUM_WIDTH * 1.5) ? 5 * Width / 100 : (int)(Sessions.Sessions.MINIMUM_WIDTH * 1.5);
 
@@ -253,6 +253,14 @@ namespace BlueBirdCoffeManager.Forms
                         minusIce.Width = roundButtonSize.Width;
                         minusIce.Height = roundButtonSize.Width;
 
+                        TextBox note = new()
+                        {
+                            PlaceholderText = "Ghi chú",
+                            Left = minusIce.Left + minusIce.Width + 10,
+                            Top = curTop,
+                        };
+                        note.Width = Width - note.Left - 5 * Width / 100;
+
                         pnData.Controls.Add(lbsugar);
                         pnData.Controls.Add(plusSugar);
                         pnData.Controls.Add(numSugar);
@@ -262,6 +270,7 @@ namespace BlueBirdCoffeManager.Forms
                         pnData.Controls.Add(plusIce);
                         pnData.Controls.Add(numIce);
                         pnData.Controls.Add(minusIce);
+                        pnData.Controls.Add(note);
 
                         curTop += lbsugar.Height + 10;
                     }
@@ -356,6 +365,7 @@ namespace BlueBirdCoffeManager.Forms
             Label type = new()
             {
                 Text = "Hình thức:",
+                Width = 90,
                 Left = 2 * Width / 100,
                 Top = ttLabel.Top + ttLabel.Height + 20,
                 Font = Sessions.Sessions.NOMAL_BOLD_FONT,
@@ -368,16 +378,19 @@ namespace BlueBirdCoffeManager.Forms
             int reWidth = oFooterPanel.Width - type.Width - type.Left - 2 * Width / 100;
 
             isTable.Text = "Tại bàn";
+            isTable.Width = 90;
             isTable.Top = type.Top;
             isTable.Checked = false;
             isTable.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
 
             isTakeAway.Text = "Mang đi";
+            isTakeAway.Width = 90;
             isTakeAway.Top = type.Top;
             isTakeAway.Checked = false;
             isTakeAway.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
 
             unknow.Text = "Chưa rõ bàn";
+            unknow.Width = 120;
             unknow.Top = type.Top;
             unknow.Checked = true;
             unknow.Font = Sessions.Sessions.NOMAL_BOLD_FONT;

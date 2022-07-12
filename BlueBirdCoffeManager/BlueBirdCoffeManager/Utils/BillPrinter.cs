@@ -14,11 +14,10 @@ namespace BlueBirdCoffeManager.Utils
             var line = 175;
             DateTime orderDate = DateTime.Now;
             #region print
-            Font font = new Font("Calibri", 11, GraphicsUnit.Point);
+            Font font = new Font("Calibri", 10F, GraphicsUnit.Point);
             Font boldFont = new Font("Calibri", 13, FontStyle.Bold, GraphicsUnit.Point);
 
-
-            Bitmap bmp = new Bitmap(302, 400);
+            Bitmap bmp = new(302, 400);
 
             List<TempOrderDetailModel> models = new List<TempOrderDetailModel>()
                 {
@@ -31,11 +30,21 @@ namespace BlueBirdCoffeManager.Utils
                 string date = DateTime.Now.Hour + ":" + DateTime.Now.Minute + "p - " + DateTime.Now.Day + "/" + DateTime.Now.Month + "/" + DateTime.Now.Year;
 
                 g.Clear(Color.White);
+
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                //Compositing Mode can't be set since string needs source over to be valid
+                g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                //And an additional step to make sure text is proper anti-aliased and takes advantage
+                //of clear type as necessary
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
                 g.DrawImage(Properties.Resources.logo, -20, -10);
                 g.DrawString("THE SUN COFFEE", boldFont, Brushes.Black, 95, 0);
                 g.DrawString("Hotline: 0964101825", font, Brushes.Black, 100, 20);
-                g.DrawString("Đc:21 Nguyễn Văn Hoàng,", font, Brushes.Black, 100, 40);
-                g.DrawString("TP Kon Tum", font, Brushes.Black, 100, 60);
+                g.DrawString("Đc:359-Trần Khánh Dư,", font, Brushes.Black, 100, 40);
+                g.DrawString("P.Duy Tân, TP Kon Tum.", font, Brushes.Black, 100, 60);
                 g.DrawString($"Thời gian: {FormatDate(orderDate)}", font, Brushes.Black, 100, 80);
 
                 g.DrawString("PHIẾU THANH TOÁN", new Font("Arial", 10, FontStyle.Bold, GraphicsUnit.Point), Brushes.Black, 70, 120);
@@ -68,17 +77,16 @@ namespace BlueBirdCoffeManager.Utils
                 line += 50;
                 g.DrawString("Cảm ơn quý khách, hẹn gặp lại!", new Font("Calibri", 11, FontStyle.Italic, GraphicsUnit.Point), Brushes.Black, 35, line);
                 line += 20;
-
             }
             System.Drawing.Imaging.BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format1bppIndexed);
             Bitmap newBitmap = new(302, line, bmpData.Stride, System.Drawing.Imaging.PixelFormat.Format1bppIndexed, bmpData.Scan0);
-
             return newBitmap;
         }
 
         public static string FormatDate(DateTime date)
         {
-            return date.Hour + ":" + date.Minute + " " + date.Day + "-" + date.Month + "-" + date.Year;
+            return date.ToString("HH:mm dd-MM-yyyy");
+            //return date.Hour + ":" + String.Format("{00}", date.Minute) + " " + date.Day + "-" + String.Format("{00}", date.Month) + "-" + date.Year;
         }
 
         static string BytesToStringConverted(byte[] bytes)
