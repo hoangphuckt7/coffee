@@ -158,6 +158,7 @@ namespace BlueBirdCoffeManager.Forms
                         };
 
                         Label numSugar = new();
+                        TextBox note = new();
 
                         PictureBox plusSugar = new PictureBox();
                         plusSugar.Paint += (sender, e) =>
@@ -168,7 +169,7 @@ namespace BlueBirdCoffeManager.Forms
                         };
                         plusSugar.Click += (sender, e) =>
                         {
-                            ChangeSugarIceNum(item, curValuePos, true, false, numSugar);
+                            ChangeSugarIceNum(item, curValuePos, true, false, numSugar, note.Text);
                         };
                         plusSugar.Top = curTop;
                         plusSugar.Left = lbsugar.Left + lbsugar.Width;
@@ -191,7 +192,7 @@ namespace BlueBirdCoffeManager.Forms
                         };
                         minusSugar.Click += (sender, e) =>
                         {
-                            ChangeSugarIceNum(item, curValuePos, true, true, numSugar);
+                            ChangeSugarIceNum(item, curValuePos, true, true, numSugar, note.Text);
                         };
                         minusSugar.Top = curTop;
                         minusSugar.Left = numSugar.Left + numSugar.Width;
@@ -223,7 +224,7 @@ namespace BlueBirdCoffeManager.Forms
                         };
                         plusIce.Click += (sender, e) =>
                         {
-                            ChangeSugarIceNum(item, curValuePos, false, false, numIce);
+                            ChangeSugarIceNum(item, curValuePos, false, false, numIce, note.Text);
                         };
                         plusIce.Top = curTop;
                         plusIce.Left = lbIce.Left + lbIce.Width;
@@ -244,22 +245,37 @@ namespace BlueBirdCoffeManager.Forms
 
                             e.Graphics.DrawImage(bit_minus, 0, 0);
                         };
+
                         minusIce.Click += (sender, e) =>
                         {
-                            ChangeSugarIceNum(item, curValuePos, false, true, numIce);
+                            ChangeSugarIceNum(item, curValuePos, false, true, numIce, note.Text);
                         };
                         minusIce.Top = curTop;
                         minusIce.Left = numIce.Left + numIce.Width;
                         minusIce.Width = roundButtonSize.Width;
                         minusIce.Height = roundButtonSize.Width;
 
-                        TextBox note = new()
-                        {
-                            PlaceholderText = "Ghi chú",
-                            Left = minusIce.Left + minusIce.Width + 10,
-                            Top = curTop,
-                        };
+                        note.PlaceholderText = "Ghi chú";
+                        note.Left = minusIce.Left + minusIce.Width + 10;
+                        note.Top = curTop;
+                        note.Text = numValue[curValuePos].Note;
+
                         note.Width = Width - note.Left - 5 * Width / 100;
+
+                        note.TextChanged += (sender, e) =>
+                        {
+                            var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue, Note = note.Text };
+
+                            var curItem = Sessions.Order.CurrentOrder.OrderDetail.First(f => f.ItemId == item.ItemId);
+
+                            Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
+
+                            var de = JsonConvert.DeserializeObject<List<DetailValue>>(curItem.Description);
+                            de[curValuePos] = changedValue;
+                            curItem.Description = JsonConvert.SerializeObject(de);
+
+                            Sessions.Order.CurrentOrder.OrderDetail.Add(curItem);
+                        };
 
                         pnData.Controls.Add(lbsugar);
                         pnData.Controls.Add(plusSugar);
@@ -452,6 +468,7 @@ namespace BlueBirdCoffeManager.Forms
             submitButton.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
             submitButton.BackColor = Sessions.Sessions.BUTTON_COLOR;
             submitButton.Top = oFooterPanel.Height - submitButton.Height - 10;
+            if (Sessions.Order.CurrentOrder.OrderDetail.Count < 1) { submitButton.Enabled = false; submitButton.BackColor = Color.Gray; }
 
             isTable.CheckedChanged += (sender, e) =>
             {
@@ -480,9 +497,37 @@ namespace BlueBirdCoffeManager.Forms
                 lableArea.Visible = false;
             };
 
-            submitButton.Click += (sender, ev) =>
+            submitButton.Click += async (sender, ev) =>
             {
-                printBill.Print();
+                if (Sessions.Order.CurrentOrder.OrderDetail.Count < 1)
+                {
+                    return;
+                }
+
+                const string messageEx = "Xác nhận thông tin order.";
+                const string captionEx = "Xác nhận";
+                var result = MessageBox.Show(messageEx, captionEx, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                // If the no button was pressed ...
+                if (result == DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                if (isTable.Checked) Sessions.Order.CurrentOrder.TableId = tables[cbTable.SelectedIndex < 0 ? 0 : cbTable.SelectedIndex].Id;
+
+                if (isTakeAway.Checked) printBill.Print();
+
+                var data = await ApiBuilder.SendRequest("api/Order", Sessions.Order.CurrentOrder, RequestMethod.POST);
+
+                //Refresh
+                Sessions.Order.CurrentOrder.OrderDetail = new List<OrderDetailViewModel>();
+
+                _orderDataPanel.Controls.Clear();
+                OrderDataForm myForm = new OrderDataForm(_orderDataPanel);
+                myForm.TopLevel = false;
+                myForm.AutoScroll = true;
+                _orderDataPanel.Controls.Add(myForm);
+                myForm.Show();
             };
 
             oFooterPanel.Controls.Add(quanLable);
@@ -493,7 +538,6 @@ namespace BlueBirdCoffeManager.Forms
 
             //Split
             oFooterPanel.Controls.Add(splitPanel1);
-
 
             oFooterPanel.Controls.Add(type);
             oFooterPanel.Controls.Add(isTable);
@@ -540,7 +584,7 @@ namespace BlueBirdCoffeManager.Forms
             _orderDataPanel.Controls.Add(myForm);
             myForm.Show();
         }
-        private void ChangeSugarIceNum(OrderDetailViewModel item, int curValuePos, bool sugar, bool minus, Label lb)
+        private void ChangeSugarIceNum(OrderDetailViewModel item, int curValuePos, bool sugar, bool minus, Label lb, string note)
         {
             var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(item.Description);
 
@@ -561,7 +605,7 @@ namespace BlueBirdCoffeManager.Forms
             }
 
             //Save change
-            var changedValue = new DetailValue() { Ice = changedIce, Sugar = changedSugar };
+            var changedValue = new DetailValue() { Ice = changedIce, Sugar = changedSugar, Note = note };
             numValue[curValuePos] = changedValue;
             Sessions.Order.CurrentOrder.OrderDetail.Remove(item);
             item.Description = JsonConvert.SerializeObject(numValue);

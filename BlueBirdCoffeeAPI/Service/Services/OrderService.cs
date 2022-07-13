@@ -47,7 +47,7 @@ namespace Service.Services
             var order = new Order()
             {
                 TableId = models.TableId,
-                EmployeeId = employeeId
+                //EmployeeId = employeeId
             };
 
             try
