@@ -30,6 +30,8 @@ namespace BlueBirdCoffeManager.Forms
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
 
+            if (Sessions.Order.CurrentOrder.OrderDetail.Count == 0) Sessions.Order.Option = new();
+
             this.oDataPanel.Top = 0;
             this.oDataPanel.Left = 0;
             this.oDataPanel.BackColor = Color.White;
@@ -67,10 +69,16 @@ namespace BlueBirdCoffeManager.Forms
 
                 //Name
                 Label lbName = new();
+                lbName.AllowDrop = true;
+                lbName.AutoSize = false;
                 lbName.Text = Sessions.ItemSession.ItemData.First(f => f.Id == item.ItemId).Name;
+
                 lbName.Top = curTop;
                 lbName.Left = 2 * Width / 100;
-                lbName.Font = Sessions.Sessions.NOMAL_FONT;
+                lbName.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+                lbName.Width = 35 * Width / 100;
+                var nameH = (int)Math.Round((lbName.Text.Length * lbName.Font.Size / lbName.Width), MidpointRounding.AwayFromZero);
+                lbName.Height *= nameH > 1 ? nameH : 1;
 
                 var roundButtonSize = new Size(20, 20);
 
@@ -299,8 +307,8 @@ namespace BlueBirdCoffeManager.Forms
 
                 //Add to control
 
-                pnData.Controls.Add(lbQuantity);
                 pnData.Controls.Add(lbName);
+                pnData.Controls.Add(lbQuantity);
                 pnData.Controls.Add(minusButton);
                 pnData.Controls.Add(plusButton);
                 pnData.Controls.Add(lbPrice);
@@ -393,22 +401,27 @@ namespace BlueBirdCoffeManager.Forms
 
             int reWidth = oFooterPanel.Width - type.Width - type.Left - 2 * Width / 100;
 
+            if (!Sessions.Order.Option.Unknow && !Sessions.Order.Option.Table && !Sessions.Order.Option.TakeAway)
+            {
+                Sessions.Order.Option.Unknow = true;
+            }
+
             isTable.Text = "Tại bàn";
             isTable.Width = 90;
             isTable.Top = type.Top;
-            isTable.Checked = false;
+            isTable.Checked = Sessions.Order.Option.Table;
             isTable.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
 
             isTakeAway.Text = "Mang đi";
             isTakeAway.Width = 90;
             isTakeAway.Top = type.Top;
-            isTakeAway.Checked = false;
+            isTakeAway.Checked = Sessions.Order.Option.TakeAway;
             isTakeAway.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
 
             unknow.Text = "Chưa rõ bàn";
             unknow.Width = 120;
             unknow.Top = type.Top;
-            unknow.Checked = true;
+            unknow.Checked = Sessions.Order.Option.Unknow;
             unknow.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
 
             isTable.Left = oFooterPanel.Width - reWidth;
@@ -430,7 +443,7 @@ namespace BlueBirdCoffeManager.Forms
             cbArea.DropDownStyle = ComboBoxStyle.DropDownList;
             cbArea.DataSource = Sessions.Area.Areas.Select(s => s.Description).ToList();
             cbArea.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
-            cbArea.Visible = false;
+            cbArea.Visible = Sessions.Order.Option.Table;
 
             cbArea.SelectedIndexChanged += async (sender, e) =>
             {
@@ -447,14 +460,14 @@ namespace BlueBirdCoffeManager.Forms
                 Font = Sessions.Sessions.NOMAL_BOLD_FONT,
                 Text = "Bàn: ",
                 TextAlign = ContentAlignment.MiddleLeft,
-                Visible = false
+                Visible = Sessions.Order.Option.Table
             };
 
             cbTable.Top = unknow.Top + unknow.Height + 10;
             cbTable.Left = lableTable.Left + lableTable.Width;
             cbTable.DropDownStyle = ComboBoxStyle.DropDownList;
             cbTable.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
-            cbTable.Visible = false;
+            cbTable.Visible = Sessions.Order.Option.Table;
 
             var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[0].Id, null, RequestMethod.GET);
             var tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
@@ -477,6 +490,9 @@ namespace BlueBirdCoffeManager.Forms
                 cbTable.Visible = true;
                 lableTable.Visible = true;
                 lableArea.Visible = true;
+                Sessions.Order.Option.Table = true;
+                Sessions.Order.Option.Unknow = false;
+                Sessions.Order.Option.TakeAway = false;
             };
 
             isTakeAway.CheckedChanged += (sender, e) =>
@@ -486,6 +502,9 @@ namespace BlueBirdCoffeManager.Forms
                 cbTable.Visible = false;
                 lableTable.Visible = false;
                 lableArea.Visible = false;
+                Sessions.Order.Option.Table = false;
+                Sessions.Order.Option.Unknow = false;
+                Sessions.Order.Option.TakeAway = true;
             };
 
             unknow.CheckedChanged += (sender, e) =>
@@ -495,6 +514,9 @@ namespace BlueBirdCoffeManager.Forms
                 cbTable.Visible = false;
                 lableTable.Visible = false;
                 lableArea.Visible = false;
+                Sessions.Order.Option.Table = false;
+                Sessions.Order.Option.Unknow = true;
+                Sessions.Order.Option.TakeAway = false;
             };
 
             submitButton.Click += async (sender, ev) =>
@@ -521,6 +543,7 @@ namespace BlueBirdCoffeManager.Forms
 
                 //Refresh
                 Sessions.Order.CurrentOrder.OrderDetail = new List<OrderDetailViewModel>();
+                Sessions.Order.Option = new();
 
                 _orderDataPanel.Controls.Clear();
                 OrderDataForm myForm = new OrderDataForm(_orderDataPanel);
@@ -617,7 +640,7 @@ namespace BlueBirdCoffeManager.Forms
 
         private void printBill_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            var curImg = BillPrinter.SetupBill();
+            var curImg = BillPrinter.SetupBill(Sessions.Order.CurrentOrder);
             //var final = ImageUtils.ResizeImage(curImg, curImg.Width / 2, curImg.Height / 2);
             e.Graphics.DrawImage(curImg, 0, 0);
         }

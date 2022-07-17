@@ -9,7 +9,7 @@ namespace BlueBirdCoffeManager.Utils
 {
     public class BillPrinter
     {
-        public static Bitmap SetupBill()
+        public static Bitmap SetupBill(OrderCreateModel models)
         {
             var line = 175;
             DateTime orderDate = DateTime.Now;
@@ -17,13 +17,7 @@ namespace BlueBirdCoffeManager.Utils
             Font font = new Font("Calibri", 10F, GraphicsUnit.Point);
             Font boldFont = new Font("Calibri", 13, FontStyle.Bold, GraphicsUnit.Point);
 
-            Bitmap bmp = new(302, 400);
-
-            List<TempOrderDetailModel> models = new List<TempOrderDetailModel>()
-                {
-                    new TempOrderDetailModel(){ Name = "Cà phê sữa", Price = 19000, Quantity = 2},
-                    new TempOrderDetailModel(){ Name = "Trà sữa", Price = 19000, Quantity = 1}
-                };
+            Bitmap bmp = new(302, line + 20 + 50 + 20 + models.OrderDetail.Count * 20 * 5);
 
             using (Graphics g = Graphics.FromImage(bmp))
             {
@@ -40,7 +34,7 @@ namespace BlueBirdCoffeManager.Utils
                 //of clear type as necessary
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                g.DrawImage(Properties.Resources.logo, -20, -10);
+                g.DrawImage(Properties.Resources.logo, -20, -10, 130, 130);
                 g.DrawString("THE SUN COFFEE", boldFont, Brushes.Black, 95, 0);
                 g.DrawString("Hotline: 0964101825", font, Brushes.Black, 100, 20);
                 g.DrawString("Đc:359-Trần Khánh Dư,", font, Brushes.Black, 100, 40);
@@ -50,27 +44,38 @@ namespace BlueBirdCoffeManager.Utils
                 g.DrawString("PHIẾU THANH TOÁN", new Font("Arial", 10, FontStyle.Bold, GraphicsUnit.Point), Brushes.Black, 70, 120);
 
                 g.DrawString("TT", font, Brushes.Black, 0, 145);
-                g.DrawString("Tên món", font, Brushes.Black, 30, 145);
+                g.DrawString("Tên món", font, Brushes.Black, 25, 145);
                 g.DrawString("SL", font, Brushes.Black, 120, 145);
                 g.DrawString("Đơn giá", font, Brushes.Black, 150, 145);
                 g.DrawString("T.Tiền", font, Brushes.Black, 230, 145);
                 g.DrawString("───────────────────────────────────────────────────────", font, Brushes.Black, 0, 155);
 
-                for (int i = 0; i < models.Count; i++)
+                for (int i = 0; i < models.OrderDetail.Count; i++)
                 {
+                    var itemData = Sessions.ItemSession.ItemData.First(f => f.Id == models.OrderDetail[i].ItemId);
+
                     g.DrawString(i + 1 + "", font, Brushes.Black, 0, line);
-                    g.DrawString(models[i].Name, font, Brushes.Black, 30, line);
-                    g.DrawString(models[i].Quantity + "", font, Brushes.Black, 120, line);
-                    g.DrawString(FormatPrice(models[i].Price), font, Brushes.Black, 150, line);
-                    g.DrawString(FormatPrice(models[i].Price * models[i].Quantity), font, Brushes.Black, 220, line);
-                    line += 20;
+
+                    var nameLines = BreakLines(new List<string>() { itemData.Name }, 15);
+
+                    int nLine = line;
+                    foreach (var item in nameLines)
+                    {
+                        g.DrawString(item, font, Brushes.Black, 25, nLine);
+                        nLine += 20;
+                    }
+
+                    g.DrawString(models.OrderDetail[i].Quantity + "", font, Brushes.Black, 120, line);
+                    g.DrawString(FormatPrice(itemData.Price), font, Brushes.Black, 150, line);
+                    g.DrawString(FormatPrice(itemData.Price * models.OrderDetail[i].Quantity), font, Brushes.Black, 220, line);
+                    line = line + 20 + (nameLines.Count - 1) * 20;
                 }
 
                 g.DrawString("───────────────────────────────────────────────────────", font, Brushes.Black, 0, line);
                 line += 20;
                 g.DrawString("Tổng: ", boldFont, Brushes.Black, 0, line);
 
-                var total = models.Select(s => s.Price * s.Quantity).Sum();
+                var total = models.OrderDetail.Select(s => Sessions.ItemSession.ItemData.First(f => f.Id == s.ItemId).Price * s.Quantity).Sum();
                 var stringTotal = FormatPrice(total);
                 g.DrawString(stringTotal, boldFont, Brushes.Black, 295 - stringTotal.Length * 13, line);
 
@@ -89,20 +94,43 @@ namespace BlueBirdCoffeManager.Utils
             //return date.Hour + ":" + String.Format("{00}", date.Minute) + " " + date.Day + "-" + String.Format("{00}", date.Month) + "-" + date.Year;
         }
 
-        static string BytesToStringConverted(byte[] bytes)
-        {
-            using (var stream = new MemoryStream(bytes))
-            {
-                using (var streamReader = new StreamReader(stream))
-                {
-                    return streamReader.ReadToEnd();
-                }
-            }
-        }
-
         public static string FormatPrice(double price)
         {
             return price.ToString("#,###", Application.CurrentCulture.NumberFormat);
+        }
+
+        public static List<string> BreakLines(List<string> lines, int limit)
+        {
+            var result = new List<string>();
+
+            bool continueBreak = false;
+
+            foreach (var item in lines)
+            {
+                if (item.Length <= limit)
+                {
+                    result.Add(item);
+                }
+                else
+                {
+                    for (int i = limit; limit > 0; i--)
+                    {
+                        if (item[i] == ' ')
+                        {
+                            var br = item.Substring(0, i);
+                            result.Add(br);
+                            result.Add(item.Substring(item.Length - (item.Length - br.Length - 1)));
+
+                            continueBreak = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (continueBreak) { return BreakLines(result, limit); }
+
+            return result;
         }
     }
     #endregion

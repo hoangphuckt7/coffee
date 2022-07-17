@@ -21,10 +21,18 @@ namespace BlueBirdCoffeManager.Sessions
     public class Order
     {
         public static OrderCreateModel CurrentOrder = new();
+        public static OrderOption Option = new();
     }
 
     public class Area
     {
         public static List<DescriptionViewModel> Areas = new();
+    }
+
+    public class OrderOption
+    {
+        public bool TakeAway { get; set; }
+        public bool Unknow { get; set; }
+        public bool Table { get; set; }
     }
 }
