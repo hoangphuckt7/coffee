@@ -248,7 +248,7 @@ namespace BlueBirdCoffeManager.Forms
             if (rr == DialogResult.Yes)
             {
                 _dataPanel.Controls.Clear();
-                TableDataForm myForm = new(_dataPanel, floorId, _tableOrderPanel);
+                TableDataForm myForm = new(_dataPanel, floorId, _tableOrderPanel, _dataPanel);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 _dataPanel.Controls.Add(myForm);
@@ -292,7 +292,7 @@ namespace BlueBirdCoffeManager.Forms
                 await ApiBuilder.SendRequest("api/Table/UpdateOrAdd", models, RequestMethod.PUT);
 
                 _dataPanel.Controls.Clear();
-                TableDataForm myForm = new(_dataPanel, floorId, _tableOrderPanel);
+                TableDataForm myForm = new(_dataPanel, floorId, _tableOrderPanel, _dataPanel);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 _dataPanel.Controls.Add(myForm);

@@ -20,14 +20,17 @@ namespace BlueBirdCoffeManager.Forms
     }
     public partial class TableOrdersForm : Form
     {
+        private readonly Panel _mainPanel;
         private readonly Guid _tableId;
-        public TableOrdersForm(Guid tableId)
+        public TableOrdersForm(Guid tableId, Panel mainPanel)
         {
             _tableId = tableId;
             InitializeComponent();
+            this._mainPanel = mainPanel;
         }
 
         List<CheckSelected> checkSelecteds = new();
+        List<OrderViewModel> orders;
 
         private async void TableOrdersForm_LoadAsync(object sender, EventArgs e)
         {
@@ -67,7 +70,7 @@ namespace BlueBirdCoffeManager.Forms
             mainData.AutoScroll = true;
 
             var data = await ApiBuilder.SendRequest<List<OrderViewModel>>("api/Order/Table/" + _tableId, null, RequestMethod.GET);
-            var orders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
+            orders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
 
             if (orders.Count > 0)
             {
@@ -304,7 +307,13 @@ namespace BlueBirdCoffeManager.Forms
 
         private void btnCheckoutAll_Click(object sender, EventArgs e)
         {
+            _mainPanel.Controls.Clear();
 
+            BillForm myForm = new BillForm(orders);
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            _mainPanel.Controls.Add(myForm);
+            myForm.Show();
         }
 
         private void AutoDisableButton(Button button)

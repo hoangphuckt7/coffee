@@ -194,7 +194,7 @@ namespace BlueBirdCoffeManager.Forms
 
             dataPanel.Controls.Clear();
 
-            OrderForm myForm = new OrderForm();
+            BillForm myForm = new BillForm(null);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             dataPanel.Controls.Add(myForm);

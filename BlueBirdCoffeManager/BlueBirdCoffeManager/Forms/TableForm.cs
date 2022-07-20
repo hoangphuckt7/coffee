@@ -105,7 +105,7 @@ namespace BlueBirdCoffeManager.Forms
         private void cbFloors_SelectedIndexChanged(object sender, EventArgs e)
         {
             tablePanel.Controls.Clear();
-            TableDataForm myForm = new TableDataForm(tablePanel, FLOORS[cbFloors.SelectedIndex].Id, tableOrderPanel);
+            TableDataForm myForm = new TableDataForm(tablePanel, FLOORS[cbFloors.SelectedIndex].Id, tableOrderPanel, _dataPanel);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             tablePanel.Controls.Add(myForm);
