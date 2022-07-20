@@ -80,10 +80,16 @@ namespace BlueBirdCoffeManager.Forms
             var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + floorId, null, RequestMethod.GET);
             tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
 
-            foreach (var item in tables)
+            var firstIndex = -1;
+
+            for (int i = 0; i < tables.Count; i++)
             {
-                item.ConvertToRectangle();
+                tables[i].ConvertToRectangle();
+                if (tables[i].CurrentOrder > 0) firstIndex = i;
             }
+
+            if (firstIndex == -1 && tables.Count > 0) firstIndex = 0;
+
             rectangles = tables.Select(s => s.Rectangle.Value).ToList();
 
             rbtnEdit.BackColor = Sessions.Sessions.BUTTON_COLOR;
@@ -100,6 +106,8 @@ namespace BlueBirdCoffeManager.Forms
             {
                 //listBox1.Items.Add(ex.Message);
             }
+
+            if (firstIndex != -1) ShowFirst(firstIndex);
 
             Refresh();
         }
@@ -200,6 +208,16 @@ namespace BlueBirdCoffeManager.Forms
                 _tableOrderPanel.Controls.Add(myForm);
                 myForm.Show();
             }
+        }
+
+        private void ShowFirst(int select)
+        {
+            _tableOrderPanel.Controls.Clear();
+            TableOrdersForm myForm = new TableOrdersForm(tables[select].Id.Value);
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            _tableOrderPanel.Controls.Add(myForm);
+            myForm.Show();
         }
     }
 }

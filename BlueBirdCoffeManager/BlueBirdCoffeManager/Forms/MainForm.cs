@@ -1,4 +1,8 @@
-﻿using System;
+﻿using BlueBirdCoffeManager.DataAccessLayer;
+using BlueBirdCoffeManager.Models;
+using BlueBirdCoffeManager.Sessions;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,9 +22,14 @@ namespace BlueBirdCoffeManager.Forms
             InitializeComponent();
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private async void MainForm_Load(object sender, EventArgs e)
         {
             #region Setup Data
+            if (ItemSession.ItemData.Count == 0)
+            {
+                var itemsRequest = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET);
+                ItemSession.ItemData = JsonConvert.DeserializeObject<List<ItemViewModel>>(itemsRequest);
+            }
             #endregion
 
             #region screen setup
@@ -46,6 +55,19 @@ namespace BlueBirdCoffeManager.Forms
             this.btnTable.FlatStyle = FlatStyle.Flat;
             this.btnTable.Font = MAIN_MENU_BUTTON_FONT;
 
+            #region split
+            Panel sp1 = new Panel()
+            {
+                Top = 0,
+                Width = 1,
+                Height = menuPanel.Height,
+                Left = btnTable.Left + btnTable.Width,
+                BackColor = Color.White
+            };
+
+            menuPanel.Controls.Add(sp1);
+            #endregion
+
             this.btnOrder.Top = 0;
             this.btnOrder.Left = btnTable.Left + btnTable.Width + (int)((0.07 * Width) / 100);
             this.btnOrder.ForeColor = Color.White;
@@ -55,6 +77,29 @@ namespace BlueBirdCoffeManager.Forms
             this.btnOrder.TabStop = false;
             this.btnOrder.FlatStyle = FlatStyle.Flat;
             this.btnOrder.Font = MAIN_MENU_BUTTON_FONT;
+
+            #region split
+            Panel sp2 = new Panel()
+            {
+                Top = 0,
+                Width = 1,
+                Height = menuPanel.Height,
+                Left = btnOrder.Left + btnOrder.Width,
+                BackColor = Color.White
+            };
+
+            menuPanel.Controls.Add(sp2);
+            #endregion
+
+            this.btnBill.Top = 0;
+            this.btnBill.Left = btnOrder.Left + btnOrder.Width + (int)((0.07 * Width) / 100);
+            this.btnBill.ForeColor = Color.White;
+            this.btnBill.Size = new Size(menuPanel.Width * 10 / 100, menuPanel.Height);
+            this.btnBill.BackColor = Sessions.Sessions.MENU_COLOR;
+            this.btnBill.FlatAppearance.BorderSize = 0;
+            this.btnBill.TabStop = false;
+            this.btnBill.FlatStyle = FlatStyle.Flat;
+            this.btnBill.Font = MAIN_MENU_BUTTON_FONT;
 
             pictureBox1.Height = Height * 2 / 100;
             pictureBox1.Width = Width * 1 / 100;
@@ -89,6 +134,7 @@ namespace BlueBirdCoffeManager.Forms
         {
             ActiveButton(this.btnTable);
             DeactiveButton(this.btnOrder);
+            DeactiveButton(this.btnBill);
 
             dataPanel.Controls.Clear();
             TableForm myForm = new TableForm(dataPanel, null);
@@ -102,6 +148,7 @@ namespace BlueBirdCoffeManager.Forms
         {
             ActiveButton(this.btnOrder);
             DeactiveButton(this.btnTable);
+            DeactiveButton(this.btnBill);
 
             dataPanel.Controls.Clear();
 
@@ -137,6 +184,21 @@ namespace BlueBirdCoffeManager.Forms
                 MainForm mainScreen = (MainForm)Application.OpenForms["MainForm"];
                 mainScreen.Close();
             }
+        }
+
+        private void btnBill_Click(object sender, EventArgs e)
+        {
+            ActiveButton(this.btnBill);
+            DeactiveButton(this.btnOrder);
+            DeactiveButton(this.btnTable);
+
+            dataPanel.Controls.Clear();
+
+            OrderForm myForm = new OrderForm();
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            dataPanel.Controls.Add(myForm);
+            myForm.Show();
         }
     }
 }

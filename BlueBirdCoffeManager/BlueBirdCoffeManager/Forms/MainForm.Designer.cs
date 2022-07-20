@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuPanel = new System.Windows.Forms.Panel();
+            this.btnBill = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lbUsername = new System.Windows.Forms.Label();
             this.lbDot = new System.Windows.Forms.Label();
@@ -42,6 +43,7 @@
             // 
             // menuPanel
             // 
+            this.menuPanel.Controls.Add(this.btnBill);
             this.menuPanel.Controls.Add(this.pictureBox1);
             this.menuPanel.Controls.Add(this.lbUsername);
             this.menuPanel.Controls.Add(this.lbDot);
@@ -51,6 +53,16 @@
             this.menuPanel.Name = "menuPanel";
             this.menuPanel.Size = new System.Drawing.Size(634, 117);
             this.menuPanel.TabIndex = 2;
+            // 
+            // btnBill
+            // 
+            this.btnBill.Location = new System.Drawing.Point(219, 12);
+            this.btnBill.Name = "btnBill";
+            this.btnBill.Size = new System.Drawing.Size(75, 23);
+            this.btnBill.TabIndex = 5;
+            this.btnBill.Text = "Bill";
+            this.btnBill.UseVisualStyleBackColor = true;
+            this.btnBill.Click += new System.EventHandler(this.btnBill_Click);
             // 
             // pictureBox1
             // 
@@ -132,5 +144,6 @@
         private Label lbDot;
         private Label lbUsername;
         private PictureBox pictureBox1;
+        private Button btnBill;
     }
 }

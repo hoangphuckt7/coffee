@@ -94,10 +94,10 @@ namespace BlueBirdCoffeManager.Forms
         private void areaPanel_Paint(object sender, PaintEventArgs e)
         {
             ControlPaint.DrawBorder(e.Graphics, areaPanel.ClientRectangle,
-            Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid, // left
-            Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid, // top
-            Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid, // right
-            Sessions.Sessions.MENU_COLOR, 3, ButtonBorderStyle.Solid);// bottom
+            Sessions.Sessions.MENU_COLOR, 1, ButtonBorderStyle.Solid, // left
+            Sessions.Sessions.MENU_COLOR, 1, ButtonBorderStyle.Solid, // top
+            Sessions.Sessions.MENU_COLOR, 1, ButtonBorderStyle.Solid, // right
+            Sessions.Sessions.MENU_COLOR, 1, ButtonBorderStyle.Solid);// bottom
         }
 
         //Bitmap bmp = new Bitmap(500, 500);
@@ -128,7 +128,7 @@ namespace BlueBirdCoffeManager.Forms
         {
             ControlPaint.DrawBorder(e.Graphics, tableOrderPanel.ClientRectangle,
             Color.DimGray, 0, ButtonBorderStyle.Solid, // left
-            Color.DimGray, 3, ButtonBorderStyle.Solid, // top
+            Color.DimGray, 1, ButtonBorderStyle.Solid, // top
             Color.DimGray, 0, ButtonBorderStyle.Solid, // right
             Color.DimGray, 0, ButtonBorderStyle.Solid);// bottom
         }
