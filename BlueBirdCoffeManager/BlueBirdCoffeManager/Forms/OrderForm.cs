@@ -76,11 +76,11 @@ namespace BlueBirdCoffeManager.Forms
             cbCategory.DataSource = cbCategoryData;
             cbCategory.SelectedIndex = CATEGORY_INDEX;
 
-            this.lbCategory.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
-            this.lbSearch.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            this.lbCategory.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            this.lbSearch.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
 
-            this.cbCategory.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
-            this.txtSearch.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            this.cbCategory.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            this.txtSearch.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
 
             this.lbCategory.Top = 50 * toolboxPanel.Height / 100 - lbCategory.Height * 50 / 100;
             this.lbSearch.Top = lbCategory.Top;
@@ -145,11 +145,11 @@ namespace BlueBirdCoffeManager.Forms
             this.txtSearch.Focus();
             #endregion
             #region Order Screen setup
-            this.lbName.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
-            this.lbQuantity.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
-            this.lbPrice.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
-            this.lbSubTotal.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
-            this.cbDetails.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            this.lbName.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            this.lbQuantity.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            this.lbPrice.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            this.lbSubTotal.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            this.cbDetails.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
 
             this.oHeaderPanel.Top = 0;
             this.oHeaderPanel.Left = 0;

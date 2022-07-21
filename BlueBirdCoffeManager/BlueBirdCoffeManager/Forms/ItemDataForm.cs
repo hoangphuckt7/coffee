@@ -59,16 +59,16 @@ namespace BlueBirdCoffeManager.Forms
 
                 if (curPos == 0)
                 {
-                    finalNameLines = (int)Math.Ceiling((item.Name.Length * Sessions.Sessions.NOMAL_BOLD_FONT.Size / (itemWidth * 50 / 100)));
+                    finalNameLines = (int)Math.Ceiling((item.Name.Length * Sessions.Sessions.NORMAL_BOLD_FONT.Size / (itemWidth * 50 / 100)));
                     if (_matchItem.Count > i + 1)
                     {
-                        var next = (int)Math.Ceiling(_matchItem[i + 1].Name.Length * Sessions.Sessions.NOMAL_BOLD_FONT.Size / (itemWidth * 50 / 100));
+                        var next = (int)Math.Ceiling(_matchItem[i + 1].Name.Length * Sessions.Sessions.NORMAL_BOLD_FONT.Size / (itemWidth * 50 / 100));
                         if (next > finalNameLines) finalNameLines = next;
                     }
                     if (_matchItem.Count > i + 2)
                     {
-                        var x = _matchItem[i + 1].Name.Length * Sessions.Sessions.NOMAL_BOLD_FONT.Size / (itemWidth * 50 / 100);
-                        var next = (int)Math.Ceiling(_matchItem[i + 1].Name.Length * Sessions.Sessions.NOMAL_BOLD_FONT.Size / (itemWidth * 50 / 100));
+                        var x = _matchItem[i + 1].Name.Length * Sessions.Sessions.NORMAL_BOLD_FONT.Size / (itemWidth * 50 / 100);
+                        var next = (int)Math.Ceiling(_matchItem[i + 1].Name.Length * Sessions.Sessions.NORMAL_BOLD_FONT.Size / (itemWidth * 50 / 100));
                         if (next > finalNameLines) finalNameLines = next;
                     }
                 }
@@ -100,7 +100,7 @@ namespace BlueBirdCoffeManager.Forms
                 lbName.AllowDrop = true;
                 lbName.AutoSize = false;
                 lbName.Text = item.Name;
-                lbName.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+                lbName.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
                 lbName.Width = itemPanel.Width * 45 / 100;
                 lbName.Height = itemPanel.Height - pictureBox.Height;
                 lbName.Top = pictureBox.Height;
@@ -119,9 +119,9 @@ namespace BlueBirdCoffeManager.Forms
                 //Price
                 Label lbPrice = new();
                 lbPrice.Text = "Giá:" + item.Price.ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
-                lbPrice.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+                lbPrice.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
                 lbPrice.TextAlign = ContentAlignment.MiddleLeft;
-                lbPrice.Width = (int)(Sessions.Sessions.NOMAL_BOLD_FONT.Size * lbPrice.Text.Length) - 10;
+                lbPrice.Width = (int)(Sessions.Sessions.NORMAL_BOLD_FONT.Size * lbPrice.Text.Length) - 10;
                 lbPrice.Left = lbName.Width;
                 lbPrice.Top = pictureBox.Height + (itemPanel.Height - pictureBox.Height) / 2 - lbPrice.Height / 2;
 

@@ -44,7 +44,7 @@ namespace BlueBirdCoffeManager.Forms
             this.tablePanel.Top = 0;
             this.tablePanel.Size = new Size(Width - floorPanel.Width, Height);
 
-            lbArea.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            lbArea.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             lbArea.Top = floorPanel.Height * 5 / 100;
             lbArea.Left = (floorPanel.Width - lbArea.Width) / 2;
 
@@ -56,7 +56,7 @@ namespace BlueBirdCoffeManager.Forms
             }
 
             cbFloors.DataSource = FLOORS.Select(s => s.Description).ToList();
-            this.cbFloors.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            this.cbFloors.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             this.cbFloors.DropDownStyle = ComboBoxStyle.DropDownList;
             this.cbFloors.Top = lbArea.Top + lbArea.Height + Height * 3 / 100;
             this.cbFloors.Left = (floorPanel.Width - cbFloors.Width) / 2;
@@ -77,7 +77,7 @@ namespace BlueBirdCoffeManager.Forms
             tableOrderPanel.Size = new Size(floorPanel.Width * 90 / 100, Height - tableOrderPanel.Top - Height * 1 / 100);
             tableOrderPanel.Left = floorPanel.Width * 5 / 100;
 
-            lbOrder.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            lbOrder.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             lbOrder.Top = areaPanel.Top + areaPanel.Height + 6 * Height / 100;
             lbOrder.Left = lbArea.Left;
 

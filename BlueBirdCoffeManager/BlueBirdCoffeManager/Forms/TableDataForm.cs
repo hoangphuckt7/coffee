@@ -176,7 +176,7 @@ namespace BlueBirdCoffeManager.Forms
                 }
 
                 e.Graphics.DrawImage(Utils.ImagUtils.RotateImage(table_image, tables[i].Rotation), Rectangle.Round(item));
-                e.Graphics.DrawString(tables[i].Description, Sessions.Sessions.NOMAL_FONT, Brushes.Black, item, sf);
+                e.Graphics.DrawString(tables[i].Description, Sessions.Sessions.NORMAL_FONT, Brushes.Black, item, sf);
             }
         }
 

@@ -112,7 +112,7 @@ namespace BlueBirdCoffeManager.Forms
                 #region Title
                 Label lbStt = new()
                 {
-                    Font = Sessions.Sessions.NOMAL_BOLD_FONT,
+                    Font = Sessions.Sessions.NORMAL_BOLD_FONT,
                     Left = 0,
                     Text = "STT",
                     Top = orderData.Top + orderData.Height
@@ -121,7 +121,7 @@ namespace BlueBirdCoffeManager.Forms
 
                 Label lbName = new()
                 {
-                    Font = Sessions.Sessions.NOMAL_BOLD_FONT,
+                    Font = Sessions.Sessions.NORMAL_BOLD_FONT,
                     Left = lbStt.Left + lbStt.Width,
                     Text = "Tên món",
                     Top = orderData.Top + orderData.Height
@@ -129,11 +129,11 @@ namespace BlueBirdCoffeManager.Forms
 
                 Label lbQuan = new()
                 {
-                    Font = Sessions.Sessions.NOMAL_BOLD_FONT,
+                    Font = Sessions.Sessions.NORMAL_BOLD_FONT,
                     Text = "Số lượng",
                     Top = orderData.Top + orderData.Height,
                 };
-                lbQuan.Width = (int)(Sessions.Sessions.NOMAL_BOLD_FONT.Size * 8);
+                lbQuan.Width = (int)(Sessions.Sessions.NORMAL_BOLD_FONT.Size * 8);
                 lbQuan.Left = Width - lbQuan.Width;
 
                 pnSlide.Controls.Add(lbStt);
@@ -149,7 +149,7 @@ namespace BlueBirdCoffeManager.Forms
 
                     Label stt = new()
                     {
-                        Font = Sessions.Sessions.NOMAL_FONT,
+                        Font = Sessions.Sessions.NORMAL_FONT,
                         Top = itemTop,
                         Left = 0,
                         Text = "" + (j + 1),
@@ -158,7 +158,7 @@ namespace BlueBirdCoffeManager.Forms
                     var itemName = Sessions.ItemSession.ItemData.FirstOrDefault(f => f.Id == item.ItemId).Name;
                     Label name = new()
                     {
-                        Font = Sessions.Sessions.NOMAL_FONT,
+                        Font = Sessions.Sessions.NORMAL_FONT,
                         Top = itemTop,
                         Left = lbName.Left,
                         Text = itemName,
@@ -167,7 +167,7 @@ namespace BlueBirdCoffeManager.Forms
 
                     Label quan = new()
                     {
-                        Font = Sessions.Sessions.NOMAL_FONT,
+                        Font = Sessions.Sessions.NORMAL_FONT,
                         Top = itemTop,
                         Left = lbQuan.Left + lbQuan.Width / 3,
                         Text = item.Quantity + "",
@@ -214,7 +214,7 @@ namespace BlueBirdCoffeManager.Forms
                 #endregion
 
                 Label timeLb = new();
-                timeLb.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+                timeLb.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
                 timeLb.Text = "Giờ vào: " + order.DateCreated.Hour + ":" + order.DateCreated.Minute;
                 timeLb.Top = 0;
                 timeLb.Left = 0;
@@ -228,7 +228,7 @@ namespace BlueBirdCoffeManager.Forms
                     quantityNumber += detail.Quantity;
                 }
 
-                quantity.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+                quantity.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
                 quantity.Text = "Số món: " + quantityNumber;
                 quantity.Top = timeLb.Height;
                 quantity.Left = 0;

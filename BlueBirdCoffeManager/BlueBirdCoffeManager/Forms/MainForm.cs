@@ -113,7 +113,7 @@ namespace BlueBirdCoffeManager.Forms
             lbDot.Top = 63 * menuPanel.Height / 100 - lbDot.Height;
             lbDot.Left = pictureBox1.Left - lbDot.Width - (int)(0.5 * Width / 100);
 
-            lbUsername.Font = Sessions.Sessions.NOMAL_BOLD_FONT;
+            lbUsername.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             lbUsername.Top = 63 * menuPanel.Height / 100 - lbDot.Height;
             lbUsername.Text = Sessions.Sessions.USER_NAME;
             lbUsername.ForeColor = Color.White;
