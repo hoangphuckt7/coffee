@@ -34,7 +34,8 @@ namespace BlueBirdCoffeManager.Utils
                 //of clear type as necessary
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                g.DrawImage(Properties.Resources.logo, -20, -10, 130, 130);
+                var x = ImageUtils.ResizeImage(Properties.Resources.logo, 100, 100);
+                g.DrawImage(ImageUtils.ResizeImage(Properties.Resources.logo, 110, 110), -5, 0, 110, 110);
                 g.DrawString("THE SUN COFFEE", boldFont, Brushes.Black, 95, 0);
                 g.DrawString("Hotline: 0964101825", font, Brushes.Black, 100, 20);
                 g.DrawString("Đc:359-Trần Khánh Dư,", font, Brushes.Black, 100, 40);
