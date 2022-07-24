@@ -6,12 +6,17 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>blue-tr.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Utils\Icons\**" />
     <EmbeddedResource Remove="Utils\Icons\**" />
     <None Remove="Utils\Icons\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="blue-tr.ico" />
   </ItemGroup>
 
   <ItemGroup>

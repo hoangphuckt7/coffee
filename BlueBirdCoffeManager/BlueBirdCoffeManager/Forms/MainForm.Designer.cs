@@ -126,6 +126,7 @@
             this.ClientSize = new System.Drawing.Size(919, 465);
             this.Controls.Add(this.dataPanel);
             this.Controls.Add(this.menuPanel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
