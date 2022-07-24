@@ -640,6 +640,12 @@ namespace BlueBirdCoffeManager.Forms
 
         private void printBill_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
+            Sessions.Order.OldOrders.Add(new OrderHistoryModel()
+            {
+                DateCreated = DateTime.Now,
+                OrderDetail = Sessions.Order.CurrentOrder.OrderDetail,
+                TableId = Sessions.Order.CurrentOrder.TableId
+            });
             var curImg = BillPrinter.SetupBill(Sessions.Order.CurrentOrder);
             //var final = ImageUtils.ResizeImage(curImg, curImg.Width / 2, curImg.Height / 2);
             e.Graphics.DrawImage(curImg, 0, 0);

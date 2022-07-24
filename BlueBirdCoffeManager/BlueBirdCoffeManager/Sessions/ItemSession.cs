@@ -22,6 +22,8 @@ namespace BlueBirdCoffeManager.Sessions
     {
         public static OrderCreateModel CurrentOrder = new();
         public static OrderOption Option = new();
+
+        public static List<OrderHistoryModel> OldOrders = new();
     }
 
     public class Area

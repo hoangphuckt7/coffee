@@ -1,4 +1,5 @@
 ﻿using BlueBirdCoffeManager.Models;
+using BlueBirdCoffeManager.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,8 +14,8 @@ namespace BlueBirdCoffeManager.Forms
 {
     public partial class BillForm : Form
     {
-        private readonly List<OrderViewModel> _orders;
-        public BillForm(List<OrderViewModel> orders)
+        private readonly List<OrderViewModel>? _orders;
+        public BillForm(List<OrderViewModel>? orders)
         {
             InitializeComponent();
             _orders = orders;
@@ -26,15 +27,35 @@ namespace BlueBirdCoffeManager.Forms
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
 
-            tablesPanel.Width = (int)(33.33 * Width / 100);
+            leftPanel.Width = (int)(33.33 * Width / 100);
             mainPanel.Width = (int)(33.33 * Width / 100);
             lostBillPanel.Width = (int)(33.33 * Width / 100);
 
-            tablesPanel.Height = Height;
+            areaPanel.Top = 0;
+            areaPanel.Left = 0;
+            areaPanel.Width = leftPanel.Width;
+            areaPanel.Height = 50 * leftPanel.Height / 100;
+            areaPanel.BackColor = Color.Black;
+
+            oldBillPanel.Top = areaPanel.Top + areaPanel.Height;
+            oldBillPanel.Left = 0;
+            oldBillPanel.Height = leftPanel.Height - areaPanel.Height;
+            oldBillPanel.Width = leftPanel.Width-1;
+            oldBillPanel.AutoScroll = true;
+            oldBillPanel.BackColor = Color.White;
+            oldBillPanel.Paint += (sender, e) =>
+            {
+                ControlPaint.DrawBorder(e.Graphics, oldBillPanel.ClientRectangle,
+                        Color.FromKnownColor(KnownColor.Control), 1, ButtonBorderStyle.Solid, // left
+                        Color.FromKnownColor(KnownColor.Control), 1, ButtonBorderStyle.Solid, // top
+                        Color.FromKnownColor(KnownColor.DarkGray), 0, ButtonBorderStyle.Solid, // right
+                        Color.FromKnownColor(KnownColor.DarkGray), 0, ButtonBorderStyle.Solid);// bottom
+            };
+
+            leftPanel.Height = Height;
             mainPanel.Height = Height;
             lostBillPanel.Height = Height;
 
-            tablesPanel.BackColor = Color.Gray;
             mainPanel.BackColor = Color.White;
             lostBillPanel.BackColor = Color.Blue;
 
@@ -53,7 +74,7 @@ namespace BlueBirdCoffeManager.Forms
             lbQuan.Top = lbName.Top;
             lbTotal.Top = lbName.Top;
 
-            lbQuan.Left = 50 * tablesPanel.Width / 100;
+            lbQuan.Left = 50 * leftPanel.Width / 100;
             lbPrice.Left = lbQuan.Left + lbQuan.Width + 5 * Width / 100;
 
             var curTop = lbSTT.Top + lbSTT.Height;
@@ -154,6 +175,77 @@ namespace BlueBirdCoffeManager.Forms
                 mainPanel.Controls.Add(total);
 
                 curTop += name.Height;
+            }
+
+            lbOldOrdersTilte.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbOldOrdersTilte.Left = leftPanel.Width / 2 - lbOldOrdersTilte.Width / 2;
+            lbOldOrdersTilte.Top = 10;
+
+            curTop = lbOldOrdersTilte.Height + lbOldOrdersTilte.Top;
+
+            var oldOrdersData = Sessions.Order.OldOrders.OrderByDescending(f => f.DateCreated);
+
+            foreach (var item in oldOrdersData)
+            {
+                var borderPanel = new Panel()
+                {
+                    Top = curTop,
+                    Width = oldBillPanel.Width - 5,
+                    Left = 0
+                };
+
+                var timeLabel = new Label()
+                {
+                    Font = Sessions.Sessions.NORMAL_FONT,
+                    Top = 1,
+                    Text = "Thời gian: " + BillPrinter.FormatDate(item.DateCreated),
+                };
+                timeLabel.Width = (int)(timeLabel.Text.Length * timeLabel.Font.Size);
+
+                var typeLabel = new Label()
+                {
+                    Font = Sessions.Sessions.NORMAL_FONT,
+                    Top = timeLabel.Top + timeLabel.Height,
+                    Text = item.TableId != null ? "Bàn số: " + item.TableId.ToString() : "Hình thức: Mang đi"
+                };
+                typeLabel.Width = (int)(typeLabel.Text.Length * typeLabel.Font.Size);
+
+                borderPanel.Height = typeLabel.Height + timeLabel.Height + 5;
+
+                curTop += borderPanel.Height + 5;
+
+                borderPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
+                borderPanel.Paint += (sender, e) =>
+                {
+                    //Panel? panel = sender as Panel;
+                    //Rectangle rect = panel.ClientRectangle;
+                    //rect.Width--;
+                    //rect.Height--;
+                    //e.Graphics.DrawRectangle(Pens.Red, rect);
+
+                    ControlPaint.DrawBorder(e.Graphics, borderPanel.ClientRectangle,
+                    Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // left
+                    Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // top
+                    Color.FromKnownColor(KnownColor.DarkGray), 1, ButtonBorderStyle.Solid, // right
+                    Color.FromKnownColor(KnownColor.DarkGray), 1, ButtonBorderStyle.Solid);// bottom
+                };
+
+                borderPanel.MouseMove += (sender, e) =>
+                {
+                    borderPanel.BackColor = Color.FromKnownColor(KnownColor.DarkGray);
+                };
+
+                borderPanel.MouseLeave += (sender, e) =>
+                {
+                    borderPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
+                };
+
+
+                borderPanel.Controls.Add(timeLabel);
+                borderPanel.Controls.Add(typeLabel);
+
+
+                oldBillPanel.Controls.Add(borderPanel);
             }
         }
     }

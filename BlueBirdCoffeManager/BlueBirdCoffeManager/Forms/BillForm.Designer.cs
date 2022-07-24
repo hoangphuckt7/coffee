@@ -28,7 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tablesPanel = new System.Windows.Forms.Panel();
+            this.leftPanel = new System.Windows.Forms.Panel();
+            this.oldBillPanel = new System.Windows.Forms.Panel();
+            this.lbOldOrdersTilte = new System.Windows.Forms.Label();
+            this.areaPanel = new System.Windows.Forms.Panel();
             this.mainPanel = new System.Windows.Forms.Panel();
             this.lbTotal = new System.Windows.Forms.Label();
             this.lbPrice = new System.Windows.Forms.Label();
@@ -36,16 +39,44 @@
             this.lbName = new System.Windows.Forms.Label();
             this.lbSTT = new System.Windows.Forms.Label();
             this.lostBillPanel = new System.Windows.Forms.Panel();
+            this.leftPanel.SuspendLayout();
+            this.oldBillPanel.SuspendLayout();
             this.mainPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tablesPanel
+            // leftPanel
             // 
-            this.tablesPanel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.tablesPanel.Location = new System.Drawing.Point(0, 0);
-            this.tablesPanel.Name = "tablesPanel";
-            this.tablesPanel.Size = new System.Drawing.Size(200, 450);
-            this.tablesPanel.TabIndex = 0;
+            this.leftPanel.Controls.Add(this.oldBillPanel);
+            this.leftPanel.Controls.Add(this.areaPanel);
+            this.leftPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.leftPanel.Location = new System.Drawing.Point(0, 0);
+            this.leftPanel.Name = "leftPanel";
+            this.leftPanel.Size = new System.Drawing.Size(200, 450);
+            this.leftPanel.TabIndex = 0;
+            // 
+            // oldBillPanel
+            // 
+            this.oldBillPanel.Controls.Add(this.lbOldOrdersTilte);
+            this.oldBillPanel.Location = new System.Drawing.Point(0, 235);
+            this.oldBillPanel.Name = "oldBillPanel";
+            this.oldBillPanel.Size = new System.Drawing.Size(200, 203);
+            this.oldBillPanel.TabIndex = 1;
+            // 
+            // lbOldOrdersTilte
+            // 
+            this.lbOldOrdersTilte.AutoSize = true;
+            this.lbOldOrdersTilte.Location = new System.Drawing.Point(74, 0);
+            this.lbOldOrdersTilte.Name = "lbOldOrdersTilte";
+            this.lbOldOrdersTilte.Size = new System.Drawing.Size(44, 15);
+            this.lbOldOrdersTilte.TabIndex = 0;
+            this.lbOldOrdersTilte.Text = "Lịch sử";
+            // 
+            // areaPanel
+            // 
+            this.areaPanel.Location = new System.Drawing.Point(0, 12);
+            this.areaPanel.Name = "areaPanel";
+            this.areaPanel.Size = new System.Drawing.Size(200, 217);
+            this.areaPanel.TabIndex = 0;
             // 
             // mainPanel
             // 
@@ -120,10 +151,13 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.lostBillPanel);
             this.Controls.Add(this.mainPanel);
-            this.Controls.Add(this.tablesPanel);
+            this.Controls.Add(this.leftPanel);
             this.Name = "BillForm";
             this.Text = "BillForm";
             this.Load += new System.EventHandler(this.BillForm_Load);
+            this.leftPanel.ResumeLayout(false);
+            this.oldBillPanel.ResumeLayout(false);
+            this.oldBillPanel.PerformLayout();
             this.mainPanel.ResumeLayout(false);
             this.mainPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -132,7 +166,7 @@
 
         #endregion
 
-        private Panel tablesPanel;
+        private Panel leftPanel;
         private Panel mainPanel;
         private Panel lostBillPanel;
         private Label lbSTT;
@@ -140,5 +174,8 @@
         private Label lbPrice;
         private Label lbQuan;
         private Label lbName;
+        private Panel oldBillPanel;
+        private Panel areaPanel;
+        private Label lbOldOrdersTilte;
     }
 }

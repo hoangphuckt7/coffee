@@ -35,6 +35,11 @@ namespace BlueBirdCoffeManager.Models
         public List<OrderDetailViewModel> OrderDetail { get; set; } = new List<OrderDetailViewModel>();
     }
 
+    public class OrderHistoryModel : OrderCreateModel
+    {
+        public DateTime DateCreated { get; set; }
+    }
+
     public class DetailValue
     {
         public int Sugar { get; set; }
