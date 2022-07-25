@@ -50,9 +50,9 @@ namespace BlueBirdCoffeManager.Forms
 
             areaPanel.Top = 0;
             areaPanel.Left = 0;
-            areaPanel.Width = leftPanel.Width;
+            areaPanel.Width = leftPanel.Width -1;
             areaPanel.Height = 50 * leftPanel.Height / 100;
-            areaPanel.BackColor = Color.Black;
+            areaPanel.BackColor = Color.White;
 
             oldBillPanel.Top = areaPanel.Top + areaPanel.Height;
             oldBillPanel.Left = 0;
@@ -393,10 +393,19 @@ namespace BlueBirdCoffeManager.Forms
         private void pnHistoryTitle_Paint(object sender, PaintEventArgs e)
         {
             ControlPaint.DrawBorder(e.Graphics, pnHistoryTitle.ClientRectangle,
-                                Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // left
-                                Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // top
+                                Color.FromKnownColor(KnownColor.Black), 0, ButtonBorderStyle.Solid, // left
+                                Color.FromKnownColor(KnownColor.Black), 3, ButtonBorderStyle.Solid, // top
                                 Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // right
                                 Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid);// bottom
+        }
+
+        private void areaPanel_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, pnHistoryTitle.ClientRectangle,
+                                Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // left
+                                Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // top
+                                Color.FromKnownColor(KnownColor.Control), 1, ButtonBorderStyle.Solid, // right
+                                Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid);// bottom
         }
     }
 }

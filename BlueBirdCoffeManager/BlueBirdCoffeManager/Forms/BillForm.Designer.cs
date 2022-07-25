@@ -94,6 +94,7 @@
             this.areaPanel.Name = "areaPanel";
             this.areaPanel.Size = new System.Drawing.Size(200, 217);
             this.areaPanel.TabIndex = 0;
+            this.areaPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.areaPanel_Paint);
             // 
             // mainPanel
             // 
