@@ -316,16 +316,16 @@ namespace BlueBirdCoffeManager.Forms
             int x = 0;
             int y = 0;
 
-            int width = 4;
-            int height = 6;
+            int width = 10;
+            int height = 10;
 
             var table = new TableViewModel()
             {
                 Description = txtName.Text,
                 Position = x + "," + y,
                 Shape = shape,
-                Size = width + "," + height,
-                Rectangle = new Rectangle(x, y, width, height)
+                Size = width + "-" + height,
+                Rectangle = new Rectangle(x, y, width * Sessions.Sessions.TABLE_WORK_SPACE.Value.X / 100, height * Sessions.Sessions.TABLE_WORK_SPACE.Value.Y / 100)
             };
             tables.Add(table);
             rectangles.Add(table.Rectangle.Value);
