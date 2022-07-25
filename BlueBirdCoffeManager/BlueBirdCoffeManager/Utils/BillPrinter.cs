@@ -9,15 +9,15 @@ namespace BlueBirdCoffeManager.Utils
 {
     public class BillPrinter
     {
-        public static Bitmap SetupBill(OrderCreateModel models)
+        public static Bitmap SetupBill(OrderCreateModel models, DateTime? orderDate)
         {
             var line = 175;
-            DateTime orderDate = DateTime.Now;
+            if (orderDate == null) orderDate = DateTime.Now;
             #region print
             Font font = new Font("Calibri", 10F, GraphicsUnit.Point);
             Font boldFont = new Font("Calibri", 13, FontStyle.Bold, GraphicsUnit.Point);
 
-            Bitmap bmp = new(302, line + 20 + 50 + 20 + models.OrderDetail.Count * 20 * 5);
+            Bitmap bmp = new(270, line + 20 + 50 + 20 + models.OrderDetail.Count * 20 * 5);
 
             using (Graphics g = Graphics.FromImage(bmp))
             {
@@ -77,7 +77,7 @@ namespace BlueBirdCoffeManager.Utils
                 g.DrawString("Tổng: ", boldFont, Brushes.Black, 0, line);
 
                 var total = models.OrderDetail.Select(s => Sessions.ItemSession.ItemData.First(f => f.Id == s.ItemId).Price * s.Quantity).Sum();
-                var stringTotal = FormatPrice(total);
+                var stringTotal = FormatPrice(total) + "₫";
                 g.DrawString(stringTotal, boldFont, Brushes.Black, 295 - stringTotal.Length * 13, line);
 
                 line += 50;
@@ -85,13 +85,13 @@ namespace BlueBirdCoffeManager.Utils
                 line += 20;
             }
             System.Drawing.Imaging.BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format1bppIndexed);
-            Bitmap newBitmap = new(302, line, bmpData.Stride, System.Drawing.Imaging.PixelFormat.Format1bppIndexed, bmpData.Scan0);
+            Bitmap newBitmap = new(270, line, bmpData.Stride, System.Drawing.Imaging.PixelFormat.Format1bppIndexed, bmpData.Scan0);
             return newBitmap;
         }
 
-        public static string FormatDate(DateTime date)
+        public static string FormatDate(DateTime? date)
         {
-            return date.ToString("HH:mm dd-MM-yyyy");
+            return date.Value.ToString("HH:mm dd-MM-yyyy");
             //return date.Hour + ":" + String.Format("{00}", date.Minute) + " " + date.Day + "-" + String.Format("{00}", date.Month) + "-" + date.Year;
         }
 

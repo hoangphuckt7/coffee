@@ -646,7 +646,7 @@ namespace BlueBirdCoffeManager.Forms
                 OrderDetail = Sessions.Order.CurrentOrder.OrderDetail,
                 TableId = Sessions.Order.CurrentOrder.TableId
             });
-            var curImg = BillPrinter.SetupBill(Sessions.Order.CurrentOrder);
+            var curImg = BillPrinter.SetupBill(Sessions.Order.CurrentOrder, null);
             //var final = ImageUtils.ResizeImage(curImg, curImg.Width / 2, curImg.Height / 2);
             e.Graphics.DrawImage(curImg, 0, 0);
         }

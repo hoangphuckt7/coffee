@@ -14,7 +14,10 @@ namespace BlueBirdCoffeManager.Forms
 {
     public partial class BillForm : Form
     {
+        Label split;
         private readonly List<OrderViewModel>? _orders;
+        private const string RE_PRINT = "In lại";
+        private const string CHECK_OUT = "Thanh toán";
         public BillForm(List<OrderViewModel>? orders)
         {
             InitializeComponent();
@@ -27,9 +30,23 @@ namespace BlueBirdCoffeManager.Forms
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
 
+            oldBillPicture.Visible = false;
+
             leftPanel.Width = (int)(33.33 * Width / 100);
             mainPanel.Width = (int)(33.33 * Width / 100);
             lostBillPanel.Width = (int)(33.33 * Width / 100);
+
+            dataPanel.Width = mainPanel.Width;
+
+            btnCheckout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            btnCheckout.Top = Height - btnCheckout.Height - 10;
+            btnCheckout.Width = leftPanel.Width - 4 * leftPanel.Width / 100;
+            btnCheckout.Left = 2 * leftPanel.Width / 100;
+            btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
+
+            dataPanel.Top = 0;
+            dataPanel.Left = 0;
+            dataPanel.Height = btnCheckout.Top;
 
             areaPanel.Top = 0;
             areaPanel.Left = 0;
@@ -40,7 +57,7 @@ namespace BlueBirdCoffeManager.Forms
             oldBillPanel.Top = areaPanel.Top + areaPanel.Height;
             oldBillPanel.Left = 0;
             oldBillPanel.Height = leftPanel.Height - areaPanel.Height;
-            oldBillPanel.Width = leftPanel.Width-1;
+            oldBillPanel.Width = leftPanel.Width - 1;
             oldBillPanel.AutoScroll = true;
             oldBillPanel.BackColor = Color.White;
             oldBillPanel.Paint += (sender, e) =>
@@ -102,7 +119,7 @@ namespace BlueBirdCoffeManager.Forms
                 }
             }
 
-            Label split = new()
+            split = new()
             {
                 Top = curTop,
                 Width = mainPanel.Width,
@@ -113,7 +130,7 @@ namespace BlueBirdCoffeManager.Forms
 
             curTop += split.Height;
 
-            mainPanel.Controls.Add(split);
+            dataPanel.Controls.Add(split);
 
             for (int i = 0; i < mergeOders.Count; i++)
             {
@@ -168,11 +185,11 @@ namespace BlueBirdCoffeManager.Forms
                 price.Width = (int)(price.Text.Length * price.Font.Size);
 
 
-                mainPanel.Controls.Add(stt);
-                mainPanel.Controls.Add(name);
-                mainPanel.Controls.Add(quan);
-                mainPanel.Controls.Add(price);
-                mainPanel.Controls.Add(total);
+                dataPanel.Controls.Add(stt);
+                dataPanel.Controls.Add(name);
+                dataPanel.Controls.Add(quan);
+                dataPanel.Controls.Add(price);
+                dataPanel.Controls.Add(total);
 
                 curTop += name.Height;
             }
@@ -181,12 +198,20 @@ namespace BlueBirdCoffeManager.Forms
             lbOldOrdersTilte.Left = leftPanel.Width / 2 - lbOldOrdersTilte.Width / 2;
             lbOldOrdersTilte.Top = 10;
 
-            curTop = lbOldOrdersTilte.Height + lbOldOrdersTilte.Top;
+            pnHistoryTitle.Top = 0;
+            pnHistoryTitle.Left = 0;
+            pnHistoryTitle.BackColor = Color.FromKnownColor(KnownColor.Control);
+            pnHistoryTitle.Width = leftPanel.Width - 1;
+            pnHistoryTitle.Height = lbOldOrdersTilte.Height + lbOldOrdersTilte.Top + lbOldOrdersTilte.Top;
+
+            curTop = pnHistoryTitle.Height + pnHistoryTitle.Top + 5;
 
             var oldOrdersData = Sessions.Order.OldOrders.OrderByDescending(f => f.DateCreated);
 
             foreach (var item in oldOrdersData)
             {
+                var total = item.OrderDetail.Select(s => Sessions.ItemSession.ItemData.First(f => f.Id == s.ItemId).Price * s.Quantity).Sum();
+
                 var borderPanel = new Panel()
                 {
                     Top = curTop,
@@ -198,7 +223,7 @@ namespace BlueBirdCoffeManager.Forms
                 {
                     Font = Sessions.Sessions.NORMAL_FONT,
                     Top = 1,
-                    Text = "Thời gian: " + BillPrinter.FormatDate(item.DateCreated),
+                    Text = "Thời gian: " + BillPrinter.FormatDate(item.DateCreated) + " - Tổng: " + BillPrinter.FormatPrice(total) + "₫",
                 };
                 timeLabel.Width = (int)(timeLabel.Text.Length * timeLabel.Font.Size);
 
@@ -217,12 +242,6 @@ namespace BlueBirdCoffeManager.Forms
                 borderPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
                 borderPanel.Paint += (sender, e) =>
                 {
-                    //Panel? panel = sender as Panel;
-                    //Rectangle rect = panel.ClientRectangle;
-                    //rect.Width--;
-                    //rect.Height--;
-                    //e.Graphics.DrawRectangle(Pens.Red, rect);
-
                     ControlPaint.DrawBorder(e.Graphics, borderPanel.ClientRectangle,
                     Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // left
                     Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // top
@@ -230,7 +249,13 @@ namespace BlueBirdCoffeManager.Forms
                     Color.FromKnownColor(KnownColor.DarkGray), 1, ButtonBorderStyle.Solid);// bottom
                 };
 
+                #region mouse move
                 borderPanel.MouseMove += (sender, e) =>
+                {
+                    borderPanel.BackColor = Color.FromKnownColor(KnownColor.DarkGray);
+                };
+
+                borderPanel.MouseEnter += (sender, e) =>
                 {
                     borderPanel.BackColor = Color.FromKnownColor(KnownColor.DarkGray);
                 };
@@ -240,13 +265,138 @@ namespace BlueBirdCoffeManager.Forms
                     borderPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
                 };
 
+                timeLabel.MouseMove += (sender, e) =>
+                {
+                    borderPanel.BackColor = Color.FromKnownColor(KnownColor.DarkGray);
+                };
+
+                timeLabel.MouseLeave += (sender, e) =>
+                {
+                    borderPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
+                };
+
+                typeLabel.MouseMove += (sender, e) =>
+                {
+                    borderPanel.BackColor = Color.FromKnownColor(KnownColor.DarkGray);
+                };
+
+                typeLabel.MouseLeave += (sender, e) =>
+                {
+                    borderPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
+                };
+                #endregion
+
+                #region Click
+                borderPanel.Click += (sender, e) =>
+                {
+                    curImg = BillPrinter.SetupBill(item, item.DateCreated);
+
+                    oldBillPicture.Image = curImg;
+                    oldBillPicture.Width = curImg.Width;
+                    oldBillPicture.Height = curImg.Height;
+
+                    oldBillPicture.Left = leftPanel.Width / 2 - oldBillPicture.Width / 2;
+
+                    oldBillPicture.Top = 5 * Height / 100;
+
+                    DisableCheckout();
+                };
+
+                timeLabel.Click += (sender, e) =>
+                {
+                    curImg = BillPrinter.SetupBill(item, item.DateCreated);
+
+                    oldBillPicture.Image = curImg;
+                    oldBillPicture.Width = curImg.Width;
+                    oldBillPicture.Height = curImg.Height;
+
+                    oldBillPicture.Left = leftPanel.Width / 2 - oldBillPicture.Width / 2;
+
+                    oldBillPicture.Top = 5 * Height / 100;
+
+                    DisableCheckout();
+                };
+
+                typeLabel.Click += (sender, e) =>
+                {
+                    curImg = BillPrinter.SetupBill(item, item.DateCreated);
+
+                    oldBillPicture.Image = curImg;
+                    oldBillPicture.Width = curImg.Width;
+                    oldBillPicture.Height = curImg.Height;
+
+                    oldBillPicture.Left = leftPanel.Width / 2 - oldBillPicture.Width / 2;
+
+                    oldBillPicture.Top = 5 * Height / 100;
+
+                    DisableCheckout();
+                };
+                #endregion
 
                 borderPanel.Controls.Add(timeLabel);
                 borderPanel.Controls.Add(typeLabel);
 
-
                 oldBillPanel.Controls.Add(borderPanel);
             }
+        }
+
+        Bitmap curImg;
+
+        private void DisableCheckout()
+        {
+            lbName.Visible = false;
+            lbQuan.Visible = false;
+            lbPrice.Visible = false;
+            lbSTT.Visible = false;
+            lbTotal.Visible = false;
+            split.Visible = false;
+
+            btnCheckout.Text = RE_PRINT;
+            oldBillPicture.Visible = true;
+        }
+
+        private void EnableCheckout()
+        {
+            lbName.Visible = true;
+            lbQuan.Visible = true;
+            lbPrice.Visible = true;
+            lbSTT.Visible = true;
+            lbTotal.Visible = true;
+            split.Visible = true;
+
+            btnCheckout.Text = CHECK_OUT;
+            oldBillPicture.Visible = false;
+        }
+
+        private void oldBillPicture_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, oldBillPicture.ClientRectangle,
+                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // left
+                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // top
+                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // right
+                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid);// bottom
+        }
+
+        private void btnCheckout_Click(object sender, EventArgs e)
+        {
+            if (btnCheckout.Text == RE_PRINT)
+            {
+                printBill.Print();
+            }
+        }
+
+        private void printBill_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            e.Graphics.DrawImage(curImg, 0, 0);
+        }
+
+        private void pnHistoryTitle_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, pnHistoryTitle.ClientRectangle,
+                                Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // left
+                                Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // top
+                                Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // right
+                                Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid);// bottom
         }
     }
 }
