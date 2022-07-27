@@ -34,6 +34,8 @@
             this.lbOldOrdersTilte = new System.Windows.Forms.Label();
             this.areaPanel = new System.Windows.Forms.Panel();
             this.mainPanel = new System.Windows.Forms.Panel();
+            this.dataBotPanel = new System.Windows.Forms.Panel();
+            this.btnCheckout = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.dataPanel = new System.Windows.Forms.Panel();
             this.lbTotal = new System.Windows.Forms.Label();
             this.oldBillPicture = new System.Windows.Forms.PictureBox();
@@ -41,13 +43,13 @@
             this.lbPrice = new System.Windows.Forms.Label();
             this.lbQuan = new System.Windows.Forms.Label();
             this.lbSTT = new System.Windows.Forms.Label();
-            this.btnCheckout = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.lostBillPanel = new System.Windows.Forms.Panel();
             this.printBill = new System.Drawing.Printing.PrintDocument();
             this.leftPanel.SuspendLayout();
             this.oldBillPanel.SuspendLayout();
             this.pnHistoryTitle.SuspendLayout();
             this.mainPanel.SuspendLayout();
+            this.dataBotPanel.SuspendLayout();
             this.dataPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.oldBillPicture)).BeginInit();
             this.SuspendLayout();
@@ -98,13 +100,40 @@
             // 
             // mainPanel
             // 
+            this.mainPanel.Controls.Add(this.dataBotPanel);
             this.mainPanel.Controls.Add(this.dataPanel);
-            this.mainPanel.Controls.Add(this.btnCheckout);
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainPanel.Location = new System.Drawing.Point(200, 0);
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(600, 450);
             this.mainPanel.TabIndex = 1;
+            // 
+            // dataBotPanel
+            // 
+            this.dataBotPanel.Controls.Add(this.btnCheckout);
+            this.dataBotPanel.Location = new System.Drawing.Point(44, 295);
+            this.dataBotPanel.Name = "dataBotPanel";
+            this.dataBotPanel.Size = new System.Drawing.Size(330, 143);
+            this.dataBotPanel.TabIndex = 8;
+            // 
+            // btnCheckout
+            // 
+            this.btnCheckout.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnCheckout.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnCheckout.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btnCheckout.BorderRadius = 40;
+            this.btnCheckout.BorderSize = 0;
+            this.btnCheckout.FlatAppearance.BorderSize = 0;
+            this.btnCheckout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCheckout.ForeColor = System.Drawing.Color.White;
+            this.btnCheckout.Location = new System.Drawing.Point(98, 100);
+            this.btnCheckout.Name = "btnCheckout";
+            this.btnCheckout.Size = new System.Drawing.Size(150, 40);
+            this.btnCheckout.TabIndex = 6;
+            this.btnCheckout.Text = "Thanh toán";
+            this.btnCheckout.TextColor = System.Drawing.Color.White;
+            this.btnCheckout.UseVisualStyleBackColor = false;
+            this.btnCheckout.Click += new System.EventHandler(this.btnCheckout_Click);
             // 
             // dataPanel
             // 
@@ -114,9 +143,9 @@
             this.dataPanel.Controls.Add(this.lbPrice);
             this.dataPanel.Controls.Add(this.lbQuan);
             this.dataPanel.Controls.Add(this.lbSTT);
-            this.dataPanel.Location = new System.Drawing.Point(44, 52);
+            this.dataPanel.Location = new System.Drawing.Point(44, 12);
             this.dataPanel.Name = "dataPanel";
-            this.dataPanel.Size = new System.Drawing.Size(330, 301);
+            this.dataPanel.Size = new System.Drawing.Size(330, 277);
             this.dataPanel.TabIndex = 7;
             // 
             // lbTotal
@@ -173,25 +202,6 @@
             this.lbSTT.TabIndex = 0;
             this.lbSTT.Text = "STT";
             // 
-            // btnCheckout
-            // 
-            this.btnCheckout.BackColor = System.Drawing.Color.MediumSlateBlue;
-            this.btnCheckout.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
-            this.btnCheckout.BorderColor = System.Drawing.Color.PaleVioletRed;
-            this.btnCheckout.BorderRadius = 40;
-            this.btnCheckout.BorderSize = 0;
-            this.btnCheckout.FlatAppearance.BorderSize = 0;
-            this.btnCheckout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCheckout.ForeColor = System.Drawing.Color.White;
-            this.btnCheckout.Location = new System.Drawing.Point(107, 382);
-            this.btnCheckout.Name = "btnCheckout";
-            this.btnCheckout.Size = new System.Drawing.Size(150, 40);
-            this.btnCheckout.TabIndex = 6;
-            this.btnCheckout.Text = "Thanh toán";
-            this.btnCheckout.TextColor = System.Drawing.Color.White;
-            this.btnCheckout.UseVisualStyleBackColor = false;
-            this.btnCheckout.Click += new System.EventHandler(this.btnCheckout_Click);
-            // 
             // lostBillPanel
             // 
             this.lostBillPanel.Dock = System.Windows.Forms.DockStyle.Right;
@@ -220,6 +230,7 @@
             this.pnHistoryTitle.ResumeLayout(false);
             this.pnHistoryTitle.PerformLayout();
             this.mainPanel.ResumeLayout(false);
+            this.dataBotPanel.ResumeLayout(false);
             this.dataPanel.ResumeLayout(false);
             this.dataPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.oldBillPicture)).EndInit();
@@ -245,5 +256,6 @@
         private Label lbName;
         private System.Drawing.Printing.PrintDocument printBill;
         private Panel pnHistoryTitle;
+        private Panel dataBotPanel;
     }
 }

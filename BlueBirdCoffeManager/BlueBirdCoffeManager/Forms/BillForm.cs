@@ -38,6 +38,8 @@ namespace BlueBirdCoffeManager.Forms
 
             dataPanel.Width = mainPanel.Width;
 
+            //dataBotPanel.top
+
             btnCheckout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             btnCheckout.Top = Height - btnCheckout.Height - 10;
             btnCheckout.Width = leftPanel.Width - 4 * leftPanel.Width / 100;
