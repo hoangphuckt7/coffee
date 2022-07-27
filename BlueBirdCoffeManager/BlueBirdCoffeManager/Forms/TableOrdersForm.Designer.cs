@@ -92,6 +92,7 @@
             this.btnCheckout.TextColor = System.Drawing.Color.White;
             this.btnCheckout.UseVisualStyleBackColor = false;
             this.btnCheckout.Visible = false;
+            this.btnCheckout.Click += new System.EventHandler(this.btnCheckout_Click);
             // 
             // btnRemove
             // 
@@ -111,6 +112,7 @@
             this.btnRemove.TextColor = System.Drawing.Color.White;
             this.btnRemove.UseVisualStyleBackColor = false;
             this.btnRemove.Visible = false;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
             // TableOrdersForm
             // 

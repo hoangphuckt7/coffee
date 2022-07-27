@@ -32,5 +32,16 @@ namespace Data.ViewModels
         public Guid ItemId { get; set; }
         public int Quantity { get; set; }
         public string? Description { get; set; }
+        public bool IsMissing { get; set; }
+    }
+
+    public class SetMissingOrders
+    {
+        public List<Guid> OrderIds { get; set; }
+    }
+
+    public class SetMissingItem
+    {
+        public Guid OrderIds { get; set; }
     }
 }

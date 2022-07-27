@@ -11,6 +11,7 @@ namespace Data.Entities
     {
         public bool IsCompleted { get; set; } = false;
         public bool IsRejected { get; set; } = false;
+        public bool IsMissing { get; set; } = false;
 
         public string? RejectedReason { get; set; }
 

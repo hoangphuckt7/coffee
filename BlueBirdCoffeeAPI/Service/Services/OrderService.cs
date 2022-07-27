@@ -21,6 +21,7 @@ namespace Service.Services
     {
         Task<Guid> CreateOrder(string employeeId, OrderCreateModel models);
         List<OrderViewModel> GetByTable(Guid tableId);
+        List<OrderDetailViewModel> TodateMissingItem();
     }
     public class OrderService : IOrderService
     {
@@ -128,6 +129,57 @@ namespace Service.Services
                 .Where(o => o.TableId == tableId && o.IsDeleted == false)
                 .ToList();
             return _mapper.Map<List<OrderViewModel>>(orders);
+        }
+        public Guid SetMissingOrder(List<Guid> orderIds, string emp)
+        {
+            var order = _dbContext.Orders.FirstOrDefault(f => orderIds.Contains(f.Id));
+            if (order == null) throw new AppException("Invalid order id");
+
+            order.IsMissing = true;
+            order.EmployeeId = emp;
+
+            order.DateUpdated = DateTime.Now;
+
+            _dbContext.Update(order);
+            _dbContext.SaveChanges();
+
+            return order.Id;
+        }
+
+        public Guid SetMissingItem(List<Guid> orderIds, string emp)
+        {
+            var order = _dbContext.Orders.FirstOrDefault(f => orderIds.Contains(f.Id));
+            if (order == null) throw new AppException("Invalid order id");
+
+            order.IsMissing = true;
+            order.EmployeeId = emp;
+
+            order.DateUpdated = DateTime.Now;
+
+            _dbContext.Update(order);
+            _dbContext.SaveChanges();
+
+            return order.Id;
+        }
+
+        public List<OrderDetailViewModel> TodateMissingItem()
+        {
+            var now = DateTime.Now;
+            var orders = _dbContext.Orders.Include(s => s.OrderDetails).Where(s => s.IsMissing == true && s.DateUpdated.Year == DateTime.Now.Year && s.DateUpdated.Month == DateTime.Now.Month && s.DateUpdated.Day == DateTime.Now.Day).ToList();
+
+            var orderDetails = _dbContext.OrderDetails.Where(s => s.IsMissing == true && s.DateUpdated.Year == DateTime.Now.Year && s.DateUpdated.Month == DateTime.Now.Month && s.DateUpdated.Day == DateTime.Now.Day).ToList();
+
+            foreach (var item in orders)
+            {
+                if (item.OrderDetails != null)
+                {
+                    orderDetails.AddRange(item.OrderDetails);
+                }
+            }
+
+            orderDetails = orderDetails.DistinctBy(s => new { s.ItemId, s.OrderId }).OrderByDescending(f => f.DateUpdated).ToList();
+
+            return _mapper.Map<List<OrderDetail>, List<OrderDetailViewModel>>(orderDetails);
         }
     }
 }

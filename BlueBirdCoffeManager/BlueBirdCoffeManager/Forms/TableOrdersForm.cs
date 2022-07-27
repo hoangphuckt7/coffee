@@ -13,11 +13,6 @@ using System.Windows.Forms;
 
 namespace BlueBirdCoffeManager.Forms
 {
-    public class CheckSelected
-    {
-        public int Index { get; set; }
-        public bool Check { get; set; }
-    }
     public partial class TableOrdersForm : Form
     {
         private readonly Panel _mainPanel;
@@ -327,5 +322,39 @@ namespace BlueBirdCoffeManager.Forms
                 button.Enabled = true;
             }
         }
+
+        private void btnCheckout_Click(object sender, EventArgs e)
+        {
+            _mainPanel.Controls.Clear();
+
+            BillForm myForm = new BillForm(GetCheckedItem());
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            _mainPanel.Controls.Add(myForm);
+            myForm.Show();
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private List<OrderViewModel> GetCheckedItem()
+        {
+            var checkedOrders = new List<OrderViewModel>();
+            for (int i = 0; i < checkSelecteds.Count; i++)
+            {
+                if (checkSelecteds[i].Check)
+                {
+                    checkedOrders.Add(orders[checkSelecteds[i].Index]);
+                }
+            }
+            return checkedOrders;
+        }
+    }
+    public class CheckSelected
+    {
+        public int Index { get; set; }
+        public bool Check { get; set; }
     }
 }

@@ -27,5 +27,11 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(_orderService.GetByTable(id));
         }
+
+        [HttpGet("TodateMissingItem")]
+        public IActionResult TodateMissingItem()
+        {
+            return Ok(_orderService.TodateMissingItem());
+        }
     }
 }

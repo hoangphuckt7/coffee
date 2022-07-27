@@ -20,7 +20,6 @@ namespace Data.Entities
         public string? CasherId { get; set; }
         public virtual User? Casher { get; set; }
 
-
         [ForeignKey("Customer")]
         public string? CustomerId { get; set; }
         public virtual User? Customer { get; set; }
