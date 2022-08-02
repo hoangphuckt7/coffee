@@ -39,10 +39,6 @@
             this.cbTable = new System.Windows.Forms.ComboBox();
             this.cbArea = new System.Windows.Forms.ComboBox();
             this.tableOrderDataPn = new System.Windows.Forms.Panel();
-            this.lbTableTotal = new System.Windows.Forms.Label();
-            this.lbTablePrice = new System.Windows.Forms.Label();
-            this.lbTableQuan = new System.Windows.Forms.Label();
-            this.lbTableName = new System.Windows.Forms.Label();
             this.btnAdd = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.mainPanel = new System.Windows.Forms.Panel();
             this.dataBotPanel = new System.Windows.Forms.Panel();
@@ -61,7 +57,6 @@
             this.pnHistoryTitle.SuspendLayout();
             this.areaPanel.SuspendLayout();
             this.areaToolPanel.SuspendLayout();
-            this.tableOrderDataPn.SuspendLayout();
             this.mainPanel.SuspendLayout();
             this.dataBotPanel.SuspendLayout();
             this.dataPanel.SuspendLayout();
@@ -152,6 +147,7 @@
             this.cbTable.Name = "cbTable";
             this.cbTable.Size = new System.Drawing.Size(121, 23);
             this.cbTable.TabIndex = 3;
+            this.cbTable.SelectedIndexChanged += new System.EventHandler(this.cbTable_SelectedIndexChanged);
             // 
             // cbArea
             // 
@@ -163,50 +159,10 @@
             // 
             // tableOrderDataPn
             // 
-            this.tableOrderDataPn.Controls.Add(this.lbTableTotal);
-            this.tableOrderDataPn.Controls.Add(this.lbTablePrice);
-            this.tableOrderDataPn.Controls.Add(this.lbTableQuan);
-            this.tableOrderDataPn.Controls.Add(this.lbTableName);
             this.tableOrderDataPn.Location = new System.Drawing.Point(8, 97);
             this.tableOrderDataPn.Name = "tableOrderDataPn";
             this.tableOrderDataPn.Size = new System.Drawing.Size(424, 248);
             this.tableOrderDataPn.TabIndex = 5;
-            // 
-            // lbTableTotal
-            // 
-            this.lbTableTotal.AutoSize = true;
-            this.lbTableTotal.Location = new System.Drawing.Point(321, 17);
-            this.lbTableTotal.Name = "lbTableTotal";
-            this.lbTableTotal.Size = new System.Drawing.Size(34, 15);
-            this.lbTableTotal.TabIndex = 3;
-            this.lbTableTotal.Text = "Tổng";
-            // 
-            // lbTablePrice
-            // 
-            this.lbTablePrice.AutoSize = true;
-            this.lbTablePrice.Location = new System.Drawing.Point(73, 17);
-            this.lbTablePrice.Name = "lbTablePrice";
-            this.lbTablePrice.Size = new System.Drawing.Size(48, 15);
-            this.lbTablePrice.TabIndex = 2;
-            this.lbTablePrice.Text = "Đơn giá";
-            // 
-            // lbTableQuan
-            // 
-            this.lbTableQuan.AutoSize = true;
-            this.lbTableQuan.Location = new System.Drawing.Point(177, 17);
-            this.lbTableQuan.Name = "lbTableQuan";
-            this.lbTableQuan.Size = new System.Drawing.Size(54, 15);
-            this.lbTableQuan.TabIndex = 1;
-            this.lbTableQuan.Text = "Số lượng";
-            // 
-            // lbTableName
-            // 
-            this.lbTableName.AutoSize = true;
-            this.lbTableName.Location = new System.Drawing.Point(17, 17);
-            this.lbTableName.Name = "lbTableName";
-            this.lbTableName.Size = new System.Drawing.Size(25, 15);
-            this.lbTableName.TabIndex = 0;
-            this.lbTableName.Text = "Tên";
             // 
             // btnAdd
             // 
@@ -360,8 +316,6 @@
             this.areaPanel.ResumeLayout(false);
             this.areaToolPanel.ResumeLayout(false);
             this.areaToolPanel.PerformLayout();
-            this.tableOrderDataPn.ResumeLayout(false);
-            this.tableOrderDataPn.PerformLayout();
             this.mainPanel.ResumeLayout(false);
             this.dataBotPanel.ResumeLayout(false);
             this.dataPanel.ResumeLayout(false);
@@ -397,9 +351,5 @@
         private Utils.RoundedButton btnAdd;
         private Panel tableOrderDataPn;
         private Panel areaToolPanel;
-        private Label lbTableTotal;
-        private Label lbTablePrice;
-        private Label lbTableQuan;
-        private Label lbTableName;
     }
 }

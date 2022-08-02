@@ -1,5 +1,7 @@
-﻿using BlueBirdCoffeManager.Models;
+﻿using BlueBirdCoffeManager.DataAccessLayer;
+using BlueBirdCoffeManager.Models;
 using BlueBirdCoffeManager.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,13 +20,17 @@ namespace BlueBirdCoffeManager.Forms
         private readonly List<OrderViewModel>? _orders;
         private const string RE_PRINT = "In lại";
         private const string CHECK_OUT = "Thanh toán";
+        private List<DescriptionViewModel> FLOORS = Sessions.Area.Areas;
+        List<CheckSelected> checkSelecteds = new();
+        List<OrderViewModel> orders;
+        List<TableViewModel> tables;
         public BillForm(List<OrderViewModel>? orders)
         {
             InitializeComponent();
             _orders = orders;
         }
 
-        private void BillForm_Load(object sender, EventArgs e)
+        private async void BillForm_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
@@ -130,35 +136,33 @@ namespace BlueBirdCoffeManager.Forms
             tableOrderDataPn.Left = 0;
             tableOrderDataPn.Width = areaToolPanel.Width;
 
-            lbTableName.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbTablePrice.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbTableQuan.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbTableTotal.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-
-            lbTableName.Top = 5;
-            lbTablePrice.Top = lbTableName.Top;
-            lbTableQuan.Top = lbTableName.Top;
-            lbTableTotal.Top = lbTableName.Top;
-
-            lbTableName.Width = (int)(lbTableName.Font.Size * lbTableName.Text.Length);
-            lbTablePrice.Width = (int)(lbTablePrice.Font.Size * lbTablePrice.Text.Length);
-            lbTableQuan.Width = (int)(lbTableQuan.Font.Size * lbTableQuan.Text.Length);
-            lbTableTotal.Width = (int)(lbTableTotal.Font.Size * lbTableTotal.Text.Length);
-
-            lbTableName.Left = 1 * tableOrderDataPn.Width / 100;
-            lbTablePrice.Left = 40 * tableOrderDataPn.Width / 100;
-            lbTableQuan.Left = 60 * tableOrderDataPn.Width / 100;
-            lbTableTotal.Left = tableOrderDataPn.Width - lbTableTotal.Width - 2 * tableOrderDataPn.Width / 100;
-
-            Panel soo1 = new()
+            if (FLOORS == null || FLOORS.Count == 0)
             {
-                Top = lbTableName.Top * 2 + lbTableName.Height,
-                Left = 0,
-                BackColor = Color.FromKnownColor(KnownColor.Control),
-                Width = tableOrderDataPn.Width,
-                Height = 1
+                var rawData = await ApiBuilder.SendRequest<List<DescriptionViewModel>>("api/Floor", null, RequestMethod.GET);
+                FLOORS = JsonConvert.DeserializeObject<List<DescriptionViewModel>>(rawData);
+                Sessions.Area.Areas = FLOORS;
+            }
+
+            cbArea.DataSource = FLOORS.Select(s => s.Description).ToList();
+            cbArea.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbArea.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+
+            cbArea.SelectedIndexChanged += async (sender, e) =>
+            {
+                var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[cbArea.SelectedIndex].Id, null, RequestMethod.GET);
+                tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
+
+                cbTable.DataSource = tables.Select(s => s.Description).ToList();
             };
-            tableOrderDataPn.Controls.Add(soo1);
+
+            cbTable.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbTable.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+
+            var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[0].Id, null, RequestMethod.GET);
+            tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
+            cbTable.DataSource = tables.Select(s => s.Description).ToList();
+
+            tableOrderDataPn.AutoScroll = true;
             #endregion
 
             var curTop = lbSTT.Top + lbSTT.Height;
@@ -482,6 +486,208 @@ namespace BlueBirdCoffeManager.Forms
                     Color.FromKnownColor(KnownColor.Black), 0, ButtonBorderStyle.Solid, // top
                     Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // right
                     Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid);// bottom
+        }
+
+        private async void cbTable_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tableOrderDataPn.Controls.Clear();
+
+            var data = await ApiBuilder.SendRequest<List<OrderViewModel>>("api/Order/Table/" + tables[cbTable.SelectedIndex].Id, null, RequestMethod.GET);
+            orders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
+
+            int top = 1 * Height / 100;
+            checkSelecteds = new List<CheckSelected>();
+            for (int i = 0; i < orders.Count; i++)
+            {
+                checkSelecteds.Add(new CheckSelected() { Index = i });
+                var order = orders[i];
+
+                Panel pnSlide = new Panel()
+                {
+                    MaximumSize = new Size(tableOrderDataPn.Width, this.Height * 50 / 100),
+                    MinimumSize = new Size(tableOrderDataPn.Width, this.Height * 6 / 100),
+                    Top = top,
+                    Dock = DockStyle.Top,
+                    BackColor = Color.FromArgb(249, 249, 249)
+                };
+
+                Panel orderData = new();
+                orderData.Top = 0;
+                orderData.Left = 0;
+                orderData.Width = tableOrderDataPn.Width;
+                Label sampLable = new();
+                orderData.Height = (int)(sampLable.Height * 2.5);
+                orderData.BackColor = Color.FromKnownColor(KnownColor.Control);
+
+                orderData.BackColor = Color.FromArgb(238, 238, 238);
+
+                bool isCollapsed = true;
+                System.Windows.Forms.Timer timer = new();
+
+                #region Title
+                Label lbStt = new()
+                {
+                    Font = Sessions.Sessions.NORMAL_BOLD_FONT,
+                    Left = 0,
+                    Text = "STT",
+                    Top = orderData.Top + orderData.Height
+                };
+                lbStt.Width = (int)(lbStt.Font.Size * 4);
+
+                Label lbName = new()
+                {
+                    Font = Sessions.Sessions.NORMAL_BOLD_FONT,
+                    Left = lbStt.Left + lbStt.Width,
+                    Text = "Tên món",
+                    Top = orderData.Top + orderData.Height
+                };
+
+                Label lbQuan = new()
+                {
+                    Font = Sessions.Sessions.NORMAL_BOLD_FONT,
+                    Text = "Số lượng",
+                    Top = orderData.Top + orderData.Height,
+                };
+                lbQuan.Width = (int)(Sessions.Sessions.NORMAL_BOLD_FONT.Size * 8);
+                lbQuan.Left = tableOrderDataPn.Width - lbQuan.Width;
+
+                pnSlide.Controls.Add(lbStt);
+                pnSlide.Controls.Add(lbName);
+                pnSlide.Controls.Add(lbQuan);
+                #endregion
+
+                int itemTop = lbStt.Top + lbStt.Height;
+
+                for (int j = 0; j < order.OrderDetails.Count; j++)
+                {
+                    var item = order.OrderDetails[j];
+
+                    Label stt = new()
+                    {
+                        Font = Sessions.Sessions.NORMAL_FONT,
+                        Top = itemTop,
+                        Left = 0,
+                        Text = "" + (j + 1),
+                        Width = lbStt.Width
+                    };
+                    var itemName = Sessions.ItemSession.ItemData.FirstOrDefault(f => f.Id == item.ItemId).Name;
+                    Label name = new()
+                    {
+                        Font = Sessions.Sessions.NORMAL_FONT,
+                        Top = itemTop,
+                        Left = lbName.Left,
+                        Text = itemName,
+                        Width = (int)(Font.Size * itemName.Length)
+                    };
+
+                    Label quan = new()
+                    {
+                        Font = Sessions.Sessions.NORMAL_FONT,
+                        Top = itemTop,
+                        Left = lbQuan.Left + lbQuan.Width / 3,
+                        Text = item.Quantity + "",
+                        Width = (int)(Font.Size * itemName.Length)
+                    };
+
+                    itemTop += name.Height;
+
+                    pnSlide.Controls.Add(stt);
+                    pnSlide.Controls.Add(name);
+                    pnSlide.Controls.Add(quan);
+                }
+
+                pnSlide.MaximumSize = new Size(tableOrderDataPn.Width, MinimumSize.Height + itemTop);
+
+                #region Tick
+                timer.Tick += (sender, e) =>
+                {
+                    if (isCollapsed)
+                    {
+                        pnSlide.Height += 50;
+                        if (pnSlide.Height >= pnSlide.MaximumSize.Height)
+                        {
+                            timer.Stop();
+                            isCollapsed = false;
+                        }
+                        Refresh();
+                    }
+                    else
+                    {
+                        pnSlide.Height -= 50;
+                        if (pnSlide.Height <= pnSlide.MinimumSize.Height)
+                        {
+                            timer.Stop();
+                            isCollapsed = true;
+                        }
+                        Refresh();
+                    }
+                };
+                orderData.Click += (sender, e) =>
+                {
+                    timer.Start();
+                };
+                #endregion
+
+                Label timeLb = new();
+                timeLb.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                timeLb.Text = "Giờ vào: " + order.DateCreated.Hour + ":" + order.DateCreated.Minute;
+                timeLb.Top = 5;
+                timeLb.Left = 0;
+                timeLb.Width = orderData.Width * 20 / 100;
+
+                Label quantity = new();
+                var quantityNumber = 0;
+
+                foreach (var detail in order.OrderDetails)
+                {
+                    quantityNumber += detail.Quantity;
+                }
+
+                quantity.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                quantity.Text = "Số món: " + quantityNumber;
+                quantity.Top = timeLb.Height + timeLb.Top;
+                quantity.Left = 0;
+                quantity.Width = orderData.Width * 20 / 100;
+
+                CheckBox select = new();
+                select.Left = tableOrderDataPn.Width - 50;
+                select.Top = orderData.Height / 2 - select.Height / 2;
+
+                select.CheckedChanged += (sender, e) =>
+                {
+                    if (select.Checked)
+                    {
+                        checkSelecteds[orders.IndexOf(order)].Check = true;
+                    }
+                    else
+                    {
+                        checkSelecteds[orders.IndexOf(order)].Check = false;
+                    }
+
+                    //if (checkSelecteds.Any(f => f.Check))
+                    //{
+                    //    btnRemove.BackColor = Color.FromArgb(142, 142, 142);
+                    //    btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
+                    //}
+                    //else
+                    //{
+                    //    btnRemove.BackColor = Color.Gray;
+                    //    btnCheckout.BackColor = Color.Gray;
+                    //}
+                };
+
+                orderData.Controls.Add(timeLb);
+                orderData.Controls.Add(quantity);
+                orderData.Controls.Add(select);
+
+                pnSlide.Controls.Add(orderData);
+
+                tableOrderDataPn.Controls.Add(pnSlide);
+
+                top += orderData.Height;
+                timer.Start();
+            }
+            Refresh();
         }
     }
 }
