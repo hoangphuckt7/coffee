@@ -174,7 +174,7 @@ namespace BlueBirdCoffeManager.Forms
 
                 this.Controls.Add(itemPanel);
 
-                if (curPos != 3)
+                if (curPos != 2)
                 {
                     curLeft += itemWidth + marLeft;
                     curPos += 1;

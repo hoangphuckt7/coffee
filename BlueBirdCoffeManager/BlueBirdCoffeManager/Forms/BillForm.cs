@@ -52,7 +52,7 @@ namespace BlueBirdCoffeManager.Forms
 
             areaPanel.Top = 0;
             areaPanel.Left = 0;
-            areaPanel.Width = leftPanel.Width -1;
+            areaPanel.Width = leftPanel.Width - 1;
             areaPanel.Height = 50 * leftPanel.Height / 100;
             areaPanel.BackColor = Color.White;
 
@@ -95,6 +95,71 @@ namespace BlueBirdCoffeManager.Forms
 
             lbQuan.Left = 50 * leftPanel.Width / 100;
             lbPrice.Left = lbQuan.Left + lbQuan.Width + 5 * Width / 100;
+
+            #region Area Setup
+            areaToolPanel.Left = 0;
+            areaToolPanel.Top = 0;
+            areaToolPanel.Width = areaPanel.Width;
+            areaToolPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
+
+            lbArea.Top = 2 * Height / 100;
+            lbArea.Left = 1 * Width / 100;
+            lbArea.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbArea.Width = (int)(lbArea.Font.Size * lbArea.Text.Length);
+
+            cbArea.Top = lbArea.Top;
+            cbArea.Left = lbArea.Left + lbArea.Width;
+
+            lbTable.Top = lbArea.Top;
+            lbTable.Left = cbArea.Left + cbArea.Width + 5 * Width / 100;
+            lbTable.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbTable.Width = (int)(lbTable.Font.Size * lbTable.Text.Length);
+
+            cbTable.Top = lbArea.Top;
+            cbTable.Left = lbTable.Left + lbTable.Width;
+
+            areaToolPanel.Height = lbArea.Top * 2 + lbArea.Height;
+
+            btnAdd.Left = 2 * areaPanel.Width / 100;
+            btnAdd.Width = 96 * areaPanel.Width / 100;
+            btnAdd.Top = areaPanel.Height - btnAdd.Height - 1 * Height / 100;
+            btnAdd.BackColor = Sessions.Sessions.BUTTON_COLOR;
+
+            tableOrderDataPn.Top = areaToolPanel.Top + areaToolPanel.Height;
+            tableOrderDataPn.Height = areaPanel.Height - tableOrderDataPn.Top - btnAdd.Height - (int)(1.5 * Height / 100);
+            tableOrderDataPn.Left = 0;
+            tableOrderDataPn.Width = areaToolPanel.Width;
+
+            lbTableName.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbTablePrice.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbTableQuan.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbTableTotal.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+
+            lbTableName.Top = 5;
+            lbTablePrice.Top = lbTableName.Top;
+            lbTableQuan.Top = lbTableName.Top;
+            lbTableTotal.Top = lbTableName.Top;
+
+            lbTableName.Width = (int)(lbTableName.Font.Size * lbTableName.Text.Length);
+            lbTablePrice.Width = (int)(lbTablePrice.Font.Size * lbTablePrice.Text.Length);
+            lbTableQuan.Width = (int)(lbTableQuan.Font.Size * lbTableQuan.Text.Length);
+            lbTableTotal.Width = (int)(lbTableTotal.Font.Size * lbTableTotal.Text.Length);
+
+            lbTableName.Left = 1 * tableOrderDataPn.Width / 100;
+            lbTablePrice.Left = 40 * tableOrderDataPn.Width / 100;
+            lbTableQuan.Left = 60 * tableOrderDataPn.Width / 100;
+            lbTableTotal.Left = tableOrderDataPn.Width - lbTableTotal.Width - 2 * tableOrderDataPn.Width / 100;
+
+            Panel soo1 = new()
+            {
+                Top = lbTableName.Top * 2 + lbTableName.Height,
+                Left = 0,
+                BackColor = Color.FromKnownColor(KnownColor.Control),
+                Width = tableOrderDataPn.Width,
+                Height = 1
+            };
+            tableOrderDataPn.Controls.Add(soo1);
+            #endregion
 
             var curTop = lbSTT.Top + lbSTT.Height;
 
@@ -396,7 +461,7 @@ namespace BlueBirdCoffeManager.Forms
         {
             ControlPaint.DrawBorder(e.Graphics, pnHistoryTitle.ClientRectangle,
                                 Color.FromKnownColor(KnownColor.Black), 0, ButtonBorderStyle.Solid, // left
-                                Color.FromKnownColor(KnownColor.Black), 3, ButtonBorderStyle.Solid, // top
+                                Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // top
                                 Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // right
                                 Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid);// bottom
         }
@@ -408,6 +473,15 @@ namespace BlueBirdCoffeManager.Forms
                                 Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // top
                                 Color.FromKnownColor(KnownColor.Control), 1, ButtonBorderStyle.Solid, // right
                                 Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid);// bottom
+        }
+
+        private void areaToolPanel_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, areaToolPanel.ClientRectangle,
+                    Color.FromKnownColor(KnownColor.Black), 0, ButtonBorderStyle.Solid, // left
+                    Color.FromKnownColor(KnownColor.Black), 0, ButtonBorderStyle.Solid, // top
+                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // right
+                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid);// bottom
         }
     }
 }

@@ -15,7 +15,6 @@ namespace Data.Entities
 
         public string? ItemMissingReason { get; set; }
 
-
         [ForeignKey("Casher")]
         public string? CasherId { get; set; }
         public virtual User? Casher { get; set; }

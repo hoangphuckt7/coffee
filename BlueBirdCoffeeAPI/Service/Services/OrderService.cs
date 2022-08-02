@@ -22,6 +22,8 @@ namespace Service.Services
         Task<Guid> CreateOrder(string employeeId, OrderCreateModel models);
         List<OrderViewModel> GetByTable(Guid tableId);
         List<OrderDetailViewModel> TodateMissingItem();
+        Guid SetMissingOrder(SetMissingOrders model, string emp);
+        void SetMissingItem(SetMissingItemModel model);
     }
     public class OrderService : IOrderService
     {
@@ -85,10 +87,10 @@ namespace Service.Services
 
                 transaction.Commit();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 transaction.Rollback();
-                throw e;
+                throw;
             }
             finally
             {
@@ -130,9 +132,9 @@ namespace Service.Services
                 .ToList();
             return _mapper.Map<List<OrderViewModel>>(orders);
         }
-        public Guid SetMissingOrder(List<Guid> orderIds, string emp)
+        public Guid SetMissingOrder(SetMissingOrders model, string emp)
         {
-            var order = _dbContext.Orders.FirstOrDefault(f => orderIds.Contains(f.Id));
+            var order = _dbContext.Orders.FirstOrDefault(f => model.OrderIds.Contains(f.Id));
             if (order == null) throw new AppException("Invalid order id");
 
             order.IsMissing = true;
@@ -146,20 +148,29 @@ namespace Service.Services
             return order.Id;
         }
 
-        public Guid SetMissingItem(List<Guid> orderIds, string emp)
+        public void SetMissingItem(SetMissingItemModel model)
         {
-            var order = _dbContext.Orders.FirstOrDefault(f => orderIds.Contains(f.Id));
-            if (order == null) throw new AppException("Invalid order id");
+            var orders = _dbContext.Orders.Include(o => o.OrderDetails).Where(f => model.MissingItems.Select(s => s.OrderId).Contains(f.Id)).ToList();
 
-            order.IsMissing = true;
-            order.EmployeeId = emp;
+            foreach (var order in orders)
+            {
+                var itemIds = model.MissingItems.Where(s => s.OrderId == order.Id).ToList().Select(s => s.ItemId);
 
-            order.DateUpdated = DateTime.Now;
+                if (order.OrderDetails != null)
+                {
+                    var items = order.OrderDetails.Where(s => itemIds.Contains(s.ItemId)).ToList();
 
-            _dbContext.Update(order);
+                    foreach (var item in items)
+                    {
+                        item.IsMissing = true;
+                        item.DateUpdated = DateTime.Now;
+
+                        _dbContext.Update(item);
+                    }
+                }
+            }
+
             _dbContext.SaveChanges();
-
-            return order.Id;
         }
 
         public List<OrderDetailViewModel> TodateMissingItem()

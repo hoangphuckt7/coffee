@@ -42,6 +42,12 @@ namespace Data.ViewModels
 
     public class SetMissingItem
     {
-        public Guid OrderIds { get; set; }
+        public Guid OrderId { get; set; }
+        public Guid ItemId { get; set; }
+    }
+
+    public class SetMissingItemModel
+    {
+        public List<SetMissingItem> MissingItems { get; set; }
     }
 }
