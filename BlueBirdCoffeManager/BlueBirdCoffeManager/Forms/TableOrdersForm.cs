@@ -304,7 +304,7 @@ namespace BlueBirdCoffeManager.Forms
         {
             _mainPanel.Controls.Clear();
 
-            BillForm myForm = new BillForm(orders);
+            BillForm myForm = new BillForm(orders, null, null);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             _mainPanel.Controls.Add(myForm);
@@ -327,7 +327,7 @@ namespace BlueBirdCoffeManager.Forms
         {
             _mainPanel.Controls.Clear();
 
-            BillForm myForm = new BillForm(GetCheckedItem());
+            BillForm myForm = new BillForm(GetCheckedItem(), null, null);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             _mainPanel.Controls.Add(myForm);

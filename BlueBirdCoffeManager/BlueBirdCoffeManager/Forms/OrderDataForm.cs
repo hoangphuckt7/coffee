@@ -17,6 +17,7 @@ namespace BlueBirdCoffeManager.Forms
     public partial class OrderDataForm : Form
     {
         private readonly Panel _orderDataPanel;
+        List<TableViewModel> tables;
         public OrderDataForm(Panel orderDataPanel)
         {
             InitializeComponent();
@@ -448,7 +449,7 @@ namespace BlueBirdCoffeManager.Forms
             cbArea.SelectedIndexChanged += async (sender, e) =>
             {
                 var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[cbArea.SelectedIndex].Id, null, RequestMethod.GET);
-                var tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
+                tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
 
                 cbTable.DataSource = tables.Select(s => s.Description).ToList();
             };
@@ -470,7 +471,7 @@ namespace BlueBirdCoffeManager.Forms
             cbTable.Visible = Sessions.Order.Option.Table;
 
             var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[0].Id, null, RequestMethod.GET);
-            var tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
+            tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
 
             cbTable.DataSource = tables.Select(s => s.Description).ToList();
 

@@ -28,6 +28,12 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_orderService.GetByTable(id));
         }
 
+        [HttpGet]
+        public IActionResult GetByIds([FromQuery] List<Guid> ids)
+        {
+            return Ok(_orderService.GetByIds(ids));
+        }
+
         [HttpGet("TodateMissingItem")]
         public IActionResult TodateMissingItem()
         {

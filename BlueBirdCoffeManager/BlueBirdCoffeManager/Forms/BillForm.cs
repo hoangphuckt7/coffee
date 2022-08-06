@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,12 +23,17 @@ namespace BlueBirdCoffeManager.Forms
         private const string CHECK_OUT = "Thanh toán";
         private List<DescriptionViewModel> FLOORS = Sessions.Area.Areas;
         List<CheckSelected> checkSelecteds = new();
-        List<OrderViewModel> orders;
         List<TableViewModel> tables;
-        public BillForm(List<OrderViewModel>? orders)
+
+        private readonly Guid? floorId;
+        private readonly Guid? tableId;
+
+        public BillForm(List<OrderViewModel>? orders, Guid? fl, Guid? tb)
         {
             InitializeComponent();
             _orders = orders;
+            floorId = fl;
+            tableId = tb;
         }
 
         private async void BillForm_Load(object sender, EventArgs e)
@@ -147,6 +153,10 @@ namespace BlueBirdCoffeManager.Forms
             cbArea.DropDownStyle = ComboBoxStyle.DropDownList;
             cbArea.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
 
+            var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[0].Id, null, RequestMethod.GET);
+            tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
+            cbTable.DataSource = tables.Select(s => s.Description).ToList();
+
             cbArea.SelectedIndexChanged += async (sender, e) =>
             {
                 var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[cbArea.SelectedIndex].Id, null, RequestMethod.GET);
@@ -158,9 +168,19 @@ namespace BlueBirdCoffeManager.Forms
             cbTable.DropDownStyle = ComboBoxStyle.DropDownList;
             cbTable.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
 
-            var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[0].Id, null, RequestMethod.GET);
-            tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
-            cbTable.DataSource = tables.Select(s => s.Description).ToList();
+            if (floorId != null)
+            {
+                cbArea.SelectedIndex = FLOORS.IndexOf(FLOORS.FirstOrDefault(f => f.Id == floorId.Value));
+
+                var x = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + floorId, null, RequestMethod.GET);
+                tables = JsonConvert.DeserializeObject<List<TableViewModel>>(x);
+                cbTable.DataSource = tables.Select(s => s.Description).ToList();
+            }
+
+            if (tableId != null)
+            {
+                cbTable.SelectedIndex = tables.IndexOf(tables.FirstOrDefault(f => f.Id == tableId.Value));
+            }
 
             tableOrderDataPn.AutoScroll = true;
             #endregion
@@ -409,6 +429,7 @@ namespace BlueBirdCoffeManager.Forms
 
                 oldBillPanel.Controls.Add(borderPanel);
             }
+
         }
 
         Bitmap curImg;
@@ -493,14 +514,14 @@ namespace BlueBirdCoffeManager.Forms
             tableOrderDataPn.Controls.Clear();
 
             var data = await ApiBuilder.SendRequest<List<OrderViewModel>>("api/Order/Table/" + tables[cbTable.SelectedIndex].Id, null, RequestMethod.GET);
-            orders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
+            var tableOrders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
 
             int top = 1 * Height / 100;
             checkSelecteds = new List<CheckSelected>();
-            for (int i = 0; i < orders.Count; i++)
+            for (int i = 0; i < tableOrders.Count; i++)
             {
                 checkSelecteds.Add(new CheckSelected() { Index = i });
-                var order = orders[i];
+                var order = tableOrders[i];
 
                 Panel pnSlide = new Panel()
                 {
@@ -622,10 +643,10 @@ namespace BlueBirdCoffeManager.Forms
                         Refresh();
                     }
                 };
-                orderData.Click += (sender, e) =>
-                {
-                    timer.Start();
-                };
+                //orderData.Click += (sender, e) =>
+                //{
+                //    timer.Start();
+                //};
                 #endregion
 
                 Label timeLb = new();
@@ -652,16 +673,22 @@ namespace BlueBirdCoffeManager.Forms
                 CheckBox select = new();
                 select.Left = tableOrderDataPn.Width - 50;
                 select.Top = orderData.Height / 2 - select.Height / 2;
+                if (_orders != null && _orders.Any(f => f.Id == order.Id))
+                {
+                    select.Checked = true;
+                }
 
-                select.CheckedChanged += (sender, e) =>
+                select.CheckedChanged += async (sender, e) =>
                 {
                     if (select.Checked)
                     {
-                        checkSelecteds[orders.IndexOf(order)].Check = true;
+                        //checkSelecteds[orders.IndexOf(order)].Check = true;
+                        await CheckedRefresh(order);
                     }
                     else
                     {
-                        checkSelecteds[orders.IndexOf(order)].Check = false;
+                        //checkSelecteds[orders.IndexOf(order)].Check = false;
+                        await RemoveRefresh(order);
                     }
 
                     //if (checkSelecteds.Any(f => f.Check))
@@ -688,6 +715,70 @@ namespace BlueBirdCoffeManager.Forms
                 timer.Start();
             }
             Refresh();
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            BillForm myForm = new BillForm(_orders, FLOORS[cbArea.SelectedIndex].Id, tables[cbArea.SelectedIndex].Id);
+
+            myForm.TopLevel = false;
+            myForm.AutoScroll = true;
+            this.Controls.Add(myForm);
+            myForm.Show();
+        }
+
+        private async Task CheckedRefresh(OrderViewModel model)
+        {
+            var nextOrders = new List<OrderViewModel>();
+            if (_orders != null) nextOrders.AddRange(_orders);
+
+            if (!nextOrders.Any(f => f.Id == model.Id))
+            {
+                nextOrders.Add(model);
+            }
+
+            this.Controls.Clear();
+            BillForm myForm = new(await GetOrders(nextOrders), FLOORS[cbArea.SelectedIndex].Id, tables[cbTable.SelectedIndex].Id)
+            {
+                TopLevel = false,
+                AutoScroll = true
+            };
+            this.Controls.Add(myForm);
+            myForm.Show();
+        }
+
+        private async Task RemoveRefresh(OrderViewModel model)
+        {
+            var nextOrders = new List<OrderViewModel>();
+            if (_orders != null) nextOrders.AddRange(_orders);
+
+            var o = nextOrders.First(f => f.Id == model.Id);
+            nextOrders.Remove(o);
+
+            this.Controls.Clear();
+            BillForm myForm = new(await GetOrders(nextOrders), FLOORS[cbArea.SelectedIndex].Id, tables[cbTable.SelectedIndex].Id)
+            {
+                TopLevel = false,
+                AutoScroll = true
+            };
+            this.Controls.Add(myForm);
+            myForm.Show();
+        }
+
+        private async Task<List<OrderViewModel>> GetOrders(List<OrderViewModel> orders)
+        {
+            var path = "api/Order?ids=";
+            for (int i = 0; i < orders.Count; i++)
+            {
+                if (i > 0)
+                {
+                    path += "&ids=";
+                }
+                path += orders[i].Id;
+            }
+
+            var data = await ApiBuilder.SendRequest(path, new object(), RequestMethod.GET);
+            return JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
         }
     }
 }

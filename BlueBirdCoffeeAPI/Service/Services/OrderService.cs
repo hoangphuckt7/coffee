@@ -24,6 +24,7 @@ namespace Service.Services
         List<OrderDetailViewModel> TodateMissingItem();
         Guid SetMissingOrder(SetMissingOrders model, string emp);
         void SetMissingItem(SetMissingItemModel model);
+        List<OrderViewModel> GetByIds(List<Guid> ids);
     }
     public class OrderService : IOrderService
     {
@@ -132,6 +133,16 @@ namespace Service.Services
                 .ToList();
             return _mapper.Map<List<OrderViewModel>>(orders);
         }
+
+        public List<OrderViewModel> GetByIds(List<Guid> ids)
+        {
+            var orders = _dbContext.Orders
+                //.Include(f => f.OrderDetails)
+                .Where(o => ids.Contains(o.Id) && o.IsDeleted == false)
+                .ToList();
+            return _mapper.Map<List<OrderViewModel>>(orders);
+        }
+
         public Guid SetMissingOrder(SetMissingOrders model, string emp)
         {
             var order = _dbContext.Orders.FirstOrDefault(f => model.OrderIds.Contains(f.Id));
