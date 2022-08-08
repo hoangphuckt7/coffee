@@ -17,7 +17,6 @@ namespace BlueBirdCoffeManager.Forms
 {
     public partial class BillForm : Form
     {
-        Label split;
         private readonly List<OrderViewModel>? _orders;
         private const string RE_PRINT = "In lại";
         private const string CHECK_OUT = "Thanh toán";
@@ -25,15 +24,10 @@ namespace BlueBirdCoffeManager.Forms
         List<CheckSelected> checkSelecteds = new();
         List<TableViewModel> tables;
 
-        private readonly Guid? floorId;
-        private readonly Guid? tableId;
-
-        public BillForm(List<OrderViewModel>? orders, Guid? fl, Guid? tb)
+        public BillForm(List<OrderViewModel>? orders)
         {
             InitializeComponent();
             _orders = orders;
-            floorId = fl;
-            tableId = tb;
         }
 
         private async void BillForm_Load(object sender, EventArgs e)
@@ -42,25 +36,9 @@ namespace BlueBirdCoffeManager.Forms
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
 
-            oldBillPicture.Visible = false;
-
             leftPanel.Width = (int)(33.33 * Width / 100);
             mainPanel.Width = (int)(33.33 * Width / 100);
             lostBillPanel.Width = (int)(33.33 * Width / 100);
-
-            dataPanel.Width = mainPanel.Width;
-
-            //dataBotPanel.top
-
-            btnCheckout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            btnCheckout.Top = Height - btnCheckout.Height - 10;
-            btnCheckout.Width = leftPanel.Width - 4 * leftPanel.Width / 100;
-            btnCheckout.Left = 2 * leftPanel.Width / 100;
-            btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
-
-            dataPanel.Top = 0;
-            dataPanel.Left = 0;
-            dataPanel.Height = btnCheckout.Top;
 
             areaPanel.Top = 0;
             areaPanel.Left = 0;
@@ -89,24 +67,6 @@ namespace BlueBirdCoffeManager.Forms
 
             mainPanel.BackColor = Color.White;
             lostBillPanel.BackColor = Color.Blue;
-
-            lbName.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbPrice.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbQuan.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbSTT.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbTotal.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-
-            lbSTT.Left = 0;
-            lbTotal.Left = lostBillPanel.Width - lbTotal.Width;
-
-            lbName.Top = 1 * Height / 100;
-            lbSTT.Top = lbName.Top;
-            lbPrice.Top = lbName.Top;
-            lbQuan.Top = lbName.Top;
-            lbTotal.Top = lbName.Top;
-
-            lbQuan.Left = 50 * leftPanel.Width / 100;
-            lbPrice.Left = lbQuan.Left + lbQuan.Width + 5 * Width / 100;
 
             #region Area Setup
             areaToolPanel.Left = 0;
@@ -168,122 +128,8 @@ namespace BlueBirdCoffeManager.Forms
             cbTable.DropDownStyle = ComboBoxStyle.DropDownList;
             cbTable.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
 
-            if (floorId != null)
-            {
-                cbArea.SelectedIndex = FLOORS.IndexOf(FLOORS.FirstOrDefault(f => f.Id == floorId.Value));
-
-                var x = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + floorId, null, RequestMethod.GET);
-                tables = JsonConvert.DeserializeObject<List<TableViewModel>>(x);
-                cbTable.DataSource = tables.Select(s => s.Description).ToList();
-            }
-
-            if (tableId != null)
-            {
-                cbTable.SelectedIndex = tables.IndexOf(tables.FirstOrDefault(f => f.Id == tableId.Value));
-            }
-
             tableOrderDataPn.AutoScroll = true;
             #endregion
-
-            var curTop = lbSTT.Top + lbSTT.Height;
-
-            var mergeOders = new List<OrderDetailViewModel>();
-
-            if (_orders != null)
-            {
-                foreach (var order in _orders)
-                {
-                    foreach (var item in order.OrderDetails)
-                    {
-                        var curItem = mergeOders.FirstOrDefault(f => f.ItemId == item.ItemId);
-                        if (curItem != null)
-                        {
-                            mergeOders.Remove(curItem);
-                            curItem.Quantity += item.Quantity;
-                            mergeOders.Add(curItem);
-                        }
-                        else
-                        {
-                            mergeOders.Add(item);
-                        }
-                    }
-                }
-            }
-
-            split = new()
-            {
-                Top = curTop,
-                Width = mainPanel.Width,
-                Left = 0,
-                Height = 1,
-                BackColor = Color.FromKnownColor(KnownColor.Control)
-            };
-
-            curTop += split.Height;
-
-            dataPanel.Controls.Add(split);
-
-            for (int i = 0; i < mergeOders.Count; i++)
-            {
-                var order = mergeOders[i];
-                var curItem = Sessions.ItemSession.ItemData.FirstOrDefault(f => f.Id == order.ItemId);
-
-                Label stt = new()
-                {
-                    Text = i + 1 + "",
-                    Top = curTop,
-                    Left = lbSTT.Left,
-                    Width = lbSTT.Width,
-                    Font = Sessions.Sessions.NORMAL_BOLD_FONT
-                };
-
-                Label name = new()
-                {
-                    Text = curItem.Name,
-                    Top = curTop,
-                    Left = lbName.Left,
-                    Font = Sessions.Sessions.NORMAL_BOLD_FONT,
-                    Width = lbName.Width,
-                    AllowDrop = true,
-                    AutoSize = false
-                };
-
-                Label quan = new()
-                {
-                    Text = order.Quantity + "",
-                    Top = curTop,
-                    Left = lbQuan.Left + 17,
-                    Font = Sessions.Sessions.NORMAL_FONT,
-                    Width = lbQuan.Width,
-                };
-
-                Label price = new()
-                {
-                    Font = Sessions.Sessions.NORMAL_FONT,
-                    Text = curItem.Price.ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫",
-                    Top = curTop,
-                    Left = lbPrice.Left,
-                };
-
-                Label total = new()
-                {
-                    Font = Sessions.Sessions.NORMAL_FONT,
-                    Text = (curItem.Price * order.Quantity).ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫",
-                    Top = curTop,
-                    Left = lbTotal.Left
-                };
-
-                price.Width = (int)(price.Text.Length * price.Font.Size);
-
-
-                dataPanel.Controls.Add(stt);
-                dataPanel.Controls.Add(name);
-                dataPanel.Controls.Add(quan);
-                dataPanel.Controls.Add(price);
-                dataPanel.Controls.Add(total);
-
-                curTop += name.Height;
-            }
 
             lbOldOrdersTilte.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             lbOldOrdersTilte.Left = leftPanel.Width / 2 - lbOldOrdersTilte.Width / 2;
@@ -295,8 +141,7 @@ namespace BlueBirdCoffeManager.Forms
             pnHistoryTitle.Width = leftPanel.Width - 1;
             pnHistoryTitle.Height = lbOldOrdersTilte.Height + lbOldOrdersTilte.Top + lbOldOrdersTilte.Top;
 
-            curTop = pnHistoryTitle.Height + pnHistoryTitle.Top + 5;
-
+            var curTop = pnHistoryTitle.Height + pnHistoryTitle.Top + 5;
             var oldOrdersData = Sessions.Order.OldOrders.OrderByDescending(f => f.DateCreated);
 
             foreach (var item in oldOrdersData)
@@ -377,52 +222,20 @@ namespace BlueBirdCoffeManager.Forms
                 };
                 #endregion
 
-                #region Click
+
                 borderPanel.Click += (sender, e) =>
                 {
-                    curImg = BillPrinter.SetupBill(item, item.DateCreated);
+                    var curImg = BillPrinter.SetupBill(item, item.DateCreated);
 
-                    oldBillPicture.Image = curImg;
-                    oldBillPicture.Width = curImg.Width;
-                    oldBillPicture.Height = curImg.Height;
-
-                    oldBillPicture.Left = leftPanel.Width / 2 - oldBillPicture.Width / 2;
-
-                    oldBillPicture.Top = 5 * Height / 100;
-
-                    DisableCheckout();
+                    mainPanel.Controls.Clear();
+                    BillDataForm myForm = new(_orders, curImg)
+                    {
+                        TopLevel = false,
+                        AutoScroll = true
+                    };
+                    mainPanel.Controls.Add(myForm);
+                    myForm.Show();
                 };
-
-                timeLabel.Click += (sender, e) =>
-                {
-                    curImg = BillPrinter.SetupBill(item, item.DateCreated);
-
-                    oldBillPicture.Image = curImg;
-                    oldBillPicture.Width = curImg.Width;
-                    oldBillPicture.Height = curImg.Height;
-
-                    oldBillPicture.Left = leftPanel.Width / 2 - oldBillPicture.Width / 2;
-
-                    oldBillPicture.Top = 5 * Height / 100;
-
-                    DisableCheckout();
-                };
-
-                typeLabel.Click += (sender, e) =>
-                {
-                    curImg = BillPrinter.SetupBill(item, item.DateCreated);
-
-                    oldBillPicture.Image = curImg;
-                    oldBillPicture.Width = curImg.Width;
-                    oldBillPicture.Height = curImg.Height;
-
-                    oldBillPicture.Left = leftPanel.Width / 2 - oldBillPicture.Width / 2;
-
-                    oldBillPicture.Top = 5 * Height / 100;
-
-                    DisableCheckout();
-                };
-                #endregion
 
                 borderPanel.Controls.Add(timeLabel);
                 borderPanel.Controls.Add(typeLabel);
@@ -430,56 +243,14 @@ namespace BlueBirdCoffeManager.Forms
                 oldBillPanel.Controls.Add(borderPanel);
             }
 
-        }
-
-        Bitmap curImg;
-
-        private void DisableCheckout()
-        {
-            lbName.Visible = false;
-            lbQuan.Visible = false;
-            lbPrice.Visible = false;
-            lbSTT.Visible = false;
-            lbTotal.Visible = false;
-            split.Visible = false;
-
-            btnCheckout.Text = RE_PRINT;
-            oldBillPicture.Visible = true;
-        }
-
-        private void EnableCheckout()
-        {
-            lbName.Visible = true;
-            lbQuan.Visible = true;
-            lbPrice.Visible = true;
-            lbSTT.Visible = true;
-            lbTotal.Visible = true;
-            split.Visible = true;
-
-            btnCheckout.Text = CHECK_OUT;
-            oldBillPicture.Visible = false;
-        }
-
-        private void oldBillPicture_Paint(object sender, PaintEventArgs e)
-        {
-            ControlPaint.DrawBorder(e.Graphics, oldBillPicture.ClientRectangle,
-                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // left
-                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // top
-                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // right
-                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid);// bottom
-        }
-
-        private void btnCheckout_Click(object sender, EventArgs e)
-        {
-            if (btnCheckout.Text == RE_PRINT)
+            mainPanel.Controls.Clear();
+            BillDataForm myForm = new(_orders, null)
             {
-                printBill.Print();
-            }
-        }
-
-        private void printBill_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
-        {
-            e.Graphics.DrawImage(curImg, 0, 0);
+                TopLevel = false,
+                AutoScroll = true
+            };
+            mainPanel.Controls.Add(myForm);
+            myForm.Show();
         }
 
         private void pnHistoryTitle_Paint(object sender, PaintEventArgs e)
@@ -719,7 +490,7 @@ namespace BlueBirdCoffeManager.Forms
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            BillForm myForm = new BillForm(_orders, FLOORS[cbArea.SelectedIndex].Id, tables[cbArea.SelectedIndex].Id);
+            BillForm myForm = new BillForm(_orders);
 
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
@@ -737,13 +508,14 @@ namespace BlueBirdCoffeManager.Forms
                 nextOrders.Add(model);
             }
 
-            this.Controls.Clear();
-            BillForm myForm = new(await GetOrders(nextOrders), FLOORS[cbArea.SelectedIndex].Id, tables[cbTable.SelectedIndex].Id)
+            mainPanel.Controls.Clear();
+            var x = await GetOrders(nextOrders);
+            BillDataForm myForm = new(nextOrders, null)
             {
                 TopLevel = false,
                 AutoScroll = true
             };
-            this.Controls.Add(myForm);
+            mainPanel.Controls.Add(myForm);
             myForm.Show();
         }
 
@@ -756,7 +528,7 @@ namespace BlueBirdCoffeManager.Forms
             nextOrders.Remove(o);
 
             this.Controls.Clear();
-            BillForm myForm = new(await GetOrders(nextOrders), FLOORS[cbArea.SelectedIndex].Id, tables[cbTable.SelectedIndex].Id)
+            BillForm myForm = new(await GetOrders(nextOrders))
             {
                 TopLevel = false,
                 AutoScroll = true
