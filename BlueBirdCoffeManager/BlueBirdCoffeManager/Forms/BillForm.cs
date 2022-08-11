@@ -18,8 +18,6 @@ namespace BlueBirdCoffeManager.Forms
     public partial class BillForm : Form
     {
         private readonly List<OrderViewModel>? _orders;
-        private const string RE_PRINT = "In lại";
-        private const string CHECK_OUT = "Thanh toán";
         private List<DescriptionViewModel> FLOORS = Sessions.Area.Areas;
         List<CheckSelected> checkSelecteds = new();
         List<TableViewModel> tables;
@@ -68,6 +66,7 @@ namespace BlueBirdCoffeManager.Forms
             mainPanel.BackColor = Color.White;
             lostBillPanel.BackColor = Color.Blue;
 
+            mainPanel.Left = leftPanel.Width;
             #region Area Setup
             areaToolPanel.Left = 0;
             areaToolPanel.Top = 0;

@@ -13,6 +13,8 @@ namespace BlueBirdCoffeManager.Forms
 {
     public partial class BillDataForm : Form
     {
+        private const string RE_PRINT = "In lại";
+        private const string CHECK_OUT = "Thanh toán";
         private readonly List<OrderViewModel>? _orders;
         private readonly Bitmap? _img;
 
@@ -45,109 +47,65 @@ namespace BlueBirdCoffeManager.Forms
 
                 oldBillPicture.Top = 5 * Height / 100;
             }
-            //dataPanel.Width = mainPanel.Width;
 
-            ////dataBotPanel.top
+            dataPanel.Left = 0;
+            dataPanel.Width = Width;
 
-            //btnCheckout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            //btnCheckout.Top = Height - btnCheckout.Height - 10;
-            //btnCheckout.Width = leftPanel.Width - 4 * leftPanel.Width / 100;
-            //btnCheckout.Left = 2 * leftPanel.Width / 100;
-            //btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
+            lbName.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbPrice.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbQuan.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbSTT.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbTotal.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
 
-            //dataPanel.Top = 0;
-            //dataPanel.Left = 0;
-            //dataPanel.Height = btnCheckout.Top;
-            //var curTop = lbSTT.Top + lbSTT.Height;
+            lbName.Top = 1 * Height / 100;
+            lbSTT.Top = lbName.Top;
+            lbPrice.Top = lbName.Top;
+            lbQuan.Top = lbName.Top;
+            lbTotal.Top = lbName.Top;
 
-            //lbName.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            //lbPrice.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            //lbQuan.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            //lbSTT.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            //lbTotal.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            lbSTT.Left = 0;
+            lbTotal.Left = this.Width - lbTotal.Width;
+            lbQuan.Left = 50 * this.Width / 100;
+            lbPrice.Left = lbQuan.Left + lbQuan.Width + 5 * Width / 100;
+            lbName.Left = 10 * Width / 100;
 
-            //lbSTT.Left = 0;
-            //lbTotal.Left = lostBillPanel.Width - lbTotal.Width;
+            btnCheckout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            btnCheckout.Top = Height - btnCheckout.Height - 10;
+            btnCheckout.Width = dataPanel.Width - 4 * dataPanel.Width / 100;
+            btnCheckout.Left = 2 * this.Width / 100;
+            btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
 
-            //lbName.Top = 1 * Height / 100;
-            //lbSTT.Top = lbName.Top;
-            //lbPrice.Top = lbName.Top;
-            //lbQuan.Top = lbName.Top;
-            //lbTotal.Top = lbName.Top;
-
-            //lbQuan.Left = 50 * leftPanel.Width / 100;
-            //lbPrice.Left = lbQuan.Left + lbQuan.Width + 5 * Width / 100;
-
-            //#region Click
-            //borderPanel.Click += (sender, e) =>
-            //{
-            //    curImg = BillPrinter.SetupBill(item, item.DateCreated);
-
-
-
-            //    DisableCheckout();
-            //};
-
-            //timeLabel.Click += (sender, e) =>
-            //{
-            //    curImg = BillPrinter.SetupBill(item, item.DateCreated);
-
-            //    oldBillPicture.Image = curImg;
-            //    oldBillPicture.Width = curImg.Width;
-            //    oldBillPicture.Height = curImg.Height;
-
-            //    oldBillPicture.Left = leftPanel.Width / 2 - oldBillPicture.Width / 2;
-
-            //    oldBillPicture.Top = 5 * Height / 100;
-
-            //    DisableCheckout();
-            //};
-
-            //typeLabel.Click += (sender, e) =>
-            //{
-            //    curImg = BillPrinter.SetupBill(item, item.DateCreated);
-
-            //    oldBillPicture.Image = curImg;
-            //    oldBillPicture.Width = curImg.Width;
-            //    oldBillPicture.Height = curImg.Height;
-
-            //    oldBillPicture.Left = leftPanel.Width / 2 - oldBillPicture.Width / 2;
-
-            //    oldBillPicture.Top = 5 * Height / 100;
-
-            //    DisableCheckout();
-            //};
-            //#endregion
+            dataPanel.Height = btnCheckout.Top - lbName.Top - lbName.Height;
+            dataPanel.Top = lbName.Top + lbName.Height;
 
         }
 
-        //private void DisableCheckout()
-        //{
-        //    lbName.Visible = false;
-        //    lbQuan.Visible = false;
-        //    lbPrice.Visible = false;
-        //    lbSTT.Visible = false;
-        //    lbTotal.Visible = false;
-        //    split.Visible = false;
+        private void DisableCheckout()
+        {
+            lbName.Visible = false;
+            lbQuan.Visible = false;
+            lbPrice.Visible = false;
+            lbSTT.Visible = false;
+            lbTotal.Visible = false;
 
-        //    btnCheckout.Text = RE_PRINT;
-        //    oldBillPicture.Visible = true;
-        //}
-        //private void EnableCheckout()
-        //{
-        //    lbName.Visible = true;
-        //    lbQuan.Visible = true;
-        //    lbPrice.Visible = true;
-        //    lbSTT.Visible = true;
-        //    lbTotal.Visible = true;
-        //    split.Visible = true;
+            btnCheckout.Text = RE_PRINT;
+            oldBillPicture.Visible = true;
+        }
+        private void EnableCheckout()
+        {
+            lbName.Visible = true;
+            lbQuan.Visible = true;
+            lbPrice.Visible = true;
+            lbSTT.Visible = true;
+            lbTotal.Visible = true;
 
-        //    btnCheckout.Text = CHECK_OUT;
-        //    oldBillPicture.Visible = false;
-        //}
+            btnCheckout.Text = CHECK_OUT;
+            oldBillPicture.Visible = false;
+        }
         public int SetupBillData(int curTop)
         {
-            dataPanel.Controls.Clear();
+            EnableCheckout();
+
             var mergeOders = new List<OrderDetailViewModel>();
 
             if (_orders != null)

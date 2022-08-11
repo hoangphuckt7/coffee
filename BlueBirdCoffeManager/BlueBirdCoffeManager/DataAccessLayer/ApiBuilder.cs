@@ -46,6 +46,16 @@ namespace BlueBirdCoffeManager.DataAccessLayer
                     string json = await responseMessage.Content.ReadAsStringAsync();
                     return json;
                 }
+                else
+                {
+                    const string message = "Không thành công.";
+                    const string caption = "Lỗi";
+                    var rr = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // If the no button was pressed ...
+                    if (rr == DialogResult.OK)
+                    {
+                    }
+                }
             }
             catch (HttpRequestException)
             {

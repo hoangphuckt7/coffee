@@ -28,27 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataBotPanel = new System.Windows.Forms.Panel();
             this.btnCheckout = new BlueBirdCoffeManager.Utils.RoundedButton();
+            this.oldBillPicture = new System.Windows.Forms.PictureBox();
             this.dataPanel = new System.Windows.Forms.Panel();
             this.lbTotal = new System.Windows.Forms.Label();
-            this.oldBillPicture = new System.Windows.Forms.PictureBox();
-            this.lbName = new System.Windows.Forms.Label();
-            this.lbPrice = new System.Windows.Forms.Label();
-            this.lbQuan = new System.Windows.Forms.Label();
             this.lbSTT = new System.Windows.Forms.Label();
-            this.dataBotPanel.SuspendLayout();
-            this.dataPanel.SuspendLayout();
+            this.lbQuan = new System.Windows.Forms.Label();
+            this.lbPrice = new System.Windows.Forms.Label();
+            this.lbName = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.oldBillPicture)).BeginInit();
+            this.dataPanel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // dataBotPanel
-            // 
-            this.dataBotPanel.Controls.Add(this.btnCheckout);
-            this.dataBotPanel.Location = new System.Drawing.Point(52, 295);
-            this.dataBotPanel.Name = "dataBotPanel";
-            this.dataBotPanel.Size = new System.Drawing.Size(696, 143);
-            this.dataBotPanel.TabIndex = 10;
             // 
             // btnCheckout
             // 
@@ -60,108 +50,105 @@
             this.btnCheckout.FlatAppearance.BorderSize = 0;
             this.btnCheckout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCheckout.ForeColor = System.Drawing.Color.White;
-            this.btnCheckout.Location = new System.Drawing.Point(272, 65);
+            this.btnCheckout.Location = new System.Drawing.Point(300, 463);
             this.btnCheckout.Name = "btnCheckout";
             this.btnCheckout.Size = new System.Drawing.Size(150, 40);
-            this.btnCheckout.TabIndex = 6;
-            this.btnCheckout.Text = "Thanh toán";
+            this.btnCheckout.TabIndex = 0;
+            this.btnCheckout.Text = "Thanh toan";
             this.btnCheckout.TextColor = System.Drawing.Color.White;
             this.btnCheckout.UseVisualStyleBackColor = false;
             // 
-            // dataPanel
-            // 
-            this.dataPanel.Controls.Add(this.lbTotal);
-            this.dataPanel.Controls.Add(this.oldBillPicture);
-            this.dataPanel.Controls.Add(this.lbName);
-            this.dataPanel.Controls.Add(this.lbPrice);
-            this.dataPanel.Controls.Add(this.lbQuan);
-            this.dataPanel.Controls.Add(this.lbSTT);
-            this.dataPanel.Location = new System.Drawing.Point(52, 12);
-            this.dataPanel.Name = "dataPanel";
-            this.dataPanel.Size = new System.Drawing.Size(696, 277);
-            this.dataPanel.TabIndex = 9;
-            // 
-            // lbTotal
-            // 
-            this.lbTotal.AutoSize = true;
-            this.lbTotal.Location = new System.Drawing.Point(272, 23);
-            this.lbTotal.Name = "lbTotal";
-            this.lbTotal.Size = new System.Drawing.Size(34, 15);
-            this.lbTotal.TabIndex = 4;
-            this.lbTotal.Text = "Tổng";
-            // 
             // oldBillPicture
             // 
-            this.oldBillPicture.Location = new System.Drawing.Point(50, 114);
+            this.oldBillPicture.Location = new System.Drawing.Point(269, 201);
             this.oldBillPicture.Name = "oldBillPicture";
             this.oldBillPicture.Size = new System.Drawing.Size(100, 50);
             this.oldBillPicture.TabIndex = 5;
             this.oldBillPicture.TabStop = false;
             // 
-            // lbName
+            // dataPanel
             // 
-            this.lbName.AutoSize = true;
-            this.lbName.Location = new System.Drawing.Point(201, 97);
-            this.lbName.Name = "lbName";
-            this.lbName.Size = new System.Drawing.Size(25, 15);
-            this.lbName.TabIndex = 1;
-            this.lbName.Text = "Tên";
+            this.dataPanel.Controls.Add(this.oldBillPicture);
+            this.dataPanel.Location = new System.Drawing.Point(71, 129);
+            this.dataPanel.Name = "dataPanel";
+            this.dataPanel.Size = new System.Drawing.Size(675, 311);
+            this.dataPanel.TabIndex = 6;
             // 
-            // lbPrice
+            // lbTotal
             // 
-            this.lbPrice.AutoSize = true;
-            this.lbPrice.Location = new System.Drawing.Point(168, 23);
-            this.lbPrice.Name = "lbPrice";
-            this.lbPrice.Size = new System.Drawing.Size(48, 15);
-            this.lbPrice.TabIndex = 3;
-            this.lbPrice.Text = "Đơn giá";
-            // 
-            // lbQuan
-            // 
-            this.lbQuan.AutoSize = true;
-            this.lbQuan.Location = new System.Drawing.Point(77, 23);
-            this.lbQuan.Name = "lbQuan";
-            this.lbQuan.Size = new System.Drawing.Size(54, 15);
-            this.lbQuan.TabIndex = 2;
-            this.lbQuan.Text = "Số lượng";
+            this.lbTotal.AutoSize = true;
+            this.lbTotal.Location = new System.Drawing.Point(441, 81);
+            this.lbTotal.Name = "lbTotal";
+            this.lbTotal.Size = new System.Drawing.Size(34, 15);
+            this.lbTotal.TabIndex = 10;
+            this.lbTotal.Text = "Tổng";
             // 
             // lbSTT
             // 
             this.lbSTT.AutoSize = true;
-            this.lbSTT.Location = new System.Drawing.Point(-46, 23);
+            this.lbSTT.Location = new System.Drawing.Point(71, 81);
             this.lbSTT.Name = "lbSTT";
             this.lbSTT.Size = new System.Drawing.Size(25, 15);
-            this.lbSTT.TabIndex = 0;
+            this.lbSTT.TabIndex = 9;
             this.lbSTT.Text = "STT";
+            // 
+            // lbQuan
+            // 
+            this.lbQuan.AutoSize = true;
+            this.lbQuan.Location = new System.Drawing.Point(200, 81);
+            this.lbQuan.Name = "lbQuan";
+            this.lbQuan.Size = new System.Drawing.Size(54, 15);
+            this.lbQuan.TabIndex = 8;
+            this.lbQuan.Text = "Số lượng";
+            // 
+            // lbPrice
+            // 
+            this.lbPrice.AutoSize = true;
+            this.lbPrice.Location = new System.Drawing.Point(327, 81);
+            this.lbPrice.Name = "lbPrice";
+            this.lbPrice.Size = new System.Drawing.Size(48, 15);
+            this.lbPrice.TabIndex = 7;
+            this.lbPrice.Text = "Đơn giá";
+            // 
+            // lbName
+            // 
+            this.lbName.AutoSize = true;
+            this.lbName.Location = new System.Drawing.Point(144, 81);
+            this.lbName.Name = "lbName";
+            this.lbName.Size = new System.Drawing.Size(25, 15);
+            this.lbName.TabIndex = 6;
+            this.lbName.Text = "Tên";
             // 
             // BillDataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(872, 526);
-            this.Controls.Add(this.dataBotPanel);
+            this.Controls.Add(this.lbTotal);
             this.Controls.Add(this.dataPanel);
+            this.Controls.Add(this.lbSTT);
+            this.Controls.Add(this.btnCheckout);
+            this.Controls.Add(this.lbQuan);
+            this.Controls.Add(this.lbName);
+            this.Controls.Add(this.lbPrice);
             this.Name = "BillDataForm";
             this.Text = "BillDataForm";
             this.Load += new System.EventHandler(this.BillDataForm_Load);
-            this.dataBotPanel.ResumeLayout(false);
-            this.dataPanel.ResumeLayout(false);
-            this.dataPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.oldBillPicture)).EndInit();
+            this.dataPanel.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private Panel dataBotPanel;
         private Utils.RoundedButton btnCheckout;
-        private Panel dataPanel;
-        private Label lbTotal;
         private PictureBox oldBillPicture;
-        private Label lbName;
-        private Label lbPrice;
-        private Label lbQuan;
+        private Panel dataPanel;
         private Label lbSTT;
+        private Label lbQuan;
+        private Label lbPrice;
+        private Label lbName;
+        private Label lbTotal;
     }
 }
