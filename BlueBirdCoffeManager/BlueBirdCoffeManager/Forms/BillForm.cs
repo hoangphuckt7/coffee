@@ -22,6 +22,8 @@ namespace BlueBirdCoffeManager.Forms
         List<CheckSelected> checkSelecteds = new();
         List<TableViewModel> tables;
 
+        private List<OrderViewModel> currentOrders = new();
+
         public BillForm(List<OrderViewModel>? orders)
         {
             InitializeComponent();
@@ -243,7 +245,13 @@ namespace BlueBirdCoffeManager.Forms
             }
 
             mainPanel.Controls.Clear();
-            BillDataForm myForm = new(_orders, null)
+            List<OrderViewModel> x = new();
+            if (_orders != null)
+            {
+                currentOrders.AddRange(_orders);
+                x = await GetOrders(_orders);
+            }
+            BillDataForm myForm = new(x, null)
             {
                 TopLevel = false,
                 AutoScroll = true
@@ -279,12 +287,13 @@ namespace BlueBirdCoffeManager.Forms
                     Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid);// bottom
         }
 
+        List<OrderViewModel> tableOrders;
         private async void cbTable_SelectedIndexChanged(object sender, EventArgs e)
         {
             tableOrderDataPn.Controls.Clear();
 
             var data = await ApiBuilder.SendRequest<List<OrderViewModel>>("api/Order/Table/" + tables[cbTable.SelectedIndex].Id, null, RequestMethod.GET);
-            var tableOrders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
+            tableOrders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
 
             int top = 1 * Height / 100;
             checkSelecteds = new List<CheckSelected>();
@@ -484,32 +493,37 @@ namespace BlueBirdCoffeManager.Forms
                 top += orderData.Height;
                 timer.Start();
             }
-            Refresh();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            BillForm myForm = new BillForm(_orders);
-
-            myForm.TopLevel = false;
-            myForm.AutoScroll = true;
-            this.Controls.Add(myForm);
-            myForm.Show();
+            foreach (Control c in tableOrderDataPn.Controls)
+            {
+                if (c is not Panel) continue;
+                foreach (Control panel in c.Controls)
+                {
+                    if (panel is not Panel) continue;
+                    foreach (Control checkBox in panel.Controls)
+                    {
+                        if (checkBox is CheckBox && ((CheckBox)checkBox).Checked == false)
+                        {
+                            ((CheckBox)checkBox).Checked = true;
+                        }
+                    }
+                }
+            }
         }
 
         private async Task CheckedRefresh(OrderViewModel model)
         {
-            var nextOrders = new List<OrderViewModel>();
-            if (_orders != null) nextOrders.AddRange(_orders);
-
-            if (!nextOrders.Any(f => f.Id == model.Id))
+            if (!currentOrders.Any(f => f.Id == model.Id))
             {
-                nextOrders.Add(model);
+                currentOrders.Add(model);
             }
 
             mainPanel.Controls.Clear();
-            var x = await GetOrders(nextOrders);
-            BillDataForm myForm = new(nextOrders, null)
+            var x = await GetOrders(currentOrders);
+            BillDataForm myForm = new(x, null)
             {
                 TopLevel = false,
                 AutoScroll = true
@@ -520,19 +534,22 @@ namespace BlueBirdCoffeManager.Forms
 
         private async Task RemoveRefresh(OrderViewModel model)
         {
-            var nextOrders = new List<OrderViewModel>();
-            if (_orders != null) nextOrders.AddRange(_orders);
+            var o = currentOrders.First(f => f.Id == model.Id);
+            currentOrders.Remove(o);
 
-            var o = nextOrders.First(f => f.Id == model.Id);
-            nextOrders.Remove(o);
+            mainPanel.Controls.Clear();
 
-            this.Controls.Clear();
-            BillForm myForm = new(await GetOrders(nextOrders))
+            List<OrderViewModel> x = new();
+            if (currentOrders.Count > 0)
+            {
+                x = await GetOrders(currentOrders);
+            }
+            BillDataForm myForm = new(x, null)
             {
                 TopLevel = false,
                 AutoScroll = true
             };
-            this.Controls.Add(myForm);
+            mainPanel.Controls.Add(myForm);
             myForm.Show();
         }
 

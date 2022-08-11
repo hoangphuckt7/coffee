@@ -164,7 +164,7 @@
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(407, 40);
             this.btnAdd.TabIndex = 4;
-            this.btnAdd.Text = "Thêm >>>";
+            this.btnAdd.Text = "Thêm toàn bộ>>>";
             this.btnAdd.TextColor = System.Drawing.Color.White;
             this.btnAdd.UseVisualStyleBackColor = false;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
