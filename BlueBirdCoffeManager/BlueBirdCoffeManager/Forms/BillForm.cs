@@ -452,7 +452,7 @@ namespace BlueBirdCoffeManager.Forms
                 CheckBox select = new();
                 select.Left = tableOrderDataPn.Width - 50;
                 select.Top = orderData.Height / 2 - select.Height / 2;
-                if (_orders != null && _orders.Any(f => f.Id == order.Id))
+                if (currentOrders != null && currentOrders.Any(f => f.Id == order.Id))
                 {
                     select.Checked = true;
                 }
