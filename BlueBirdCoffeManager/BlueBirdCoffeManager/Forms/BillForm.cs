@@ -495,18 +495,31 @@ namespace BlueBirdCoffeManager.Forms
             }
         }
 
+        bool checkAll = false;
+        bool taskComplete = false;
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            foreach (Control c in tableOrderDataPn.Controls)
+            for (int i = 0; i < tableOrderDataPn.Controls.Count; i++)
             {
+                Control c = tableOrderDataPn.Controls[i];
                 if (c is not Panel) continue;
-                foreach (Control panel in c.Controls)
+
+                for (int j = 0; j < c.Controls.Count; j++)
                 {
+                    Control panel = c.Controls[j];
                     if (panel is not Panel) continue;
-                    foreach (Control checkBox in panel.Controls)
+
+                    for (int k = 0; k < panel.Controls.Count; k++)
                     {
+                        Control checkBox = panel.Controls[k];
                         if (checkBox is CheckBox && ((CheckBox)checkBox).Checked == false)
                         {
+                            checkAll = true;
+                            if (i + 1 >= tableOrderDataPn.Controls.Count && j + 1 >= c.Controls.Count && k + 1 >= panel.Controls.Count)
+                            {
+                                taskComplete = true;
+                            }
                             ((CheckBox)checkBox).Checked = true;
                         }
                     }
@@ -521,12 +534,16 @@ namespace BlueBirdCoffeManager.Forms
                 currentOrders.Add(model);
             }
 
+            if (checkAll == true && taskComplete == false)
+            {
+                return;
+            }
             mainPanel.Controls.Clear();
             var x = await GetOrders(currentOrders);
             BillDataForm myForm = new(x, null)
             {
                 TopLevel = false,
-                AutoScroll = true
+                AutoScroll = false
             };
             mainPanel.Controls.Add(myForm);
             myForm.Show();
@@ -547,7 +564,7 @@ namespace BlueBirdCoffeManager.Forms
             BillDataForm myForm = new(x, null)
             {
                 TopLevel = false,
-                AutoScroll = true
+                AutoScroll = false
             };
             mainPanel.Controls.Add(myForm);
             myForm.Show();

@@ -306,7 +306,7 @@ namespace BlueBirdCoffeManager.Forms
 
             BillForm myForm = new BillForm(orders);
             myForm.TopLevel = false;
-            myForm.AutoScroll = true;
+            myForm.AutoScroll = false;
             _mainPanel.Controls.Add(myForm);
             myForm.Show();
         }
@@ -329,7 +329,7 @@ namespace BlueBirdCoffeManager.Forms
 
             BillForm myForm = new BillForm(GetCheckedItem());
             myForm.TopLevel = false;
-            myForm.AutoScroll = true;
+            myForm.AutoScroll = false;
             _mainPanel.Controls.Add(myForm);
             myForm.Show();
         }

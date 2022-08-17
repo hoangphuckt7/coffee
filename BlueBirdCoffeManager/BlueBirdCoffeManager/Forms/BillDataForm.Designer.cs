@@ -177,6 +177,7 @@
             this.txtapDiscout.Name = "txtapDiscout";
             this.txtapDiscout.Size = new System.Drawing.Size(100, 23);
             this.txtapDiscout.TabIndex = 15;
+            this.txtapDiscout.TextChanged += new System.EventHandler(this.txtapDiscout_TextChanged);
             // 
             // txtapCoupon
             // 
@@ -263,6 +264,7 @@
             this.txtCustomerP.Name = "txtCustomerP";
             this.txtCustomerP.Size = new System.Drawing.Size(100, 23);
             this.txtCustomerP.TabIndex = 25;
+            this.txtCustomerP.TextChanged += new System.EventHandler(this.txtCustomerP_TextChanged);
             // 
             // txtEx
             // 

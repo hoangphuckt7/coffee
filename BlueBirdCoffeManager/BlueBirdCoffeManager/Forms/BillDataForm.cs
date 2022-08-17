@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,11 +32,11 @@ namespace BlueBirdCoffeManager.Forms
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
+            this.AutoScroll = false;
 
             this.BackColor = Color.White;
             dataPanel.Left = 0;
             dataPanel.Width = Width;
-            dataPanel.Visible = false;
 
             lbName.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             lbPrice.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
@@ -60,6 +61,23 @@ namespace BlueBirdCoffeManager.Forms
             btnCheckout.Width = dataPanel.Width - 4 * dataPanel.Width / 100;
             btnCheckout.Left = 2 * this.Width / 100;
             btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
+
+            if (_orders != null && _orders.Count > 0)
+            {
+                SetupBillData(0);
+            }
+            if (_img != null)
+            {
+                oldBillPicture.Visible = true;
+
+                oldBillPicture.Image = _img;
+                oldBillPicture.Width = _img.Width;
+                oldBillPicture.Height = _img.Height;
+
+                oldBillPicture.Left = this.Width / 2 - oldBillPicture.Width / 2;
+
+                oldBillPicture.Top = 5 * Height / 100;
+            }
 
             lbapCp.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             lbapDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
@@ -108,12 +126,14 @@ namespace BlueBirdCoffeManager.Forms
 
             txtapDiscout.Top = lbapDiscout.Top;
             txtapDiscout.Left = btnCheckout.Left + btnCheckout.Width - txtapDiscout.Width;
+            txtapDiscout.RightToLeft = RightToLeft.Yes;
 
             txtEx.Top = lbEx.Top;
             txtEx.Left = btnCheckout.Left + btnCheckout.Width - txtEx.Width;
 
             txtCustomerP.Top = lbCustomerP.Top;
             txtCustomerP.Left = btnCheckout.Left + btnCheckout.Width - txtCustomerP.Width;
+            txtCustomerP.RightToLeft = RightToLeft.Yes;
 
             txtCash.Top = lbCash.Top;
             txtCash.Left = btnCheckout.Left + btnCheckout.Width - txtCash.Width;
@@ -127,25 +147,19 @@ namespace BlueBirdCoffeManager.Forms
             total.Top = lbaTotal.Top;
             total.Left = btnCheckout.Left + btnCheckout.Width - total.Width;
 
-            dataPanel.Height = btnCheckout.Top - lbName.Top - lbName.Height;
+            Panel s2 = new()
+            {
+                Width = this.Width,
+                Height = 1,
+                Top = total.Top - lbName.Top - lbName.Height,
+                Left = 0,
+                BackColor = Color.FromKnownColor(KnownColor.Control)
+            };
+
+            dataPanel.Height = s2.Top - lbName.Top - lbName.Height;
             dataPanel.Top = lbName.Top + lbName.Height;
-
-            if (_img == null)
-            {
-                SetupBillData(0);
-            }
-            else
-            {
-                oldBillPicture.Visible = true;
-
-                oldBillPicture.Image = _img;
-                oldBillPicture.Width = _img.Width;
-                oldBillPicture.Height = _img.Height;
-
-                oldBillPicture.Left = this.Width / 2 - oldBillPicture.Width / 2;
-
-                oldBillPicture.Top = 5 * Height / 100;
-            }
+            dataPanel.AutoScroll = true;
+            this.Controls.Add(s2);
         }
 
         private void DisableCheckout()
@@ -170,28 +184,28 @@ namespace BlueBirdCoffeManager.Forms
             btnCheckout.Text = CHECK_OUT;
             oldBillPicture.Visible = false;
         }
-        public int SetupBillData(int curTop)
+        List<OrderDetailViewModel> _mergeOders = new();
+
+        public void SetupBillData(int curTop)
         {
             EnableCheckout();
 
-            var mergeOders = new List<OrderDetailViewModel>();
-
-            if (_orders != null)
+            if (_orders != null && (_mergeOders == null || _mergeOders.Count == 0))
             {
                 foreach (var order in _orders)
                 {
                     foreach (var item in order.OrderDetails)
                     {
-                        var curItem = mergeOders.FirstOrDefault(f => f.ItemId == item.ItemId);
+                        var curItem = _mergeOders.FirstOrDefault(f => f.ItemId == item.ItemId);
                         if (curItem != null)
                         {
-                            mergeOders.Remove(curItem);
+                            _mergeOders.Remove(curItem);
                             curItem.Quantity += item.Quantity;
-                            mergeOders.Add(curItem);
+                            _mergeOders.Add(curItem);
                         }
                         else
                         {
-                            mergeOders.Add(item);
+                            _mergeOders.Add(item);
                         }
                     }
                 }
@@ -200,8 +214,8 @@ namespace BlueBirdCoffeManager.Forms
             Panel split = new()
             {
                 Top = curTop,
-                Width = this.Width - lbSTT.Left - (this.Width - lbTotal.Left - lbTotal.Width),
-                Left = lbSTT.Left,
+                Width = Width,
+                Left = 0,
                 Height = 1,
                 BackColor = Color.FromKnownColor(KnownColor.Control)
             };
@@ -210,9 +224,9 @@ namespace BlueBirdCoffeManager.Forms
 
             dataPanel.Controls.Add(split);
 
-            for (int i = 0; i < mergeOders.Count; i++)
+            for (int i = 0; i < _mergeOders.Count; i++)
             {
-                var order = mergeOders[i];
+                var order = _mergeOders[i];
                 var curItem = Sessions.ItemSession.ItemData.FirstOrDefault(f => f.Id == order.ItemId);
 
                 curTop += 5;
@@ -299,6 +313,7 @@ namespace BlueBirdCoffeManager.Forms
                     Top = curTop,
                     Left = lbTotal.Left
                 };
+                total.Width = (int)(total.Font.Size * total.Text.Length);
 
                 price.Width = (int)(price.Text.Length * price.Font.Size);
 
@@ -315,8 +330,8 @@ namespace BlueBirdCoffeManager.Forms
                 };
                 borderPanel.Top = curTop - 1;
                 borderPanel.Height = curTop - borderPanel.Top;
-                borderPanel.Left = split.Left;
-                borderPanel.Width = split.Width;
+                borderPanel.Left = lbSTT.Left;
+                borderPanel.Width = this.Width - lbSTT.Left - (this.Width - lbTotal.Left - lbTotal.Width);
 
                 dataPanel.Controls.Add(stt);
                 dataPanel.Controls.Add(name);
@@ -327,38 +342,124 @@ namespace BlueBirdCoffeManager.Forms
                 dataPanel.Controls.Add(total);
                 dataPanel.Controls.Add(borderPanel);
             }
-            dataPanel.Update();
-            return curTop;
+            total.Text = _mergeOders.Sum(s => s.Quantity * Sessions.ItemSession.ItemData.First(f => f.Id == s.ItemId).Price).ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
+
+            var totalPrice = total.Text.Replace("₫", "");
+            totalPrice = totalPrice.Replace(".", "");
+
+            var totalDiscout = txtDiscout.Text.Replace("₫", "");
+            totalDiscout = totalDiscout.Replace(".", "");
+
+            var totalVoucher = txtVoucher.Text.Replace("₫", "");
+            totalVoucher = totalVoucher.Replace(".", "");
+
+            txtCash.Text = (int.Parse(totalPrice) - int.Parse(totalDiscout) - int.Parse(totalVoucher)).ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
         }
         private void ChangeQuantity(Guid itemId, bool minus)
         {
-            var curItem = Sessions.Order.CurrentOrder.OrderDetail.FirstOrDefault(f => f.ItemId == itemId);
+            var curItem = _mergeOders.FirstOrDefault(f => f.ItemId == itemId);
 
-            Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
+            var index = _mergeOders.IndexOf(curItem);
 
             if (minus)
             {
-                curItem.Quantity -= 1;
+                if (_mergeOders[index].Quantity > 1)
+                {
+                    _mergeOders[index].Quantity -= 1;
+                }
+                else
+                {
+                    _mergeOders.Remove(curItem);
+                }
             }
             else
             {
-                curItem.Quantity += 1;
+                _mergeOders[index].Quantity += 1;
             }
-            var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(curItem.Description);
-            numValue.Add(new DetailValue() { Ice = 100, Sugar = 100 });
-            curItem.Description = JsonConvert.SerializeObject(numValue);
 
-            if (curItem.Quantity > 0)
+            //if (curItem.Quantity > 0)
+            //{
+            //    _mergeOders.Add(curItem);
+            //}
+
+            dataPanel.Controls.Clear();
+            SetupBillData(0);
+            dataPanel.Update();
+            //BillDataForm myForm = new BillDataForm(_orders, null);
+            //myForm.TopLevel = false;
+            //myForm.AutoScroll = false;
+            //this.Controls.Add(myForm);
+            //myForm.Show();
+        }
+
+        private void txtCustomerP_TextChanged(object sender, EventArgs e)
+        {
+            CultureInfo culture = new CultureInfo("vi-VN");
+            if (txtCustomerP.Text.Length == 0)
             {
-                Sessions.Order.CurrentOrder.OrderDetail.Add(curItem);
+                txtCustomerP.Text = "0";
+            }
+            else
+            {
+                decimal value = decimal.Parse(txtCustomerP.Text, NumberStyles.AllowThousands);
+                txtCustomerP.Text = String.Format(culture, "{0:N0}", value);
+                txtCustomerP.Select(txtCustomerP.Text.Length, 0);
             }
 
-            this.Controls.Clear();
-            BillDataForm myForm = new BillDataForm(_orders, null);
-            myForm.TopLevel = false;
-            myForm.AutoScroll = true;
-            this.Controls.Add(myForm);
-            myForm.Show();
+            var totalCash = txtCash.Text.Replace("₫", "");
+            totalCash = totalCash.Replace(".", "");
+            var pay = double.Parse(txtCustomerP.Text);
+            var cash = int.Parse(totalCash);
+            if (pay >= cash)
+            {
+                txtEx.Text = (pay - cash).ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
+                txtEx.Left = btnCheckout.Left + btnCheckout.Width - txtEx.Width;
+            }
+            else
+            {
+                txtEx.Text = "0₫";
+                txtEx.Left = btnCheckout.Left + btnCheckout.Width - txtEx.Width;
+            }
+        }
+
+        private void txtapDiscout_TextChanged(object sender, EventArgs e)
+        {
+            CultureInfo culture = new CultureInfo("vi-VN");
+            if (txtapDiscout.Text.Length == 0)
+            {
+                txtapDiscout.Text = "0";
+            }
+            else
+            {
+                decimal value = decimal.Parse(txtapDiscout.Text, NumberStyles.AllowThousands);
+                txtapDiscout.Text = String.Format(culture, "{0:N0}", value);
+                txtapDiscout.Select(txtapDiscout.Text.Length, 0);
+            }
+
+            var totalCash = total.Text.Replace("₫", "");
+            totalCash = totalCash.Replace(".", "");
+
+            var discout = double.Parse(txtapDiscout.Text);
+            txtDiscout.Text = discout.ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
+
+            var cash = int.Parse(totalCash);
+
+            if (discout <= cash)
+            {
+                txtCash.Text = (cash - discout).ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
+
+            }
+            else
+            {
+                txtCash.Text = "0₫";
+            }
+
+            txtCash.Left = btnCheckout.Left + btnCheckout.Width - txtCash.Width;
+            txtDiscout.Left = btnCheckout.Left + btnCheckout.Width - txtDiscout.Width;
+
+            var temp = txtCustomerP.Text;
+            txtCustomerP.Text = "0";
+            txtCustomerP.Text = temp;
         }
     }
 }
