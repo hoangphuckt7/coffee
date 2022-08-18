@@ -70,9 +70,10 @@
             this.btnCheckout.Name = "btnCheckout";
             this.btnCheckout.Size = new System.Drawing.Size(150, 40);
             this.btnCheckout.TabIndex = 0;
-            this.btnCheckout.Text = "Thanh toan";
+            this.btnCheckout.Text = "Thanh toán";
             this.btnCheckout.TextColor = System.Drawing.Color.White;
             this.btnCheckout.UseVisualStyleBackColor = false;
+            this.btnCheckout.Click += new System.EventHandler(this.btnCheckout_Click);
             // 
             // oldBillPicture
             // 

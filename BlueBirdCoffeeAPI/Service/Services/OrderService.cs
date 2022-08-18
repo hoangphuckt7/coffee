@@ -161,47 +161,49 @@ namespace Service.Services
 
         public void SetMissingItem(SetMissingItemModel model)
         {
-            var orders = _dbContext.Orders.Include(o => o.OrderDetails).Where(f => model.MissingItems.Select(s => s.OrderId).Contains(f.Id)).ToList();
+            //var orders = _dbContext.Orders.Include(o => o.OrderDetails).Where(f => model.MissingItems.Select(s => s.OrderId).Contains(f.Id)).ToList();
 
-            foreach (var order in orders)
-            {
-                var itemIds = model.MissingItems.Where(s => s.OrderId == order.Id).ToList().Select(s => s.ItemId);
+            //foreach (var order in orders)
+            //{
+            //    var itemIds = model.MissingItems.Where(s => s.OrderId == order.Id).ToList().Select(s => s.ItemId);
 
-                if (order.OrderDetails != null)
-                {
-                    var items = order.OrderDetails.Where(s => itemIds.Contains(s.ItemId)).ToList();
+            //    if (order.OrderDetails != null)
+            //    {
+            //        var items = order.OrderDetails.Where(s => itemIds.Contains(s.ItemId)).ToList();
 
-                    foreach (var item in items)
-                    {
-                        item.IsMissing = true;
-                        item.DateUpdated = DateTime.Now;
+            //        foreach (var item in items)
+            //        {
+            //            //item.IsMissing = true;
+            //            item.DateUpdated = DateTime.Now;
 
-                        _dbContext.Update(item);
-                    }
-                }
-            }
+            //            _dbContext.Update(item);
+            //        }
+            //    }
+            //}
 
-            _dbContext.SaveChanges();
+            //_dbContext.SaveChanges();
+            throw new Exception();
         }
 
         public List<OrderDetailViewModel> TodateMissingItem()
         {
-            var now = DateTime.Now;
-            var orders = _dbContext.Orders.Include(s => s.OrderDetails).Where(s => s.IsMissing == true && s.DateUpdated.Year == DateTime.Now.Year && s.DateUpdated.Month == DateTime.Now.Month && s.DateUpdated.Day == DateTime.Now.Day).ToList();
+            //var now = DateTime.Now;
+            //var orders = _dbContext.Orders.Include(s => s.OrderDetails).Where(s => s.IsMissing == true && s.DateUpdated.Year == DateTime.Now.Year && s.DateUpdated.Month == DateTime.Now.Month && s.DateUpdated.Day == DateTime.Now.Day).ToList();
 
-            var orderDetails = _dbContext.OrderDetails.Where(s => s.IsMissing == true && s.DateUpdated.Year == DateTime.Now.Year && s.DateUpdated.Month == DateTime.Now.Month && s.DateUpdated.Day == DateTime.Now.Day).ToList();
+            //var orderDetails = _dbContext.OrderDetails.Where(s => s.IsMissing == true && s.DateUpdated.Year == DateTime.Now.Year && s.DateUpdated.Month == DateTime.Now.Month && s.DateUpdated.Day == DateTime.Now.Day).ToList();
 
-            foreach (var item in orders)
-            {
-                if (item.OrderDetails != null)
-                {
-                    orderDetails.AddRange(item.OrderDetails);
-                }
-            }
+            //foreach (var item in orders)
+            //{
+            //    if (item.OrderDetails != null)
+            //    {
+            //        orderDetails.AddRange(item.OrderDetails);
+            //    }
+            //}
 
-            orderDetails = orderDetails.DistinctBy(s => new { s.ItemId, s.OrderId }).OrderByDescending(f => f.DateUpdated).ToList();
+            //orderDetails = orderDetails.DistinctBy(s => new { s.ItemId, s.OrderId }).OrderByDescending(f => f.DateUpdated).ToList();
 
-            return _mapper.Map<List<OrderDetail>, List<OrderDetailViewModel>>(orderDetails);
+            //return _mapper.Map<List<OrderDetail>, List<OrderDetailViewModel>>(orderDetails);
+            throw new Exception();
         }
     }
 }

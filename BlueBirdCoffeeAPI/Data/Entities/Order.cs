@@ -10,6 +10,7 @@ namespace Data.Entities
     public class Order : BaseEntity
     {
         public bool IsCompleted { get; set; } = false;
+        public bool IsCheckout { get; set; } = false;
         public bool IsRejected { get; set; } = false;
         public bool IsMissing { get; set; } = false;
 

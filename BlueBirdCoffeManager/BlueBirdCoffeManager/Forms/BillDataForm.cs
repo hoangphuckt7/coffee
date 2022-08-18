@@ -61,6 +61,8 @@ namespace BlueBirdCoffeManager.Forms
             btnCheckout.Width = dataPanel.Width - 4 * dataPanel.Width / 100;
             btnCheckout.Left = 2 * this.Width / 100;
             btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
+            btnCheckout.Enabled = false;
+            btnCheckout.BackColor = Color.Gray;
 
             if (_orders != null && _orders.Count > 0)
             {
@@ -103,11 +105,30 @@ namespace BlueBirdCoffeManager.Forms
             lbapDiscout.Top = lbapCp.Top - lbapDiscout.Height - 20;
             lbapDiscout.Left = btnCheckout.Left;
 
+            Panel s01 = new()
+            {
+                Width = this.Width - lbSTT.Left - (this.Width - lbTotal.Left - lbTotal.Width),
+                Height = 1,
+                Top = lbapDiscout.Top - lbEx.Height,
+                Left = lbSTT.Left,
+                BackColor = Color.FromKnownColor(KnownColor.Control)
+            };
+            this.Controls.Add(s01);
             lbEx.Top = lbapDiscout.Top - lbEx.Height - 3 * Height / 100;
             lbEx.Left = btnCheckout.Left;
 
             lbCustomerP.Top = lbEx.Top - lbCustomerP.Height - 20;
             lbCustomerP.Left = btnCheckout.Left;
+
+            Panel s02 = new()
+            {
+                Width = this.Width - lbSTT.Left - (this.Width - lbTotal.Left - lbTotal.Width),
+                Height = 1,
+                Top = lbCustomerP.Top - lbCash.Height,
+                Left = lbSTT.Left,
+                BackColor = Color.FromKnownColor(KnownColor.Control)
+            };
+            this.Controls.Add(s02);
 
             lbCash.Top = lbCustomerP.Top - lbCash.Height - 3 * Height / 100;
             lbCash.Left = btnCheckout.Left;
@@ -182,6 +203,8 @@ namespace BlueBirdCoffeManager.Forms
             lbTotal.Visible = true;
 
             btnCheckout.Text = CHECK_OUT;
+            btnCheckout.Enabled = true;
+            btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
             oldBillPicture.Visible = false;
         }
         List<OrderDetailViewModel> _mergeOders = new();
@@ -460,6 +483,14 @@ namespace BlueBirdCoffeManager.Forms
             var temp = txtCustomerP.Text;
             txtCustomerP.Text = "0";
             txtCustomerP.Text = temp;
+        }
+
+        private void btnCheckout_Click(object sender, EventArgs e)
+        {
+            if (btnCheckout.Text == CHECK_OUT)
+            {
+
+            }
         }
     }
 }

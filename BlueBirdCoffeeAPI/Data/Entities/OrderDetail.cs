@@ -11,9 +11,12 @@ namespace Data.Entities
     public class OrderDetail
     {
         public DateTime DateUpdated { get; set; }
+
         public int Quantity { get; set; }
+        public int FinalQuantity { get; set; }
+        public string MissingReason { get; set; }
+
         public double Price { get; set; }
-        public bool IsMissing { get; set; } = false;
         public string? Description { get; set; }
 
         [Key, ForeignKey("Item")]
