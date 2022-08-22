@@ -10,11 +10,11 @@ namespace Data.Entities
 {
     public class OrderDetail
     {
-        public DateTime DateUpdated { get; set; }
+        public DateTime DateUpdated { get; set; } = DateTime.Now;
 
         public int Quantity { get; set; }
         public int FinalQuantity { get; set; }
-        public string MissingReason { get; set; }
+        public string? MissingReason { get; set; }
 
         public double Price { get; set; }
         public string? Description { get; set; }

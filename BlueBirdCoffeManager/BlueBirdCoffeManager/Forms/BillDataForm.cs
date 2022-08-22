@@ -1,4 +1,5 @@
-﻿using BlueBirdCoffeManager.Models;
+﻿using BlueBirdCoffeManager.DataAccessLayer;
+using BlueBirdCoffeManager.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -207,7 +208,9 @@ namespace BlueBirdCoffeManager.Forms
             btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
             oldBillPicture.Visible = false;
         }
+
         List<OrderDetailViewModel> _mergeOders = new();
+        List<ItemCheckoutModel> removed = new();
 
         public void SetupBillData(int curTop)
         {
@@ -394,6 +397,16 @@ namespace BlueBirdCoffeManager.Forms
                 {
                     _mergeOders.Remove(curItem);
                 }
+
+                var existed = removed.FirstOrDefault(f => f.ItemId == curItem.ItemId);
+                if (existed != null)
+                {
+                    existed.Quantity += 1;
+                }
+                else
+                {
+                    removed.Add(new() { ItemId = curItem.ItemId, Quantity = 1 });
+                }
             }
             else
             {
@@ -485,11 +498,17 @@ namespace BlueBirdCoffeManager.Forms
             txtCustomerP.Text = temp;
         }
 
-        private void btnCheckout_Click(object sender, EventArgs e)
+        private async void btnCheckout_Click(object sender, EventArgs e)
         {
             if (btnCheckout.Text == CHECK_OUT)
             {
+                CheckoutModel model = new()
+                {
+                    Orders = _orders.Select(s => s.Id).ToList(),
+                    RemovedItems = removed
+                };
 
+                await ApiBuilder.SendRequest("api/Bill/Checkout", model, RequestMethod.POST);
             }
         }
     }

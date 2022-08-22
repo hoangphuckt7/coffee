@@ -13,6 +13,7 @@ namespace Service.Services
 {
     public interface IBillService
     {
+        bool Checkout(CheckoutModel model);
     }
 
     public class BillService : IBillService
@@ -26,83 +27,98 @@ namespace Service.Services
             _mapper = mapper;
         }
 
-        public void Checkout(List<OrderViewModel> model, List<OrderDetailViewModel> dataList)
+        public bool Checkout(CheckoutModel model)
         {
-            var orders = _dbContext.Orders.Include(f => f.OrderDetails).Where(f => model.Select(s => s.Id).ToList().Contains(f.Id)).ToList();
+            var orders = _dbContext.Orders.Include(f => f.OrderDetails).Where(f => model.Orders.Contains(f.Id)).ToList();
 
-            List<Guid> completeOrders = new();
-            List<Guid> missingOrders = new();
+            var removedOrders = new List<Order>();
             foreach (var order in orders)
             {
-                var checkMissing = false;
-                List<OrderDetail> completedItem = new();
+                var check = false;
                 foreach (var item in order.OrderDetails)
                 {
-                    var existedItem = dataList.FirstOrDefault(f => f.ItemId == item.ItemId);
-                    if (existedItem == null)
+                    var x = model.RemovedItems.FirstOrDefault(f => f.ItemId == item.ItemId);
+                    if (x == null || x.Quantity < item.Quantity)
                     {
-                        checkMissing = true;
-                        missingOrders.Add(order.Id);
+                        check = true;
                         break;
                     }
-                    if (item.Quantity > existedItem.Quantity)
-                    {
-                        checkMissing = true;
-                        missingOrders.Add(order.Id);
-                        break;
-                    }
-                    completedItem.Add(item);
                 }
-                if (!checkMissing)
+                if (!check)
                 {
-                    completeOrders.Add(order.Id);
-                    foreach (var item in completedItem)
+                    removedOrders.Add(order);
+                    foreach (var item in order.OrderDetails)
                     {
-                        var removeItem = dataList.First(f => f.ItemId == item.ItemId);
-                        if (removeItem.Quantity == item.Quantity)
+                        var x = model.RemovedItems.First(f => f.ItemId == item.ItemId);
+                        model.RemovedItems.Remove(x);
+                        if (x.Quantity > item.Quantity)
                         {
-                            dataList.Remove(removeItem);
-                        }
-                        else
-                        {
-                            dataList.Remove(removeItem);
-                            removeItem.Quantity -= item.Quantity;
-                            dataList.Add(removeItem);
+                            x.Quantity -= item.Quantity;
+                            model.RemovedItems.Add(x);
                         }
                     }
+                    order.IsMissing = true;
+                    order.IsCheckout = true;
+                    _dbContext.Update(order);
                 }
             }
-
-            if (dataList != null && dataList.Count > 0)
+            foreach (var item in removedOrders)
             {
-                foreach (var item in missingOrders)
-                {
-
-                }
+                orders.Remove(orders.First(f => f.Id == item.Id));
             }
 
-            foreach (var item in orders)
-            {
-                //var inputOrder = model.FirstOrDefault(f => f.Id == item.Id);
-                //if (inputOrder == null)
-                //{
-                //    item.IsMissing = true;
-                //}
+            orders = orders.OrderByDescending(s => (s.OrderDetails.Select(s => s.ItemId).Intersect(model.RemovedItems.Select(s => s.ItemId))).Count()).ToList();
+            var tables = _dbContext.Tables.Where(f => orders.Select(s => s.TableId).ToList().Contains(f.Id)).ToList();
 
-                foreach (var details in item.OrderDetails)
+            foreach (var order in orders)
+            {
+                bool isMissing = false;
+                foreach (var item in order.OrderDetails)
                 {
-                    var inputDetail = model.First(f => f.Id == item.Id).OrderDetails.FirstOrDefault(f => f.ItemId == details.ItemId);
-                    if (inputDetail == null)
+                    var x = model.RemovedItems.FirstOrDefault(f => f.ItemId == item.ItemId);
+                    if (x == null)
                     {
-                        //details.IsMissing = true;
-                        _dbContext.Update(details);
+                        item.FinalQuantity = item.Quantity;
                     }
                     else
                     {
-
+                        model.RemovedItems.Remove(x);
+                        if (x.Quantity == item.Quantity)
+                        {
+                            item.FinalQuantity = 0;
+                        }
+                        else if (x.Quantity < item.Quantity)
+                        {
+                            item.FinalQuantity -= x.Quantity;
+                        }
+                        else
+                        {
+                            item.FinalQuantity = item.Quantity;
+                            x.Quantity -= item.Quantity;
+                            model.RemovedItems.Add(x);
+                        }
+                        isMissing = true;
                     }
+                    _dbContext.Update(item);
                 }
+
+                order.IsMissing = isMissing;
+                order.IsCheckout = true;
+
+                if (order.TableId != null)
+                {
+                    var table = tables.First(f => f.Id == order.TableId);
+                    if (table.CurrentOrder > 0)
+                    {
+                        table.CurrentOrder -= 1;
+                    }
+                    _dbContext.Update(table);
+                }
+                _dbContext.Update(order);
             }
+
+            _dbContext.SaveChanges();
+            return true;
         }
     }
 }

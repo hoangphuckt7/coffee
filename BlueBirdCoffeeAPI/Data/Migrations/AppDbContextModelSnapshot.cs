@@ -115,16 +115,16 @@ namespace Data.Migrations
                         new
                         {
                             Id = new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"),
-                            DateCreated = new DateTime(2022, 7, 27, 21, 55, 50, 530, DateTimeKind.Utc).AddTicks(4241),
-                            DateUpdated = new DateTime(2022, 7, 27, 21, 55, 50, 530, DateTimeKind.Utc).AddTicks(4245),
+                            DateCreated = new DateTime(2022, 8, 22, 14, 57, 26, 350, DateTimeKind.Utc).AddTicks(8956),
+                            DateUpdated = new DateTime(2022, 8, 22, 14, 57, 26, 350, DateTimeKind.Utc).AddTicks(8960),
                             Description = "Tầng 1",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"),
-                            DateCreated = new DateTime(2022, 7, 27, 21, 55, 50, 530, DateTimeKind.Utc).AddTicks(4255),
-                            DateUpdated = new DateTime(2022, 7, 27, 21, 55, 50, 530, DateTimeKind.Utc).AddTicks(4255),
+                            DateCreated = new DateTime(2022, 8, 22, 14, 57, 26, 350, DateTimeKind.Utc).AddTicks(8970),
+                            DateUpdated = new DateTime(2022, 8, 22, 14, 57, 26, 350, DateTimeKind.Utc).AddTicks(8971),
                             Description = "Tầng 2",
                             IsDeleted = false
                         });
@@ -216,6 +216,9 @@ namespace Data.Migrations
                     b.Property<string>("EmployeeId")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsCheckout")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
 
@@ -262,8 +265,12 @@ namespace Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsMissing")
-                        .HasColumnType("boolean");
+                    b.Property<int>("FinalQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("MissingReason")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");

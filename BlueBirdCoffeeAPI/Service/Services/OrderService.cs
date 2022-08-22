@@ -129,7 +129,7 @@ namespace Service.Services
         {
             var orders = _dbContext.Orders
                 //.Include(f => f.OrderDetails)
-                .Where(o => o.TableId == tableId && o.IsDeleted == false)
+                .Where(o => o.TableId == tableId && o.IsDeleted == false && o.IsCheckout == false)
                 .ToList();
             return _mapper.Map<List<OrderViewModel>>(orders);
         }

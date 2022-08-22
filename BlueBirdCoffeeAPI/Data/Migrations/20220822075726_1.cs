@@ -279,6 +279,7 @@ namespace Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     IsCompleted = table.Column<bool>(type: "boolean", nullable: false),
+                    IsCheckout = table.Column<bool>(type: "boolean", nullable: false),
                     IsRejected = table.Column<bool>(type: "boolean", nullable: false),
                     IsMissing = table.Column<bool>(type: "boolean", nullable: false),
                     RejectedReason = table.Column<string>(type: "text", nullable: true),
@@ -354,8 +355,9 @@ namespace Data.Migrations
                     OrderId = table.Column<Guid>(type: "uuid", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
+                    FinalQuantity = table.Column<int>(type: "integer", nullable: false),
+                    MissingReason = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<double>(type: "double precision", nullable: false),
-                    IsMissing = table.Column<bool>(type: "boolean", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -392,8 +394,8 @@ namespace Data.Migrations
                 columns: new[] { "Id", "DateCreated", "DateUpdated", "Description", "IsDeleted" },
                 values: new object[,]
                 {
-                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"), new DateTime(2022, 7, 27, 21, 55, 50, 530, DateTimeKind.Utc).AddTicks(4255), new DateTime(2022, 7, 27, 21, 55, 50, 530, DateTimeKind.Utc).AddTicks(4255), "Tầng 2", false },
-                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"), new DateTime(2022, 7, 27, 21, 55, 50, 530, DateTimeKind.Utc).AddTicks(4241), new DateTime(2022, 7, 27, 21, 55, 50, 530, DateTimeKind.Utc).AddTicks(4245), "Tầng 1", false }
+                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"), new DateTime(2022, 8, 22, 14, 57, 26, 350, DateTimeKind.Utc).AddTicks(8970), new DateTime(2022, 8, 22, 14, 57, 26, 350, DateTimeKind.Utc).AddTicks(8971), "Tầng 2", false },
+                    { new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"), new DateTime(2022, 8, 22, 14, 57, 26, 350, DateTimeKind.Utc).AddTicks(8956), new DateTime(2022, 8, 22, 14, 57, 26, 350, DateTimeKind.Utc).AddTicks(8960), "Tầng 1", false }
                 });
 
             migrationBuilder.InsertData(

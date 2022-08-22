@@ -53,4 +53,16 @@ namespace BlueBirdCoffeManager.Models
         public string Name { get; set; }
         public double Price { get; set; }
     }
+
+    public class CheckoutModel
+    {
+        public List<Guid> Orders { get; set; }
+        public List<ItemCheckoutModel> RemovedItems { get; set; }
+    }
+
+    public class ItemCheckoutModel
+    {
+        public Guid ItemId { get; set; }
+        public int Quantity { get; set; }
+    }
 }
