@@ -98,7 +98,7 @@ namespace Service.Services
             }
             else
             {
-                throw new AppException("Invalid email or password.");
+                throw new AppException("Thông tin đăng nhập không hợp lệ.");
             }
 
         }

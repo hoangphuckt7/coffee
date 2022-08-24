@@ -10,7 +10,7 @@ namespace Data.Entities
 {
     public class OrderDetail
     {
-        public DateTime DateUpdated { get; set; } = DateTime.Now;
+        public DateTime DateUpdated { get; set; } = DateTime.UtcNow.AddHours(8);
 
         public int Quantity { get; set; }
         public int FinalQuantity { get; set; }
