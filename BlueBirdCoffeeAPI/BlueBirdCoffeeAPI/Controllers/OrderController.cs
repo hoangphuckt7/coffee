@@ -52,5 +52,23 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(_orderService.SetMissingOrder(model, "93336e7f-4425-4c7a-948b-c4b8e18f5ff6"));
         }
+
+        [HttpGet("CurrentOrders")]
+        public IActionResult CurrentOrders()
+        {
+            return Ok(_orderService.GetCurrentOrders());
+        }
+
+        [HttpPut("Complete/{id}")]
+        public IActionResult CompleteOrders(Guid id)
+        {
+            return Ok(_orderService.SetCompletedOrder(id));
+        }
+
+        [HttpPut("UnComplete/{id}")]
+        public IActionResult UnCompleteOrders(Guid id)
+        {
+            return Ok(_orderService.SetUnCompletedOrder(id));
+        }
     }
 }

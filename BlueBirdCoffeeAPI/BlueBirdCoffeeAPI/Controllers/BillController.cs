@@ -19,7 +19,7 @@ namespace BlueBirdCoffeeAPI.Controllers
         [HttpPost("Checkout")]
         public IActionResult Checkout([FromBody] CheckoutModel model)
         {
-            var x=_billService.Checkout(model);
+            var x = _billService.Checkout(model);
             return Ok(x);
         }
     }
