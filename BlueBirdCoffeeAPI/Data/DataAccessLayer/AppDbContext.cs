@@ -19,6 +19,7 @@ namespace Data.DataAccessLayer
 
         #region Entities
         public virtual DbSet<Bill> Bills { get; set; }
+        public virtual DbSet<BillOrder> BillOrders { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Floor> Floors { get; set; }
         public virtual DbSet<Item> Items { get; set; }
@@ -44,6 +45,7 @@ namespace Data.DataAccessLayer
 
             #region Double FK, PK
             modelBuilder.Entity<OrderDetail>().HasKey(s => new { s.OrderId, s.ItemId });
+            modelBuilder.Entity<BillOrder>().HasKey(s => new { s.OrderId, s.BillId });
             #endregion
 
             #region Seed

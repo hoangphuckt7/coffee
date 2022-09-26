@@ -229,7 +229,7 @@ namespace BlueBirdCoffeManager.Forms
                     var curImg = BillPrinter.SetupBill(item, item.DateCreated);
 
                     mainPanel.Controls.Clear();
-                    BillDataForm myForm = new(_orders, curImg)
+                    BillDataForm myForm = new(_orders, curImg, this)
                     {
                         TopLevel = false,
                         AutoScroll = true
@@ -251,7 +251,7 @@ namespace BlueBirdCoffeManager.Forms
                 currentOrders.AddRange(_orders);
                 x = await GetOrders(_orders);
             }
-            BillDataForm myForm = new(x, null)
+            BillDataForm myForm = new(x, null, this)
             {
                 TopLevel = false,
                 AutoScroll = true
@@ -540,7 +540,7 @@ namespace BlueBirdCoffeManager.Forms
             }
             mainPanel.Controls.Clear();
             var x = await GetOrders(currentOrders);
-            BillDataForm myForm = new(x, null)
+            BillDataForm myForm = new(x, null, this)
             {
                 TopLevel = false,
                 AutoScroll = false
@@ -561,7 +561,7 @@ namespace BlueBirdCoffeManager.Forms
             {
                 x = await GetOrders(currentOrders);
             }
-            BillDataForm myForm = new(x, null)
+            BillDataForm myForm = new(x, null, this)
             {
                 TopLevel = false,
                 AutoScroll = false
