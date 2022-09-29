@@ -18,7 +18,7 @@ builder.Services.ConfigIdentityDbContext(configuration.GetConnectionString("Blue
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.BusinessServices();
 builder.Services.AddSignalR();
-builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
+//builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
 
 var app = builder.Build();
 
