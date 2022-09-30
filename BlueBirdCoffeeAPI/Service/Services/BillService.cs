@@ -74,7 +74,8 @@ namespace Service.Services
             Bill newBill = new Bill()
             {
                 Discount = model.Discout,
-                Coupon = model.Coupon
+                Coupon = model.Coupon,
+                IsTakeAway = model.IsTakeAway
             };
             _dbContext.Add(newBill);
 
@@ -151,7 +152,9 @@ namespace Service.Services
                 {
                     Id = bill.Id,
                     DateCreated = bill.DateCreated,
-                    Discount = bill.Discount
+                    Discount = bill.Discount,
+                    IsTakeAway = bill.IsTakeAway,
+                    //Coupon = bill.Coupon,
                 };
 
                 var orders = billOrders.Where(f => f.BillId == bill.Id).ToList();
@@ -163,7 +166,8 @@ namespace Service.Services
                     var orderDetail = new OrderDetailViewModel()
                     {
                         ItemId = item.ItemId,
-                        Quantity = item.FinalQuantity
+                        Quantity = item.FinalQuantity,
+                        Description = item.Price.ToString(),
                     };
                     orderDetailViewModels.Add(orderDetail);
                 }

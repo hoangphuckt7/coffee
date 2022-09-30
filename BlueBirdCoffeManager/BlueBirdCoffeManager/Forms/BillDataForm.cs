@@ -509,7 +509,8 @@ namespace BlueBirdCoffeManager.Forms
                     Orders = _orders.Select(s => s.Id).ToList(),
                     RemovedItems = removed,
                     Coupon = txtapCoupon.Text,
-                    Discout = txtapDiscout.Text.Length != 0 ? double.Parse(txtapCoupon.Text) : 0
+                    Discout = txtapDiscout.Text.Length != 0 ? double.Parse(txtapCoupon.Text) : 0,
+                    IsTakeAway = false
                 };
 
                 var response = await ApiBuilder.SendRequest("api/Bill/Checkout", model, RequestMethod.POST);
