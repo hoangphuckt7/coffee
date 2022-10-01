@@ -13,7 +13,8 @@ namespace Service.Services
 {
     public interface IBillService
     {
-        bool Checkout(CheckoutModel model);
+        Guid Checkout(CheckoutModel model);
+        List<BillViewModel> History(int count);
     }
 
     public class BillService : IBillService
@@ -27,7 +28,7 @@ namespace Service.Services
             _mapper = mapper;
         }
 
-        public bool Checkout(CheckoutModel model)
+        public Guid Checkout(CheckoutModel model)
         {
             var orders = _dbContext.Orders.Include(f => f.OrderDetails).Where(f => model.Orders.Contains(f.Id)).ToList();
 
@@ -69,6 +70,14 @@ namespace Service.Services
 
             orders = orders.OrderByDescending(s => (s.OrderDetails.Select(s => s.ItemId).Intersect(model.RemovedItems.Select(s => s.ItemId))).Count()).ToList();
             var tables = _dbContext.Tables.Where(f => orders.Select(s => s.TableId).ToList().Contains(f.Id)).ToList();
+
+            Bill newBill = new Bill()
+            {
+                Discount = model.Discout,
+                Coupon = model.Coupon,
+                IsTakeAway = model.IsTakeAway
+            };
+            _dbContext.Add(newBill);
 
             foreach (var order in orders)
             {
@@ -115,10 +124,58 @@ namespace Service.Services
                     _dbContext.Update(table);
                 }
                 _dbContext.Update(order);
+
+                BillOrder billOrder = new BillOrder()
+                {
+                    BillId = newBill.Id,
+                    OrderId = order.Id
+                };
+                _dbContext.Add(billOrder);
             }
 
             _dbContext.SaveChanges();
-            return true;
+            return newBill.Id;
+        }
+
+        public List<BillViewModel> History(int count)
+        {
+            var bills = _dbContext.Bills.OrderByDescending(o => o.DateCreated).Take(count).ToList();
+
+            var billOrders = _dbContext.BillOrders.Where(s => bills.Select(s => s.Id).Contains(s.BillId)).ToList();
+
+            var orderDetails = _dbContext.OrderDetails.Where(f => billOrders.Select(s => s.OrderId).Contains(f.OrderId)).ToList();
+
+            var result = new List<BillViewModel>();
+            foreach (var bill in bills)
+            {
+                var billData = new BillViewModel()
+                {
+                    Id = bill.Id,
+                    DateCreated = bill.DateCreated,
+                    Discount = bill.Discount,
+                    IsTakeAway = bill.IsTakeAway,
+                    //Coupon = bill.Coupon,
+                };
+
+                var orders = billOrders.Where(f => f.BillId == bill.Id).ToList();
+                var details = orderDetails.Where(f => orders.Select(s => s.OrderId).Contains(f.OrderId)).ToList();
+                var orderDetailViewModels = new List<OrderDetailViewModel>();
+
+                foreach (var item in details)
+                {
+                    var orderDetail = new OrderDetailViewModel()
+                    {
+                        ItemId = item.ItemId,
+                        Quantity = item.FinalQuantity,
+                        Description = item.Price.ToString(),
+                    };
+                    orderDetailViewModels.Add(orderDetail);
+                }
+
+                billData.OrderDetailViewModels = orderDetailViewModels;
+                result.Add(billData);
+            }
+            return result;
         }
     }
 }

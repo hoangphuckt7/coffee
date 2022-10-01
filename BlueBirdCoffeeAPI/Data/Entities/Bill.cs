@@ -9,11 +9,10 @@ namespace Data.Entities
 {
     public class Bill: BaseEntity
     {
-        [ForeignKey("Order")]
-        public Guid OrderId { get; set; }
-        public virtual Order? Order { get; set; }
-
         public string? ItemMissingReason { get; set; }
+        public string? Coupon { get; set; }
+        public double Discount { get; set; }
+        public bool IsTakeAway { get; set; }
 
         [ForeignKey("Casher")]
         public string? CasherId { get; set; }
@@ -22,7 +21,5 @@ namespace Data.Entities
         [ForeignKey("Customer")]
         public string? CustomerId { get; set; }
         public virtual User? Customer { get; set; }
-
-        public bool? IsFinalBill { get; set; }
     }
 }

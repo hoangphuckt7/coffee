@@ -25,6 +25,9 @@ namespace Service.Services
         Guid SetMissingOrder(SetMissingOrders model, string emp);
         void SetMissingItem(SetMissingItemModel model);
         List<OrderViewModel> GetByIds(List<Guid> ids);
+        List<OrderViewModel> GetCurrentOrders();
+        Guid SetCompletedOrder(Guid orderId);
+        Guid SetUnCompletedOrder(Guid orderId);
     }
     public class OrderService : IOrderService
     {
@@ -204,6 +207,40 @@ namespace Service.Services
 
             //return _mapper.Map<List<OrderDetail>, List<OrderDetailViewModel>>(orderDetails);
             throw new Exception();
+        }
+
+        public List<OrderViewModel> GetCurrentOrders()
+        {
+            var ordres = _dbContext.Orders.Include(f => f.OrderDetails).Where(s => s.IsCheckout == false && s.IsCompleted == false && s.IsDeleted == false && s.IsMissing == false).OrderBy(f => f.DateCreated).ToList();
+            return _mapper.Map<List<Order>, List<OrderViewModel>>(ordres);
+        }
+
+        public Guid SetCompletedOrder(Guid orderId)
+        {
+            var order = _dbContext.Orders.FirstOrDefault(f => f.Id == orderId);
+            if (order == null) throw new AppException("Invalid order id");
+
+            order.IsCompleted = true;
+            order.DateUpdated = DateTime.Now;
+
+            _dbContext.Update(order);
+            _dbContext.SaveChanges();
+
+            return order.Id;
+        }
+
+        public Guid SetUnCompletedOrder(Guid orderId)
+        {
+            var order = _dbContext.Orders.FirstOrDefault(f => f.Id == orderId);
+            if (order == null) throw new AppException("Invalid order id");
+
+            order.IsCompleted = false;
+            order.DateUpdated = DateTime.Now;
+
+            _dbContext.Update(order);
+            _dbContext.SaveChanges();
+
+            return order.Id;
         }
     }
 }

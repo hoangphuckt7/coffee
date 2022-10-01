@@ -20,12 +20,14 @@ namespace BlueBirdCoffeManager.Forms
         private const string CHECK_OUT = "Thanh toán";
         private readonly List<OrderViewModel>? _orders;
         private readonly Bitmap? _img;
+        private readonly Form? _billForm;
 
-        public BillDataForm(List<OrderViewModel>? orders, Bitmap? img)
+        public BillDataForm(List<OrderViewModel>? orders, Bitmap? img, Form? billForm)
         {
             InitializeComponent();
             _orders = orders;
             _img = img;
+            _billForm = billForm;
         }
 
         private void BillDataForm_Load(object sender, EventArgs e)
@@ -505,10 +507,21 @@ namespace BlueBirdCoffeManager.Forms
                 CheckoutModel model = new()
                 {
                     Orders = _orders.Select(s => s.Id).ToList(),
-                    RemovedItems = removed
+                    RemovedItems = removed,
+                    Coupon = txtapCoupon.Text,
+                    Discout = txtapDiscout.Text.Length != 0 ? double.Parse(txtapCoupon.Text) : 0,
+                    IsTakeAway = false
                 };
 
-                await ApiBuilder.SendRequest("api/Bill/Checkout", model, RequestMethod.POST);
+                var response = await ApiBuilder.SendRequest("api/Bill/Checkout", model, RequestMethod.POST);
+                //response = JsonConvert.DeserializeObject<Guid>(response);
+
+                _billForm.Controls.Clear();
+                BillForm myForm = new BillForm(null);
+                myForm.TopLevel = false;
+                myForm.AutoScroll = true;
+                _billForm.Controls.Add(myForm);
+                myForm.Show();
             }
         }
     }

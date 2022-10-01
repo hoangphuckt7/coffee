@@ -19,8 +19,13 @@ namespace BlueBirdCoffeeAPI.Controllers
         [HttpPost("Checkout")]
         public IActionResult Checkout([FromBody] CheckoutModel model)
         {
-            var x=_billService.Checkout(model);
-            return Ok(x);
+            return Ok(_billService.Checkout(model));
+        }
+
+        [HttpGet("History/{count}")]
+        public IActionResult History(int count)
+        {
+            return Ok(_billService.History(count));
         }
     }
 }

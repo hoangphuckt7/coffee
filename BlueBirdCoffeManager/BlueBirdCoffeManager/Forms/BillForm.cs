@@ -143,11 +143,14 @@ namespace BlueBirdCoffeManager.Forms
             pnHistoryTitle.Height = lbOldOrdersTilte.Height + lbOldOrdersTilte.Top + lbOldOrdersTilte.Top;
 
             var curTop = pnHistoryTitle.Height + pnHistoryTitle.Top + 5;
-            var oldOrdersData = Sessions.Order.OldOrders.OrderByDescending(f => f.DateCreated);
+            //var oldOrdersData = Sessions.Order.OldOrders.OrderByDescending(f => f.DateCreated);
+
+            var oldOrdersDataJson = await ApiBuilder.SendRequest<List<BillViewModel>>("api/Bill/History/10", null, RequestMethod.GET);
+            var oldOrdersData = JsonConvert.DeserializeObject<List<BillViewModel>>(oldOrdersDataJson);
 
             foreach (var item in oldOrdersData)
             {
-                var total = item.OrderDetail.Select(s => Sessions.ItemSession.ItemData.First(f => f.Id == s.ItemId).Price * s.Quantity).Sum();
+                var total = item.OrderDetailViewModels.Select(s => s.Quantity * double.Parse(s.Description)).Sum();
 
                 var borderPanel = new Panel()
                 {
@@ -168,7 +171,7 @@ namespace BlueBirdCoffeManager.Forms
                 {
                     Font = Sessions.Sessions.NORMAL_FONT,
                     Top = timeLabel.Top + timeLabel.Height,
-                    Text = item.TableId != null ? "Bàn số: " + item.TableId.ToString() : "Hình thức: Mang đi"
+                    Text = item.IsTakeAway ? "Hình thức: Mang đi" : "Tại bàn"
                 };
                 typeLabel.Width = (int)(typeLabel.Text.Length * typeLabel.Font.Size);
 
@@ -226,10 +229,10 @@ namespace BlueBirdCoffeManager.Forms
 
                 borderPanel.Click += (sender, e) =>
                 {
-                    var curImg = BillPrinter.SetupBill(item, item.DateCreated);
+                    //var curImg = BillPrinter.SetupBill(item, item.DateCreated);
 
                     mainPanel.Controls.Clear();
-                    BillDataForm myForm = new(_orders, curImg)
+                    BillDataForm myForm = new(_orders, null, this)
                     {
                         TopLevel = false,
                         AutoScroll = true
@@ -251,7 +254,7 @@ namespace BlueBirdCoffeManager.Forms
                 currentOrders.AddRange(_orders);
                 x = await GetOrders(_orders);
             }
-            BillDataForm myForm = new(x, null)
+            BillDataForm myForm = new(x, null, this)
             {
                 TopLevel = false,
                 AutoScroll = true
@@ -540,7 +543,7 @@ namespace BlueBirdCoffeManager.Forms
             }
             mainPanel.Controls.Clear();
             var x = await GetOrders(currentOrders);
-            BillDataForm myForm = new(x, null)
+            BillDataForm myForm = new(x, null, this)
             {
                 TopLevel = false,
                 AutoScroll = false
@@ -561,7 +564,7 @@ namespace BlueBirdCoffeManager.Forms
             {
                 x = await GetOrders(currentOrders);
             }
-            BillDataForm myForm = new(x, null)
+            BillDataForm myForm = new(x, null, this)
             {
                 TopLevel = false,
                 AutoScroll = false
