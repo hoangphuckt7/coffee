@@ -52,6 +52,7 @@
             this.lbEx = new System.Windows.Forms.Label();
             this.txtCustomerP = new System.Windows.Forms.TextBox();
             this.txtEx = new System.Windows.Forms.Label();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             ((System.ComponentModel.ISupportInitialize)(this.oldBillPicture)).BeginInit();
             this.dataPanel.SuspendLayout();
             this.SuspendLayout();
@@ -82,6 +83,7 @@
             this.oldBillPicture.Size = new System.Drawing.Size(100, 50);
             this.oldBillPicture.TabIndex = 5;
             this.oldBillPicture.TabStop = false;
+            this.oldBillPicture.Paint += new System.Windows.Forms.PaintEventHandler(this.oldBillPicture_Paint);
             // 
             // dataPanel
             // 
@@ -276,6 +278,10 @@
             this.txtEx.TabIndex = 26;
             this.txtEx.Text = "0₫";
             // 
+            // printDocument1
+            // 
+            this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage);
+            // 
             // BillDataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -339,5 +345,6 @@
         private Label lbEx;
         private TextBox txtCustomerP;
         private Label txtEx;
+        private System.Drawing.Printing.PrintDocument printDocument1;
     }
 }
