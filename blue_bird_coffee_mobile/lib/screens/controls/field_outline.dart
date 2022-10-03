@@ -6,11 +6,13 @@ class FieldOutnine extends StatelessWidget {
   final String labelTxt;
   final TextEditingController controller;
   EFieldType? eFieldType = EFieldType.text;
+  String? Function(String? value)? validator;
   FieldOutnine(
       {super.key,
       required this.labelTxt,
       required this.controller,
-      this.eFieldType});
+      this.eFieldType,
+      this.validator});
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +24,7 @@ class FieldOutnine extends StatelessWidget {
           border: const UnderlineInputBorder(),
           labelText: labelTxt,
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Lỗi";
-          }
-          return null;
-        },
+        validator: validator,
       ),
     );
   }

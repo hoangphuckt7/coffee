@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:blue_bird_coffee_mobile/utils/local_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -28,8 +30,9 @@ class Fetch {
 
   static Future<http.Response> post(url, data) async {
     var resp = await http.post(
-      url,
+      Uri.parse(url),
       headers: await addHeader(),
+      body: jsonEncode(data),
     );
     return resp;
   }
