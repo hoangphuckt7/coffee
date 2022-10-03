@@ -136,7 +136,6 @@ namespace Service.Services
             _dbContext.SaveChanges();
             return newBill.Id;
         }
-
         public List<BillViewModel> History(int count)
         {
             var bills = _dbContext.Bills.OrderByDescending(o => o.DateCreated).Take(count).ToList();

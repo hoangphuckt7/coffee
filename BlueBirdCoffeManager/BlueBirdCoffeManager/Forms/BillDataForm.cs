@@ -504,24 +504,31 @@ namespace BlueBirdCoffeManager.Forms
         {
             if (btnCheckout.Text == CHECK_OUT)
             {
-                CheckoutModel model = new()
+                const string message = "Hoàn tất hóa đơn?";
+                const string caption = "Thông báo";
+                var rr = MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                // If the no button was pressed ...
+                if (rr == DialogResult.Yes)
                 {
-                    Orders = _orders.Select(s => s.Id).ToList(),
-                    RemovedItems = removed,
-                    Coupon = txtapCoupon.Text,
-                    Discout = txtapDiscout.Text.Length != 0 ? double.Parse(txtapCoupon.Text) : 0,
-                    IsTakeAway = false
-                };
+                    CheckoutModel model = new()
+                    {
+                        Orders = _orders.Select(s => s.Id).ToList(),
+                        RemovedItems = removed,
+                        Coupon = txtapCoupon.Text,
+                        Discout = txtapDiscout.Text.Length != 0 ? double.Parse(txtapCoupon.Text) : 0,
+                        IsTakeAway = false
+                    };
 
-                var response = await ApiBuilder.SendRequest("api/Bill/Checkout", model, RequestMethod.POST);
-                //response = JsonConvert.DeserializeObject<Guid>(response);
+                    var response = await ApiBuilder.SendRequest("api/Bill/Checkout", model, RequestMethod.POST);
+                    //response = JsonConvert.DeserializeObject<Guid>(response);
 
-                _billForm.Controls.Clear();
-                BillForm myForm = new BillForm(null);
-                myForm.TopLevel = false;
-                myForm.AutoScroll = true;
-                _billForm.Controls.Add(myForm);
-                myForm.Show();
+                    _billForm.Controls.Clear();
+                    BillForm myForm = new BillForm(null);
+                    myForm.TopLevel = false;
+                    myForm.AutoScroll = true;
+                    _billForm.Controls.Add(myForm);
+                    myForm.Show();
+                }
             }
         }
     }

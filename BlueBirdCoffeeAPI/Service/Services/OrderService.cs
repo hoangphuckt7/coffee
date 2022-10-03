@@ -28,6 +28,7 @@ namespace Service.Services
         List<OrderViewModel> GetCurrentOrders();
         Guid SetCompletedOrder(Guid orderId);
         Guid SetUnCompletedOrder(Guid orderId);
+        List<OrderViewModel> GetUnknowLocaltionOrders();
     }
     public class OrderService : IOrderService
     {
@@ -241,6 +242,15 @@ namespace Service.Services
             _dbContext.SaveChanges();
 
             return order.Id;
+        }
+
+        public List<OrderViewModel> GetUnknowLocaltionOrders()
+        {
+            var orders = _dbContext.Orders
+                //.Include(f => f.OrderDetails)
+                .Where(o => o.TableId == null && o.IsDeleted == false && o.IsCheckout == false)
+                .ToList();
+            return _mapper.Map<List<OrderViewModel>>(orders);
         }
     }
 }

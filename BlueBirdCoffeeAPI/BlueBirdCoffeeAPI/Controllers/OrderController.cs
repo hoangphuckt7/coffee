@@ -28,6 +28,12 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_orderService.GetByTable(id));
         }
 
+        [HttpGet("UnknowLocaltion")]
+        public IActionResult GetUnknowLocaltionOrders()
+        {
+            return Ok(_orderService.GetUnknowLocaltionOrders());
+        }
+
         [HttpGet]
         public IActionResult GetByIds([FromQuery] List<Guid> ids)
         {

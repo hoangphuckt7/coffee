@@ -110,20 +110,35 @@ namespace BlueBirdCoffeManager.Forms
                 Sessions.Area.Areas = FLOORS;
             }
 
-            cbArea.DataSource = FLOORS.Select(s => s.Description).ToList();
+            var floorList = FLOORS.Select(s => s.Description).ToList();
+            floorList.Add("Order khác");
+            cbArea.DataSource = floorList;
             cbArea.DropDownStyle = ComboBoxStyle.DropDownList;
             cbArea.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
 
             var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[0].Id, null, RequestMethod.GET);
             tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
-            cbTable.DataSource = tables.Select(s => s.Description).ToList();
+
+            var tableList = tables.Select(s => s.Description).ToList();
+            cbTable.DataSource = tableList;
 
             cbArea.SelectedIndexChanged += async (sender, e) =>
             {
-                var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[cbArea.SelectedIndex].Id, null, RequestMethod.GET);
-                tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
+                if (cbArea.SelectedValue.ToString() != "Order khác")
+                {
+                    cbTable.Enabled = true;
+                    var tableData = await ApiBuilder.SendRequest<List<TableViewModel>>("api/Table?floorId=" + Sessions.Area.Areas[cbArea.SelectedIndex].Id, null, RequestMethod.GET);
+                    tables = JsonConvert.DeserializeObject<List<TableViewModel>>(tableData);
 
-                cbTable.DataSource = tables.Select(s => s.Description).ToList();
+                    cbTable.DataSource = tables.Select(s => s.Description).ToList();
+                }
+                else
+                {
+                    cbTable.Enabled = false;
+                    var data = await ApiBuilder.SendRequest<List<OrderViewModel>>("api/Order/UnknowLocaltion", null, RequestMethod.GET);
+                    tableOrders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
+                    ChangeTable();
+                }
             };
 
             cbTable.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -171,7 +186,7 @@ namespace BlueBirdCoffeManager.Forms
                 {
                     Font = Sessions.Sessions.NORMAL_FONT,
                     Top = timeLabel.Top + timeLabel.Height,
-                    Text = item.IsTakeAway ? "Hình thức: Mang đi" : "Tại bàn"
+                    Text = item.IsTakeAway ? "Mang đi" : "Tại bàn"
                 };
                 typeLabel.Width = (int)(typeLabel.Text.Length * typeLabel.Font.Size);
 
@@ -291,13 +306,9 @@ namespace BlueBirdCoffeManager.Forms
         }
 
         List<OrderViewModel> tableOrders;
-        private async void cbTable_SelectedIndexChanged(object sender, EventArgs e)
+
+        private void ChangeTable()
         {
-            tableOrderDataPn.Controls.Clear();
-
-            var data = await ApiBuilder.SendRequest<List<OrderViewModel>>("api/Order/Table/" + tables[cbTable.SelectedIndex].Id, null, RequestMethod.GET);
-            tableOrders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
-
             int top = 1 * Height / 100;
             checkSelecteds = new List<CheckSelected>();
             for (int i = 0; i < tableOrders.Count; i++)
@@ -496,6 +507,15 @@ namespace BlueBirdCoffeManager.Forms
                 top += orderData.Height;
                 timer.Start();
             }
+        }
+        private async void cbTable_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tableOrderDataPn.Controls.Clear();
+
+            var data = await ApiBuilder.SendRequest<List<OrderViewModel>>("api/Order/Table/" + tables[cbTable.SelectedIndex].Id, null, RequestMethod.GET);
+            tableOrders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
+
+            ChangeTable();
         }
 
         bool checkAll = false;
