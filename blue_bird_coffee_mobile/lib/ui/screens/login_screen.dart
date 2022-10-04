@@ -1,6 +1,5 @@
-import 'package:blue_bird_coffee_mobile/blocs/auth/auth_bloc.dart';
-import 'package:blue_bird_coffee_mobile/screens/controls/field_outline.dart';
-import 'package:blue_bird_coffee_mobile/screens/controls/fill_btn.dart';
+import 'package:blue_bird_coffee_mobile/ui/controls/field_outline.dart';
+import 'package:blue_bird_coffee_mobile/ui/controls/fill_btn.dart';
 import 'package:blue_bird_coffee_mobile/utils/ui_setting.dart';
 import 'package:blue_bird_coffee_mobile/utils/enum.dart';
 import 'package:flutter/material.dart';
