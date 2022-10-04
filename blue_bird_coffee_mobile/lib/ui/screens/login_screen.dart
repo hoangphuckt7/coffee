@@ -1,8 +1,10 @@
+import 'package:blue_bird_coffee_mobile/blocs/login/login_bloc.dart';
 import 'package:blue_bird_coffee_mobile/ui/controls/field_outline.dart';
 import 'package:blue_bird_coffee_mobile/ui/controls/fill_btn.dart';
 import 'package:blue_bird_coffee_mobile/utils/ui_setting.dart';
 import 'package:blue_bird_coffee_mobile/utils/enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'dart:io' show Platform;
 // Platform.localHostname
 
@@ -12,6 +14,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // var auth_bloc = new AuthBloc();
+    var login_bloc = new LoginBloc();
     var usernameTEC = TextEditingController();
     var passwordTEC = TextEditingController();
 
@@ -47,51 +50,52 @@ class LoginScreen extends StatelessWidget {
             height: cardHeight,
             child: Padding(
               padding: const EdgeInsets.all(30),
-              child: Form(
-                key: GlobalKey<FormState>(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Blue Bird Coffee",
-                      style: TextStyle(
-                        color: MColor.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    // Username
-                    FieldOutnine(
-                      labelTxt: 'Tên đăng nhập',
-                      controller: usernameTEC,
-                      validator: ((value) {
-                        if (value == null || value.isEmpty) {
-                          return "Tên đăng nhập không được trống!";
-                        }
-                        return null;
-                      }),
-                    ),
-                    // Password
-                    FieldOutnine(
-                      labelTxt: 'Mật khẩu',
-                      controller: passwordTEC,
-                      eFieldType: EFieldType.password,
-                      validator: ((value) {
-                        if (value == null || value.isEmpty) {
-                          return "Mật khẩu không được trống!";
-                        }
-                        return null;
-                      }),
-                    ),
-                    const SizedBox(height: 20),
-                    FillBtn(
-                      title: "Đăng nhập",
-                      onPressed: () => {},
-                    ),
-                  ],
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  BlocBuilder<LoginBloc, LoginState>(
+                    builder: (context, state) {
+                      return Text(
+                        "Blue Bird Coffee",
+                        style: TextStyle(
+                          color: MColor.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  // Username
+                  FieldOutnine(
+                    labelTxt: 'Tên đăng nhập',
+                    controller: usernameTEC,
+                    validator: ((value) {
+                      if (value == null || value.isEmpty) {
+                        return "Tên đăng nhập không được trống!";
+                      }
+                      return null;
+                    }),
+                  ),
+                  // Password
+                  FieldOutnine(
+                    labelTxt: 'Mật khẩu',
+                    controller: passwordTEC,
+                    eFieldType: EFieldType.password,
+                    validator: ((value) {
+                      if (value == null || value.isEmpty) {
+                        return "Mật khẩu không được trống!";
+                      }
+                      return null;
+                    }),
+                  ),
+                  const SizedBox(height: 20),
+                  FillBtn(
+                    title: "Đăng nhập",
+                    onPressed: () => {},
+                  ),
+                ],
               ),
             ),
           ),
