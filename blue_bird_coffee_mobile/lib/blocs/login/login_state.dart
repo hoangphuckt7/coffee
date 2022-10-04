@@ -14,7 +14,8 @@ class LoginUsernameValid extends LoginState {}
 
 class LoginPasswordInvalid extends LoginState {
   final errMsg;
-  LoginPasswordInvalid(this.errMsg);
+  final errMsg1;
+  LoginPasswordInvalid(this.errMsg, this.errMsg1);
 }
 
 class LoginPasswordValid extends LoginState {}
