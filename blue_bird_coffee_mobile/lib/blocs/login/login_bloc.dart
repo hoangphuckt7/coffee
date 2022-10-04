@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:blue_bird_coffee_mobile/screens/login/bloc/auth_bloc.dart';
 import 'package:blue_bird_coffee_mobile/utils/validation.dart';
 import 'package:meta/meta.dart';
 
