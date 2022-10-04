@@ -67,23 +67,6 @@ namespace BlueBirdCoffeManager.Forms
             btnCheckout.Enabled = false;
             btnCheckout.BackColor = Color.Gray;
 
-            if (_orders != null && _orders.Count > 0)
-            {
-                SetupBillData(0);
-            }
-            if (_img != null)
-            {
-                oldBillPicture.Visible = true;
-
-                oldBillPicture.Image = _img;
-                oldBillPicture.Width = _img.Width;
-                oldBillPicture.Height = _img.Height;
-
-                oldBillPicture.Left = this.Width / 2 - oldBillPicture.Width / 2;
-
-                oldBillPicture.Top = 5 * Height / 100;
-            }
-
             lbapCp.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             lbapDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             lbEx.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
@@ -184,31 +167,36 @@ namespace BlueBirdCoffeManager.Forms
             dataPanel.Top = lbName.Top + lbName.Height;
             dataPanel.AutoScroll = true;
             this.Controls.Add(s2);
+            oldBillPicture.Visible = false;
+            if (_orders != null && _orders.Count > 0)
+            {
+                SetupBillData(0);
+            }
+
+            if (_img != null)
+            {
+                DisableCheckout();
+                oldBillPicture.Visible = true;
+
+                oldBillPicture.Image = _img;
+                oldBillPicture.Width = _img.Width;
+                oldBillPicture.Height = _img.Height;
+
+                oldBillPicture.Left = this.Width / 2 - oldBillPicture.Width / 2;
+
+                oldBillPicture.Top = 5 * Height / 100;
+            }
         }
 
         private void DisableCheckout()
         {
-            lbName.Visible = false;
-            lbQuan.Visible = false;
-            lbPrice.Visible = false;
-            lbSTT.Visible = false;
-            lbTotal.Visible = false;
+            this.Controls.Clear();
+            this.Controls.Add(oldBillPicture);
+            this.Controls.Add(btnCheckout);
 
             btnCheckout.Text = RE_PRINT;
-            oldBillPicture.Visible = true;
-        }
-        private void EnableCheckout()
-        {
-            lbName.Visible = true;
-            lbQuan.Visible = true;
-            lbPrice.Visible = true;
-            lbSTT.Visible = true;
-            lbTotal.Visible = true;
-
-            btnCheckout.Text = CHECK_OUT;
             btnCheckout.Enabled = true;
             btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
-            oldBillPicture.Visible = false;
         }
 
         List<OrderDetailViewModel> _mergeOders = new();
@@ -216,8 +204,6 @@ namespace BlueBirdCoffeManager.Forms
 
         public void SetupBillData(int curTop)
         {
-            EnableCheckout();
-
             if (_orders != null && (_mergeOders == null || _mergeOders.Count == 0))
             {
                 foreach (var order in _orders)
@@ -530,6 +516,24 @@ namespace BlueBirdCoffeManager.Forms
                     myForm.Show();
                 }
             }
+            else
+            {
+                printDocument1.Print();
+            }
+        }
+
+        private void oldBillPicture_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, oldBillPicture.ClientRectangle,
+                   Color.Black, 1, ButtonBorderStyle.Solid, // left
+                   Color.Black, 1, ButtonBorderStyle.Solid, // top
+                   Color.Black, 1, ButtonBorderStyle.Solid, // right
+                   Color.Black, 1, ButtonBorderStyle.Solid);// bottom
+        }
+
+        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            e.Graphics.DrawImage(_img, 0, 0);
         }
     }
 }

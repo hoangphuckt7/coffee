@@ -241,13 +241,50 @@ namespace BlueBirdCoffeManager.Forms
                 };
                 #endregion
 
-
                 borderPanel.Click += (sender, e) =>
                 {
-                    //var curImg = BillPrinter.SetupBill(item, item.DateCreated);
+                    var orderCreateModel = new OrderCreateModel()
+                    {
+                        OrderDetail = item.OrderDetailViewModels
+                    };
+                    var curImg = BillPrinter.SetupBill(orderCreateModel, item.DateCreated);
 
                     mainPanel.Controls.Clear();
-                    BillDataForm myForm = new(_orders, null, this)
+                    BillDataForm myForm = new(_orders, curImg, this)
+                    {
+                        TopLevel = false,
+                        AutoScroll = true
+                    };
+                    mainPanel.Controls.Add(myForm);
+                    myForm.Show();
+                };
+                timeLabel.Click += (sender, e) =>
+                {
+                    var orderCreateModel = new OrderCreateModel()
+                    {
+                        OrderDetail = item.OrderDetailViewModels
+                    };
+                    var curImg = BillPrinter.SetupBill(orderCreateModel, item.DateCreated);
+
+                    mainPanel.Controls.Clear();
+                    BillDataForm myForm = new(_orders, curImg, this)
+                    {
+                        TopLevel = false,
+                        AutoScroll = true
+                    };
+                    mainPanel.Controls.Add(myForm);
+                    myForm.Show();
+                };
+                typeLabel.Click += (sender, e) =>
+                {
+                    var orderCreateModel = new OrderCreateModel()
+                    {
+                        OrderDetail = item.OrderDetailViewModels
+                    };
+                    var curImg = BillPrinter.SetupBill(orderCreateModel, item.DateCreated);
+
+                    mainPanel.Controls.Clear();
+                    BillDataForm myForm = new(_orders, curImg, this)
                     {
                         TopLevel = false,
                         AutoScroll = true
@@ -277,7 +314,7 @@ namespace BlueBirdCoffeManager.Forms
             mainPanel.Controls.Add(myForm);
             myForm.Show();
         }
-
+        
         private void pnHistoryTitle_Paint(object sender, PaintEventArgs e)
         {
             ControlPaint.DrawBorder(e.Graphics, pnHistoryTitle.ClientRectangle,
