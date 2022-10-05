@@ -4,3 +4,10 @@ enum EFieldType {
   phone,
   email,
 }
+
+enum ObjectStatus {
+  initial,
+  loading,
+  success,
+  failure,
+}

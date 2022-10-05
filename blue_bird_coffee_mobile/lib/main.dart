@@ -1,8 +1,6 @@
+import 'package:blue_bird_coffee_mobile/ui/screens/login_screen.dart';
 import 'package:blue_bird_coffee_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
-
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'screens/login_screen.dart';
 
 Future main() async {
   runApp(const BlueBirdCoffee());
