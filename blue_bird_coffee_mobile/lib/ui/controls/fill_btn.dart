@@ -1,10 +1,16 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:blue_bird_coffee_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
 class FillBtn extends StatelessWidget {
   final String title;
   final void Function() onPressed;
-  const FillBtn({super.key, required this.title, required this.onPressed});
+  FillBtn({
+    super.key,
+    required this.title,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {

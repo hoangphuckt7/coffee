@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class FieldOutnine extends StatelessWidget {
-  final String labelTxt;
+  final String labelText;
   final TextEditingController controller;
+  final String? errorText;
   EFieldType? eFieldType = EFieldType.text;
-  String? Function(String? value)? validator;
-  FieldOutnine(
-      {super.key,
-      required this.labelTxt,
-      required this.controller,
-      this.eFieldType,
-      this.validator});
+  final Function(String)? onChanged;
+  FieldOutnine({
+    super.key,
+    required this.labelText,
+    required this.controller,
+    required this.errorText,
+    this.eFieldType,
+    this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +25,10 @@ class FieldOutnine extends StatelessWidget {
         obscureText: eFieldType == EFieldType.password,
         decoration: InputDecoration(
           border: const UnderlineInputBorder(),
-          labelText: labelTxt,
+          labelText: labelText,
+          errorText: errorText,
         ),
-        validator: validator,
+        onChanged: onChanged,
       ),
     );
   }
