@@ -67,107 +67,7 @@ namespace BlueBirdCoffeManager.Forms
             btnCheckout.Enabled = false;
             btnCheckout.BackColor = Color.Gray;
 
-            lbapCp.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbapDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbEx.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbCustomerP.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbCash.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbvoucher.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbaTotal.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            txtapCoupon.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            txtapDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            txtEx.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-
-            txtCustomerP.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            txtCash.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            txtVoucher.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            txtDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            total.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-
-            lbapCp.Top = btnCheckout.Top - lbapCp.Height - 5 * Height / 100;
-            lbapCp.Left = btnCheckout.Left;
-
-            lbapDiscout.Top = lbapCp.Top - lbapDiscout.Height - 20;
-            lbapDiscout.Left = btnCheckout.Left;
-
-            Panel s01 = new()
-            {
-                Width = this.Width - lbSTT.Left - (this.Width - lbTotal.Left - lbTotal.Width),
-                Height = 1,
-                Top = lbapDiscout.Top - lbEx.Height,
-                Left = lbSTT.Left,
-                BackColor = Color.FromKnownColor(KnownColor.Control)
-            };
-            this.Controls.Add(s01);
-            lbEx.Top = lbapDiscout.Top - lbEx.Height - 3 * Height / 100;
-            lbEx.Left = btnCheckout.Left;
-
-            lbCustomerP.Top = lbEx.Top - lbCustomerP.Height - 20;
-            lbCustomerP.Left = btnCheckout.Left;
-
-            Panel s02 = new()
-            {
-                Width = this.Width - lbSTT.Left - (this.Width - lbTotal.Left - lbTotal.Width),
-                Height = 1,
-                Top = lbCustomerP.Top - lbCash.Height,
-                Left = lbSTT.Left,
-                BackColor = Color.FromKnownColor(KnownColor.Control)
-            };
-            this.Controls.Add(s02);
-
-            lbCash.Top = lbCustomerP.Top - lbCash.Height - 3 * Height / 100;
-            lbCash.Left = btnCheckout.Left;
-
-            lbvoucher.Top = lbCash.Top - lbvoucher.Height - 20;
-            lbvoucher.Left = btnCheckout.Left;
-
-            lbDiscout.Top = lbvoucher.Top - lbDiscout.Height - 20;
-            lbDiscout.Left = btnCheckout.Left;
-
-            lbaTotal.Top = lbDiscout.Top - lbaTotal.Height - 20;
-            lbaTotal.Left = btnCheckout.Left;
-
-            txtapCoupon.Top = lbapCp.Top;
-            txtapCoupon.Left = btnCheckout.Left + btnCheckout.Width - txtapCoupon.Width;
-
-            txtapDiscout.Top = lbapDiscout.Top;
-            txtapDiscout.Left = btnCheckout.Left + btnCheckout.Width - txtapDiscout.Width;
-            txtapDiscout.RightToLeft = RightToLeft.Yes;
-
-            txtEx.Top = lbEx.Top;
-            txtEx.Left = btnCheckout.Left + btnCheckout.Width - txtEx.Width;
-
-            txtCustomerP.Top = lbCustomerP.Top;
-            txtCustomerP.Left = btnCheckout.Left + btnCheckout.Width - txtCustomerP.Width;
-            txtCustomerP.RightToLeft = RightToLeft.Yes;
-
-            txtCash.Top = lbCash.Top;
-            txtCash.Left = btnCheckout.Left + btnCheckout.Width - txtCash.Width;
-
-            txtVoucher.Top = lbvoucher.Top;
-            txtVoucher.Left = btnCheckout.Left + btnCheckout.Width - txtVoucher.Width;
-
-            txtDiscout.Top = lbDiscout.Top;
-            txtDiscout.Left = btnCheckout.Left + btnCheckout.Width - txtDiscout.Width;
-
-            total.Top = lbaTotal.Top;
-            total.Left = btnCheckout.Left + btnCheckout.Width - total.Width;
-
-            Panel s2 = new()
-            {
-                Width = this.Width,
-                Height = 1,
-                Top = total.Top - lbName.Top - lbName.Height,
-                Left = 0,
-                BackColor = Color.FromKnownColor(KnownColor.Control)
-            };
-
-            dataPanel.Height = s2.Top - lbName.Top - lbName.Height;
-            dataPanel.Top = lbName.Top + lbName.Height;
-            dataPanel.AutoScroll = true;
-            this.Controls.Add(s2);
-            oldBillPicture.Visible = false;
+            
             if (_orders != null && _orders.Count > 0)
             {
                 SetupBillData(0);
@@ -185,6 +85,111 @@ namespace BlueBirdCoffeManager.Forms
                 oldBillPicture.Left = this.Width / 2 - oldBillPicture.Width / 2;
 
                 oldBillPicture.Top = 5 * Height / 100;
+            }
+            else
+            {
+                //Bottom Data
+                lbapCp.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                lbapDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                lbEx.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                lbCustomerP.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                lbCash.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                lbvoucher.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                lbDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                lbaTotal.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                txtapCoupon.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                txtapDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                txtEx.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+
+                txtCustomerP.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                txtCash.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                txtVoucher.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                txtDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                total.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+
+                lbapCp.Top = btnCheckout.Top - lbapCp.Height - 5 * Height / 100;
+                lbapCp.Left = btnCheckout.Left;
+
+                lbapDiscout.Top = lbapCp.Top - lbapDiscout.Height - 20;
+                lbapDiscout.Left = btnCheckout.Left;
+
+                Panel s01 = new()
+                {
+                    Width = this.Width - lbSTT.Left - (this.Width - lbTotal.Left - lbTotal.Width),
+                    Height = 1,
+                    Top = lbapDiscout.Top - lbEx.Height,
+                    Left = lbSTT.Left,
+                    BackColor = Color.FromKnownColor(KnownColor.Control)
+                };
+                this.Controls.Add(s01);
+                lbEx.Top = lbapDiscout.Top - lbEx.Height - 3 * Height / 100;
+                lbEx.Left = btnCheckout.Left;
+
+                lbCustomerP.Top = lbEx.Top - lbCustomerP.Height - 20;
+                lbCustomerP.Left = btnCheckout.Left;
+
+                Panel s02 = new()
+                {
+                    Width = this.Width - lbSTT.Left - (this.Width - lbTotal.Left - lbTotal.Width),
+                    Height = 1,
+                    Top = lbCustomerP.Top - lbCash.Height,
+                    Left = lbSTT.Left,
+                    BackColor = Color.FromKnownColor(KnownColor.Control)
+                };
+                this.Controls.Add(s02);
+
+                lbCash.Top = lbCustomerP.Top - lbCash.Height - 3 * Height / 100;
+                lbCash.Left = btnCheckout.Left;
+
+                lbvoucher.Top = lbCash.Top - lbvoucher.Height - 20;
+                lbvoucher.Left = btnCheckout.Left;
+
+                lbDiscout.Top = lbvoucher.Top - lbDiscout.Height - 20;
+                lbDiscout.Left = btnCheckout.Left;
+
+                lbaTotal.Top = lbDiscout.Top - lbaTotal.Height - 20;
+                lbaTotal.Left = btnCheckout.Left;
+
+                txtapCoupon.Top = lbapCp.Top;
+                txtapCoupon.Left = btnCheckout.Left + btnCheckout.Width - txtapCoupon.Width;
+
+                txtapDiscout.Top = lbapDiscout.Top;
+                txtapDiscout.Left = btnCheckout.Left + btnCheckout.Width - txtapDiscout.Width;
+                txtapDiscout.RightToLeft = RightToLeft.Yes;
+
+                txtEx.Top = lbEx.Top;
+                txtEx.Left = btnCheckout.Left + btnCheckout.Width - txtEx.Width;
+
+                txtCustomerP.Top = lbCustomerP.Top;
+                txtCustomerP.Left = btnCheckout.Left + btnCheckout.Width - txtCustomerP.Width;
+                txtCustomerP.RightToLeft = RightToLeft.Yes;
+
+                txtCash.Top = lbCash.Top;
+                txtCash.Left = btnCheckout.Left + btnCheckout.Width - txtCash.Width;
+
+                txtVoucher.Top = lbvoucher.Top;
+                txtVoucher.Left = btnCheckout.Left + btnCheckout.Width - txtVoucher.Width;
+
+                txtDiscout.Top = lbDiscout.Top;
+                txtDiscout.Left = btnCheckout.Left + btnCheckout.Width - txtDiscout.Width;
+
+                total.Top = lbaTotal.Top;
+                total.Left = btnCheckout.Left + btnCheckout.Width - total.Width;
+
+                Panel s2 = new()
+                {
+                    Width = this.Width,
+                    Height = 1,
+                    Top = total.Top - lbName.Top - lbName.Height,
+                    Left = 0,
+                    BackColor = Color.FromKnownColor(KnownColor.Control)
+                };
+
+                dataPanel.Height = s2.Top - lbName.Top - lbName.Height;
+                dataPanel.Top = lbName.Top + lbName.Height;
+                dataPanel.AutoScroll = true;
+                this.Controls.Add(s2);
+                oldBillPicture.Visible = false;
             }
         }
 
@@ -206,6 +211,9 @@ namespace BlueBirdCoffeManager.Forms
         {
             if (_orders != null && (_mergeOders == null || _mergeOders.Count == 0))
             {
+                btnCheckout.Enabled = true;
+                btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
+
                 foreach (var order in _orders)
                 {
                     foreach (var item in order.OrderDetails)
