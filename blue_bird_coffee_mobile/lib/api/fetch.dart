@@ -1,12 +1,7 @@
 import 'dart:convert';
-
+import 'dart:developer';
 import 'package:blue_bird_coffee_mobile/utils/local_storage.dart';
 import 'package:http/http.dart' as http;
-
-const localHost = "https://10.0.2.2:7244";
-const serverHost = "";
-
-const currentHost = localHost;
 
 class Fetch {
   static const String FORMBODY = "FormBody";
@@ -24,7 +19,10 @@ class Fetch {
   }
 
   static Future<http.Response> get(url) async {
-    var resp = await http.get(url, headers: await addHeader());
+    log(url);
+    var resp = await http.get(Uri.parse(url)
+        // headers: await addHeader(),
+        );
     return resp;
   }
 
