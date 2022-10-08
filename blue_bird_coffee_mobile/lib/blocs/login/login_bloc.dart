@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:blue_bird_coffee_mobile/models/login/login_req_model.dart/login_req_model.dart';
@@ -20,6 +21,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   void _onDataChanged(DataChangedEvent event, Emitter<LoginState> emit) {
+    emit(LoadingState());
     var errUsername = Validations.validUsername(event.username);
     var errPassword = Validations.validPassword(event.password);
     if (errUsername != null || errPassword != null) {
@@ -30,6 +32,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   void _onLoginSubmitted(SubmittedEvent event, Emitter<LoginState> emit) async {
+    emit(LoadingState());
     var errUsername = Validations.validUsername(event.username);
     var errPassword = Validations.validPassword(event.password);
     if (errUsername != null || errPassword != null) {
@@ -39,12 +42,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         event.username.toString(),
         event.password.toString(),
       );
-      var resp = await UserRepo.login(lsonReqModel);
-      if (resp != null) {
-        await LocalStorage.setItem(KeyLS.token, resp.token);
-        await LocalStorage.setItem(KeyLS.login_info, lsonReqModel.toJson());
-        emit(SubmitSuccessState());
-      } else {}
+      try {
+        var resp = await UserRepo.login(lsonReqModel);
+        if (resp != null) {
+          if (resp is String) {
+            log(resp);
+            emit(SubmitFailState(resp));
+          } else {
+            await LocalStorage.setItem(KeyLS.token, resp.token.toString());
+            await LocalStorage.setItem(KeyLS.login_info, lsonReqModel.toJson());
+            emit(SubmitSuccessState());
+          }
+        }
+      } catch (e) {
+        log('_onLoginSubmitted');
+        log(e.toString());
+      }
     }
   }
 }

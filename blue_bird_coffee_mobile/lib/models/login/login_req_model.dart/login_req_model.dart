@@ -4,8 +4,8 @@ part 'login_req_model.g.dart';
 
 @JsonSerializable()
 class LoginReqModel {
-  final String phone;
-  final String password;
+  final String? phone;
+  final String? password;
 
   LoginReqModel(this.phone, this.password);
 

@@ -18,4 +18,8 @@ class DataInvalidState extends LoginState {
 
 class SubmitSuccessState extends LoginState {}
 
-class SubmitFailState extends LoginState {}
+class SubmitFailState extends LoginState {
+  final errMsg;
+
+  SubmitFailState(this.errMsg);
+}

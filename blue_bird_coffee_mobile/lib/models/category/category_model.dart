@@ -4,8 +4,8 @@ part 'category_model.g.dart';
 
 @JsonSerializable()
 class CategoryModel {
-  final String id;
-  final String description;
+  final String? id;
+  final String? description;
   // final bool isDeleted;
   // final DateTime dateCreated;
   // final DateTime dateUpdated;

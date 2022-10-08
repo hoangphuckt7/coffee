@@ -10,14 +10,17 @@ import 'package:blue_bird_coffee_mobile/models/login/login_res_model/login_res_m
 class UserRepo {
   static const controllerUrl = '${Host.currentHost}/User';
 
-  static Future<LoginResModel?> login(LoginReqModel model) async {
+  static Future<dynamic> login(LoginReqModel model) async {
     var resp = await Fetch.POST('${controllerUrl}/Login', model.toJson());
-    if (resp.statusCode == HttpStatusCode.OK) {
-      if (resp.body is LoginReqModel) {
-        return LoginResModel.fromJson(jsonDecode(resp.body));
-      } else if (resp.body is String) {
-        throw Exception(resp.body.toString());
+    try {
+      if (resp.statusCode == HttpStatusCode.OK) {
+        var model = LoginResModel.fromJson(jsonDecode(resp.body));
+        return model;
+      } else if (resp.statusCode == HttpStatusCode.BadRequest) {
+        return resp.body.toString();
       }
+    } catch (e) {
+      log(e.toString());
     }
     return null;
   }
