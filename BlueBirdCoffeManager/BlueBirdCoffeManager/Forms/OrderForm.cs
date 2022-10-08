@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Collections.Specialized.BitVector32;
+using System.Xml.Linq;
 
 namespace BlueBirdCoffeManager.Forms
 {
@@ -220,22 +222,61 @@ namespace BlueBirdCoffeManager.Forms
             myForm.Show();
         }
 
+        TypeAssistant assistant;
+
+        public class TypeAssistant
+        {
+            public event EventHandler Idled = delegate { };
+            public int WaitingMilliSeconds { get; set; }
+            System.Threading.Timer waitingTimer;
+
+            public TypeAssistant(int waitingMilliSeconds)
+            {
+                WaitingMilliSeconds = waitingMilliSeconds;
+                waitingTimer = new System.Threading.Timer(p =>
+                {
+                    Idled(this, EventArgs.Empty);
+                });
+            }
+            public void TextChanged()
+            {
+                waitingTimer.Change(WaitingMilliSeconds, Timeout.Infinite);
+            }
+        }
+        string currentSearch = "";
+        void assistant_Idled(object sender, EventArgs e)
+        {
+            string x = txtSearch.Text;
+            if (currentSearch.Length == txtSearch.Text.Length)
+            {
+                this.Invoke(
+            new MethodInvoker(() =>
+            {
+                CATEGORY_INDEX = cbCategory.SelectedIndex;
+
+                Guid? categoryId = null;
+                if (CATEGORY_INDEX > 0)
+                {
+                    categoryId = CATEGORIES[CATEGORY_INDEX - 1].Id;
+                }
+                itemDataPanel.Controls.Clear();
+                ItemDataForm myForm = new ItemDataForm(txtSearch.Text, categoryId, oDataPanel);
+                myForm.TopLevel = false;
+                myForm.AutoScroll = true;
+                itemDataPanel.Controls.Add(myForm);
+                myForm.Show();
+                txtSearch.Focus();
+            }));
+            }
+        }
+
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            CATEGORY_INDEX = cbCategory.SelectedIndex;
-
-            Guid? categoryId = null;
-            if (CATEGORY_INDEX > 0)
-            {
-                categoryId = CATEGORIES[CATEGORY_INDEX - 1].Id;
-            }
-            itemDataPanel.Controls.Clear();
-            ItemDataForm myForm = new ItemDataForm(txtSearch.Text, categoryId, oDataPanel);
-            myForm.TopLevel = false;
-            myForm.AutoScroll = true;
-            itemDataPanel.Controls.Add(myForm);
-            myForm.Show();
-            txtSearch.Focus();
+            int delay = 700;
+            assistant = new TypeAssistant(delay);
+            assistant.Idled += assistant_Idled;
+            assistant.TextChanged();
+            currentSearch = txtSearch.Text;
         }
 
         private void roundedButton1_Click(object sender, EventArgs e)
