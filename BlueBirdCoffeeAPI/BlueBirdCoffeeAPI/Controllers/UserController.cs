@@ -20,13 +20,27 @@ namespace BlueBirdCoffeeAPI.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterModel model)
         {
-            return Ok(await _userService.Register(model, SystemRoles.CASHER));
+            try
+            {
+                return Ok(await _userService.Register(model, SystemRoles.CASHER));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginModel model)
         {
-            return Ok(await _userService.Login(model));
+            try
+            {
+                return Ok(await _userService.Login(model));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

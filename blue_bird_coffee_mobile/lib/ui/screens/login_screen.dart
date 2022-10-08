@@ -2,6 +2,7 @@ import 'package:blue_bird_coffee_mobile/blocs/login/login_bloc.dart';
 import 'package:blue_bird_coffee_mobile/routes.dart';
 import 'package:blue_bird_coffee_mobile/ui/controls/field_outline.dart';
 import 'package:blue_bird_coffee_mobile/ui/controls/fill_btn.dart';
+import 'package:blue_bird_coffee_mobile/utils/app_info.dart';
 import 'package:blue_bird_coffee_mobile/utils/ui_setting.dart';
 import 'package:blue_bird_coffee_mobile/utils/enum.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class LoginScreen extends StatelessWidget {
     var login_bloc = new LoginBloc();
     var usernameTEC = TextEditingController();
     var passwordTEC = TextEditingController();
+
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
     var cardWidth = screenWidth * .85;
@@ -69,7 +71,7 @@ class LoginScreen extends StatelessWidget {
                       // crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "Blue Bird Coffee",
+                          AppInfo.Name,
                           style: TextStyle(
                             color: MColor.primary,
                             fontWeight: FontWeight.bold,

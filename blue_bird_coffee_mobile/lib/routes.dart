@@ -1,7 +1,5 @@
 // ignore_for_file: body_might_complete_normally_nullable
 
-import 'dart:js';
-
 import 'package:blue_bird_coffee_mobile/blocs/home/home_bloc.dart';
 import 'package:blue_bird_coffee_mobile/blocs/login/login_bloc.dart';
 import 'package:blue_bird_coffee_mobile/repositories/category_repo.dart';
@@ -29,7 +27,7 @@ class Routes {
       case RouteName.Home:
         return MaterialPageRoute(
           builder: (context) => RepositoryProvider(
-            create: (context) => CategoryRepo(),
+            create: (_) => CategoryRepo(),
             child: HomeScreen(),
           ),
         );

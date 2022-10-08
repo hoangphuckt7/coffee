@@ -7,10 +7,12 @@ part 'login_res_model.g.dart';
 class LoginResModel {
   final String fullname;
   final String token;
+  final String role;
 
   const LoginResModel(
     this.fullname,
     this.token,
+    this.role,
   );
 
   factory LoginResModel.fromJson(Map<String, dynamic> json) =>

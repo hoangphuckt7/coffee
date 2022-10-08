@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:developer';
 import 'package:blue_bird_coffee_mobile/api/fetch.dart';
 import 'package:blue_bird_coffee_mobile/api/host.dart';
 import 'package:blue_bird_coffee_mobile/api/status_code.dart';
@@ -9,17 +9,24 @@ class CategoryRepo {
   static const controllerUrl = '${Host.currentHost}/Category';
 
   Future<List<CategoryModel>> getAll() async {
-    var resp = await Fetch.get('${controllerUrl}');
-    if (resp.statusCode == HttpStatusCode.OK) {
-      return jsonDecode(resp.body)
-          .map((dynamic item) => CategoryModel.fromJson(item))
-          .toList();
+    var lstCateModel = <CategoryModel>[];
+    try {
+      var resp = await Fetch.GET('${controllerUrl}');
+      if (resp.statusCode == HttpStatusCode.OK) {
+        Iterable lstClone = jsonDecode(resp.body);
+        lstCateModel = List<CategoryModel>.from(
+          lstClone.map((model) => CategoryModel.fromJson(model)),
+        );
+      }
+    } catch (e) {
+      log('lỗi');
+      log(e.toString());
     }
-    return <CategoryModel>[];
+    return lstCateModel;
   }
 
   Future<CategoryModel?> getById(String id) async {
-    var resp = await Fetch.get('${controllerUrl}/${id}');
+    var resp = await Fetch.GET('${controllerUrl}/${id}');
     if (resp.statusCode == HttpStatusCode.OK) {
       return CategoryModel.fromJson(jsonDecode(resp.body));
     }

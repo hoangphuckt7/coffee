@@ -5,8 +5,14 @@ abstract class HomeState {}
 
 class InitialState extends HomeState {}
 
-class FetchDataState extends HomeState {
-  final List<CategoryModel> lstCate;
+class DataLoadedState extends HomeState {
+  String data;
 
-  FetchDataState(this.lstCate);
+  DataLoadedState(this.data);
+}
+
+class ErrorState extends HomeState {
+  final errMsg;
+
+  ErrorState(this.errMsg);
 }

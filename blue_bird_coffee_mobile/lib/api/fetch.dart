@@ -1,37 +1,45 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:blue_bird_coffee_mobile/utils/local_storage.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 class Fetch {
-  static const String FORMBODY = "FormBody";
-  static const String FORMDATA = "FormData";
-  // static Dio dio = Dio();
-  static Future<Map<String, String>> addHeader(
-      {bool isFormData = false}) async {
-    String token = await LocalStorage.getItem("token");
-    return {
-      'Accept': '*/*',
-      'Content-Type': !isFormData ? 'application/json;' : '',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Authorization': 'Bearer ' + token,
+  // static const String FORMBODY = "FormBody";
+  // static const String FORMDATA = "FormData";
+
+  static Future<Map<String, String>> initHeader() async {
+    Map<String, String> headers = {
+      'accept': '*/*',
+      'content-type': 'application/json',
+      'accept-encoding': 'gzip, deflate, br',
     };
+    String? token = await LocalStorage.getItem("token");
+    if (token != null && token.isNotEmpty) {
+      headers['authorization'] = 'Bearer ' + token;
+    }
+    return headers;
   }
 
-  static Future<http.Response> get(url) async {
-    log(url);
-    var resp = await http.get(Uri.parse(url)
-        // headers: await addHeader(),
-        );
-    return resp;
-  }
-
-  static Future<http.Response> post(url, data) async {
-    var resp = await http.post(
+  static Future<Response> GET(url) async {
+    return await get(
       Uri.parse(url),
-      headers: await addHeader(),
-      body: jsonEncode(data),
+      headers: await initHeader(),
     );
-    return resp;
+  }
+
+  static Future<Response> POST(url, jsonData) async {
+    return await post(
+      Uri.parse(url),
+      headers: await initHeader(),
+      body: jsonEncode(jsonData),
+    );
+  }
+
+  static Future<Response> PUT(url, jsonData) async {
+    return await put(
+      Uri.parse(url),
+      headers: await initHeader(),
+      body: jsonEncode(jsonData),
+    );
   }
 }

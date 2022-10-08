@@ -10,10 +10,12 @@ LoginResModel _$LoginResModelFromJson(Map<String, dynamic> json) =>
     LoginResModel(
       json['fullname'] as String,
       json['token'] as String,
+      json['role'] as String,
     );
 
 Map<String, dynamic> _$LoginResModelToJson(LoginResModel instance) =>
     <String, dynamic>{
       'fullname': instance.fullname,
       'token': instance.token,
+      'role': instance.role,
     };

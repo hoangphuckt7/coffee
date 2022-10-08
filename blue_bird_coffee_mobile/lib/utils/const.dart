@@ -6,4 +6,5 @@ import 'package:flutter/material.dart';
 class KeyLS {
   static const String token = "token";
   static const String user_json = "user_json";
+  static const String login_info = "login_info";
 }

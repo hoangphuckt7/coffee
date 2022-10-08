@@ -6,6 +6,7 @@ import 'package:blue_bird_coffee_mobile/routes.dart';
 import 'package:blue_bird_coffee_mobile/ui/controls/fill_btn.dart';
 import 'package:blue_bird_coffee_mobile/utils/ui_setting.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,45 +16,76 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          HomeBloc(RepositoryProvider.of<CategoryRepo>(context))
-            ..add(FetchDataEvent()),
+      create: (context) => HomeBloc(
+        RepositoryProvider.of<CategoryRepo>(context),
+      )..add(InitialEvent()),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          if (state is InitialState) {
-            log(state.toString());
-          } else if (state is FetchDataState) {
-            log(state.lstCate[0].description);
-          }
-          return Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment(.5, 1),
-                colors: <Color>[
-                  Color(0xFF0D47A1),
-                  Color(0xFF1976D2),
-                  MColor.primary,
-                  Color(0xFF64B5F6),
-                  Color(0xFFBBDEFB),
-                ], // Gradient from https://learnui.design/tools/gradient-generator.html
-                tileMode: TileMode.mirror,
+          if (state is DataLoadedState) {
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment(.5, 1),
+                  colors: <Color>[
+                    Color(0xFF0D47A1),
+                    Color(0xFF1976D2),
+                    MColor.primary,
+                    Color(0xFF64B5F6),
+                    Color(0xFFBBDEFB),
+                  ], // Gradient from https://learnui.design/tools/gradient-generator.html
+                  tileMode: TileMode.mirror,
+                ),
               ),
-            ),
-            child: Center(
               child: Column(
                 children: [
-                  Text("Đã đăng nhập thành công ^.^"),
+                  Text(state.data),
+                  SizedBox(height: 50),
                   FillBtn(
-                    title: "Back",
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    title: "Về login",
+                    onPressed: (() =>
+                        Navigator.pushNamed(context, RouteName.Login)),
                   ),
                 ],
               ),
-            ),
-          );
+            );
+          } else if (state is ErrorState) {
+            return Container(
+              color: MColor.white,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(state.errMsg),
+                    SizedBox(height: 50),
+                    FillBtn(
+                      title: "Về login",
+                      onPressed: (() =>
+                          Navigator.pushNamed(context, RouteName.Login)),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return Container(
+              color: MColor.white,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 50),
+                    FillBtn(
+                      title: "Về login",
+                      onPressed: (() =>
+                          Navigator.pushNamed(context, RouteName.Login)),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
         },
       ),
     );

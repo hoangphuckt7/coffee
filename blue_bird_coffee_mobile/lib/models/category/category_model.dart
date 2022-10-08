@@ -6,16 +6,16 @@ part 'category_model.g.dart';
 class CategoryModel {
   final String id;
   final String description;
-  final bool isDeleted;
-  final DateTime dateCreated;
-  final DateTime dateUpdated;
+  // final bool isDeleted;
+  // final DateTime dateCreated;
+  // final DateTime dateUpdated;
 
   CategoryModel(
     this.id,
     this.description,
-    this.isDeleted,
-    this.dateCreated,
-    this.dateUpdated,
+    // this.isDeleted,
+    // this.dateCreated,
+    // this.dateUpdated,
   );
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) =>
