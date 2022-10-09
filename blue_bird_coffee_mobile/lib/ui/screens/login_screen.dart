@@ -5,16 +5,12 @@ import 'package:blue_bird_coffee_mobile/routes.dart';
 import 'package:blue_bird_coffee_mobile/ui/controls/field_outline.dart';
 import 'package:blue_bird_coffee_mobile/ui/controls/fill_btn.dart';
 import 'package:blue_bird_coffee_mobile/ui/widgets/loader.dart';
-import 'package:blue_bird_coffee_mobile/utils/app_info.dart';
+import 'package:blue_bird_coffee_mobile/utils/const.dart';
 import 'package:blue_bird_coffee_mobile/utils/function_common.dart';
 import 'package:blue_bird_coffee_mobile/utils/ui_setting.dart';
 import 'package:blue_bird_coffee_mobile/utils/enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
-// import 'dart:io' show Platform;
-// Platform.localHostname
 
 class LoginScreen extends StatelessWidget {
   var usernameTEC = TextEditingController();
@@ -23,10 +19,6 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var usernameTEC = TextEditingController();
-    // var passwordTEC = TextEditingController();
-    // var auth_bloc = new AuthBloc();
-    var login_bloc = new LoginBloc();
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
     var cardWidth = screenWidth * .5;

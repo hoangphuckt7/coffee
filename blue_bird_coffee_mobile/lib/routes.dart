@@ -1,8 +1,6 @@
 // ignore_for_file: body_might_complete_normally_nullable
 
-import 'package:blue_bird_coffee_mobile/blocs/home/home_bloc.dart';
 import 'package:blue_bird_coffee_mobile/blocs/login/login_bloc.dart';
-import 'package:blue_bird_coffee_mobile/blocs/splash/splash_bloc.dart';
 import 'package:blue_bird_coffee_mobile/repositories/category_repo.dart';
 import 'package:blue_bird_coffee_mobile/repositories/floor_repo.dart';
 import 'package:blue_bird_coffee_mobile/repositories/user_repo.dart';

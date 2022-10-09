@@ -3,10 +3,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:blue_bird_coffee_mobile/models/login/login_req_model.dart/login_req_model.dart';
-import 'package:blue_bird_coffee_mobile/models/login/login_res_model/login_res_model.dart';
 import 'package:blue_bird_coffee_mobile/repositories/user_repo.dart';
-import 'package:blue_bird_coffee_mobile/utils/const.dart';
-import 'package:blue_bird_coffee_mobile/utils/local_storage.dart';
 import 'package:blue_bird_coffee_mobile/utils/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';

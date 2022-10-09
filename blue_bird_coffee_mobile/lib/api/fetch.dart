@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:blue_bird_coffee_mobile/utils/local_storage.dart';
 import 'package:http/http.dart';
 

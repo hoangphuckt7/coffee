@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class Validations {
   static String? validUsername(String? username) {
     if (username == null || username.isEmpty || username.length <= 0) {

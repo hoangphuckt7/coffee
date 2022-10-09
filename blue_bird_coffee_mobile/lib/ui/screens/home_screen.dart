@@ -3,13 +3,10 @@ import 'dart:developer';
 import 'package:blue_bird_coffee_mobile/blocs/home/home_bloc.dart';
 import 'package:blue_bird_coffee_mobile/repositories/category_repo.dart';
 import 'package:blue_bird_coffee_mobile/repositories/floor_repo.dart';
-import 'package:blue_bird_coffee_mobile/repositories/user_repo.dart';
 import 'package:blue_bird_coffee_mobile/routes.dart';
 import 'package:blue_bird_coffee_mobile/ui/controls/fill_btn.dart';
 import 'package:blue_bird_coffee_mobile/utils/ui_setting.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
