@@ -21,7 +21,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   void _onDataChanged(DataChangedEvent event, Emitter<LoginState> emit) {
-    emit(LoadingState());
+    emit(SubmittingState());
     var errUsername = Validations.validUsername(event.username);
     var errPassword = Validations.validPassword(event.password);
     if (errUsername != null || errPassword != null) {
@@ -32,25 +32,24 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   void _onLoginSubmitted(SubmittedEvent event, Emitter<LoginState> emit) async {
-    emit(LoadingState());
+    emit(SubmittingState());
     var errUsername = Validations.validUsername(event.username);
     var errPassword = Validations.validPassword(event.password);
     if (errUsername != null || errPassword != null) {
       emit(DataInvalidState(errUsername, errPassword));
     } else {
-      var lsonReqModel = LoginReqModel(
+      await Future.delayed(Duration(seconds: 5));
+      var model = LoginReqModel(
         event.username.toString(),
         event.password.toString(),
       );
       try {
-        var resp = await UserRepo.login(lsonReqModel);
+        var resp = await UserRepo.login(model);
         if (resp != null) {
           if (resp is String) {
             log(resp);
             emit(SubmitFailState(resp));
           } else {
-            await LocalStorage.setItem(KeyLS.token, resp.token.toString());
-            await LocalStorage.setItem(KeyLS.login_info, lsonReqModel.toJson());
             emit(SubmitSuccessState());
           }
         }

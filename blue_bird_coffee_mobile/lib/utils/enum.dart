@@ -11,3 +11,9 @@ enum ObjectStatus {
   success,
   failure,
 }
+
+enum EToast {
+  success,
+  danger,
+  warning,
+}

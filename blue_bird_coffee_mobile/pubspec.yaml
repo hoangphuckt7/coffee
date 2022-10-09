@@ -42,6 +42,9 @@ dependencies:
   flutter_bloc: ^8.1.1
   json_serializable: ^6.4.1
   shared_preferences: ^2.0.15
+  fluttertoast: ^8.0.9
+  loading_animation_widget: ^1.2.0+3
+  progress_dialog_null_safe: ^1.0.7
   # flutter_dotenv: ^5.0.2
   # equatable: ^2.0.5
 

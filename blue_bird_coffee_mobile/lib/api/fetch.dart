@@ -4,10 +4,7 @@ import 'package:blue_bird_coffee_mobile/utils/local_storage.dart';
 import 'package:http/http.dart';
 
 class Fetch {
-  // static const String FORMBODY = "FormBody";
-  // static const String FORMDATA = "FormData";
-
-  static Future<Map<String, String>> initHeader() async {
+  static Future<Map<String, String>> _initHeader() async {
     Map<String, String> headers = {
       'accept': '*/*',
       'content-type': 'application/json',
@@ -23,14 +20,14 @@ class Fetch {
   static Future<Response> GET(url) async {
     return await get(
       Uri.parse(url),
-      headers: await initHeader(),
+      headers: await _initHeader(),
     );
   }
 
   static Future<Response> POST(url, jsonData) async {
     return await post(
       Uri.parse(url),
-      headers: await initHeader(),
+      headers: await _initHeader(),
       body: jsonEncode(jsonData),
     );
   }
@@ -38,7 +35,7 @@ class Fetch {
   static Future<Response> PUT(url, jsonData) async {
     return await put(
       Uri.parse(url),
-      headers: await initHeader(),
+      headers: await _initHeader(),
       body: jsonEncode(jsonData),
     );
   }

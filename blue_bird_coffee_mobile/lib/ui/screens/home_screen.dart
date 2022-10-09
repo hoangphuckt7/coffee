@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:blue_bird_coffee_mobile/blocs/home/home_bloc.dart';
 import 'package:blue_bird_coffee_mobile/repositories/category_repo.dart';
+import 'package:blue_bird_coffee_mobile/repositories/floor_repo.dart';
+import 'package:blue_bird_coffee_mobile/repositories/user_repo.dart';
 import 'package:blue_bird_coffee_mobile/routes.dart';
 import 'package:blue_bird_coffee_mobile/ui/controls/fill_btn.dart';
 import 'package:blue_bird_coffee_mobile/utils/ui_setting.dart';
@@ -18,10 +20,12 @@ class HomeScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => HomeBloc(
         RepositoryProvider.of<CategoryRepo>(context),
+        RepositoryProvider.of<FloorRepo>(context),
       )..add(InitialEvent()),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           if (state is DataLoadedState) {
+            var data = state.data;
             return Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -39,7 +43,7 @@ class HomeScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text(state.data),
+                  Text(data),
                   SizedBox(height: 50),
                   FillBtn(
                     title: "Về login",

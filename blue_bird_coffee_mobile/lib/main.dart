@@ -1,5 +1,3 @@
-import 'package:blue_bird_coffee_mobile/ui/screens/login_screen.dart';
-import 'package:blue_bird_coffee_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
 import 'routes.dart';
@@ -22,7 +20,7 @@ class BlueBirdCoffee extends StatelessWidget {
       // home: const Scaffold(body: LoginScreen()),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.onGenerateRoute,
-      initialRoute: '/login',
+      initialRoute: RouteName.Login,
     );
   }
 }

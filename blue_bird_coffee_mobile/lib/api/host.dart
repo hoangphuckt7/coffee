@@ -3,7 +3,7 @@ class Host {
 
   static const String _vmHost = 'https://10.0.2.2:7244/api';
 
-  static const String _localIp = 'http://192.168.1.12:7244/api';
+  static const String _localIp = 'http://192.168.1.3:7244/api';
 
   static const String _serverHost = "";
 

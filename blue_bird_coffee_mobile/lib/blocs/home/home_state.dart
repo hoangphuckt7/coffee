@@ -6,7 +6,7 @@ abstract class HomeState {}
 class InitialState extends HomeState {}
 
 class DataLoadedState extends HomeState {
-  String data;
+  final data;
 
   DataLoadedState(this.data);
 }
