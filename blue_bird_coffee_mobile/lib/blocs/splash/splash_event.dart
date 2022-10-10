@@ -3,4 +3,4 @@ part of 'splash_bloc.dart';
 @immutable
 abstract class SplashEvent {}
 
-class CheckingLoginEvent extends SplashEvent {}
+class CheckLoginEvent extends SplashEvent {}
