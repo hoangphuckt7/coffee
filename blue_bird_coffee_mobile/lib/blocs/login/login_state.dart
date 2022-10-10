@@ -7,8 +7,6 @@ abstract class LoginState {}
 
 class InitialState extends LoginState {}
 
-class LoadingState extends LoginState {}
-
 class DataInvalidState extends LoginState {
   final errUsername;
   final errPassword;
@@ -18,4 +16,10 @@ class DataInvalidState extends LoginState {
 
 class SubmitSuccessState extends LoginState {}
 
-class SubmitFailState extends LoginState {}
+class SubmittingState extends LoginState {}
+
+class SubmitFailState extends LoginState {
+  final errMsg;
+
+  SubmitFailState(this.errMsg);
+}

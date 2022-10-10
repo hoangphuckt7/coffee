@@ -5,9 +5,8 @@ enum EFieldType {
   email,
 }
 
-enum ObjectStatus {
-  initial,
-  loading,
+enum EToast {
   success,
-  failure,
+  danger,
+  warning,
 }

@@ -1,4 +1,4 @@
-1. Lệnh auto gen map model <=> json: flutter pub run build_runner watch
+1. Lệnh auto gen map model <=> json: flutter pub run build_runner watch --delete-conflicting-outputs
 
 flutter channel master
 flutter upgrade

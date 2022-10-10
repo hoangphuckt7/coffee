@@ -5,12 +5,14 @@ part 'login_res_model.g.dart';
 
 @JsonSerializable()
 class LoginResModel {
-  final String fullname;
-  final String token;
+  final String? fullName;
+  final String? token;
+  final String? role;
 
   const LoginResModel(
-    this.fullname,
+    this.fullName,
     this.token,
+    this.role,
   );
 
   factory LoginResModel.fromJson(Map<String, dynamic> json) =>
