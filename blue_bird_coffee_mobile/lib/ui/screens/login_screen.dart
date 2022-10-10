@@ -27,7 +27,8 @@ class LoginScreen extends StatelessWidget {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is SubmitSuccessState) {
-          Navigator.pushNamed(context, RouteName.Home);
+          // Navigator.pushNamed(context, RouteName.Home);
+          Navigator.pushNamed(context, RouteName.Test);
         }
       },
       child: Container(

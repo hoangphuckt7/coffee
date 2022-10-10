@@ -12,7 +12,7 @@ import 'package:blue_bird_coffee_mobile/utils/local_storage.dart';
 class UserRepo {
   static const controllerUrl = '${Host.currentHost}/User';
 
-  static Future<dynamic> login(LoginReqModel model) async {
+  Future<dynamic> login(LoginReqModel model) async {
     var resp = await Fetch.POST('${controllerUrl}/Login', model.toJson());
     try {
       if (resp.statusCode == HttpStatusCode.OK) {
@@ -35,16 +35,17 @@ class UserRepo {
     return null;
   }
 
-  static Future<bool> checkLogin() async {
+  Future<bool> checkLogin() async {
     await LocalStorage.removeItem(KeyLS.token);
     String? loginInfoJson = await LocalStorage.getItem(KeyLS.login_info);
     if (loginInfoJson != null && loginInfoJson.isNotEmpty) {
-      LoginReqModel loReqModel =
-          LoginReqModel.fromJson(jsonDecode(loginInfoJson));
-      var resp = await login(loReqModel);
-      if (!(resp is String)) {
-        return true;
-      }
+      return true;
+      // LoginReqModel loReqModel =
+      //     LoginReqModel.fromJson(jsonDecode(loginInfoJson));
+      // var resp = await login(loReqModel);
+      // if (!(resp is String)) {
+      //   return true;
+      // }
     }
     return false;
   }
