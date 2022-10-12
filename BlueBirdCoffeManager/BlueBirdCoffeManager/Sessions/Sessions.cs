@@ -12,7 +12,7 @@ namespace BlueBirdCoffeManager.Sessions
         public static readonly string HOST = "https://localhost:7244/";
 
         public static string TOKEN = "";
-        public static string USER_NAME = "Trần Vũ";
+        public static string USER_NAME = "";
         public static string ROLE = "";
 
         public static readonly Font NORMAL_BOLD_FONT = new Font("time new roman", 10, FontStyle.Bold);

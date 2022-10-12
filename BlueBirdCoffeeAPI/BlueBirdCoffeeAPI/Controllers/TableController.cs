@@ -1,4 +1,5 @@
 ﻿using Data.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
@@ -23,6 +24,7 @@ namespace BlueBirdCoffeeAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult Add(TableAddModel model)
         {
             return Ok(_tableService.Add(model));
@@ -34,6 +36,7 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_tableService.UpdateOrAdd(model));
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("Remove")]
         public IActionResult Delete(List<Guid> ids)
         {

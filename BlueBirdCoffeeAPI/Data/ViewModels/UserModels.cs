@@ -12,8 +12,9 @@ namespace Data.ViewModels
         [Required]
         public string FullName { get; set; }
 
-        [Required, Phone]
-        public string Phone { get; set; }
+        [Required]
+        public string Username { get; set; }
+        public string Role { get; set; }
     }
 
     public class UserLoginModel

@@ -61,6 +61,7 @@
             this.txtUserName.Name = "txtUserName";
             this.txtUserName.Size = new System.Drawing.Size(155, 23);
             this.txtUserName.TabIndex = 2;
+            this.txtUserName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtUserName_KeyDown);
             // 
             // txtPassword
             // 
@@ -68,6 +69,7 @@
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(155, 23);
             this.txtPassword.TabIndex = 3;
+            this.txtPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPassword_KeyDown);
             // 
             // btnLogin
             // 
@@ -103,6 +105,7 @@
             this.Name = "LoginForm";
             this.Text = "Đăng nhập";
             this.Load += new System.EventHandler(this.LoginForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LoginForm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

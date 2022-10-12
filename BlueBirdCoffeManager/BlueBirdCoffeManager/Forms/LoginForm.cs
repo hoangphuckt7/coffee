@@ -55,5 +55,20 @@ namespace BlueBirdCoffeManager
             }
             btnLogin.Enabled = true;
         }
+
+        private void LoginForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) btnLogin.PerformClick();
+        }
+
+        private void txtPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) btnLogin.PerformClick();
+        }
+
+        private void txtUserName_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) btnLogin.PerformClick();
+        }
     }
 }

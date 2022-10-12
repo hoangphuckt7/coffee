@@ -15,7 +15,7 @@ namespace BlueBirdCoffeManager
             ApplicationConfiguration.Initialize();
             Thread.CurrentThread.CurrentUICulture = Sessions.Sessions.CULTURE_INFO;
             Thread.CurrentThread.CurrentCulture = Sessions.Sessions.CULTURE_INFO;
-            Application.Run(new MainForm());
+            Application.Run(new LoginForm());
         }
     }
 }

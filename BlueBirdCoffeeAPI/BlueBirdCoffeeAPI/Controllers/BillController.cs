@@ -1,7 +1,10 @@
-﻿using Data.ViewModels;
+﻿using Data.Cache;
+using Data.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
+using System.Data;
 
 namespace BlueBirdCoffeeAPI.Controllers
 {
@@ -16,12 +19,14 @@ namespace BlueBirdCoffeeAPI.Controllers
             _billService = billService;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpPost("Checkout")]
         public IActionResult Checkout([FromBody] CheckoutModel model)
         {
             return Ok(_billService.Checkout(model));
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpGet("History/{count}")]
         public IActionResult History(int count)
         {
