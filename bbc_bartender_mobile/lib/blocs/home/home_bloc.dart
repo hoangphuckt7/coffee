@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:bbc_bartender_mobile/models/category/category_model.dart';
 import 'package:bbc_bartender_mobile/models/login/login_res_model/login_res_model.dart';
 import 'package:bbc_bartender_mobile/repositories/category_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/floor_repo.dart';

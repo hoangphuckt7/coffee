@@ -2,7 +2,7 @@ import 'package:bbc_bartender_mobile/utils/enum.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class FunctionCommon {
+class Fn {
   // static var vndFormat = NumberFormat.currency(locale: "vi_VN", symbol: "₫");
   // static formatCurrencyText(String currency) {
   //   return vndFormat.format(double.parse(currency));

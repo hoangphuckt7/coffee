@@ -27,7 +27,7 @@ class Fetch {
     return await post(
       Uri.parse(url),
       headers: await _initHeader(),
-      body: jsonEncode(jsonData),
+      body: jsonData ?? jsonEncode(jsonData),
     );
   }
 
@@ -35,7 +35,7 @@ class Fetch {
     return await put(
       Uri.parse(url),
       headers: await _initHeader(),
-      body: jsonEncode(jsonData),
+      body: jsonData ?? jsonEncode(jsonData),
     );
   }
 }

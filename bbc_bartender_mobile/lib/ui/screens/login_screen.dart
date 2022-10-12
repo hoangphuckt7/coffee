@@ -56,7 +56,7 @@ class LoginScreen extends StatelessWidget {
               errUsername = state.errUsername;
               errPassword = state.errPassword;
             } else if (state is SubmitFailState) {
-              FunctionCommon.showToast(EToast.danger, state.errMsg);
+              Fn.showToast(EToast.danger, state.errMsg);
             } else if (state is SubmittingState) {
               isLoading = true;
             }
