@@ -22,7 +22,7 @@ class BlueBirdCoffee extends StatelessWidget {
       // home: const Scaffold(body: LoginScreen()),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.onGenerateRoute,
-      initialRoute: RouteName.Login,
+      initialRoute: RouteName.Splash,
     );
   }
 }

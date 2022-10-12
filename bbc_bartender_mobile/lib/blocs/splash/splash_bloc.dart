@@ -17,18 +17,20 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
 
   void _onCheckLogin(CheckLoginEvent event, Emitter<SplashState> emit) async {
     emit(InitialState());
-    await Future.delayed(Duration(seconds: 2));
-    log('message0');
     try {
-      // var a = await _userRepo.checkLogin();
-      var loginInfo = await LocalStorage.getItem(KeyLS.login_info);
-      if (loginInfo == null) {
-        log('message1');
-        emit(LoginFailState());
-      } else {
-        await LocalStorage.removeItem(KeyLS.login_info);
+      var isLoginSuccess = await _userRepo.checkLogin();
+      if (isLoginSuccess) {
         emit(LoginSuccessState());
+      } else {
+        emit(LoginFailState());
       }
+      // var loginInfo = await LocalStorage.getItem(KeyLS.login_info);
+      // if (loginInfo == null) {
+      //   emit(LoginFailState());
+      // } else {
+      //   await LocalStorage.removeItem(KeyLS.login_info);
+      //   emit(LoginSuccessState());
+      // }
     } catch (e) {
       print(e);
       // emit(ErrorState("Lỗi"));

@@ -41,13 +41,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       // LocalStorage.setItem(KeyLS.login_info, "alo");
       // emit(SubmitSuccessState());
       // return;
-
-      await Future.delayed(Duration(seconds: 5));
+      log("message");
+      // await Future.delayed(Duration(seconds: 5));
       var model = LoginReqModel(
         event.username.toString(),
         event.password.toString(),
       );
       try {
+        log("message1");
         var resp = await _userRepo.login(model);
         if (resp != null) {
           if (resp is String) {

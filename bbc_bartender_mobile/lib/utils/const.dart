@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 class AppInfo {
-  static const String Name = "The Sun Coffee";
+  static const String Name = "BBC Bartender";
   static const List<String> Roles = ["ADMIN", "BARTENDER"];
 }
 

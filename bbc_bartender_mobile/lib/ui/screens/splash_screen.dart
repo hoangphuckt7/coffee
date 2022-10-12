@@ -19,7 +19,7 @@ class SplashScreen extends StatelessWidget {
       child: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
           if (state is LoginSuccessState) {
-            Navigator.pushNamed(context, RouteName.Test);
+            Navigator.pushNamed(context, RouteName.Home);
           } else if (state is LoginFailState) {
             Navigator.pushNamed(context, RouteName.Login);
           }
@@ -30,7 +30,7 @@ class SplashScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(AppInfo.Name),
+                // Text(AppInfo.Name),
                 Loader(),
               ],
             ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:bbc_bartender_mobile/utils/local_storage.dart';
 import 'package:http/http.dart';
 
@@ -17,6 +18,7 @@ class Fetch {
   }
 
   static Future<Response> GET(url) async {
+    log(url);
     return await get(
       Uri.parse(url),
       headers: await _initHeader(),
@@ -24,18 +26,24 @@ class Fetch {
   }
 
   static Future<Response> POST(url, jsonData) async {
+    log(url);
+    var body = null;
+    if (jsonData != null) {
+      body = jsonEncode(jsonData);
+    }
     return await post(
       Uri.parse(url),
       headers: await _initHeader(),
-      body: jsonData ?? jsonEncode(jsonData),
+      body: body,
     );
   }
 
   static Future<Response> PUT(url, jsonData) async {
+    log(url);
     return await put(
       Uri.parse(url),
       headers: await _initHeader(),
-      body: jsonData ?? jsonEncode(jsonData),
+      body: jsonEncode(jsonData),
     );
   }
 }

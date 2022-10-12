@@ -14,6 +14,7 @@ class UserRepo {
 
   Future<dynamic> login(LoginReqModel model) async {
     var resp = await Fetch.POST('${controllerUrl}/Login', model.toJson());
+    print(resp);
     try {
       if (resp.statusCode == HttpStatusCode.OK) {
         var data = LoginResModel.fromJson(jsonDecode(resp.body));
@@ -39,7 +40,23 @@ class UserRepo {
     await LocalStorage.removeItem(KeyLS.token);
     String? loginInfoJson = await LocalStorage.getItem(KeyLS.login_info);
     if (loginInfoJson != null && loginInfoJson.isNotEmpty) {
-      return true;
+      log('alo - ' + loginInfoJson);
+      var loReqModel = LoginReqModel.fromJson(jsonDecode(loginInfoJson));
+      var resp =
+          await Fetch.POST('${controllerUrl}/Login', loReqModel.toJson());
+      if (resp.statusCode == HttpStatusCode.OK) {
+        var data = LoginResModel.fromJson(jsonDecode(resp.body));
+
+        await LocalStorage.setItem(KeyLS.token, data.token.toString());
+        await LocalStorage.setItem(
+          KeyLS.login_resp,
+          jsonEncode(LoginResModel(data.fullName, null, data.role)),
+        );
+
+        return true;
+      } else if (resp.statusCode == HttpStatusCode.BadRequest) {
+        return false;
+      }
       // LoginReqModel loReqModel =
       //     LoginReqModel.fromJson(jsonDecode(loginInfoJson));
       // var resp = await login(loReqModel);
