@@ -5,6 +5,7 @@ import 'package:bbc_bartender_mobile/routes.dart';
 import 'package:bbc_bartender_mobile/ui/controls/field_outline.dart';
 import 'package:bbc_bartender_mobile/ui/controls/fill_btn.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/loader.dart';
+import 'package:bbc_bartender_mobile/ui/widgets/processing.dart';
 import 'package:bbc_bartender_mobile/utils/const.dart';
 import 'package:bbc_bartender_mobile/utils/function_common.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
@@ -80,12 +81,12 @@ class LoginScreen extends StatelessWidget {
                             Text(
                               AppInfo.Name,
                               style: TextStyle(
-                                color: MColor.primaryGreen,
+                                color: MColor.primaryBlack,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 30,
                               ),
                             ), // ----------------------------------------------------------------------------------------------------
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             // Username
                             FieldOutnine(
                               labelText: 'Tên đăng nhập',
@@ -132,15 +133,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                Visibility(
-                  visible: isLoading,
-                  child: Container(
-                    color: Colors.black.withOpacity(.6),
-                    child: Loader(
-                      size: 50,
-                    ),
-                  ),
-                ),
+                Processing(show: isLoading),
               ],
             );
           },

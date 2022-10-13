@@ -26,6 +26,7 @@ class FieldOutnine extends StatelessWidget {
         decoration: InputDecoration(
           border: const UnderlineInputBorder(),
           labelText: labelText,
+          // labelStyle: TextStyle(fontWeight: FontWeight.bold),
           errorText: errorText,
         ),
         onChanged: onChanged,

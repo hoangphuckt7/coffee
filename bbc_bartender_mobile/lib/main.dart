@@ -16,8 +16,8 @@ class BlueBirdCoffee extends StatelessWidget {
     return MaterialApp(
       title: 'BBC Bartender',
       theme: ThemeData(
-        // primarySwatch: MColor.primaryGreen,
         primarySwatch: MColor.primaryBlack,
+        fontFamily: "Montserrat",
       ),
       // home: const Scaffold(body: LoginScreen()),
       debugShowCheckedModeBanner: false,
