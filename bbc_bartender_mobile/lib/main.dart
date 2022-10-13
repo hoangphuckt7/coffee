@@ -17,12 +17,12 @@ class BlueBirdCoffee extends StatelessWidget {
       title: 'BBC Bartender',
       theme: ThemeData(
         // primarySwatch: MColor.primaryGreen,
-        primarySwatch: MColor.black,
+        primarySwatch: MColor.primaryBlack,
       ),
       // home: const Scaffold(body: LoginScreen()),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.onGenerateRoute,
-      initialRoute: RouteName.Login,
+      initialRoute: RouteName.Splash,
     );
   }
 }

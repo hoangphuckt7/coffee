@@ -16,7 +16,7 @@ TableModel _$TableModelFromJson(Map<String, dynamic> json) => TableModel(
       json['rotation'] as int?,
       json['floor'] == null
           ? null
-          : FloorModel.fromJson(json['floor'] as Map<String, dynamic>),
+          : BaseModel.fromJson(json['floor'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$TableModelToJson(TableModel instance) =>

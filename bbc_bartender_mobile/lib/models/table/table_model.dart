@@ -1,4 +1,4 @@
-import 'package:bbc_bartender_mobile/models/floor/floor_model.dart';
+import 'package:bbc_bartender_mobile/models/common/base_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'table_model.g.dart';
@@ -12,7 +12,7 @@ class TableModel {
   final String? size;
   final String? shape;
   final int? rotation;
-  final FloorModel? floor;
+  final BaseModel? floor;
 
   factory TableModel.fromJson(Map<String, dynamic> json) =>
       _$TableModelFromJson(json);
