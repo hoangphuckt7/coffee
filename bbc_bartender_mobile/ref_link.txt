@@ -1,5 +1,0 @@
-1. json_annotation: https://200lab.io/blog/lam-viec-voi-json-serialization-trong-flutter/
-
-2. bloc:
-    + https://viblo.asia/p/hoc-bloc-pattern-theo-cach-de-hieu-nhat-maGK7JYO5j2
-    + 

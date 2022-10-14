@@ -5,11 +5,11 @@ import 'routes.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const BlueBirdCoffee());
+  runApp(const BBCBartender());
 }
 
-class BlueBirdCoffee extends StatelessWidget {
-  const BlueBirdCoffee({super.key});
+class BBCBartender extends StatelessWidget {
+  const BBCBartender({super.key});
 
   @override
   Widget build(BuildContext context) {
