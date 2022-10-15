@@ -37,32 +37,32 @@ class UserRepo {
   }
 
   Future<bool> checkLogin() async {
-    await LocalStorage.removeItem(KeyLS.token);
-    String? loginInfoJson = await LocalStorage.getItem(KeyLS.login_info);
-    if (loginInfoJson != null && loginInfoJson.isNotEmpty) {
-      log('alo - ' + loginInfoJson);
-      var loReqModel = LoginReqModel.fromJson(jsonDecode(loginInfoJson));
-      var resp =
-          await Fetch.POST('${controllerUrl}/Login', loReqModel.toJson());
-      if (resp.statusCode == HttpStatusCode.OK) {
-        var data = LoginResModel.fromJson(jsonDecode(resp.body));
+    try {
+      await LocalStorage.removeItem(KeyLS.token);
+      String? loginInfoJson = await LocalStorage.getItem(KeyLS.login_info);
+      if (loginInfoJson != null && loginInfoJson.isNotEmpty) {
+        log('alo - ' + loginInfoJson);
+        var loReqModel = LoginReqModel.fromJson(jsonDecode(loginInfoJson));
+        var resp =
+            await Fetch.POST('${controllerUrl}/Login', loReqModel.toJson());
+        log(resp.statusCode.toString());
+        log('message');
+        if (resp.statusCode == HttpStatusCode.OK) {
+          var data = LoginResModel.fromJson(jsonDecode(resp.body));
 
-        await LocalStorage.setItem(KeyLS.token, data.token.toString());
-        await LocalStorage.setItem(
-          KeyLS.login_resp,
-          jsonEncode(LoginResModel(data.fullName, null, data.role)),
-        );
+          await LocalStorage.setItem(KeyLS.token, data.token.toString());
+          await LocalStorage.setItem(
+            KeyLS.login_resp,
+            jsonEncode(LoginResModel(data.fullName, null, data.role)),
+          );
 
-        return true;
-      } else if (resp.statusCode == HttpStatusCode.BadRequest) {
-        return false;
+          return true;
+        } else if (resp.statusCode == HttpStatusCode.BadRequest) {
+          return false;
+        }
       }
-      // LoginReqModel loReqModel =
-      //     LoginReqModel.fromJson(jsonDecode(loginInfoJson));
-      // var resp = await login(loReqModel);
-      // if (!(resp is String)) {
-      //   return true;
-      // }
+    } catch (e) {
+      log(e.toString());
     }
     return false;
   }

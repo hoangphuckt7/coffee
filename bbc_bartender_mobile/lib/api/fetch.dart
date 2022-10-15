@@ -31,6 +31,7 @@ class Fetch {
     if (jsonData != null) {
       body = jsonEncode(jsonData);
     }
+    log('body: ' + body);
     return await post(
       Uri.parse(url),
       headers: await _initHeader(),

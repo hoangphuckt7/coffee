@@ -7,5 +7,5 @@ class Host {
 
   static const String _serverHost = "";
 
-  static const String currentHost = _localIp;
+  static const String currentHost = _vmHost;
 }

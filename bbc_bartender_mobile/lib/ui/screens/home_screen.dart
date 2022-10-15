@@ -24,20 +24,6 @@ class HomeScreen extends StatelessWidget {
           if (state is DataLoadedState) {
             var data = state.data;
             return Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment(.5, 1),
-                  colors: <Color>[
-                    Color(0xFF0D47A1),
-                    Color(0xFF1976D2),
-                    MColor.primaryGreen,
-                    Color(0xFF64B5F6),
-                    Color(0xFFBBDEFB),
-                  ], // Gradient from https://learnui.design/tools/gradient-generator.html
-                  tileMode: TileMode.mirror,
-                ),
-              ),
               child: Column(
                 children: [
                   Text(data),

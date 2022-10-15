@@ -33,6 +33,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       // }
     } catch (e) {
       print(e);
+      emit(LoginFailState());
       // emit(ErrorState("Lỗi"));
     }
   }
