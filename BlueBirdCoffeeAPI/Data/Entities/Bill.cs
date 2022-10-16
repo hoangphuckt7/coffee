@@ -13,6 +13,7 @@ namespace Data.Entities
         public string? Coupon { get; set; }
         public double Discount { get; set; }
         public bool IsTakeAway { get; set; }
+        public int BillNumber { get; set; }
 
         [ForeignKey("Casher")]
         public string? CasherId { get; set; }

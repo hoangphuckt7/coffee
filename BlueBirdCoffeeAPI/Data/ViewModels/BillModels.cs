@@ -9,6 +9,7 @@ namespace Data.ViewModels
     public class BillViewModel
     {
         public Guid Id { get; set; }
+        public int BillNumber { get; set; }
         public double Discount { get; set; }
         public bool IsTakeAway { get; set; }
         public double Coupon { get; set; }
@@ -19,6 +20,7 @@ namespace Data.ViewModels
     public class BillMissingItemViewModel
     {
         public Guid Id { get; set; }
+        public int BillNumber { get; set; }
         public string? ItemMissingReason { get; set; }
         public DateTime DateCreated { get; set; }
         public List<OrderMissingItemViewModel> Orders { get; set; }
@@ -27,6 +29,7 @@ namespace Data.ViewModels
     public class OrderMissingItemViewModel
     {
         public Guid Id { get; set; }
+        public int OrderNumber { get; set; }
         public Guid? TableId { get; set; }
         public DateTime DateCreated { get; set; }
         public List<MissingItemViewModel> Items { get; set; }

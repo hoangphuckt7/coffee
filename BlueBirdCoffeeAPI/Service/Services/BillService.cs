@@ -28,7 +28,17 @@ namespace Service.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
+        public int GetCurrentBillNumber()
+        {
+            var lastestBill = _dbContext.Bills.OrderByDescending(s => s.DateCreated).FirstOrDefault();
 
+            if (lastestBill != null && lastestBill.DateCreated.Date == DateTime.UtcNow.AddHours(7).Date)
+            {
+                return lastestBill.BillNumber + 1;
+            }
+
+            return 1;
+        }
         public Guid Checkout(CheckoutModel model)
         {
             var orders = _dbContext.Orders.Include(f => f.OrderDetails).Where(f => model.Orders.Contains(f.Id)).ToList();
@@ -76,8 +86,10 @@ namespace Service.Services
             {
                 Discount = model.Discout,
                 Coupon = model.Coupon,
-                IsTakeAway = model.IsTakeAway
+                IsTakeAway = model.IsTakeAway,
+                BillNumber = GetCurrentBillNumber()
             };
+
             _dbContext.Add(newBill);
 
             foreach (var order in orders)
@@ -196,7 +208,8 @@ namespace Service.Services
                     Id = item.Id,
                     DateCreated = item.DateCreated,
                     Orders = new List<OrderMissingItemViewModel>(),
-                    ItemMissingReason = item.ItemMissingReason
+                    ItemMissingReason = item.ItemMissingReason,
+                    BillNumber = item.BillNumber
                 };
 
                 var currentBillOrders = orders.Where(s => billOrders.Where(b => b.BillId == item.Id).ToList().Select(s => s.OrderId).Contains(s.Id)).ToList();
@@ -207,7 +220,8 @@ namespace Service.Services
                         Id = order.Id,
                         DateCreated = order.DateCreated,
                         TableId = order.TableId,
-                        Items = new List<MissingItemViewModel>()
+                        Items = new List<MissingItemViewModel>(),
+                        OrderNumber = order.OrderNumber
                     };
 
                     var currentItems = orderDetails.Where(s => s.OrderId == order.Id).ToList();
