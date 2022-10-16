@@ -13,8 +13,7 @@ class UserRepo {
   static const controllerUrl = '${Host.currentHost}/User';
 
   Future<dynamic> login(LoginReqModel model) async {
-    var resp = await Fetch.POST('${controllerUrl}/Login', model.toJson());
-    print(resp);
+    var resp = await Fetch.POST('$controllerUrl/Login', model.toJson());
     try {
       if (resp.statusCode == HttpStatusCode.OK) {
         var data = LoginResModel.fromJson(jsonDecode(resp.body));
@@ -32,6 +31,7 @@ class UserRepo {
       }
     } catch (e) {
       log(e.toString());
+      throw Exception('Lỗi! Không thể đăng nhập');
     }
     return null;
   }
@@ -41,12 +41,10 @@ class UserRepo {
       await LocalStorage.removeItem(KeyLS.token);
       String? loginInfoJson = await LocalStorage.getItem(KeyLS.login_info);
       if (loginInfoJson != null && loginInfoJson.isNotEmpty) {
-        log('alo - ' + loginInfoJson);
+        log('login info - $loginInfoJson');
         var loReqModel = LoginReqModel.fromJson(jsonDecode(loginInfoJson));
         var resp =
-            await Fetch.POST('${controllerUrl}/Login', loReqModel.toJson());
-        log(resp.statusCode.toString());
-        log('message');
+            await Fetch.POST('$controllerUrl/Login', loReqModel.toJson());
         if (resp.statusCode == HttpStatusCode.OK) {
           var data = LoginResModel.fromJson(jsonDecode(resp.body));
 
@@ -63,6 +61,7 @@ class UserRepo {
       }
     } catch (e) {
       log(e.toString());
+      throw Exception('Lỗi! Không thể đăng nhập');
     }
     return false;
   }

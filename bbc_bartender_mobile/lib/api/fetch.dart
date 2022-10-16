@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:convert';
 import 'dart:developer';
 import 'package:bbc_bartender_mobile/utils/local_storage.dart';
@@ -12,7 +14,7 @@ class Fetch {
     };
     String? token = await LocalStorage.getItem("token");
     if (token != null && token.isNotEmpty) {
-      headers['authorization'] = 'Bearer ' + token;
+      headers['authorization'] = 'Bearer $token';
     }
     return headers;
   }
@@ -27,11 +29,11 @@ class Fetch {
 
   static Future<Response> POST(url, jsonData) async {
     log(url);
-    var body = null;
+    dynamic body;
     if (jsonData != null) {
       body = jsonEncode(jsonData);
     }
-    log('body: ' + body);
+    log('body: $body');
     return await post(
       Uri.parse(url),
       headers: await _initHeader(),
@@ -41,10 +43,15 @@ class Fetch {
 
   static Future<Response> PUT(url, jsonData) async {
     log(url);
+    dynamic body;
+    if (jsonData != null) {
+      body = jsonEncode(jsonData);
+    }
+    log('body: $body');
     return await put(
       Uri.parse(url),
       headers: await _initHeader(),
-      body: jsonEncode(jsonData),
+      body: body,
     );
   }
 }

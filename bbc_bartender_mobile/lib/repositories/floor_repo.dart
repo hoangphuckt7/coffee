@@ -12,7 +12,7 @@ class FloorRepo {
   Future<List<BaseModel>> getAll() async {
     var lstFloorModel = <BaseModel>[];
     try {
-      var resp = await Fetch.GET('${controllerUrl}');
+      var resp = await Fetch.GET(controllerUrl);
       if (resp.statusCode == HttpStatusCode.OK) {
         Iterable lstClone = jsonDecode(resp.body);
         lstFloorModel = List<BaseModel>.from(

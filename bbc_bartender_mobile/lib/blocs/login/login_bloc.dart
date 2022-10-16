@@ -1,20 +1,18 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bbc_bartender_mobile/models/login/login_req_model.dart/login_req_model.dart';
 import 'package:bbc_bartender_mobile/repositories/user_repo.dart';
-import 'package:bbc_bartender_mobile/utils/const.dart';
-import 'package:bbc_bartender_mobile/utils/local_storage.dart';
 import 'package:bbc_bartender_mobile/utils/validation.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  var _userRepo = UserRepo();
+  final _userRepo = UserRepo();
   LoginBloc() : super(InitialState()) {
     on<DataChangedEvent>(_onDataChanged);
     on<SubmittedEvent>(_onLoginSubmitted);
@@ -41,14 +39,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       // LocalStorage.setItem(KeyLS.login_info, "alo");
       // emit(SubmitSuccessState());
       // return;
-      log("message");
       // await Future.delayed(Duration(seconds: 5));
       var model = LoginReqModel(
         event.username.toString(),
         event.password.toString(),
       );
       try {
-        log("message1");
         var resp = await _userRepo.login(model);
         if (resp != null) {
           if (resp is String) {
@@ -59,8 +55,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           }
         }
       } catch (e) {
-        log('_onLoginSubmitted');
         log(e.toString());
+        emit(SubmitFailState(e.toString()));
       }
     }
   }

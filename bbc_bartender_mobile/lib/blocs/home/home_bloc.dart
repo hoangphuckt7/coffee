@@ -1,46 +1,60 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
-import 'package:bbc_bartender_mobile/models/login/login_res_model/login_res_model.dart';
-import 'package:bbc_bartender_mobile/repositories/category_repo.dart';
-import 'package:bbc_bartender_mobile/repositories/floor_repo.dart';
+import 'package:bbc_bartender_mobile/models/item/item_model.dart';
+import 'package:bbc_bartender_mobile/models/order/order_model.dart';
+import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
+import 'package:bbc_bartender_mobile/repositories/order_repo.dart';
 import 'package:bbc_bartender_mobile/utils/const.dart';
 import 'package:bbc_bartender_mobile/utils/local_storage.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final CategoryRepo _cateRepo;
-  final FloorRepo _floorRepo;
+  final ItemRepo _itemRepo;
+  final OrderRepo _orderRepo;
 
-  HomeBloc(this._cateRepo, this._floorRepo) : super(InitialState()) {
-    // on<InitialEvent>(_onInitial);
-    on<InitialEvent>(_onInit);
+  HomeBloc(this._itemRepo, this._orderRepo) : super(InitialState()) {
+    on<LoadDataEvent>(_onLoadData);
+    on<OrderScrollEvent>(_onScrollOrders);
   }
 
-  // Future _onInitial(InitialEvent event, Emitter<HomeState> emit) async {
-  //   final lstCate = await _cateRepo.getAll();
-  //   emit(InitialState(lstCate));
-  // }
-
-  void _onInit(InitialEvent event, Emitter<HomeState> emit) async {
-    emit(InitialState());
+  void _onLoadData(LoadDataEvent event, Emitter<HomeState> emit) async {
+    emit(ItemsLoadingState("Đang tải Menu..."));
     try {
-      final lstCate = await _cateRepo.getAll();
-      final lstFloor = await _floorRepo.getAll();
-      var lrm = await LocalStorage.getItem(KeyLS.login_resp);
-      var user = LoginResModel.fromJson(jsonDecode(lrm));
-      emit(DataLoadedState(user.fullName! +
-          " " +
-          lstCate[0].description! +
-          " " +
-          lstFloor[0].description!));
+      // Load List Item
+      var lstItem = <ItemModel>[];
+      var lstItemJson = await LocalStorage.getItem(KeyLS.items);
+      if (lstItemJson != null) {
+        log('alo');
+        var lstItemDecode = jsonDecode(lstItemJson);
+        lstItem = List<ItemModel>.from(
+          lstItemDecode.map((model) => ItemModel.fromJson(model)),
+        );
+      } else {
+        log('alo1');
+        lstItem = await _itemRepo.getAll();
+      }
+      // Load List Order
+      if (lstItem.isNotEmpty) {
+        emit(ItemsLoadedState(true, 'Tải Menu thành công'));
+        emit(OrdersLoadingState("Đang tải Order..."));
+        var lstOrder = await _orderRepo.getCurrentOrders();
+        emit(OrdersLoadedState(lstItem, lstOrder));
+      } else {
+        emit(ItemsLoadedState(false, 'Tải Menu thất bại'));
+        emit(OrdersLoadedState(const <ItemModel>[], const <OrderModel>[]));
+      }
     } catch (e) {
-      print(e);
-      emit(ErrorState("Lỗi"));
+      log(e.toString());
+      emit(ErrorState(e.toString()));
     }
+  }
+
+  void _onScrollOrders(OrderScrollEvent event, Emitter<HomeState> emit) {
+    emit(OrderScrolledState(event.showArrowTop, event.showArrowBot));
   }
 }

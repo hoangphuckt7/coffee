@@ -4,6 +4,8 @@ import 'package:bbc_bartender_mobile/blocs/login/login_bloc.dart';
 import 'package:bbc_bartender_mobile/blocs/test/test_bloc.dart';
 import 'package:bbc_bartender_mobile/repositories/category_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/floor_repo.dart';
+import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
+import 'package:bbc_bartender_mobile/repositories/order_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/user_repo.dart';
 import 'package:bbc_bartender_mobile/ui/screens/home_screen.dart';
 import 'package:bbc_bartender_mobile/ui/screens/login_screen.dart';
@@ -13,32 +15,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RouteName {
-  static const String Test = '/test';
-  static const String Splash = '/splash';
-  static const String Login = '/login';
-  static const String Home = '/home';
+  static const String test = '/test';
+  static const String splash = '/splash';
+  static const String login = '/login';
+  static const String home = '/home';
 }
 
 class Routes {
   static Route? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case RouteName.Test:
+      case RouteName.test:
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
             create: (context) => TestBloc(),
-            child: TestScreen(),
+            child: const TestScreen(),
           ),
         );
 
-      case RouteName.Splash:
+      case RouteName.splash:
         return MaterialPageRoute(
           builder: (context) => RepositoryProvider(
             create: (_) => UserRepo(),
-            child: SplashScreen(),
+            child: const SplashScreen(),
           ),
         );
 
-      case RouteName.Login:
+      case RouteName.login:
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
             create: (context) => LoginBloc(),
@@ -46,20 +48,35 @@ class Routes {
           ),
         );
 
-      case RouteName.Home:
+      case RouteName.home:
         return MaterialPageRoute(
           builder: (context) => MultiRepositoryProvider(
             providers: [
-              RepositoryProvider<CategoryRepo>(
-                create: (context) => CategoryRepo(),
+              RepositoryProvider<ItemRepo>(
+                create: (context) => ItemRepo(),
               ),
-              RepositoryProvider<FloorRepo>(
-                create: (context) => FloorRepo(),
+              RepositoryProvider<OrderRepo>(
+                create: (context) => OrderRepo(),
               ),
             ],
             child: HomeScreen(),
           ),
         );
+
+      // case RouteName.home:
+      //   return MaterialPageRoute(
+      //     builder: (context) => MultiRepositoryProvider(
+      //       providers: [
+      //         RepositoryProvider<CategoryRepo>(
+      //           create: (context) => CategoryRepo(),
+      //         ),
+      //         RepositoryProvider<FloorRepo>(
+      //           create: (context) => FloorRepo(),
+      //         ),
+      //       ],
+      //       child: HomeScreen(),
+      //     ),
+      //   );
 
       default:
         return null;

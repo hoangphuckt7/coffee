@@ -22,7 +22,7 @@ class BBCBartender extends StatelessWidget {
       // home: const Scaffold(body: LoginScreen()),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.onGenerateRoute,
-      initialRoute: RouteName.Splash,
+      initialRoute: RouteName.splash,
     );
   }
 }

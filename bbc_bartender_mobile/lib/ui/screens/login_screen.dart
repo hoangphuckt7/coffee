@@ -4,7 +4,7 @@ import 'package:bbc_bartender_mobile/blocs/login/login_bloc.dart';
 import 'package:bbc_bartender_mobile/routes.dart';
 import 'package:bbc_bartender_mobile/ui/controls/field_outline.dart';
 import 'package:bbc_bartender_mobile/ui/controls/fill_btn.dart';
-import 'package:bbc_bartender_mobile/ui/widgets/loader.dart';
+import 'package:bbc_bartender_mobile/ui/widgets/card_custom.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/processing.dart';
 import 'package:bbc_bartender_mobile/utils/const.dart';
 import 'package:bbc_bartender_mobile/utils/function_common.dart';
@@ -20,16 +20,15 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = Fn.getScreenWidth(context);
+    var screenHeight = Fn.getScreenHeight(context);
     var cardWidth = screenWidth * .5;
     var cardHeight = screenHeight * .5;
 
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is SubmitSuccessState) {
-          // Navigator.pushNamed(context, RouteName.Home);
-          Navigator.pushNamed(context, RouteName.Test);
+          Navigator.pushNamed(context, RouteName.home);
         }
       },
       child: Container(
@@ -64,12 +63,7 @@ class LoginScreen extends StatelessWidget {
             return Stack(
               children: [
                 Center(
-                  child: Card(
-                    elevation: 80,
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(CardSetting.border_radius),
-                    ),
+                  child: CardCustom(
                     child: SizedBox(
                       width: cardWidth,
                       height: cardHeight,
@@ -78,7 +72,7 @@ class LoginScreen extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               AppInfo.Name,
                               style: TextStyle(
                                 color: MColor.primaryBlack,
@@ -121,7 +115,6 @@ class LoginScreen extends StatelessWidget {
                                 FocusManager.instance.primaryFocus?.unfocus();
                                 BlocProvider.of<LoginBloc>(context)
                                     .add(SubmittedEvent(
-                                  context,
                                   usernameTEC.text,
                                   passwordTEC.text,
                                 ));

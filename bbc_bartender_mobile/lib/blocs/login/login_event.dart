@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables
 
 part of 'login_bloc.dart';
 
@@ -13,9 +13,8 @@ class DataChangedEvent extends LoginEvent {
 }
 
 class SubmittedEvent extends LoginEvent {
-  final context;
   final username;
   final password;
 
-  SubmittedEvent(this.context, this.username, this.password);
+  SubmittedEvent(this.username, this.password);
 }

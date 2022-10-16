@@ -19,9 +19,9 @@ class SplashScreen extends StatelessWidget {
       child: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
           if (state is LoginSuccessState) {
-            Navigator.pushNamed(context, RouteName.Home);
+            Navigator.pushNamed(context, RouteName.home);
           } else if (state is LoginFailState) {
-            Navigator.pushNamed(context, RouteName.Login);
+            Navigator.pushNamed(context, RouteName.login);
           }
         },
         child: Container(

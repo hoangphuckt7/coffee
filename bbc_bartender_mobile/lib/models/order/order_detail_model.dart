@@ -8,7 +8,7 @@ class OrderDetailModel {
   final int? quantity;
   final int? finalQuantity;
   final String? missingReason;
-  final double price;
+  final double? price;
   final String? description;
   final String? itemId;
   final String? orderId;

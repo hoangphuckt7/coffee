@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
-  static dynamic getItem(String key) async {
+  static getItem(String key) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.get(key);
   }
@@ -21,16 +21,17 @@ class LocalStorage {
     }
   }
 
-  static dynamic removeItem(String key) async {
+  static removeItem(String key) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.remove(key);
   }
 
   static removeAll() async {
     final prefs = await SharedPreferences.getInstance();
-    var lstKey = prefs.getKeys();
-    for (var key in lstKey) {
-      prefs.remove(key);
-    }
+    prefs.clear();
+    // var lstKey = prefs.getKeys();
+    // for (var key in lstKey) {
+    //   prefs.remove(key);
+    // }
   }
 }

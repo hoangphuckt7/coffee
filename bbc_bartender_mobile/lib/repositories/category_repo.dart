@@ -11,7 +11,7 @@ class CategoryRepo {
   Future<List<BaseModel>> getAll() async {
     var lstCateModel = <BaseModel>[];
     try {
-      var resp = await Fetch.GET('${controllerUrl}');
+      var resp = await Fetch.GET(controllerUrl);
       if (resp.statusCode == HttpStatusCode.OK) {
         Iterable lstClone = jsonDecode(resp.body);
         lstCateModel = List<BaseModel>.from(
@@ -26,7 +26,7 @@ class CategoryRepo {
   }
 
   Future<BaseModel?> getById(String id) async {
-    var resp = await Fetch.GET('${controllerUrl}/${id}');
+    var resp = await Fetch.GET('$controllerUrl/$id');
     if (resp.statusCode == HttpStatusCode.OK) {
       return BaseModel.fromJson(jsonDecode(resp.body));
     }

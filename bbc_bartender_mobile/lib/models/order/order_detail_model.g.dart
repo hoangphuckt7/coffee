@@ -14,7 +14,7 @@ OrderDetailModel _$OrderDetailModelFromJson(Map<String, dynamic> json) =>
       json['quantity'] as int?,
       json['finalQuantity'] as int?,
       json['missingReason'] as String?,
-      (json['price'] as num).toDouble(),
+      (json['price'] as num?)?.toDouble(),
       json['description'] as String?,
       json['itemId'] as String?,
       json['orderId'] as String?,
