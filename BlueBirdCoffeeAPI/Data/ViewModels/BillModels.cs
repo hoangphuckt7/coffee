@@ -15,4 +15,27 @@ namespace Data.ViewModels
         public DateTime DateCreated { get; set; }
         public List<OrderDetailViewModel> OrderDetailViewModels { get; set; }
     }
+
+    public class BillMissingItemViewModel
+    {
+        public Guid Id { get; set; }
+        public string? ItemMissingReason { get; set; }
+        public DateTime DateCreated { get; set; }
+        public List<OrderMissingItemViewModel> Orders { get; set; }
+    }
+
+    public class OrderMissingItemViewModel
+    {
+        public Guid Id { get; set; }
+        public Guid? TableId { get; set; }
+        public DateTime DateCreated { get; set; }
+        public List<MissingItemViewModel> Items { get; set; }
+    }
+
+    public class MissingItemViewModel
+    {
+        public Guid ItemId { get; set; }
+        public int Quantity { get; set; }
+        public int FinalQuantity { get; set; }
+    }
 }

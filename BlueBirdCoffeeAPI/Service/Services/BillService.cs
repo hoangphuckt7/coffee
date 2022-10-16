@@ -15,6 +15,7 @@ namespace Service.Services
     {
         Guid Checkout(CheckoutModel model);
         List<BillViewModel> History(int count);
+        List<BillMissingItemViewModel> MissingBillItemWithin48Hours();
     }
 
     public class BillService : IBillService
@@ -173,6 +174,56 @@ namespace Service.Services
 
                 billData.OrderDetailViewModels = orderDetailViewModels;
                 result.Add(billData);
+            }
+            return result;
+        }
+        public List<BillMissingItemViewModel> MissingBillItemWithin48Hours()
+        {
+            var orderDetails = _dbContext.OrderDetails.Where(s => s.Quantity > s.FinalQuantity).Where(s => DateTime.Compare(s.DateUpdated, DateTime.UtcNow.AddHours(7).AddHours(-48)) > 0).ToList();
+
+            var orders = _dbContext.Orders.Where(f => orderDetails.Select(s => s.OrderId).Distinct().ToList().Contains(f.Id)).ToList();
+
+            var billOrders = _dbContext.BillOrders.Where(s => orders.Select(o => o.Id).ToList().Contains(s.OrderId)).ToList();
+
+            var bills = _dbContext.Bills.Where(s => billOrders.Select(b => b.BillId).ToList().Contains(s.Id)).OrderByDescending(f => f.DateCreated).Take(10).ToList();
+
+            List<BillMissingItemViewModel> result = new();
+
+            foreach (var item in bills)
+            {
+                BillMissingItemViewModel bill = new()
+                {
+                    Id = item.Id,
+                    DateCreated = item.DateCreated,
+                    Orders = new List<OrderMissingItemViewModel>(),
+                    ItemMissingReason = item.ItemMissingReason
+                };
+
+                var currentBillOrders = orders.Where(s => billOrders.Where(b => b.BillId == item.Id).ToList().Select(s => s.OrderId).Contains(s.Id)).ToList();
+                foreach (var order in currentBillOrders)
+                {
+                    OrderMissingItemViewModel missingOrder = new()
+                    {
+                        Id = order.Id,
+                        DateCreated = order.DateCreated,
+                        TableId = order.TableId,
+                        Items = new List<MissingItemViewModel>()
+                    };
+
+                    var currentItems = orderDetails.Where(s => s.OrderId == order.Id).ToList();
+                    foreach (var detail in currentItems)
+                    {
+                        var missingItem = new MissingItemViewModel()
+                        {
+                            ItemId = detail.ItemId,
+                            FinalQuantity = detail.FinalQuantity,
+                            Quantity = detail.Quantity
+                        };
+                        missingOrder.Items.Add(missingItem);
+                    }
+                    bill.Orders.Add(missingOrder);
+                }
+                result.Add(bill);
             }
             return result;
         }

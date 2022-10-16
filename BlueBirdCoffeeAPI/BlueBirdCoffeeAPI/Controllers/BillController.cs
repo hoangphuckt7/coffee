@@ -32,5 +32,11 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(_billService.History(count));
         }
+
+        [HttpGet("MissingBillItemWithin48Hours")]
+        public IActionResult TodateMissingItem()
+        {
+            return Ok(_billService.MissingBillItemWithin48Hours());
+        }
     }
 }

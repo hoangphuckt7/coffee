@@ -22,7 +22,7 @@ namespace Data.ViewModels
     public class OrderViewModel
     {
         public Guid Id { get; set; }
-        public Guid TableId { get; set; }
+        public Guid? TableId { get; set; }
         public DateTime DateCreated { get; set; }
         public List<OrderDetailViewModel> OrderDetails { get; set; }
     }
