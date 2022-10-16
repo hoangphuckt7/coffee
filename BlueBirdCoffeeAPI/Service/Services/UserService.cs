@@ -42,21 +42,21 @@ namespace Service.Services
 
         public async Task<string> Register(UserRegisterModel model, string role)
         {
-            var userEmail = _dbContext.Users.FirstOrDefault(u => u.PhoneNumber == model.Phone);
+            var userEmail = _dbContext.Users.FirstOrDefault(u => u.UserName == model.Username);
 
             if (userEmail != null)
             {
-                throw new Exception("Phone already exist!");
+                throw new Exception("Username already exist!");
             }
 
             var identUser = new User
             {
                 Fullname = model.FullName,
-                PhoneNumber = model.Phone,
-                UserName = model.Phone
+                NormalizedUserName = model.Username,
+                UserName = model.Username
             };
 
-            var createRs = await _userManager.CreateAsync(identUser, model.Phone);
+            var createRs = await _userManager.CreateAsync(identUser, model.Username);
 
             if (createRs.Succeeded)
             {
@@ -70,7 +70,7 @@ namespace Service.Services
             {
                 throw new Exception("Can't create user");
             }
-            return model.Phone;
+            return model.Username;
         }
 
         public async Task<LoginSuccessViewModel> Login(UserLoginModel model)
@@ -80,11 +80,11 @@ namespace Service.Services
 
             if (signInResult.Succeeded)
             {
-                var appUser = _userManager.Users.SingleOrDefault(r => r.PhoneNumber == model.Phone);
+                var appUser = _userManager.Users.SingleOrDefault(r => r.UserName == model.Phone);
                 if (appUser == null) throw new AppException("Invalid user");
                 var roles = await _userManager.GetRolesAsync(appUser);
 
-                var fullname = _dbContext.Users.First(u => u.PhoneNumber == model.Phone).Fullname;
+                var fullname = _dbContext.Users.First(u => u.UserName == model.Phone).Fullname;
                 object token = GenerateJwtToken(appUser, roles[0]);
 
                 var successViewModel = new LoginSuccessViewModel()

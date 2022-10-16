@@ -9,6 +9,7 @@ namespace Data.Entities
 {
     public class Order : BaseEntity
     {
+        public int OrderNumber { get; set; }
         public bool IsCompleted { get; set; } = false;
         public bool IsCheckout { get; set; } = false;
         public bool IsRejected { get; set; } = false;

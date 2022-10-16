@@ -1,7 +1,9 @@
 ﻿using Data.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services;
+using System.Data;
 
 namespace BlueBirdCoffeeAPI.Controllers
 {
@@ -40,24 +42,6 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_orderService.GetByIds(ids));
         }
 
-        [HttpGet("TodateMissingItem")]
-        public IActionResult TodateMissingItem()
-        {
-            return Ok(_orderService.TodateMissingItem());
-        }
-
-        [HttpPut("MissingItem")]
-        public IActionResult SetMissingItem([FromBody] SetMissingItemModel model)
-        {
-            _orderService.SetMissingItem(model);
-            return Ok("ok");
-        }
-
-        [HttpPut("MissingOrder")]
-        public IActionResult SetMissingOrder([FromBody] SetMissingOrders model)
-        {
-            return Ok(_orderService.SetMissingOrder(model, "93336e7f-4425-4c7a-948b-c4b8e18f5ff6"));
-        }
 
         [HttpGet("CurrentOrders")]
         public IActionResult CurrentOrders()

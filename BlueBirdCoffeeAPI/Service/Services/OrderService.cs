@@ -21,7 +21,6 @@ namespace Service.Services
     {
         Task<Guid> CreateOrder(string employeeId, OrderCreateModel models);
         List<OrderViewModel> GetByTable(Guid tableId);
-        List<OrderDetailViewModel> TodateMissingItem();
         Guid SetMissingOrder(SetMissingOrders model, string emp);
         void SetMissingItem(SetMissingItemModel model);
         List<OrderViewModel> GetByIds(List<Guid> ids);
@@ -55,6 +54,7 @@ namespace Service.Services
             var order = new Order()
             {
                 TableId = models.TableId,
+                OrderNumber = GetCurrentOrderNumber()
                 //EmployeeId = employeeId
             };
 
@@ -129,6 +129,19 @@ namespace Service.Services
 
             return order.Id;
         }
+
+        public int GetCurrentOrderNumber()
+        {
+            var lastestOrder = _dbContext.Orders.OrderByDescending(s => s.DateCreated).FirstOrDefault();
+
+            if (lastestOrder != null && lastestOrder.DateCreated.Date == DateTime.UtcNow.AddHours(7).Date)
+            {
+                return lastestOrder.OrderNumber + 1;
+            }
+
+            return 1;
+        }
+
         public List<OrderViewModel> GetByTable(Guid tableId)
         {
             var orders = _dbContext.Orders
@@ -186,27 +199,6 @@ namespace Service.Services
             //}
 
             //_dbContext.SaveChanges();
-            throw new Exception();
-        }
-
-        public List<OrderDetailViewModel> TodateMissingItem()
-        {
-            //var now = DateTime.Now;
-            //var orders = _dbContext.Orders.Include(s => s.OrderDetails).Where(s => s.IsMissing == true && s.DateUpdated.Year == DateTime.Now.Year && s.DateUpdated.Month == DateTime.Now.Month && s.DateUpdated.Day == DateTime.Now.Day).ToList();
-
-            //var orderDetails = _dbContext.OrderDetails.Where(s => s.IsMissing == true && s.DateUpdated.Year == DateTime.Now.Year && s.DateUpdated.Month == DateTime.Now.Month && s.DateUpdated.Day == DateTime.Now.Day).ToList();
-
-            //foreach (var item in orders)
-            //{
-            //    if (item.OrderDetails != null)
-            //    {
-            //        orderDetails.AddRange(item.OrderDetails);
-            //    }
-            //}
-
-            //orderDetails = orderDetails.DistinctBy(s => new { s.ItemId, s.OrderId }).OrderByDescending(f => f.DateUpdated).ToList();
-
-            //return _mapper.Map<List<OrderDetail>, List<OrderDetailViewModel>>(orderDetails);
             throw new Exception();
         }
 

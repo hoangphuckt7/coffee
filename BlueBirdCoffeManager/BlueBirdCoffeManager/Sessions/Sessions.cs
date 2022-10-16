@@ -12,7 +12,7 @@ namespace BlueBirdCoffeManager.Sessions
         public static readonly string HOST = "http://192.168.1.4:7244/";
 
         public static string TOKEN = "";
-        public static string USER_NAME = "Trần Vũ";
+        public static string USER_NAME = "";
         public static string ROLE = "";
 
         public static readonly Font NORMAL_BOLD_FONT = new Font("time new roman", 10, FontStyle.Bold);
@@ -20,6 +20,7 @@ namespace BlueBirdCoffeManager.Sessions
 
         public static readonly Color MENU_COLOR = Color.FromArgb(38, 37, 37);
         public static readonly Color BUTTON_COLOR = Color.FromArgb(35, 214, 15);
+        public static readonly Color SUB_BUTTON_COLOR = Color.FromArgb(197, 219, 200);
         public static readonly CultureInfo CULTURE_INFO = new CultureInfo("vi-VN");
 
         public static int MINIMUM_HEIGH = 23;

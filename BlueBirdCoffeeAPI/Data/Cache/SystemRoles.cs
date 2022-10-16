@@ -8,10 +8,11 @@ namespace Data.Cache
 {
     public class SystemRoles
     {
-        public static readonly string ADMIN = "ADMIN";
-        public static readonly string CASHER = "CASHER";
-        public static readonly string BARTENDER = "BARTENDER";
-        public static readonly string EMPLOYEE = "EMPLOYEE";
-        public static readonly string CUSTOMER = "CUSTOMER";
+        public const string ADMIN = "ADMIN";
+        public const string CASHER = "CASHER";
+        public const string BARTENDER = "BARTENDER";
+        public const string EMPLOYEE = "EMPLOYEE";
+        public const string CUSTOMER = "CUSTOMER";
+        public const string EXCEPT_CUSTOMER = "ADMIN, CASHER, BARTENDER, EMPLOYEE";
     }
 }

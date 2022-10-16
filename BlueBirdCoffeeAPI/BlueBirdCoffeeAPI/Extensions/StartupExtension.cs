@@ -19,7 +19,7 @@ namespace BlueBirdCoffeeAPI.Extensions
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6;
+                options.Password.RequiredLength = 5;
                 options.Password.RequireLowercase = false;
             })
                     .AddEntityFrameworkStores<AppDbContext>()
