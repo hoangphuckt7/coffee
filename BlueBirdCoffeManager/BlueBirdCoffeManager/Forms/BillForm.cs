@@ -158,7 +158,6 @@ namespace BlueBirdCoffeManager.Forms
             pnHistoryTitle.Height = lbOldOrdersTilte.Height + lbOldOrdersTilte.Top + lbOldOrdersTilte.Top;
 
             var curTop = pnHistoryTitle.Height + pnHistoryTitle.Top + 5;
-            //var oldOrdersData = Sessions.Order.OldOrders.OrderByDescending(f => f.DateCreated);
 
             var oldOrdersDataJson = await ApiBuilder.SendRequest<List<BillViewModel>>("api/Bill/History/10", null, RequestMethod.GET);
             var oldOrdersData = JsonConvert.DeserializeObject<List<BillViewModel>>(oldOrdersDataJson);
@@ -243,54 +242,15 @@ namespace BlueBirdCoffeManager.Forms
 
                 borderPanel.Click += (sender, e) =>
                 {
-                    var orderCreateModel = new OrderCreateModel()
-                    {
-                        OrderDetail = item.OrderDetailViewModels
-                    };
-                    var curImg = BillPrinter.SetupBill(orderCreateModel, item.DateCreated);
-
-                    mainPanel.Controls.Clear();
-                    BillDataForm myForm = new(_orders, curImg, this)
-                    {
-                        TopLevel = false,
-                        AutoScroll = true
-                    };
-                    mainPanel.Controls.Add(myForm);
-                    myForm.Show();
+                    SetupOldBill(item);
                 };
                 timeLabel.Click += (sender, e) =>
                 {
-                    var orderCreateModel = new OrderCreateModel()
-                    {
-                        OrderDetail = item.OrderDetailViewModels
-                    };
-                    var curImg = BillPrinter.SetupBill(orderCreateModel, item.DateCreated);
-
-                    mainPanel.Controls.Clear();
-                    BillDataForm myForm = new(_orders, curImg, this)
-                    {
-                        TopLevel = false,
-                        AutoScroll = true
-                    };
-                    mainPanel.Controls.Add(myForm);
-                    myForm.Show();
+                    SetupOldBill(item);
                 };
                 typeLabel.Click += (sender, e) =>
                 {
-                    var orderCreateModel = new OrderCreateModel()
-                    {
-                        OrderDetail = item.OrderDetailViewModels
-                    };
-                    var curImg = BillPrinter.SetupBill(orderCreateModel, item.DateCreated);
-
-                    mainPanel.Controls.Clear();
-                    BillDataForm myForm = new(_orders, curImg, this)
-                    {
-                        TopLevel = false,
-                        AutoScroll = true
-                    };
-                    mainPanel.Controls.Add(myForm);
-                    myForm.Show();
+                    SetupOldBill(item);
                 };
 
                 borderPanel.Controls.Add(timeLabel);
@@ -322,7 +282,45 @@ namespace BlueBirdCoffeManager.Forms
             lostBillPanel.Controls.Add(lostF);
             lostF.Show();
         }
+        private void SetupOldBill(BillViewModel? item)
+        {
+            var orderCreateModel = new OrderCreateModel()
+            {
+                OrderDetail = item.OrderDetailViewModels
+            };
 
+            //Remove lost items
+            List<OrderDetailViewModel> removeList = new List<OrderDetailViewModel>();
+            foreach (var detail in orderCreateModel.OrderDetail)
+            {
+                if (detail.Quantity == 0)
+                {
+                    removeList.Add(detail);
+                }
+            }
+            foreach (var remove in removeList)
+            {
+                orderCreateModel.OrderDetail.Remove(remove);
+            }
+
+            //Merge items
+            foreach (var detail in orderCreateModel.OrderDetail)
+            {
+                detail.Quantity = orderCreateModel.OrderDetail.Where(f => f.ItemId == detail.ItemId).Select(s => s.Quantity).Count();
+            }
+            orderCreateModel.OrderDetail = orderCreateModel.OrderDetail.DistinctBy(f => f.ItemId).ToList();
+
+            var curImg = BillPrinter.SetupBill(orderCreateModel, item.DateCreated);
+
+            mainPanel.Controls.Clear();
+            BillDataForm myForm = new(_orders, curImg, this)
+            {
+                TopLevel = false,
+                AutoScroll = true
+            };
+            mainPanel.Controls.Add(myForm);
+            myForm.Show();
+        }
         private void pnHistoryTitle_Paint(object sender, PaintEventArgs e)
         {
             //ControlPaint.DrawBorder(e.Graphics, pnHistoryTitle.ClientRectangle,

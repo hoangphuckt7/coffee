@@ -49,42 +49,29 @@ namespace BlueBirdCoffeManager.DataAccessLayer
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    const string message = "Vui lòng đăng nhập lại";
-                    const string caption = "Thông báo";
-                    var rr = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // If the no button was pressed ...
-                    if (rr == DialogResult.OK)
-                    {
-                    }
+                    string message = "Vui lòng đăng nhập lại";
+                    string caption = "Thông báo";
+                    MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
                 {
-                    const string message = "Bạn không có quyền xử dụng tính năng này";
-                    const string caption = "Thông báo";
-                    var rr = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // If the no button was pressed ...
-                    if (rr == DialogResult.OK)
-                    {
-                    }
+                    string message = "Bạn không có quyền xử dụng tính năng này";
+                    string caption = "Thông báo";
+                    MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 }
                 else
                 {
-                    const string caption = "Lỗi";
-                    string x = responseMessage.Content.ToString();
-                    const string message = "Lỗi không xác định -";
-
-                    var rr = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string caption = "Lỗi";
+                    string? x = responseMessage.Content.ToString();
+                    MessageBox.Show(x, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (HttpRequestException)
             {
-                const string message = "Lỗi kết nối. Vui lòng kiểm tra lại đường truyền.";
-                const string caption = "Lỗi";
-                var rr = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // If the no button was pressed ...
-                if (rr == DialogResult.OK)
-                {
-                }
+                string message = "Lỗi kết nối. Vui lòng kiểm tra lại đường truyền.";
+                string caption = "Lỗi";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return "";
         }
