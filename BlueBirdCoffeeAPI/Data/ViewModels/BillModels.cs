@@ -41,4 +41,10 @@ namespace Data.ViewModels
         public int Quantity { get; set; }
         public int FinalQuantity { get; set; }
     }
+
+    public class ChartViewModel
+    {
+        public int Total { get; set; }
+        public double Date { get; set; }
+    }
 }

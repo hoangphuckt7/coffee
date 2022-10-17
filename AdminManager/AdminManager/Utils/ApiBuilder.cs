@@ -85,10 +85,10 @@ namespace BlueBirdCoffeManager.DataAccessLayer
             return null;
         }
 
-        public static async Task<T?> ParseToData<T>(HttpResponseMessage responseMessage)
+        public static async Task<T> ParseToData<T>(HttpResponseMessage responseMessage)
         {
             string json = await responseMessage.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(json)!;
         }
     }
 }

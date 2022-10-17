@@ -483,9 +483,9 @@
                                 <div class="card-header">
                                     <h4>Statistics</h4>
                                     <div class="card-header-action">
-                                        <button class="btn btn-sm btn-outline-secondary mr-1" id="one_month">1M</button>
+                                        <button class="btn btn-sm btn-outline-secondary mr-1" id="one_month">Tháng hiện tại</button>
                                         <button class="btn btn-sm btn-outline-secondary mr-1" id="six_months">6M</button>
-                                        <button class="btn btn-sm btn-outline-secondary mr-1" id="one_year" class="active">1Y</button>
+                                        <button class="btn btn-sm btn-outline-secondary mr-1" id="one_year" class="active">Từng tháng</button>
                                         <button class="btn btn-sm btn-outline-secondary mr-1" id="ytd">YTD</button>
                                         <button class="btn btn-sm btn-outline-secondary" id="all">ALL</button>
                                     </div>
@@ -974,3 +974,164 @@
 
 <!-- index-0.html  Tue, 07 Jan 2020 03:35:42 GMT -->
 </html>
+
+<script>
+    // Area Datetime
+    @{
+        TimeSpan t = DateTime.Now - new DateTime(1970, 1, 1);
+        double secondsSinceEpoch = (double)t.TotalMilliseconds;
+    }
+
+    window.onload = function(){
+        document.getElementById('one_month').click();
+    }
+        $(document).ready(function () {
+            var options = {
+                annotations: {
+                    yaxis: [{
+                        y: 30,
+                        borderColor: '#5a5278',
+                        label: {
+                            show: true,
+                            text: 'Support',
+                            style: {
+                                color: "#fff",
+                                background: '#5a5278'
+                            }
+                        }
+                    }],
+                    xaxis: [{
+                        x: @secondsSinceEpoch,
+                        borderColor: '#5a5278',
+                        yAxisIndex: 0,
+                        label: {
+                            show: true,
+                            text: 'Rally',
+                            style: {
+                                color: "#fff",
+                                background: '#5a5278'
+                            }
+                        }
+                    }]
+                },
+                chart: {
+                    type: 'area',
+                    height: 288,
+                    toolbar: {
+                        show: false,
+                    },
+                },
+                colors: ['#5a5278'],
+                dataLabels: {
+                    enabled: false
+                },
+
+                series: [{
+                    data: @ViewBag.SeriesData
+                    },
+
+                ],
+                markers: {
+                    size: 0,
+                    style: 'hollow',
+                },
+                xaxis: {
+                    type: 'datetime',
+                    min: @secondsSinceEpoch,
+                    tickAmount: 6,
+                    show: false,
+                },
+                tooltip: {
+                    x: {
+                        format: 'dd-MM-yyyy'
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.7,
+                        opacityTo: 0.9,
+                        stops: [0, 100]
+                    }
+                },
+                stroke: {
+                    show: true,
+                    curve: 'smooth',
+                    width: 2,
+                },
+                grid: {
+                    yaxis: {
+                        lines: {
+                            show: false,
+                        }
+                    },
+                },
+            }
+
+            var chart = new ApexCharts(
+                document.querySelector("#apex-timeline-chart"),
+                options
+            );
+
+            chart.render();
+
+            var resetCssClasses = function (activeEl) {
+                var els = document.querySelectorAll("button");
+                Array.prototype.forEach.call(els, function (el) {
+                    el.classList.remove('active');
+                });
+
+                activeEl.target.classList.add('active')
+            }
+
+            document.querySelector("#one_month").addEventListener('click', function (e) {
+                resetCssClasses(e)
+                chart.updateOptions({
+                    xaxis: {
+                        min: undefined,
+                        max: undefined,
+                    }
+                })
+            })
+            document.querySelector("#six_months").addEventListener('click', function (e) {
+                resetCssClasses(e)
+                chart.updateOptions({
+                    xaxis: {
+                        min: undefined,
+                        max: undefined,
+                    }
+                })
+            })
+            document.querySelector("#one_year").addEventListener('click', function (e) {
+                resetCssClasses(e)
+                chart.updateOptions({
+                    xaxis: {
+                        min: undefined,
+                        max: undefined,
+                    }
+                })
+            })
+            document.querySelector("#ytd").addEventListener('click', function (e) {
+                resetCssClasses(e)
+                chart.updateOptions({
+                    xaxis: {
+                        min: undefined,
+                        max: undefined,
+                    }
+                })
+            })
+            document.querySelector("#all").addEventListener('click', function (e) {
+                resetCssClasses(e)
+                chart.updateOptions({
+                    xaxis: {
+                        min: undefined,
+                        max: undefined,
+                    }
+                })
+            })
+            document.querySelector("#ytd").addEventListener('click', function () {
+
+            })
+        });
+</script>
