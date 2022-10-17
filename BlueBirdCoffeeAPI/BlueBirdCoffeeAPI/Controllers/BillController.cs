@@ -38,5 +38,11 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(_billService.MissingBillItemWithin48Hours());
         }
+
+        [HttpGet("Chart")]
+        public IActionResult ChartData()
+        {
+            return Ok(_billService.ChartData());
+        }
     }
 }

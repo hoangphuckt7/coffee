@@ -16,6 +16,7 @@ namespace Service.Services
         Guid Checkout(CheckoutModel model);
         List<BillViewModel> History(int count);
         List<BillMissingItemViewModel> MissingBillItemWithin48Hours();
+        public List<ChartViewModel> ChartData();
     }
 
     public class BillService : IBillService
@@ -238,6 +239,31 @@ namespace Service.Services
                     bill.Orders.Add(missingOrder);
                 }
                 result.Add(bill);
+            }
+            return result;
+        }
+        public List<ChartViewModel> ChartData()
+        {
+            var currentMonthData = _dbContext.Bills
+                .Where(f => f.DateCreated.Year == DateTime.UtcNow.AddHours(7).Year)
+                .Where(f => f.DateCreated.Month == DateTime.UtcNow.AddHours(7).Month)
+                .ToList();
+
+            List<ChartViewModel> result = new List<ChartViewModel>();
+            for (int i = 1; i <= DateTime.Now.Day; i++)
+            {
+                var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, i);
+                var total = currentMonthData.Where(f => f.DateCreated.Day == i).ToList().Count;
+
+                TimeSpan t = date - new DateTime(1970, 1, 1);
+                double secondsSinceEpoch = (double)t.TotalMilliseconds;
+
+                ChartViewModel chart = new ChartViewModel()
+                {
+                    Date = secondsSinceEpoch,
+                    Total = total
+                };
+                result.Add(chart);
             }
             return result;
         }

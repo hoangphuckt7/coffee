@@ -2,7 +2,6 @@
 using BlueBirdCoffeManager.DataAccessLayer;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace AdminManager.Controllers
 {
@@ -17,7 +16,19 @@ namespace AdminManager.Controllers
 
         public async Task<IActionResult> Index()
         {
-            await ApiBuilder.SendRequest<object>("x", null, RequestMethod.GET, true, Request.GetDisplayUrl());
+            var request = await ApiBuilder.SendRequest<object>("api/Bill/Chart", null, RequestMethod.GET, true, Request.GetDisplayUrl());
+            if (request.IsSuccessStatusCode)
+            {
+                var data = await ApiBuilder.ParseToData<List<ChartViewModel>>(request);
+
+                string seriesData = "[";
+                foreach (var item in data)
+                {
+                    seriesData += $"[{item.Date},{item.Total}],";
+                }
+                seriesData += "]";
+                ViewBag.SeriesData = seriesData;
+            }
             return View();
         }
 
