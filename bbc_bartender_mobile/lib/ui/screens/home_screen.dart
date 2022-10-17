@@ -1,11 +1,14 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, must_be_immutable
 
 import 'dart:developer';
 
 import 'package:bbc_bartender_mobile/blocs/home/home_bloc.dart';
+import 'package:bbc_bartender_mobile/models/item/item_model.dart';
+import 'package:bbc_bartender_mobile/models/order/order_model.dart';
 import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/order_repo.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/card_custom.dart';
+import 'package:bbc_bartender_mobile/ui/widgets/order_card.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/processing.dart';
 import 'package:bbc_bartender_mobile/utils/enum.dart';
 import 'package:bbc_bartender_mobile/utils/function_common.dart';
@@ -13,14 +16,9 @@ import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,27 +28,31 @@ class _HomeScreenState extends State<HomeScreen> {
           RepositoryProvider.of<ItemRepo>(context),
           RepositoryProvider.of<OrderRepo>(context),
         )..add(LoadDataEvent()),
-        child: BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            bool isLoading = false;
-            String loadingMsg = "";
-            if (state is ErrorState) {
-              Fn.showToast(EToast.danger, state.errMsg.toString());
-            } else if (state is ItemsLoadingState) {
-              loadingMsg = state.loadingMsg.toString();
-              isLoading = true;
-            } else if (state is ItemsLoadedState) {
-              EToast eToast = EToast.success;
-              if (!state.isSuccess) eToast = EToast.danger;
-              Fn.showToast(eToast, state.msg.toString());
-            }
-            return Stack(
-              children: [
-                Processing(msg: loadingMsg, show: isLoading),
-                _main(context, state),
-              ],
-            );
-          },
+        child: Stack(
+          children: [
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                bool isLoading = false;
+                String loadingMsg = "";
+                if (state is ErrorState) {
+                  Fn.showToast(EToast.danger, state.errMsg.toString());
+                } else if (state is ItemsLoadingState) {
+                  loadingMsg = state.loadingMsg.toString();
+                  isLoading = true;
+                } else if (state is ItemsLoadedState) {
+                  EToast eToast = EToast.success;
+                  if (!state.isSuccess) eToast = EToast.danger;
+                  Fn.showToast(eToast, state.msg.toString());
+                }
+                return Processing(msg: loadingMsg, show: isLoading);
+              },
+            ),
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                return _main(context, state);
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -62,37 +64,15 @@ class _HomeScreenState extends State<HomeScreen> {
   bool showArrowTop = false;
   bool showArrowBot = false;
 
-  @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    super.setState(fn);
-
-    scrollController.addListener(() {
-      if (scrollController.position.atEdge) {
-        double currentPixels = scrollController.position.pixels;
-        bool isTop = currentPixels == 0;
-        bool isBot = currentPixels == wgRight.currentContext!.size!.height;
-        if (isTop) {
-          showArrowTop = false;
-          showArrowBot = true;
-          // BlocProvider.of<HomeBloc>(context).add(OrderScrollEvent(false, true));
-        } else if (isBot) {
-          showArrowTop = true;
-          showArrowBot = false;
-          // BlocProvider.of<HomeBloc>(context).add(OrderScrollEvent(true, false));
-        } else {
-          showArrowTop = true;
-          showArrowBot = true;
-          // BlocProvider.of<HomeBloc>(context).add(OrderScrollEvent(true, true));
-        }
-      }
-    });
-  }
-
   Widget _main(BuildContext context, HomeState state) {
+    List<ItemModel> lstItems = <ItemModel>[];
+    List<OrderModel> lstOrders = <OrderModel>[];
     if (state is OrderScrolledState) {
       showArrowTop = state.showArrowTop;
       showArrowBot = state.showArrowBot;
+    } else if (state is OrdersLoadedState) {
+      lstItems = state.lstItems;
+      lstOrders = state.lstOrders;
     }
     return Container(
       color: MColor.primaryBlack,
@@ -173,10 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SizedBox(
                 height: Fn.getScreenHeight(context),
                 child: CardCustom(
-                  edgeInsets: const EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: 20,
-                  ),
+                  edgeInsets: const EdgeInsets.all(15),
                   child: Column(
                     children: [
                       Visibility(
@@ -189,60 +166,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         // child: NotificationListener(
                         child: SingleChildScrollView(
-                          key: wgRight,
-                          controller: scrollController,
+                          // key: wgRight,
+                          // controller: scrollController,
+
                           child: Column(
-                            children: const [
-                              Text('data1'),
-                              Text('data2'),
-                              Text('data3'),
-                              Text('data4'),
-                              Text('data5'),
-                              Text('data6'),
-                              Text('data7'),
-                              Text('data8'),
-                              Text('data9'),
-                              Text('data10'),
-                              Text('data11'),
-                              Text('data12'),
-                              Text('data13'),
-                              Text('data14'),
-                              Text('data15'),
-                              Text('data16'),
-                              Text('data17'),
-                              Text('data18'),
-                              Text('data19'),
-                              Text('data20'),
-                              Text('data21'),
-                              Text('data22'),
-                              Text('data23'),
-                              Text('data24'),
-                              Text('data25'),
-                              Text('data26'),
-                              Text('data27'),
-                              Text('data28'),
-                              Text('data29'),
-                              Text('data30'),
-                              Text('data31'),
-                              Text('data32'),
-                              Text('data33'),
-                              Text('data34'),
-                              Text('data35'),
-                              Text('data36'),
-                              Text('data37'),
-                              Text('data38'),
-                              Text('data39'),
-                              Text('data40'),
-                              Text('data41'),
-                              Text('data42'),
-                              Text('data43'),
-                              Text('data44'),
-                              Text('data45'),
-                              Text('data46'),
-                              Text('data47'),
-                              Text('data48'),
-                              Text('data49'),
-                              Text('data50'),
+                            children: [
+                              for (var i = 0; i < lstOrders.length; i++)
+                                OrderCard(
+                                  orderModel: lstOrders[i],
+                                  isSelected: i == 0,
+                                  isPinned: i == 1,
+                                )
                             ],
                           ),
                         ),

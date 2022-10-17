@@ -19,7 +19,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   HomeBloc(this._itemRepo, this._orderRepo) : super(InitialState()) {
     on<LoadDataEvent>(_onLoadData);
-    on<OrderScrollEvent>(_onScrollOrders);
+    on<OrderChangeEvent>(_onOrderChange);
+    // on<OrderScrollEvent>(_onScrollOrders);
   }
 
   void _onLoadData(LoadDataEvent event, Emitter<HomeState> emit) async {
@@ -29,13 +30,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       var lstItem = <ItemModel>[];
       var lstItemJson = await LocalStorage.getItem(KeyLS.items);
       if (lstItemJson != null) {
-        log('alo');
         var lstItemDecode = jsonDecode(lstItemJson);
         lstItem = List<ItemModel>.from(
           lstItemDecode.map((model) => ItemModel.fromJson(model)),
         );
       } else {
-        log('alo1');
         lstItem = await _itemRepo.getAll();
       }
       // Load List Order
@@ -43,6 +42,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(ItemsLoadedState(true, 'Tải Menu thành công'));
         emit(OrdersLoadingState("Đang tải Order..."));
         var lstOrder = await _orderRepo.getCurrentOrders();
+        log(jsonEncode(lstOrder));
         emit(OrdersLoadedState(lstItem, lstOrder));
       } else {
         emit(ItemsLoadedState(false, 'Tải Menu thất bại'));
@@ -54,7 +54,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  void _onScrollOrders(OrderScrollEvent event, Emitter<HomeState> emit) {
-    emit(OrderScrolledState(event.showArrowTop, event.showArrowBot));
+  void _onOrderChange(OrderChangeEvent event, Emitter<HomeState> emit) {
+    event.lstOrderDetails;
   }
+
+  // void _onScrollOrders(OrderScrollEvent event, Emitter<HomeState> emit) {
+  //   emit(OrderScrolledState(event.showArrowTop, event.showArrowBot));
+  // }
 }

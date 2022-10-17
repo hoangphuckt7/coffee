@@ -4,8 +4,8 @@ import 'package:bbc_bartender_mobile/routes.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/loader.dart';
 import 'package:bbc_bartender_mobile/utils/const.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -29,7 +29,7 @@ class SplashScreen extends StatelessWidget {
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 // Text(AppInfo.Name),
                 Loader(),
               ],

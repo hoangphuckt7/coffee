@@ -17,7 +17,7 @@ namespace BlueBirdCoffeeAPI.Controllers
             _userService = userService;
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
+        //[Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterModel model)
         {

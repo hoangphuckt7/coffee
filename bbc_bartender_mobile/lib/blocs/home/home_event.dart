@@ -9,6 +9,12 @@ class InitialEvent extends HomeEvent {}
 
 class LoadDataEvent extends HomeEvent {}
 
+class OrderChangeEvent extends HomeEvent {
+  final lstOrderDetails;
+
+  OrderChangeEvent(this.lstOrderDetails);
+}
+
 class OrderScrollEvent extends HomeEvent {
   final showArrowTop;
   final showArrowBot;

@@ -22,8 +22,12 @@ OrderModel _$OrderModelFromJson(Map<String, dynamic> json) => OrderModel(
       json['isMissing'] as bool?,
       json['rejectedReason'] as String?,
       json['tableId'] as String?,
+      json['table'] == null
+          ? null
+          : BaseModel.fromJson(json['table'] as Map<String, dynamic>),
       json['employeeId'] as String?,
       json['userRejectedId'] as String?,
+      json['orderNumber'] as int?,
       (json['orderDetails'] as List<dynamic>)
           .map((e) => OrderDetailModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -42,7 +46,9 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) =>
       'isMissing': instance.isMissing,
       'rejectedReason': instance.rejectedReason,
       'tableId': instance.tableId,
+      'table': instance.table,
       'employeeId': instance.employeeId,
       'userRejectedId': instance.userRejectedId,
+      'orderNumber': instance.orderNumber,
       'orderDetails': instance.orderDetails,
     };

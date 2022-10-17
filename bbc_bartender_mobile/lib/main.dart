@@ -17,7 +17,7 @@ class BBCBartender extends StatelessWidget {
       title: 'BBC Bartender',
       theme: ThemeData(
         primarySwatch: MColor.primaryBlack,
-        fontFamily: "Montserrat",
+        fontFamily: "Times New Roman",
       ),
       // home: const Scaffold(body: LoginScreen()),
       debugShowCheckedModeBanner: false,

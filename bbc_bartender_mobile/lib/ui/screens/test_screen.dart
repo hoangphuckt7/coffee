@@ -1,7 +1,5 @@
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
 
 class TestScreen extends StatelessWidget {
   const TestScreen({super.key});
@@ -10,7 +8,7 @@ class TestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: MColor.white,
-      child: Center(
+      child: const Center(
         child: Text(
           "TEST SCREEN 1",
         ),

@@ -1,6 +1,6 @@
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:flutter/material.dart';
 
 class Loader extends StatelessWidget {
   final double size;

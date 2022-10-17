@@ -6,11 +6,13 @@ import 'package:flutter/src/widgets/framework.dart';
 class CardCustom extends StatelessWidget {
   final double? shadow;
   final dynamic edgeInsets;
+  final BorderSide? borderSide;
   final Widget child;
   const CardCustom({
     super.key,
     this.shadow = 80,
     this.edgeInsets = const EdgeInsets.all(0),
+    this.borderSide = const BorderSide(color: MColor.white),
     required this.child,
   });
 
@@ -20,6 +22,7 @@ class CardCustom extends StatelessWidget {
       elevation: shadow,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(CardSetting.border_radius),
+        side: borderSide!,
       ),
       child: Padding(
         padding: edgeInsets,

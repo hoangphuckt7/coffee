@@ -55,7 +55,7 @@ namespace BlueBirdCoffeeAPI.Controllers
             return File(rs.Data, rs.FileType);
         }
 
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         [HttpPut("Image/{itemId}")]
         [Consumes("multipart/form-data")]
         public IActionResult AddImages(Guid itemId, [FromForm] List<IFormFile> images)

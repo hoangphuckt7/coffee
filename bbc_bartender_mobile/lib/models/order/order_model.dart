@@ -1,3 +1,4 @@
+import 'package:bbc_bartender_mobile/models/common/base_model.dart';
 import 'package:bbc_bartender_mobile/models/order/order_detail_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -16,8 +17,10 @@ class OrderModel {
   final bool? isMissing;
   final String? rejectedReason;
   final String? tableId;
+  final BaseModel? table;
   final String? employeeId;
   final String? userRejectedId;
+  final int? orderNumber;
   final List<OrderDetailModel> orderDetails;
 
   OrderModel(
@@ -32,8 +35,10 @@ class OrderModel {
     this.isMissing,
     this.rejectedReason,
     this.tableId,
+    this.table,
     this.employeeId,
     this.userRejectedId,
+    this.orderNumber,
     this.orderDetails,
   );
 

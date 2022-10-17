@@ -28,6 +28,9 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("BillNumber")
+                        .HasColumnType("integer");
+
                     b.Property<string>("CasherId")
                         .HasColumnType("text");
 
@@ -108,72 +111,72 @@ namespace Data.Migrations
                         new
                         {
                             Id = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b1"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7982),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7983),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8972),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8974),
                             Description = "Cà phê truyền thống",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b2"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7985),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7987),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8977),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8977),
                             Description = "Cà phê ép máy",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b3"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7990),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7990),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8980),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8981),
                             Description = "Cà phê đặc biệt",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b4"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7993),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7995),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8985),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8986),
                             Description = "Nước ép",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b5"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7997),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7997),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8989),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8990),
                             Description = "Sinh tố",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b6"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7999),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8000),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8992),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8993),
                             Description = "Trà sữa",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b7"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8004),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8005),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8995),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8995),
                             Description = "Trà nóng",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8006),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8007),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8998),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8998),
                             Description = "Trà trà",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b9"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8009),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8009),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9001),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9002),
                             Description = "Ăn vặt",
                             IsDeleted = false
                         });
@@ -205,16 +208,16 @@ namespace Data.Migrations
                         new
                         {
                             Id = new Guid("eb22e2ea-0305-4778-a129-f400e6a64447"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7921),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7927),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8893),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8899),
                             Description = "Tầng 1",
                             IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("eb22e2ea-0305-4778-a129-f400e6a64445"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7963),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(7963),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8914),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(8915),
                             Description = "Tầng 2",
                             IsDeleted = false
                         });
@@ -262,8 +265,8 @@ namespace Data.Migrations
                             Id = new Guid("16d3154f-b5e8-4b00-9262-a4215b43f6ee"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b1"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8025),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8026),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9042),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9043),
                             IsDeleted = false,
                             Name = "Cà phê đen phin",
                             Price = 12000.0
@@ -273,8 +276,8 @@ namespace Data.Migrations
                             Id = new Guid("26d3154f-b5e8-4b00-9262-a4215b43f6ee"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b1"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8029),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8030),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9047),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9047),
                             IsDeleted = false,
                             Name = "Cà phê sữa phin",
                             Price = 14000.0
@@ -284,8 +287,8 @@ namespace Data.Migrations
                             Id = new Guid("36d3154f-b5e8-4b00-9262-a4215b43f6ee"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b1"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8032),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8032),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9051),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9051),
                             IsDeleted = false,
                             Name = "Cà phê đen đá Sài Gòn",
                             Price = 18000.0
@@ -295,8 +298,8 @@ namespace Data.Migrations
                             Id = new Guid("46d3154f-b5e8-4b00-9262-a4215b43f6ee"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b1"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8035),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8036),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9055),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9055),
                             IsDeleted = false,
                             Name = "Cà phê sữa đá Sài Gòn",
                             Price = 20000.0
@@ -306,8 +309,8 @@ namespace Data.Migrations
                             Id = new Guid("56d3154f-b5e8-4b00-9262-a4215b43f6ee"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b1"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8038),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8039),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9059),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9059),
                             IsDeleted = false,
                             Name = "Bạc xỉu",
                             Price = 22000.0
@@ -317,8 +320,8 @@ namespace Data.Migrations
                             Id = new Guid("66d3154f-b5e8-4b00-9262-a4215b43f6ee"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b1"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8041),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8041),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9062),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9063),
                             IsDeleted = false,
                             Name = "Ca cao nóng - đá",
                             Price = 25000.0
@@ -328,8 +331,8 @@ namespace Data.Migrations
                             Id = new Guid("ff64e1d2-a0e7-40a9-9bb1-d01a19bea5b1"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b2"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8043),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8044),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9066),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9066),
                             IsDeleted = false,
                             Name = "Cà phê đen máy",
                             Price = 16000.0
@@ -339,8 +342,8 @@ namespace Data.Migrations
                             Id = new Guid("ff64e1d2-a0e7-40a9-9bb1-d01a19bea5b2"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b2"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8046),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8046),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9070),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9070),
                             IsDeleted = false,
                             Name = "Cà phê sữa máy",
                             Price = 18000.0
@@ -350,8 +353,8 @@ namespace Data.Migrations
                             Id = new Guid("1929dacf-d25a-4a8d-b647-c9a29d3d552b"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b3"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8048),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8049),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9146),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9147),
                             IsDeleted = false,
                             Name = "Cà phê kem trứng muối",
                             Price = 29000.0
@@ -361,8 +364,8 @@ namespace Data.Migrations
                             Id = new Guid("2929dacf-d25a-4a8d-b647-c9a29d3d552b"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b3"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8051),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8051),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9151),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9152),
                             IsDeleted = false,
                             Name = "Cà phê cốt dừa",
                             Price = 29000.0
@@ -372,8 +375,8 @@ namespace Data.Migrations
                             Id = new Guid("3929dacf-d25a-4a8d-b647-c9a29d3d552b"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b3"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8054),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8054),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9155),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9155),
                             IsDeleted = false,
                             Name = "Cà phê trứng",
                             Price = 29000.0
@@ -383,8 +386,8 @@ namespace Data.Migrations
                             Id = new Guid("4929dacf-d25a-4a8d-b647-c9a29d3d552b"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b3"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8056),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8057),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9160),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9160),
                             IsDeleted = false,
                             Name = "Cappuchino",
                             Price = 29000.0
@@ -394,8 +397,8 @@ namespace Data.Migrations
                             Id = new Guid("c3667f70-c2b7-4af9-8300-ad54c79e841a"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b4"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8059),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8059),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9163),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9164),
                             IsDeleted = false,
                             Name = "Nước ép dưa hấu",
                             Price = 22000.0
@@ -405,8 +408,8 @@ namespace Data.Migrations
                             Id = new Guid("c3667f70-c2b7-4af9-8300-ad54c79e842a"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b4"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8061),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8062),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9167),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9168),
                             IsDeleted = false,
                             Name = "Nước ép cà rốt",
                             Price = 22000.0
@@ -416,8 +419,8 @@ namespace Data.Migrations
                             Id = new Guid("c3667f70-c2b7-4af9-8300-ad54c79e843a"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b4"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8064),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8064),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9171),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9171),
                             IsDeleted = false,
                             Name = "Nước ép thơm",
                             Price = 25000.0
@@ -427,8 +430,8 @@ namespace Data.Migrations
                             Id = new Guid("c3667f70-c2b7-4af9-8300-ad54c79e844a"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b4"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8066),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8067),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9175),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9175),
                             IsDeleted = false,
                             Name = "Nước ép cam",
                             Price = 25000.0
@@ -438,8 +441,8 @@ namespace Data.Migrations
                             Id = new Guid("1649ec15-fcec-4368-83f9-5b16f43fee5b"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b5"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8069),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8069),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9178),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9179),
                             IsDeleted = false,
                             Name = "Sinh tố bơ",
                             Price = 25000.0
@@ -449,8 +452,8 @@ namespace Data.Migrations
                             Id = new Guid("2649ec15-fcec-4368-83f9-5b16f43fee5b"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b5"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8071),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8071),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9182),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9182),
                             IsDeleted = false,
                             Name = "Sinh tố bơ sầu riêng",
                             Price = 35000.0
@@ -460,8 +463,8 @@ namespace Data.Migrations
                             Id = new Guid("3649ec15-fcec-4368-83f9-5b16f43fee5b"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b5"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8073),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8074),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9186),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9186),
                             IsDeleted = false,
                             Name = "Sinh tố xoài",
                             Price = 25000.0
@@ -471,8 +474,8 @@ namespace Data.Migrations
                             Id = new Guid("4649ec15-fcec-4368-83f9-5b16f43fee5b"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b5"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8077),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8077),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9190),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9190),
                             IsDeleted = false,
                             Name = "Sinh tố dâu tây",
                             Price = 25000.0
@@ -482,8 +485,8 @@ namespace Data.Migrations
                             Id = new Guid("d135806f-52da-434f-840b-ae253b0fbbff"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b6"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8079),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8080),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9194),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9195),
                             IsDeleted = false,
                             Name = "Trà sữa truyền thống",
                             Price = 22000.0
@@ -493,8 +496,8 @@ namespace Data.Migrations
                             Id = new Guid("d235806f-52da-434f-840b-ae253b0fbbff"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b6"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8082),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8082),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9198),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9199),
                             IsDeleted = false,
                             Name = "Trà sữa kem trứng muối",
                             Price = 29000.0
@@ -504,8 +507,8 @@ namespace Data.Migrations
                             Id = new Guid("d335806f-52da-434f-840b-ae253b0fbbff"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b6"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8084),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8084),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9202),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9203),
                             IsDeleted = false,
                             Name = "Trà sữa khoai môn",
                             Price = 25000.0
@@ -515,8 +518,8 @@ namespace Data.Migrations
                             Id = new Guid("d18ca698-10a5-42e3-b044-3bdd2e5d81bd"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b7"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8086),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8087),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9207),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9208),
                             IsDeleted = false,
                             Name = "Trà olong cúc mật ong nóng",
                             Price = 22000.0
@@ -526,8 +529,8 @@ namespace Data.Migrations
                             Id = new Guid("d28ca698-10a5-42e3-b044-3bdd2e5d81bd"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b7"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8090),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8092),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9211),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9212),
                             IsDeleted = false,
                             Name = "Trà hoa cúc nóng",
                             Price = 25000.0
@@ -537,8 +540,8 @@ namespace Data.Migrations
                             Id = new Guid("d38ca698-10a5-42e3-b044-3bdd2e5d81bd"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b7"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8095),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8095),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9215),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9216),
                             IsDeleted = false,
                             Name = "Trà chanh nóng",
                             Price = 22000.0
@@ -548,8 +551,8 @@ namespace Data.Migrations
                             Id = new Guid("5020bd91-1caf-4868-9fe5-9a1360c48321"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8127),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8127),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9219),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9219),
                             IsDeleted = false,
                             Name = "Trà chanh",
                             Price = 22000.0
@@ -559,8 +562,8 @@ namespace Data.Migrations
                             Id = new Guid("5020bd91-1caf-4868-9fe5-9a1360c48322"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8130),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8130),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9227),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9228),
                             IsDeleted = false,
                             Name = "Trà chanh dây",
                             Price = 22000.0
@@ -570,8 +573,8 @@ namespace Data.Migrations
                             Id = new Guid("5020bd91-1caf-4868-9fe5-9a1360c48323"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8134),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8134),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9232),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9232),
                             IsDeleted = false,
                             Name = "Trà lipton nóng - đá",
                             Price = 20000.0
@@ -581,8 +584,8 @@ namespace Data.Migrations
                             Id = new Guid("5020bd91-1caf-4868-9fe5-9a1360c48324"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8136),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8137),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9235),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9236),
                             IsDeleted = false,
                             Name = "Trà gừng nóng - đá",
                             Price = 25000.0
@@ -592,8 +595,8 @@ namespace Data.Migrations
                             Id = new Guid("5020bd91-1caf-4868-9fe5-9a1360c48325"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8139),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8139),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9239),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9239),
                             IsDeleted = false,
                             Name = "Trà đào cam xả",
                             Price = 25000.0
@@ -603,8 +606,8 @@ namespace Data.Migrations
                             Id = new Guid("5020bd91-1caf-4868-9fe5-9a1360c48326"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8142),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8143),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9243),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9243),
                             IsDeleted = false,
                             Name = "Trà vải",
                             Price = 25000.0
@@ -614,8 +617,8 @@ namespace Data.Migrations
                             Id = new Guid("5020bd91-1caf-4868-9fe5-9a1360c48327"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8145),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8145),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9246),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9246),
                             IsDeleted = false,
                             Name = "Trà sen macchiato",
                             Price = 25000.0
@@ -625,8 +628,8 @@ namespace Data.Migrations
                             Id = new Guid("5020bd91-1caf-4868-9fe5-9a1360c48328"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8149),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8149),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9251),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9251),
                             IsDeleted = false,
                             Name = "Trà đen macchiato",
                             Price = 25000.0
@@ -636,8 +639,8 @@ namespace Data.Migrations
                             Id = new Guid("5020bd91-1caf-4868-9fe5-9a1360c48329"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8151),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8151),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9254),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9255),
                             IsDeleted = false,
                             Name = "Trà dâu",
                             Price = 25000.0
@@ -647,8 +650,8 @@ namespace Data.Migrations
                             Id = new Guid("1afeafff-f9d3-4a88-8a03-950482af826f"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b9"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8153),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8154),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9261),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9262),
                             IsDeleted = false,
                             Name = "Bắp rang bơ",
                             Price = 15000.0
@@ -658,8 +661,8 @@ namespace Data.Migrations
                             Id = new Guid("2afeafff-f9d3-4a88-8a03-950482af826f"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b9"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8156),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8156),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9269),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9270),
                             IsDeleted = false,
                             Name = "Bắp rang bơ caramel",
                             Price = 20000.0
@@ -669,8 +672,8 @@ namespace Data.Migrations
                             Id = new Guid("3afeafff-f9d3-4a88-8a03-950482af826f"),
                             Available = true,
                             CategoryId = new Guid("4f16c29d-f0dd-4c41-8481-48f32d4cd5b9"),
-                            DateCreated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8158),
-                            DateUpdated = new DateTime(2022, 10, 5, 10, 29, 7, 688, DateTimeKind.Utc).AddTicks(8158),
+                            DateCreated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9273),
+                            DateUpdated = new DateTime(2022, 10, 17, 20, 37, 12, 665, DateTimeKind.Utc).AddTicks(9273),
                             IsDeleted = false,
                             Name = "Bắp rang bơ phô mai",
                             Price = 20000.0
@@ -740,6 +743,9 @@ namespace Data.Migrations
 
                     b.Property<bool>("IsRejected")
                         .HasColumnType("boolean");
+
+                    b.Property<int>("OrderNumber")
+                        .HasColumnType("integer");
 
                     b.Property<string>("RejectedReason")
                         .HasColumnType("text");

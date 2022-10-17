@@ -37,9 +37,16 @@ class OrdersLoadingState extends HomeState {
 
 class OrdersLoadedState extends HomeState {
   final lstItems;
-  final lstOrder;
+  final lstOrders;
 
-  OrdersLoadedState(this.lstItems, this.lstOrder);
+  OrdersLoadedState(this.lstItems, this.lstOrders);
+}
+
+class OrdersChangedState extends HomeState {
+  final lstItems;
+  final lstOrderDetails;
+
+  OrdersChangedState(this.lstItems, this.lstOrderDetails);
 }
 
 class OrderScrolledState extends HomeState {

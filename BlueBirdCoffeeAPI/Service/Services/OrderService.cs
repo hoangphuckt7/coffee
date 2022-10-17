@@ -204,7 +204,7 @@ namespace Service.Services
 
         public List<OrderViewModel> GetCurrentOrders()
         {
-            var ordres = _dbContext.Orders.Include(f => f.OrderDetails).Where(s => s.IsCheckout == false && s.IsCompleted == false && s.IsDeleted == false && s.IsMissing == false).OrderBy(f => f.DateCreated).ToList();
+            var ordres = _dbContext.Orders.Include(f => f.OrderDetails).Include(f => f.Table).Where(s => s.IsCheckout == false && s.IsCompleted == false && s.IsDeleted == false && s.IsMissing == false).OrderBy(f => f.DateCreated).ToList();
             return _mapper.Map<List<Order>, List<OrderViewModel>>(ordres);
         }
 

@@ -3,6 +3,7 @@
 class AppInfo {
   static const String Name = "BBC Bartender";
   static const List<String> Roles = ["ADMIN", "BARTENDER"];
+  static const NumOfPinned = 1;
 }
 
 // LS = Local Storage
