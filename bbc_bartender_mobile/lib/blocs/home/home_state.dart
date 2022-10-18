@@ -8,6 +8,14 @@ abstract class HomeState {}
 // -------------------------------------------------- Common
 class InitialState extends HomeState {}
 
+class LogoutState extends HomeState {}
+
+class UserInfoLoadedState extends HomeState {
+  final fullName;
+
+  UserInfoLoadedState(this.fullName);
+}
+
 class ErrorState extends HomeState {
   final errMsg;
 
@@ -36,17 +44,24 @@ class OrdersLoadingState extends HomeState {
 }
 
 class OrdersLoadedState extends HomeState {
-  final lstItems;
   final lstOrders;
+  final lstOrderDetails;
 
-  OrdersLoadedState(this.lstItems, this.lstOrders);
+  OrdersLoadedState(this.lstOrders, this.lstOrderDetails);
 }
 
 class OrdersChangedState extends HomeState {
-  final lstItems;
+  final orderId;
   final lstOrderDetails;
 
-  OrdersChangedState(this.lstItems, this.lstOrderDetails);
+  OrdersChangedState(this.orderId, this.lstOrderDetails);
+}
+
+class OrdersPinnedState extends HomeState {
+  final order;
+  final lstOrders;
+
+  OrdersPinnedState(this.order, this.lstOrders);
 }
 
 class OrderScrolledState extends HomeState {

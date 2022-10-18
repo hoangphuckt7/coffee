@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bbc_bartender_mobile/utils/enum.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
@@ -47,20 +49,20 @@ class Fn {
 
   static convertOrderNumber(input) {
     String inputStr = input.toString();
-    if (inputStr.length == 1) {
-      return '#00$inputStr';
-    } else if (inputStr.length == 2) {
-      return '#0$inputStr';
-    } else {
-      return '#$inputStr';
+    switch (inputStr.length) {
+      case 1:
+        return '#00$inputStr';
+      case 2:
+        return '#0$inputStr';
+      default:
+        return '#$inputStr';
     }
   }
 
-  static renderData(input) {
+  static renderData(input, errMsg) {
     if (input != null) {
       return input.toString();
-    } else {
-      return 'Không xác định';
     }
+    return errMsg;
   }
 }

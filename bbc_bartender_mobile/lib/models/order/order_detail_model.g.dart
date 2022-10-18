@@ -17,6 +17,9 @@ OrderDetailModel _$OrderDetailModelFromJson(Map<String, dynamic> json) =>
       (json['price'] as num?)?.toDouble(),
       json['description'] as String?,
       json['itemId'] as String?,
+      json['item'] == null
+          ? null
+          : ItemModel.fromJson(json['item'] as Map<String, dynamic>),
       json['orderId'] as String?,
     );
 
@@ -29,5 +32,6 @@ Map<String, dynamic> _$OrderDetailModelToJson(OrderDetailModel instance) =>
       'price': instance.price,
       'description': instance.description,
       'itemId': instance.itemId,
+      'item': instance.item,
       'orderId': instance.orderId,
     };

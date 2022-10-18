@@ -11,6 +11,11 @@ import 'package:bbc_bartender_mobile/utils/local_storage.dart';
 class ItemRepo {
   static const controllerUrl = '${Host.currentHost}/Item';
 
+  static getImg(id) {
+    log('$controllerUrl/Image/$id');
+    return '$controllerUrl/Image/$id';
+  }
+
   Future<List<ItemModel>> getAll() async {
     var lstItemModel = <ItemModel>[];
     try {

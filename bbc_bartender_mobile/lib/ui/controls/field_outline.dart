@@ -6,14 +6,14 @@ class FieldOutnine extends StatelessWidget {
   final String labelText;
   final TextEditingController controller;
   final String? errorText;
-  EFieldType? eFieldType = EFieldType.text;
+  final EFieldType? eFieldType;
   final Function(String)? onChanged;
-  FieldOutnine({
+  const FieldOutnine({
     super.key,
     required this.labelText,
     required this.controller,
     required this.errorText,
-    this.eFieldType,
+    this.eFieldType = EFieldType.text,
     this.onChanged,
   });
 

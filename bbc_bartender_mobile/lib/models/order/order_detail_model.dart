@@ -1,3 +1,4 @@
+import 'package:bbc_bartender_mobile/models/item/item_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'order_detail_model.g.dart';
@@ -11,6 +12,7 @@ class OrderDetailModel {
   final double? price;
   final String? description;
   final String? itemId;
+  ItemModel? item;
   final String? orderId;
 
   OrderDetailModel(
@@ -21,6 +23,7 @@ class OrderDetailModel {
     this.price,
     this.description,
     this.itemId,
+    this.item,
     this.orderId,
   );
 

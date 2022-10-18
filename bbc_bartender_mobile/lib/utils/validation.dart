@@ -1,13 +1,13 @@
 class Validations {
   static String? validUsername(String? username) {
-    if (username == null || username.isEmpty || username.length <= 0) {
+    if (username == null || username.isEmpty || username.isEmpty) {
       return 'Tên đăng nhập không được trống!';
     }
     return null;
   }
 
   static String? validPassword(String? password) {
-    if (password == null || password.isEmpty || password.length <= 0) {
+    if (password == null || password.isEmpty || password.isEmpty) {
       return "Mật khẩu không được trống!";
     }
     // else if (password.length < 6) {

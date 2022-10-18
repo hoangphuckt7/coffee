@@ -23,6 +23,7 @@ ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => ItemModel(
       json['category'] == null
           ? null
           : BaseModel.fromJson(json['category'] as Map<String, dynamic>),
+      (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$ItemModelToJson(ItemModel instance) => <String, dynamic>{
@@ -36,4 +37,5 @@ Map<String, dynamic> _$ItemModelToJson(ItemModel instance) => <String, dynamic>{
       'available': instance.available,
       'categoryId': instance.categoryId,
       'category': instance.category,
+      'images': instance.images,
     };

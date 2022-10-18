@@ -41,7 +41,6 @@ class UserRepo {
       await LocalStorage.removeItem(KeyLS.token);
       String? loginInfoJson = await LocalStorage.getItem(KeyLS.login_info);
       if (loginInfoJson != null && loginInfoJson.isNotEmpty) {
-        log('login info - $loginInfoJson');
         var loReqModel = LoginReqModel.fromJson(jsonDecode(loginInfoJson));
         var resp =
             await Fetch.POST('$controllerUrl/Login', loReqModel.toJson());
@@ -49,6 +48,7 @@ class UserRepo {
           var data = LoginResModel.fromJson(jsonDecode(resp.body));
 
           await LocalStorage.setItem(KeyLS.token, data.token.toString());
+
           await LocalStorage.setItem(
             KeyLS.login_resp,
             jsonEncode(LoginResModel(data.fullName, null, data.role)),
@@ -66,7 +66,7 @@ class UserRepo {
     return false;
   }
 
-  static Future logout() async {
+  Future logout() async {
     await LocalStorage.removeAll();
   }
 }

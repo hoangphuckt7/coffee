@@ -1,14 +1,17 @@
+import 'package:bbc_bartender_mobile/utils/function_common.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
 class LineInfo extends StatelessWidget {
   final String title;
-  final String content;
+  final dynamic content;
+  final String? errMsg;
   final double? fontSize;
   const LineInfo({
     super.key,
     required this.title,
     required this.content,
+    this.errMsg = 'không xác định',
     this.fontSize = 15,
   });
 
@@ -34,7 +37,7 @@ class LineInfo extends StatelessWidget {
           flex: 2,
           child: SizedBox(
             child: Text(
-              content,
+              Fn.renderData(content, errMsg),
               style: TextStyle(
                 color: MColor.primaryBlack,
                 fontSize: fontSize,

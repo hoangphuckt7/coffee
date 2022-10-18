@@ -15,6 +15,7 @@ class ItemModel {
   final bool? available;
   final String? categoryId;
   final BaseModel? category;
+  final List<String>? images;
 
   ItemModel(
     this.id,
@@ -27,6 +28,7 @@ class ItemModel {
     this.available,
     this.categoryId,
     this.category,
+    this.images,
   );
 
   factory ItemModel.fromJson(Map<String, dynamic> json) =>

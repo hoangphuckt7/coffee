@@ -5,13 +5,13 @@ import 'package:flutter/src/widgets/framework.dart';
 
 class CardCustom extends StatelessWidget {
   final double? shadow;
-  final dynamic edgeInsets;
+  final dynamic padding;
   final BorderSide? borderSide;
   final Widget child;
   const CardCustom({
     super.key,
     this.shadow = 80,
-    this.edgeInsets = const EdgeInsets.all(0),
+    this.padding = const EdgeInsets.all(0),
     this.borderSide = const BorderSide(color: MColor.white),
     required this.child,
   });
@@ -25,7 +25,7 @@ class CardCustom extends StatelessWidget {
         side: borderSide!,
       ),
       child: Padding(
-        padding: edgeInsets,
+        padding: padding,
         child: child,
       ),
     );

@@ -9,10 +9,20 @@ class InitialEvent extends HomeEvent {}
 
 class LoadDataEvent extends HomeEvent {}
 
+class LogoutEvent extends HomeEvent {}
+
 class OrderChangeEvent extends HomeEvent {
+  final orderId;
   final lstOrderDetails;
 
-  OrderChangeEvent(this.lstOrderDetails);
+  OrderChangeEvent(this.orderId, this.lstOrderDetails);
+}
+
+class OrderPinEvent extends HomeEvent {
+  final order;
+  final lstOrders;
+
+  OrderPinEvent(this.order, this.lstOrders);
 }
 
 class OrderScrollEvent extends HomeEvent {

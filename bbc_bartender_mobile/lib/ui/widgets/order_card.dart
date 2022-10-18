@@ -1,81 +1,97 @@
+import 'package:bbc_bartender_mobile/blocs/home/home_bloc.dart';
 import 'package:bbc_bartender_mobile/models/order/order_model.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/card_custom.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/line_info.dart';
 import 'package:bbc_bartender_mobile/utils/function_common.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class OrderCard extends StatelessWidget {
-  final OrderModel orderModel;
+  final OrderModel model;
   final bool isSelected;
   final bool isPinned;
+  final Function()? onClick;
+  final Function()? onPin;
   const OrderCard({
     super.key,
-    required this.orderModel,
+    required this.model,
     this.isSelected = false,
     this.isPinned = false,
+    this.onClick,
+    this.onPin,
   });
 
   @override
   Widget build(BuildContext context) {
     return CardCustom(
       shadow: 20,
-      edgeInsets: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(15),
       borderSide: BorderSide(
-        color: isSelected ? MColor.primaryGreen : MColor.white,
-        width: isSelected ? 3 : 0,
+        color: isPinned
+            ? MColor.danger
+            : isSelected
+                ? MColor.primaryGreen
+                : MColor.white,
+        width: (isPinned || isSelected) ? 3 : 0,
       ),
       child: Row(
         children: [
           Expanded(
-            child: Column(
-              children: [
-                LineInfo(
-                  title: 'Order',
-                  content: Fn.convertOrderNumber(orderModel.orderNumber),
-                ),
-                const SizedBox(height: 10),
-                LineInfo(
-                  title: 'Giờ vào',
-                  content: Fn.formatDate(
-                    orderModel.dateCreated!,
-                    DateFormat.Hm(),
+            child: InkWell(
+              onTap: onClick,
+              child: Column(
+                children: [
+                  LineInfo(
+                    title: 'Order',
+                    content: Fn.convertOrderNumber(model.orderNumber),
                   ),
-                ),
-                const SizedBox(height: 10),
-                LineInfo(
-                  title: 'Bàn',
-                  content: Fn.renderData(orderModel.table?.description),
-                ),
-                const SizedBox(height: 10),
-                LineInfo(
-                  title: 'Số món',
-                  content: '${orderModel.orderDetails.length}',
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  LineInfo(
+                    title: 'Giờ vào',
+                    content: Fn.formatDate(
+                      model.dateCreated!,
+                      DateFormat.Hm(),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  LineInfo(
+                    title: 'Bàn',
+                    content: model.table?.description,
+                  ),
+                  const SizedBox(height: 10),
+                  LineInfo(
+                    title: 'Số món',
+                    content: model.orderDetails.length,
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(width: 10),
-          Column(
-            children: [
-              Icon(
-                Icons.push_pin_outlined,
-                size: 25,
-                color: isPinned ? MColor.primaryGreen : MColor.danger,
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                child: Text(
-                  isPinned ? 'Bỏ ghim' : 'Ghim',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: isPinned ? MColor.primaryGreen : MColor.danger,
-                    fontSize: 12,
-                  ),
+          InkWell(
+            onTap: onPin,
+            child: Column(
+              children: [
+                Icon(
+                  Icons.push_pin_outlined,
+                  size: 25,
+                  color: isPinned ? MColor.primaryGreen : MColor.danger,
                 ),
-              )
-            ],
+                const SizedBox(height: 10),
+                SizedBox(
+                  child: Text(
+                    isPinned ? 'Bỏ ghim' : 'Ghim',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: isPinned ? MColor.primaryGreen : MColor.danger,
+                      fontSize: 12,
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ],
       ),

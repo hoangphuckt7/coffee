@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class FillBtn extends StatelessWidget {
   final String title;
   final void Function() onPressed;
-  FillBtn({
+  const FillBtn({
     super.key,
     required this.title,
     required this.onPressed,
