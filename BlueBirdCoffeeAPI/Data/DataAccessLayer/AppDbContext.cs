@@ -57,7 +57,21 @@ namespace Data.DataAccessLayer
                 new IdentityRole() { Id = SystemRoles.BARTENDER, Name = SystemRoles.BARTENDER, NormalizedName = SystemRoles.BARTENDER, ConcurrencyStamp = SystemRoles.BARTENDER },
                 new IdentityRole() { Id = SystemRoles.CUSTOMER, Name = SystemRoles.CUSTOMER, NormalizedName = SystemRoles.CUSTOMER, ConcurrencyStamp = SystemRoles.CUSTOMER },
                 new IdentityRole() { Id = SystemRoles.EMPLOYEE, Name = SystemRoles.EMPLOYEE, NormalizedName = SystemRoles.EMPLOYEE, ConcurrencyStamp = SystemRoles.EMPLOYEE },
-                new IdentityRole() { Id = SystemRoles.CASHER, Name = SystemRoles.CASHER, NormalizedName = SystemRoles.CASHER, ConcurrencyStamp = SystemRoles.CASHER });
+                new IdentityRole() { Id = SystemRoles.CASHIER, Name = SystemRoles.CASHIER, NormalizedName = SystemRoles.CASHIER, ConcurrencyStamp = SystemRoles.CASHIER });
+
+            modelBuilder.Entity<User>().HasData(
+                new User() { Id = "9acc7a1a-ae85-4e5a-8cb7-0b47025418ac", Fullname = "Admin", UserName = "admin", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEGVatu9u6IGD4AfolpXDzxhKcuCy0o3bKiqLlg6fYkabzGPInIrlJLxkV4aUbOa1dw==", EmailConfirmed = false, PhoneNumberConfirmed = false, TwoFactorEnabled = false },
+                new User() { Id = "9acc7a1a-ae85-4e5a-8cb7-0b47025417ac", Fullname = "Bartender", UserName = "bartender", NormalizedUserName = "BARTENDER", PasswordHash = "AQAAAAEAACcQAAAAEGVatu9u6IGD4AfolpXDzxhKcuCy0o3bKiqLlg6fYkabzGPInIrlJLxkV4aUbOa1dw==", EmailConfirmed = false, PhoneNumberConfirmed = false, TwoFactorEnabled = false },
+                new User() { Id = "9acc7a1a-ae85-4e5a-8cb7-0b47025416ac", Fullname = "Employee", UserName = "employee", NormalizedUserName = "EMPLOYEE", PasswordHash = "AQAAAAEAACcQAAAAEGVatu9u6IGD4AfolpXDzxhKcuCy0o3bKiqLlg6fYkabzGPInIrlJLxkV4aUbOa1dw==", EmailConfirmed = false, PhoneNumberConfirmed = false, TwoFactorEnabled = false },
+                new User() { Id = "9acc7a1a-ae85-4e5a-8cb7-0b47025415ac", Fullname = "Cashier", UserName = "cashier", NormalizedUserName = "CASHIER", PasswordHash = "AQAAAAEAACcQAAAAEGVatu9u6IGD4AfolpXDzxhKcuCy0o3bKiqLlg6fYkabzGPInIrlJLxkV4aUbOa1dw==", EmailConfirmed = false, PhoneNumberConfirmed = false, TwoFactorEnabled = false }
+                );
+
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>() { UserId = "9acc7a1a-ae85-4e5a-8cb7-0b47025418ac", RoleId = SystemRoles.ADMIN },
+                new IdentityUserRole<string>() { UserId = "9acc7a1a-ae85-4e5a-8cb7-0b47025417ac", RoleId = SystemRoles.BARTENDER },
+                new IdentityUserRole<string>() { UserId = "9acc7a1a-ae85-4e5a-8cb7-0b47025416ac", RoleId = SystemRoles.EMPLOYEE },
+                new IdentityUserRole<string>() { UserId = "9acc7a1a-ae85-4e5a-8cb7-0b47025415ac", RoleId = SystemRoles.CASHIER }
+                );
 
             modelBuilder.Entity<Floor>().HasData(
                 new Floor()
@@ -69,6 +83,10 @@ namespace Data.DataAccessLayer
                     Id = Guid.Parse("eb22e2ea-0305-4778-a129-f400e6a64445"),
                     Description = "Tầng 2"
                 });
+
+            modelBuilder.Entity<Table>().HasData(
+                new Table() { Id = Guid.Parse("1f3ebd56-dbf5-453f-819d-2757a152d0a5"), CurrentOrder = 0, Position = "22,823660714285715-31,412337662337663", Size = "9,988839285714286-9,983766233766234", Shape = "Rectangle", Rotation = 0, FloorId = Guid.Parse("eb22e2ea-0305-4778-a129-f400e6a64445"), Description = "101", DateCreated = DateTime.UtcNow.AddHours(7), DateUpdated = DateTime.UtcNow.AddHours(7), IsDeleted = false }
+                ); ;
             #endregion
 
             #region Menu

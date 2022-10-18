@@ -354,6 +354,9 @@ namespace BlueBirdCoffeManager.Forms
         {
             int top = 1 * Height / 100;
             checkSelecteds = new List<CheckSelected>();
+
+            tableOrderDataPn.Controls.Clear();
+
             for (int i = 0; i < tableOrders.Count; i++)
             {
                 checkSelecteds.Add(new CheckSelected() { Index = i });

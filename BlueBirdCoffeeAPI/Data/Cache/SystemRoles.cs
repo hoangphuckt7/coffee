@@ -9,7 +9,7 @@ namespace Data.Cache
     public class SystemRoles
     {
         public const string ADMIN = "ADMIN";
-        public const string CASHER = "CASHER";
+        public const string CASHIER = "CASHIER";
         public const string BARTENDER = "BARTENDER";
         public const string EMPLOYEE = "EMPLOYEE";
         public const string CUSTOMER = "CUSTOMER";

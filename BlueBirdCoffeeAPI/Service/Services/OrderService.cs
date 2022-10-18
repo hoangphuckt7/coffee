@@ -68,7 +68,7 @@ namespace Service.Services
 
                     var newOrderDetail = new OrderDetail()
                     {
-                        Description = itemDetail.Description,
+                        Description = item.Description,
                         ItemId = itemDetail.Id,
                         OrderId = order.Id,
                         Price = itemDetail.Price,
@@ -120,7 +120,7 @@ namespace Service.Services
 
             if (table != null)
             {
-                var cashers = await _userManager.GetUsersInRoleAsync(SystemRoles.CASHER);
+                var cashers = await _userManager.GetUsersInRoleAsync(SystemRoles.CASHIER);
                 foreach (var casher in cashers)
                 {
                     await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(table), casher.Id);

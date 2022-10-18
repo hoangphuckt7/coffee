@@ -540,6 +540,8 @@ namespace BlueBirdCoffeManager.Forms
 
                 if (isTakeAway.Checked) printBill.Print();
 
+                if (!isTable.Checked) Sessions.Order.CurrentOrder.TableId = null;
+
                 var data = await ApiBuilder.SendRequest("api/Order", Sessions.Order.CurrentOrder, RequestMethod.POST);
 
                 //Refresh
