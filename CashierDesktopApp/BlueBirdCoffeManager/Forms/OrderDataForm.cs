@@ -273,6 +273,11 @@ namespace BlueBirdCoffeManager.Forms
 
                         note.TextChanged += (sender, e) =>
                         {
+                            var numValue = JsonConvert.DeserializeObject<List<DetailValue>>(item.Description);
+
+                            int iceValue = numValue[curValuePos].Ice;
+                            int sgValue = numValue[curValuePos].Sugar;
+
                             var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue, Note = note.Text };
 
                             var curItem = Sessions.Order.CurrentOrder.OrderDetail.First(f => f.ItemId == item.ItemId);
