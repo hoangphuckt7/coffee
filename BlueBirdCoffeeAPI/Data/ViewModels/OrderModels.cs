@@ -26,6 +26,7 @@ namespace Data.ViewModels
         public Guid? TableId { get; set; }
         public DescriptionModel? Table { get; set; }
         public DateTime DateCreated { get; set; }
+        public DateTime DateUpdated { get; set; }
         public List<OrderDetailViewModel> OrderDetails { get; set; }
     }
 

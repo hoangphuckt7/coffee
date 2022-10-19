@@ -22,12 +22,12 @@ namespace Service.Services
         Task<Guid> CreateOrder(string employeeId, OrderCreateModel models);
         List<OrderViewModel> GetByTable(Guid tableId);
         Guid SetMissingOrder(SetMissingOrders model, string emp);
-        void SetMissingItem(SetMissingItemModel model);
         List<OrderViewModel> GetByIds(List<Guid> ids);
         List<OrderViewModel> GetCurrentOrders();
         Guid SetCompletedOrder(Guid orderId);
         Guid SetUnCompletedOrder(Guid orderId);
         List<OrderViewModel> GetUnknowLocaltionOrders();
+        List<OrderViewModel> TodayCompletedOrders(int count);
     }
     public class OrderService : IOrderService
     {
@@ -151,6 +151,17 @@ namespace Service.Services
             return _mapper.Map<List<OrderViewModel>>(orders);
         }
 
+        public List<OrderViewModel> TodayCompletedOrders(int count)
+        {
+            var orders = _dbContext.Orders
+                .Include(f => f.OrderDetails)
+                .Where(o => o.DateCreated.Date == DateTime.UtcNow.AddHours(7).Date && o.IsCompleted == true)
+                .OrderByDescending(o => o.DateUpdated)
+                .Take(count)
+                .ToList();
+            return _mapper.Map<List<OrderViewModel>>(orders);
+        }
+
         public List<OrderViewModel> GetByIds(List<Guid> ids)
         {
             var orders = _dbContext.Orders
@@ -176,32 +187,6 @@ namespace Service.Services
             return order.Id;
         }
 
-        public void SetMissingItem(SetMissingItemModel model)
-        {
-            //var orders = _dbContext.Orders.Include(o => o.OrderDetails).Where(f => model.MissingItems.Select(s => s.OrderId).Contains(f.Id)).ToList();
-
-            //foreach (var order in orders)
-            //{
-            //    var itemIds = model.MissingItems.Where(s => s.OrderId == order.Id).ToList().Select(s => s.ItemId);
-
-            //    if (order.OrderDetails != null)
-            //    {
-            //        var items = order.OrderDetails.Where(s => itemIds.Contains(s.ItemId)).ToList();
-
-            //        foreach (var item in items)
-            //        {
-            //            //item.IsMissing = true;
-            //            item.DateUpdated = DateTime.Now;
-
-            //            _dbContext.Update(item);
-            //        }
-            //    }
-            //}
-
-            //_dbContext.SaveChanges();
-            throw new Exception();
-        }
-
         public List<OrderViewModel> GetCurrentOrders()
         {
             var ordres = _dbContext.Orders.Include(f => f.OrderDetails).Include(f => f.Table).Where(s => s.IsCheckout == false && s.IsCompleted == false && s.IsDeleted == false && s.IsMissing == false).OrderBy(f => f.DateCreated).ToList();
@@ -214,7 +199,7 @@ namespace Service.Services
             if (order == null) throw new AppException("Invalid order id");
 
             order.IsCompleted = true;
-            order.DateUpdated = DateTime.Now;
+            order.DateUpdated = DateTime.UtcNow.AddHours(7);
 
             _dbContext.Update(order);
             _dbContext.SaveChanges();
@@ -228,7 +213,7 @@ namespace Service.Services
             if (order == null) throw new AppException("Invalid order id");
 
             order.IsCompleted = false;
-            order.DateUpdated = DateTime.Now;
+            order.DateUpdated = DateTime.UtcNow.AddHours(7);
 
             _dbContext.Update(order);
             _dbContext.SaveChanges();

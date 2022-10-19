@@ -49,6 +49,12 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_orderService.GetCurrentOrders());
         }
 
+        [HttpGet("TodayCompletedOrders")]
+        public IActionResult TodayCompletedOrders(int? count = 10)
+        {
+            return Ok(_orderService.TodayCompletedOrders(count!.Value));
+        }
+
         [HttpPut("Complete/{id}")]
         public IActionResult CompleteOrders(Guid id)
         {
