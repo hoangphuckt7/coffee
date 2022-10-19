@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bbc_bartender_mobile/models/item/item_model.dart';
+import 'package:bbc_bartender_mobile/models/order/detail_dct_model.dart';
 import 'package:bbc_bartender_mobile/models/order/order_detail_model.dart';
 import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/card_custom.dart';
@@ -22,6 +23,15 @@ class OrderDetailCard extends StatelessWidget {
     var img = Image.asset('assets/images/img-not-found.png');
     if (model.item?.images?.first != null) {
       img = Image.network(ItemRepo.getImg(model.item?.images?.first));
+    }
+    DetailDctModel? dctModel;
+    String? otpStr;
+    if (model.description!.isNotEmpty) {
+      dctModel = DetailDctModel.fromJson(model.description!);
+
+      if (dctModel.sugar! != 100) {
+        otpStr = 'Đường:${dctModel.sugar}';
+      }
     }
     return CardCustom(
       shadow: 20,
@@ -48,7 +58,13 @@ class OrderDetailCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 LineInfo(
                   title: 'Ghi chú',
-                  content: model.description,
+                  content: dctModel?.note,
+                  errMsg: 'Không có',
+                ),
+                const SizedBox(height: 10),
+                LineInfo(
+                  title: 'Tỉ lệ',
+                  content: dctModel,
                   errMsg: 'Không có',
                 ),
               ],

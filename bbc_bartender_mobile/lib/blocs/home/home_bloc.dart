@@ -53,12 +53,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(ItemsLoadedState(true, 'Tải Menu thành công'));
         emit(OrdersLoadingState("Đang tải Order..."));
         var lstOrder = await _orderRepo.getCurrentOrders();
-        for (var order in lstOrder) {
-          for (var detail in order.orderDetails) {
-            detail.item = lstItem.firstWhere((x) => x.id == detail.itemId);
+        if (lstOrder.isNotEmpty) {
+          for (var order in lstOrder) {
+            for (var detail in order.orderDetails) {
+              detail.item = lstItem.firstWhere((x) => x.id == detail.itemId);
+            }
           }
+          emit(OrdersLoadedState(lstOrder, lstOrder[0].orderDetails));
+        } else {
+          emit(ErrorState('Không có order'));
         }
-        emit(OrdersLoadedState(lstOrder, lstOrder[0].orderDetails));
       } else {
         emit(ItemsLoadedState(false, 'Tải Menu thất bại'));
         emit(OrdersLoadedState(
@@ -68,7 +72,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     } catch (e) {
       log(e.toString());
-      emit(ErrorState(e.toString()));
+      emit(ErrorState('Lỗi'));
     }
   }
 

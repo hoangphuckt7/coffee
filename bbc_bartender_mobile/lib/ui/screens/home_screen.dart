@@ -11,11 +11,14 @@ import 'package:bbc_bartender_mobile/repositories/order_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/user_repo.dart';
 import 'package:bbc_bartender_mobile/routes.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/card_custom.dart';
+import 'package:bbc_bartender_mobile/ui/widgets/empty.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/order_card.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/order_detail_card.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/processing.dart';
+import 'package:bbc_bartender_mobile/utils/const.dart';
 import 'package:bbc_bartender_mobile/utils/enum.dart';
 import 'package:bbc_bartender_mobile/utils/function_common.dart';
+import 'package:bbc_bartender_mobile/utils/local_storage.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -105,16 +108,18 @@ class HomeScreen extends StatelessWidget {
             height: Fn.getScreenHeight(context),
             child: CardCustom(
               padding: const EdgeInsets.all(20),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: List.generate(lstOrderDetails.length, (i) {
-                    var orderDetailModel = lstOrderDetails[i];
-                    return OrderDetailCard(
-                      model: orderDetailModel,
-                    );
-                  }),
-                ),
-              ),
+              child: lstOrderDetails.isEmpty
+                  ? const Center(child: Empty())
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: List.generate(lstOrderDetails.length, (i) {
+                          var orderDetailModel = lstOrderDetails[i];
+                          return OrderDetailCard(
+                            model: orderDetailModel,
+                          );
+                        }),
+                      ),
+                    ),
             ),
           ),
         );
@@ -160,35 +165,37 @@ class HomeScreen extends StatelessWidget {
           lstOrders = state.lstOrders;
         }
         return Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: List.generate(lstOrders.length, (i) {
-                var orderModel = lstOrders[i];
-                return OrderCard(
-                  model: orderModel,
-                  isSelected: selectedOrder == orderModel.id,
-                  isPinned: pinnedOrder == orderModel.id,
-                  onClick: () {
-                    BlocProvider.of<HomeBloc>(context).add(
-                      OrderChangeEvent(
-                        orderModel.id,
-                        orderModel.orderDetails,
-                      ),
-                    );
-                  },
-                  onPin: () {
-                    dynamic data = orderModel;
-                    if (pinnedOrder == orderModel.id) {
-                      data = null;
-                    }
-                    BlocProvider.of<HomeBloc>(context).add(
-                      OrderPinEvent(data, lstOrders),
-                    );
-                  },
-                );
-              }),
-            ),
-          ),
+          child: lstOrders.isEmpty
+              ? Center(child: Empty(msg: 'Không có order'))
+              : SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(lstOrders.length, (i) {
+                      var orderModel = lstOrders[i];
+                      return OrderCard(
+                        model: orderModel,
+                        isSelected: selectedOrder == orderModel.id,
+                        isPinned: pinnedOrder == orderModel.id,
+                        onClick: () {
+                          BlocProvider.of<HomeBloc>(context).add(
+                            OrderChangeEvent(
+                              orderModel.id,
+                              orderModel.orderDetails,
+                            ),
+                          );
+                        },
+                        onPin: () {
+                          dynamic data = orderModel;
+                          if (pinnedOrder == orderModel.id) {
+                            data = null;
+                          }
+                          BlocProvider.of<HomeBloc>(context).add(
+                            OrderPinEvent(data, lstOrders),
+                          );
+                        },
+                      );
+                    }),
+                  ),
+                ),
         );
       },
     );

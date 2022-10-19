@@ -3,4 +3,4 @@ Auto gen model: flutter pub run build_runner watch --delete-conflicting-outputs
 Build ANDROID (apk, abi): flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 Build ANDROID (apk): flutter build apk --release
 
-Build IOS (ipa): flutter build apk --release
+Build IOS (ipa): flutter build ios --release

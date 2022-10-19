@@ -1,4 +1,5 @@
 import 'package:bbc_bartender_mobile/models/item/item_model.dart';
+import 'package:bbc_bartender_mobile/models/order/detail_dct_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'order_detail_model.g.dart';
