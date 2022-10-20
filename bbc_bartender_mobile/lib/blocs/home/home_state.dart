@@ -70,3 +70,17 @@ class OrderScrolledState extends HomeState {
 
   OrderScrolledState(this.showArrowTop, this.showArrowBot);
 }
+
+class ItemCheckboxChangedState extends HomeState {
+  final check;
+
+  ItemCheckboxChangedState(this.check);
+}
+
+class OrderSubmitSuccessState extends HomeState {}
+
+class OrderSubmitFailState extends HomeState {
+  final errMsg;
+
+  OrderSubmitFailState(this.errMsg);
+}

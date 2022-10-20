@@ -1,30 +1,31 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:bbc_bartender_mobile/models/item/item_model.dart';
 import 'package:bbc_bartender_mobile/models/order/detail_dct_model.dart';
 import 'package:bbc_bartender_mobile/models/order/order_detail_model.dart';
 import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/card_custom.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/line_info.dart';
+import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
 class OrderDetailCard extends StatelessWidget {
   final OrderDetailModel model;
-
+  final List<String>? itemCheck;
+  final Function(bool?)? onItemCheckChanged;
   const OrderDetailCard({
     super.key,
     required this.model,
+    this.itemCheck,
+    this.onItemCheckChanged,
   });
   @override
   Widget build(BuildContext context) {
-    bool check = false;
-
     var img = Image.asset('assets/images/img-not-found.png');
     if (model.item?.images?.first != null) {
       img = Image.network(ItemRepo.getImg(model.item?.images?.first));
     }
-    
+
     return CardCustom(
       shadow: 20,
       padding: const EdgeInsets.all(15),
@@ -50,48 +51,55 @@ class OrderDetailCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 LineInfo(
                   title: 'Ghi chú',
-                  content: model.dctModel?.note,
+                  content: model.dctModel?.Note,
                   errMsg: 'Không có',
                 ),
-                const SizedBox(height: 10),
-                LineInfo(
-                  title: 'Tỉ lệ',
-                  content: _getSugarIceStr(model.dctModel),
-                  errMsg: 'Không có',
+                Visibility(
+                  visible: !(model.dctModel?.Sugar == 100 &&
+                      model.dctModel?.Ice == 100),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      LineInfo(
+                        title: 'Tỉ lệ',
+                        titleColor: MColor.danger,
+                        content: _getSugarIceStr(model.dctModel),
+                        contentColor: MColor.danger,
+                        isBoldContent: true,
+                        errMsg: 'Không có',
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
           Checkbox(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            value: check,
-            onChanged: (value) {
-              check = !check;
-            },
-          )
+            checkColor: Colors.white,
+            // fillColor: MaterialStateProperty.,
+            value: itemCheck?.any((x) => x == model.itemId),
+            onChanged: onItemCheckChanged,
+          ),
         ],
       ),
     );
   }
 
   String? _getSugarIceStr(DetailDctModel? model) {
-    if (model!.isNotEmpty) {
-
-      if(model.sugar! != 100 && model.sugar! != 100) {
-        return 'Đường:${model.sugar} - Đá:${model.ice}';
-      }
-      else {
-        if (model.sugar! != 100) {
-          return 'Đường:${model.sugar}';
+    if (model != null) {
+      if (model.Sugar != null && model.Ice != null) {
+        if (model.Sugar! != 100 && model.Ice! != 100) {
+          return 'Đường: ${model.Sugar} | Đá: ${model.Ice}';
+        } else {
+          if (model.Sugar! != 100) {
+            return 'Đường: ${model.Sugar}';
+          }
+          if (model.Ice! != 100) {
+            return 'Đá: ${model.Ice}';
+          }
         }
-        if (model.ice! != 100) {
-          return 'Đá:${model.ice}';
-        }
-        
       }
-
     }
-    return null
+    return null;
   }
 }

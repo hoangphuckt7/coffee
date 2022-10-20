@@ -10,6 +10,7 @@ import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/order_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/user_repo.dart';
 import 'package:bbc_bartender_mobile/routes.dart';
+import 'package:bbc_bartender_mobile/ui/controls/fill_btn.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/card_custom.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/empty.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/order_card.dart';
@@ -80,7 +81,7 @@ class HomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(15),
         child: Row(
           children: [
-            _leftSide(context),
+            _leftSide(context, true),
             const Icon(
               Icons.keyboard_arrow_left_rounded,
               color: MColor.primaryGreen,
@@ -111,28 +112,57 @@ class HomeScreen extends StatelessWidget {
               child: lstOrderDetails.isEmpty
                   ? const Center(child: Empty())
                   : Column(
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                      child: Column(
-                        children: List.generate(lstOrderDetails.length, (i) {
-                          var orderDetailModel = lstOrderDetails[i];
-                          return OrderDetailCard(
-                            model: orderDetailModel,
-                          );
-                        }),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10);
-                      child: FillBtn(
-                              title: '${isNew ? 'Hoàn thành' : 'Hoàn tác'}',
-                              onPressed: () {},
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children:
+                                  List.generate(lstOrderDetails.length, (i) {
+                                var orderDetailModel = lstOrderDetails[i];
+                                return BlocBuilder<HomeBloc, HomeState>(
+                                  builder: (context, state) {
+                                    List<String> itemCheck = <String>[];
+                                    if (state is ItemCheckboxChangedState) {
+                                      itemCheck = state.check;
+                                    }
+                                    return OrderDetailCard(
+                                      model: orderDetailModel,
+                                      itemCheck: itemCheck,
+                                      onItemCheckChanged: (value) {
+                                        if (value == true) {
+                                          itemCheck
+                                              .add(orderDetailModel.itemId!);
+                                        } else {
+                                          itemCheck = itemCheck
+                                              .where((x) =>
+                                                  x != orderDetailModel.itemId!)
+                                              .toList();
+                                        }
+                                        BlocProvider.of<HomeBloc>(context).add(
+                                          ItemCheckboxChangeEvent(itemCheck),
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              }),
                             ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15),
+                          child: FillBtn(
+                            title: isNew ? 'Hoàn thành' : 'Hoàn tác',
+                            btnBgColor: isNew ? EColor.primary : EColor.danger,
+                            onPressed: () {
+                              BlocProvider.of<HomeBloc>(context).add(
+                                OrderSubmitEvent(isNew, selectedOrder),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                      ),
-                    ],
-                  ),
             ),
           ),
         );
@@ -154,7 +184,7 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     _orderArrorUp(context),
-                    _listOrder(context),
+                    _listOrder(context, true),
                     _orderArrorDown(context),
                   ],
                 ),
@@ -179,7 +209,7 @@ class HomeScreen extends StatelessWidget {
         }
         return Expanded(
           child: lstOrders.isEmpty
-              ? Center(child: Empty(msg: 'Không có order'))
+              ? const Center(child: Empty(msg: 'Không có order'))
               : SingleChildScrollView(
                   child: Column(
                     children: List.generate(lstOrders.length, (i) {
@@ -188,7 +218,7 @@ class HomeScreen extends StatelessWidget {
                         model: orderModel,
                         isSelected: selectedOrder == orderModel.id,
                         isPinned: pinnedOrder == orderModel.id,
-                        showPinned: !isNew
+                        showPinned: !isNew,
                         onClick: () {
                           BlocProvider.of<HomeBloc>(context).add(
                             OrderChangeEvent(

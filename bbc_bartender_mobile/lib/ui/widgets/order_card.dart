@@ -65,37 +65,37 @@ class OrderCard extends StatelessWidget {
                   const SizedBox(height: 10),
                   LineInfo(
                     title: 'Số món',
-                    content: model.orderDetails.length,
+                    content: model.orderDetails!.length,
                   ),
                 ],
               ),
             ),
           ),
-          if(showPinned)
-          InkWell(
-            onTap: onPin,
-            child: Column(
-              children: [
-                const SizedBox(width: 10),
-                Icon(
-                  Icons.push_pin_outlined,
-                  size: 25,
-                  color: isPinned ? MColor.primaryGreen : MColor.danger,
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  child: Text(
-                    isPinned ? 'Bỏ ghim' : 'Ghim',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isPinned ? MColor.primaryGreen : MColor.danger,
-                      fontSize: 12,
-                    ),
+          if (showPinned)
+            InkWell(
+              onTap: onPin,
+              child: Column(
+                children: [
+                  const SizedBox(width: 10),
+                  Icon(
+                    Icons.push_pin_outlined,
+                    size: 25,
+                    color: isPinned ? MColor.primaryGreen : MColor.danger,
                   ),
-                )
-              ],
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    child: Text(
+                      isPinned ? 'Bỏ ghim' : 'Ghim',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: isPinned ? MColor.primaryGreen : MColor.danger,
+                        fontSize: 12,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

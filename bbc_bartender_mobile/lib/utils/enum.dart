@@ -10,3 +10,10 @@ enum EToast {
   danger,
   warning,
 }
+
+enum EColor {
+  success,
+  primary,
+  danger,
+  dark,
+}

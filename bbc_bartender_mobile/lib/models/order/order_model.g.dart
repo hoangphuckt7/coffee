@@ -28,8 +28,8 @@ OrderModel _$OrderModelFromJson(Map<String, dynamic> json) => OrderModel(
       json['employeeId'] as String?,
       json['userRejectedId'] as String?,
       json['orderNumber'] as int?,
-      (json['orderDetails'] as List<dynamic>)
-          .map((e) => OrderDetailModel.fromJson(e as Map<String, dynamic>))
+      (json['orderDetails'] as List<dynamic>?)
+          ?.map((e) => OrderDetailModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

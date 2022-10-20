@@ -31,3 +31,16 @@ class OrderScrollEvent extends HomeEvent {
 
   OrderScrollEvent(this.showArrowTop, this.showArrowBot);
 }
+
+class ItemCheckboxChangeEvent extends HomeEvent {
+  final check;
+
+  ItemCheckboxChangeEvent(this.check);
+}
+
+class OrderSubmitEvent extends HomeEvent {
+  final isNew;
+  final orderId;
+
+  OrderSubmitEvent(this.isNew, this.orderId);
+}
