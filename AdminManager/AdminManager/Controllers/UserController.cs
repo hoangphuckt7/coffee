@@ -38,6 +38,7 @@ namespace AdminManager.Controllers
 
         public async Task<IActionResult> Authenitcation(UserLoginModel model)
         {
+            Sessions.LOGIN_ERROR_MESSAGE = "";
             var result = await ApiBuilder.SendRequest<object>("api/User/Login", new { Phone = model.Username, PassWord = model.Password }, RequestMethod.POST, false, model.ReturnUrl!);
 
             if (result.StatusCode == HttpStatusCode.BadRequest)
@@ -55,7 +56,7 @@ namespace AdminManager.Controllers
             Sessions.TOKEN = data?.Token.ToString()!;
             Sessions.FULLNAME = data?.FullName!;
             Sessions.ROLE = data?.Role!;
-
+            
             if (string.IsNullOrEmpty(model.ReturnUrl))
             {
                 return RedirectToAction("index", "home");

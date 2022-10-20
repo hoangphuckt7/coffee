@@ -55,9 +55,16 @@ namespace BlueBirdCoffeManager.DataAccessLayer
                 throw new AppException(e.Message);
             }
 
-            if (responseMessage.StatusCode == HttpStatusCode.Unauthorized || responseMessage.StatusCode == HttpStatusCode.Forbidden)
+            if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
             {
                 Sessions.TOKEN = "";
+                Sessions.LOGIN_ERROR_MESSAGE = "Vui lòng đăng nhập lại";
+                throw new NotLoginException(returnUrl);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
+            {
+                Sessions.TOKEN = "";
+                Sessions.LOGIN_ERROR_MESSAGE = "Bạn không có quyền xử dụng tính năng này";
                 throw new NotLoginException(returnUrl);
             }
             return responseMessage;

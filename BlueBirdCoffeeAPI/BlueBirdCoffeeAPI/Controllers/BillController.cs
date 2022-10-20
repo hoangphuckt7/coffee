@@ -39,12 +39,14 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_billService.MissingBillItemWithin48Hours());
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpGet("Chart")]
         public IActionResult ChartData()
         {
             return Ok(_billService.ChartData());
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpGet("Statistics")]
         public IActionResult Statistics()
         {
