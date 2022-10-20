@@ -44,5 +44,11 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(_billService.ChartData());
         }
+
+        [HttpGet("Statistics")]
+        public IActionResult Statistics()
+        {
+            return Ok(_billService.Statistics());
+        }
     }
 }

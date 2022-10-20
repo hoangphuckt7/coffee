@@ -57,6 +57,7 @@ namespace BlueBirdCoffeManager.DataAccessLayer
 
             if (responseMessage.StatusCode == HttpStatusCode.Unauthorized || responseMessage.StatusCode == HttpStatusCode.Forbidden)
             {
+                Sessions.TOKEN = "";
                 throw new NotLoginException(returnUrl);
             }
             return responseMessage;

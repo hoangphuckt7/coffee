@@ -1,0 +1,290 @@
+﻿@using AdminManager.Models
+@using System.Globalization
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- index-0.html  Tue, 07 Jan 2020 03:35:33 GMT -->
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <link rel="icon" href="~/assets/img/logo.svg">
+    <title>The Sun Coffee</title>
+    <!-- General CSS Files -->
+    <link rel="stylesheet" href="assets/modules/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/modules/fontawesome/css/all.min.css">
+
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="assets/modules/jqvmap/dist/jqvmap.min.css">
+    <link rel="stylesheet" href="assets/modules/weather-icon/css/weather-icons.min.css">
+    <link rel="stylesheet" href="assets/modules/weather-icon/css/weather-icons-wind.min.css">
+    <link rel="stylesheet" href="assets/modules/summernote/summernote-bs4.css">
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="assets/css/style.min.css">
+    <link rel="stylesheet" href="assets/css/components.min.css">
+</head>
+
+<body class="layout-4">
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <span class="loader"><span class="loader-inner"></span></span>
+    </div>
+
+    <div id="app">
+        <div class="main-wrapper main-wrapper-1">
+            <div class="navbar-bg"></div>
+
+            <!-- Start app top navbar -->
+            <nav class="navbar navbar-expand-lg main-navbar">
+                <form class="form-inline mr-auto">
+                    <ul class="navbar-nav mr-3">
+                    </ul>
+
+                </form>
+                <ul class="navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                            <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
+                            <div class="d-sm-none d-lg-inline-block">Hi, @AdminManager.Utils.Sessions.FULLNAME</div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="" class="dropdown-item has-icon"> Profile</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="/user/logout" class="dropdown-item has-icon text-danger">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <!-- Start main left sidebar menu -->
+            <div class="main-sidebar sidebar-style-2">
+                <aside id="sidebar-wrapper">
+                    <div class="sidebar-brand">
+                        <a href="index-2.html">The Sun Coffee</a>
+                    </div>
+                    <div class="sidebar-brand sidebar-brand-sm">
+                        <a href="index-2.html">CP</a>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li class="menu-header">Trang chủ</li>
+                        <li class="dropdown active">
+                            <a href="" class="nav-link"><span>Dashboard</span></a>
+                        </li>
+                        <li class="menu-header">Dữ liệu thống kê</li>
+                        <li><a class="nav-link" href="/product/add"><span>Thêm danh mục</span></a></li>
+                        <li><a class="nav-link" href="/product/add"><span>Danh sách</span></a></li>
+
+                        <li class="menu-header">Menu</li>
+                        <li><a class="nav-link" href="/product/add"><span>Thêm sản phẩm</span></a></li>
+                        <li><a class="nav-link" href="/product/add"><span>Danh sách</span></a></li>
+                        @*                        <li class="dropdown">
+                        <a href="#" class="nav-link has-dropdown"><i class="fas fa-th"></i> <span>Bootstrap</span></a>
+                        <ul class="dropdown-menu">
+                        <li><a class="nav-link" href="bootstrap-alert.html">Alert</a></li>
+                        <li><a class="nav-link" href="bootstrap-badge.html">Badge</a></li>
+                        </ul>
+                        </li>*@
+                        <li class="menu-header">Danh mục</li>
+                        <li><a class="nav-link" href="/product/add"><span>Thêm danh mục</span></a></li>
+                        <li><a class="nav-link" href="/product/add"><span>Danh sách</span></a></li>
+                        <li class="menu-header">Nhân viên</li>
+                        <li><a class="nav-link" href="/product/add"><span>Thêm nhân viên</span></a></li>
+                        <li><a class="nav-link" href="/product/add"><span>Danh sách</span></a></li>
+                    </ul>
+                    <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
+                        <a href="" class="btn btn-primary btn-lg btn-block btn-icon-split">Dashboard</a>
+                    </div>
+                </aside>
+            </div>
+            @RenderBody();
+
+            <!-- Start app Footer part -->
+            <footer class="main-footer">
+                <div class="footer-left">
+                </div>
+                <div class="footer-right">
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- General JS Scripts -->
+    <script src="assets/bundles/lib.vendor.bundle.js"></script>
+    <script src="js/CodiePie.js"></script>
+
+    <!-- JS Libraies -->
+    <script src="assets/modules/apexcharts/apexcharts.min.js"></script>
+    <script src="assets/modules/jqvmap/dist/jquery.vmap.min.js"></script>
+    <script src="assets/modules/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="assets/modules/summernote/summernote-bs4.js"></script>
+    <script src="assets/modules/chocolat/dist/js/jquery.chocolat.min.js"></script>
+
+    <!-- Page Specific JS File -->
+    <script src="js/page/index-0.js"></script>
+
+    <!-- Template JS File -->
+    <script src="js/scripts.js"></script>
+    <script src="js/custom.js"></script>
+</body>
+
+<!-- index-0.html  Tue, 07 Jan 2020 03:35:42 GMT -->
+</html>
+<script>
+    // Area Datetime
+    @{
+        TimeSpan t = DateTime.Now - new DateTime(1970, 1, 1);
+        double secondsSinceEpoch = (double)t.TotalMilliseconds;
+    }
+
+        window.onload = function() {
+            document.getElementById('one_month').click();
+        }
+    $(document).ready(function () {
+        var options = {
+            annotations: {
+                yaxis: [{
+                    y: 30,
+                    borderColor: '#5a5278',
+                    label: {
+                        show: true,
+                        text: 'Support',
+                        style: {
+                            color: "#fff",
+                            background: '#5a5278'
+                        }
+                    }
+                }],
+                xaxis: [{
+                    x: @secondsSinceEpoch,
+                    borderColor: '#5a5278',
+                    yAxisIndex: 0,
+                    label: {
+                        show: true,
+                        text: 'Rally',
+                        style: {
+                            color: "#fff",
+                            background: '#5a5278'
+                        }
+                    }
+                }]
+            },
+            chart: {
+                type: 'area',
+                height: 288,
+                toolbar: {
+                    show: false,
+                },
+            },
+            colors: ['#5a5278'],
+            dataLabels: {
+                enabled: false
+            },
+
+            series: [{
+                data: @ViewBag.SeriesData
+                                                    },
+
+            ],
+            markers: {
+                size: 0,
+                style: 'hollow',
+            },
+            xaxis: {
+                type: 'datetime',
+                min: @secondsSinceEpoch,
+                tickAmount: 6,
+                show: false,
+            },
+            tooltip: {
+                x: {
+                    format: 'dd-MM-yyyy'
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.9,
+                    stops: [0, 100]
+                }
+            },
+            stroke: {
+                show: true,
+                curve: 'smooth',
+                width: 2,
+            },
+            grid: {
+                yaxis: {
+                    lines: {
+                        show: false,
+                    }
+                },
+            },
+        }
+
+        var chart = new ApexCharts(
+            document.querySelector("#apex-timeline-chart"),
+            options
+        );
+
+        chart.render();
+
+        var resetCssClasses = function (activeEl) {
+            var els = document.querySelectorAll("button");
+            Array.prototype.forEach.call(els, function (el) {
+                el.classList.remove('active');
+            });
+
+            activeEl.target.classList.add('active')
+        }
+
+        document.querySelector("#one_month").addEventListener('click', function (e) {
+            resetCssClasses(e)
+            chart.updateOptions({
+                xaxis: {
+                    min: undefined,
+                    max: undefined,
+                }
+            })
+        })
+        document.querySelector("#six_months").addEventListener('click', function (e) {
+            resetCssClasses(e)
+            chart.updateOptions({
+                xaxis: {
+                    min: undefined,
+                    max: undefined,
+                }
+            })
+        })
+        document.querySelector("#one_year").addEventListener('click', function (e) {
+            resetCssClasses(e)
+            chart.updateOptions({
+                xaxis: {
+                    min: undefined,
+                    max: undefined,
+                }
+            })
+        })
+        document.querySelector("#ytd").addEventListener('click', function (e) {
+            resetCssClasses(e)
+            chart.updateOptions({
+                xaxis: {
+                    min: undefined,
+                    max: undefined,
+                }
+            })
+        })
+        document.querySelector("#all").addEventListener('click', function (e) {
+            resetCssClasses(e)
+            chart.updateOptions({
+                xaxis: {
+                    min: undefined,
+                    max: undefined,
+                }
+            })
+        })
+        document.querySelector("#ytd").addEventListener('click', function () {
+
+        })
+    });
+</script>

@@ -16,7 +16,8 @@ namespace Service.Services
         Guid Checkout(CheckoutModel model);
         List<BillViewModel> History(int count);
         List<BillMissingItemViewModel> MissingBillItemWithin48Hours();
-        public List<ChartViewModel> ChartData();
+        List<ChartViewModel> ChartData();
+        StatisticsModels Statistics();
     }
 
     public class BillService : IBillService
@@ -29,6 +30,54 @@ namespace Service.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
+
+        public StatisticsModels Statistics()
+        {
+            var items = _dbContext.Items.ToList();
+
+            var thisMonth = GetStatisticsForMonth(DateTime.UtcNow.AddHours(7), items);
+
+            var lastMonth = GetStatisticsForMonth(DateTime.UtcNow.AddHours(7).AddMonths(-1), items);
+
+            return new StatisticsModels()
+            {
+                Income = thisMonth.Income,
+                BestSellerCount = thisMonth.BestSellerCount,
+                BestSellerItemName = thisMonth.BestSellerItemName,
+
+                BestSellerLastMonthCount = lastMonth.BestSellerCount,
+                BestSellerLastMonthItemName = lastMonth.BestSellerItemName,
+                IncomeLastMonth = lastMonth.Income
+            };
+        }
+
+        public StatisticsModels GetStatisticsForMonth(DateTime monthOfYear, List<Item>? items)
+        {
+            var data = _dbContext.OrderDetails.Where(f => f.DateUpdated.Year == monthOfYear.Year
+                && f.DateUpdated.Month == monthOfYear.Month)
+               .ToList();
+
+            List<BaseIntModel> itemSells = new();
+
+            double incomeThisMonth = 0;
+            foreach (var item in items)
+            {
+                var currentItem = data.Where(f => f.ItemId == item.Id).ToList();
+
+                itemSells.Add(new BaseIntModel() { Id = item.Id, Data = currentItem.Sum(f => f.FinalQuantity) });
+                incomeThisMonth += currentItem.Sum(f => f.FinalQuantity * f.Price);
+            }
+
+            var bestSellerThisMonth = itemSells.OrderByDescending(f => f.Data).First();
+
+            return new StatisticsModels()
+            {
+                Income = incomeThisMonth,
+                BestSellerCount = bestSellerThisMonth.Data,
+                BestSellerItemName = items.First(f => f.Id == bestSellerThisMonth!.Id).Name!
+            };
+        }
+
         public int GetCurrentBillNumber()
         {
             var lastestBill = _dbContext.Bills.OrderByDescending(s => s.DateCreated).FirstOrDefault();

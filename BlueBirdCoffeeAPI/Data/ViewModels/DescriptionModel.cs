@@ -18,4 +18,10 @@ namespace Data.ViewModels
         public Guid Id { get; set; }
         public string? Description { get; set; }
     }
+
+    public class BaseIntModel
+    {
+        public Guid Id { get; set; }
+        public int Data { get; set; }
+    }
 }

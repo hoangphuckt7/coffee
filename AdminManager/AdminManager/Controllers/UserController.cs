@@ -4,6 +4,7 @@ using BlueBirdCoffeManager.DataAccessLayer;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Reflection;
 using System.Text;
 
 namespace AdminManager.Controllers
@@ -12,9 +13,27 @@ namespace AdminManager.Controllers
     {
         public IActionResult Login(string mes, string returnUrl)
         {
+            if (!string.IsNullOrEmpty(Sessions.TOKEN))
+            {
+                if (string.IsNullOrEmpty(returnUrl))
+                {
+                    return RedirectToAction("index", "home");
+                }
+                return Redirect(returnUrl);
+            }
+
             ViewBag.Mes = mes;
             ViewBag.ReturnUrl = returnUrl;
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            Sessions.TOKEN = "";
+            Sessions.FULLNAME = "";
+            Sessions.ROLE = "";
+            return RedirectToAction("Login", "User");
         }
 
         public async Task<IActionResult> Authenitcation(UserLoginModel model)

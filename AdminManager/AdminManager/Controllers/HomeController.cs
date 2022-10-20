@@ -29,6 +29,13 @@ namespace AdminManager.Controllers
                 seriesData += "]";
                 ViewBag.SeriesData = seriesData;
             }
+
+            var statisticsRaw = await ApiBuilder.SendRequest<object>("api/Bill/Statistics", null, RequestMethod.GET, true, Request.GetDisplayUrl());
+            if (request.IsSuccessStatusCode)
+            {
+                var data = await ApiBuilder.ParseToData<StatisticsModels>(statisticsRaw);
+                ViewBag.Statistics = data;
+            }
             return View();
         }
 
