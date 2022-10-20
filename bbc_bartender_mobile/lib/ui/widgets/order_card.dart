@@ -12,6 +12,7 @@ class OrderCard extends StatelessWidget {
   final OrderModel model;
   final bool isSelected;
   final bool isPinned;
+  final bool showPinned;
   final Function()? onClick;
   final Function()? onPin;
   const OrderCard({
@@ -19,6 +20,7 @@ class OrderCard extends StatelessWidget {
     required this.model,
     this.isSelected = false,
     this.isPinned = false,
+    this.showPinned = true,
     this.onClick,
     this.onPin,
   });
@@ -69,11 +71,12 @@ class OrderCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          if(showPinned)
           InkWell(
             onTap: onPin,
             child: Column(
               children: [
+                const SizedBox(width: 10),
                 Icon(
                   Icons.push_pin_outlined,
                   size: 25,

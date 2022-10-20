@@ -93,7 +93,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _leftSide(BuildContext context) {
+  Widget _leftSide(BuildContext context, bool isNew) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is OrdersLoadedState) {
@@ -110,7 +110,10 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: lstOrderDetails.isEmpty
                   ? const Center(child: Empty())
-                  : SingleChildScrollView(
+                  : Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
                       child: Column(
                         children: List.generate(lstOrderDetails.length, (i) {
                           var orderDetailModel = lstOrderDetails[i];
@@ -120,6 +123,16 @@ class HomeScreen extends StatelessWidget {
                         }),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(10);
+                      child: FillBtn(
+                              title: '${isNew ? 'Hoàn thành' : 'Hoàn tác'}',
+                              onPressed: () {},
+                            ),
+                    ),
+                      ),
+                    ],
+                  ),
             ),
           ),
         );
@@ -153,7 +166,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _listOrder(BuildContext context) {
+  Widget _listOrder(BuildContext context, bool isNew) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is OrdersLoadedState) {
@@ -175,6 +188,7 @@ class HomeScreen extends StatelessWidget {
                         model: orderModel,
                         isSelected: selectedOrder == orderModel.id,
                         isPinned: pinnedOrder == orderModel.id,
+                        showPinned: !isNew
                         onClick: () {
                           BlocProvider.of<HomeBloc>(context).add(
                             OrderChangeEvent(

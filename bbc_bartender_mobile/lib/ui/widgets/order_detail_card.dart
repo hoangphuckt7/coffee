@@ -24,15 +24,7 @@ class OrderDetailCard extends StatelessWidget {
     if (model.item?.images?.first != null) {
       img = Image.network(ItemRepo.getImg(model.item?.images?.first));
     }
-    DetailDctModel? dctModel;
-    String? otpStr;
-    if (model.description!.isNotEmpty) {
-      dctModel = DetailDctModel.fromJson(model.description!);
-
-      if (dctModel.sugar! != 100) {
-        otpStr = 'Đường:${dctModel.sugar}';
-      }
-    }
+    
     return CardCustom(
       shadow: 20,
       padding: const EdgeInsets.all(15),
@@ -58,13 +50,13 @@ class OrderDetailCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 LineInfo(
                   title: 'Ghi chú',
-                  content: dctModel?.note,
+                  content: model.dctModel?.note,
                   errMsg: 'Không có',
                 ),
                 const SizedBox(height: 10),
                 LineInfo(
                   title: 'Tỉ lệ',
-                  content: dctModel,
+                  content: _getSugarIceStr(model.dctModel),
                   errMsg: 'Không có',
                 ),
               ],
@@ -81,5 +73,25 @@ class OrderDetailCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String? _getSugarIceStr(DetailDctModel? model) {
+    if (model!.isNotEmpty) {
+
+      if(model.sugar! != 100 && model.sugar! != 100) {
+        return 'Đường:${model.sugar} - Đá:${model.ice}';
+      }
+      else {
+        if (model.sugar! != 100) {
+          return 'Đường:${model.sugar}';
+        }
+        if (model.ice! != 100) {
+          return 'Đá:${model.ice}';
+        }
+        
+      }
+
+    }
+    return null
   }
 }

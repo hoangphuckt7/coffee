@@ -12,6 +12,7 @@ class OrderDetailModel {
   final String? missingReason;
   final double? price;
   final String? description;
+  DetailDctModel? dctModel;
   final String? itemId;
   ItemModel? item;
   final String? orderId;

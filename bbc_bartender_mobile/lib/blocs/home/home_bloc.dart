@@ -54,10 +54,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(OrdersLoadingState("Đang tải Order..."));
         var lstOrder = await _orderRepo.getCurrentOrders();
         if (lstOrder.isNotEmpty) {
+          var lstOD = <OrderModel>[];
+
           for (var order in lstOrder) {
             for (var detail in order.orderDetails) {
               detail.item = lstItem.firstWhere((x) => x.id == detail.itemId);
+
+              if(detail.description!.isNotEmpty) {
+
+                var lstDct = List<DetailDctModel>.from(
+                  jsonDecode(detail.description).map((model) => DetailDctModel.fromJson(model)),
+                );
+                for(var dct in lstDct){
+                    detail.dctModel = dct;
+                    lstOD.add(detail);
+                }
+              }
+              else {
+                  lstOD.add(detail);
+              }
             }
+            order.orderDetails = lstOD;
           }
           emit(OrdersLoadedState(lstOrder, lstOrder[0].orderDetails));
         } else {
