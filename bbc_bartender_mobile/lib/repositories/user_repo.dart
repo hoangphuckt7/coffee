@@ -10,7 +10,7 @@ import 'package:bbc_bartender_mobile/utils/const.dart';
 import 'package:bbc_bartender_mobile/utils/local_storage.dart';
 
 class UserRepo {
-  static const controllerUrl = '${Host.currentHost}/User';
+  static const controllerUrl = '${Host.currentHostApi}/User';
 
   Future<dynamic> login(LoginReqModel model) async {
     var resp = await Fetch.POST('$controllerUrl/Login', model.toJson());
@@ -21,7 +21,7 @@ class UserRepo {
         await LocalStorage.setItem(KeyLS.token, data.token.toString());
         await LocalStorage.setItem(KeyLS.login_info, jsonEncode(model));
         await LocalStorage.setItem(
-          KeyLS.login_resp,
+          KeyLS.user_json,
           jsonEncode(LoginResModel(data.fullName, null, data.role)),
         );
 
@@ -50,7 +50,7 @@ class UserRepo {
           await LocalStorage.setItem(KeyLS.token, data.token.toString());
 
           await LocalStorage.setItem(
-            KeyLS.login_resp,
+            KeyLS.user_json,
             jsonEncode(LoginResModel(data.fullName, null, data.role)),
           );
 

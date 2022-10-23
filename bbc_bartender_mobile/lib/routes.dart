@@ -2,8 +2,6 @@
 
 import 'package:bbc_bartender_mobile/blocs/login/login_bloc.dart';
 import 'package:bbc_bartender_mobile/blocs/test/test_bloc.dart';
-import 'package:bbc_bartender_mobile/repositories/category_repo.dart';
-import 'package:bbc_bartender_mobile/repositories/floor_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/order_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/user_repo.dart';
@@ -59,25 +57,9 @@ class Routes {
                 create: (context) => OrderRepo(),
               ),
             ],
-            child: HomeScreen(),
+            child: const HomeScreen(),
           ),
         );
-
-      // case RouteName.home:
-      //   return MaterialPageRoute(
-      //     builder: (context) => MultiRepositoryProvider(
-      //       providers: [
-      //         RepositoryProvider<CategoryRepo>(
-      //           create: (context) => CategoryRepo(),
-      //         ),
-      //         RepositoryProvider<FloorRepo>(
-      //           create: (context) => FloorRepo(),
-      //         ),
-      //       ],
-      //       child: HomeScreen(),
-      //     ),
-      //   );
-
       default:
         return null;
     }

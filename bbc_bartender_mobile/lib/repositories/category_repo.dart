@@ -6,7 +6,7 @@ import 'package:bbc_bartender_mobile/api/status_code.dart';
 import 'package:bbc_bartender_mobile/models/common/base_model.dart';
 
 class CategoryRepo {
-  static const controllerUrl = '${Host.currentHost}/Category';
+  static const controllerUrl = '${Host.currentHostApi}/Category';
 
   Future<List<BaseModel>> getAll() async {
     var lstCateModel = <BaseModel>[];

@@ -3,36 +3,39 @@
 import 'dart:developer';
 
 import 'package:bbc_bartender_mobile/blocs/home/home_bloc.dart';
-import 'package:bbc_bartender_mobile/models/item/item_model.dart';
 import 'package:bbc_bartender_mobile/models/order/order_detail_model.dart';
 import 'package:bbc_bartender_mobile/models/order/order_model.dart';
 import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
 import 'package:bbc_bartender_mobile/repositories/order_repo.dart';
-import 'package:bbc_bartender_mobile/repositories/user_repo.dart';
 import 'package:bbc_bartender_mobile/routes.dart';
+import 'package:bbc_bartender_mobile/ui/controls/fill_btn.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/card_custom.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/empty.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/order_card.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/order_detail_card.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/processing.dart';
-import 'package:bbc_bartender_mobile/utils/const.dart';
 import 'package:bbc_bartender_mobile/utils/enum.dart';
 import 'package:bbc_bartender_mobile/utils/function_common.dart';
-import 'package:bbc_bartender_mobile/utils/local_storage.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
-  bool showArrowTop = false;
-  bool showArrowBot = false;
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  bool isLoading = false;
+  String? fullName = '';
   String selectedOrder = '';
+  String selectedOrderDone = '';
   String? pinnedOrder = '';
   List<OrderModel> lstOrders = <OrderModel>[];
+  List<OrderModel> lstOrdersDone = <OrderModel>[];
   List<OrderDetailModel> lstOrderDetails = <OrderDetailModel>[];
-  String? fullname;
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +45,13 @@ class HomeScreen extends StatelessWidget {
         create: (context) => HomeBloc(
           RepositoryProvider.of<ItemRepo>(context),
           RepositoryProvider.of<OrderRepo>(context),
-        )..add(LoadDataEvent()),
+        )
+          ..add(LoadDataEvent())
+          ..add(ListenRecieveNewOrderEvent()),
         child: Stack(
           children: [
-            _processState(context),
             _main(context),
+            _processState(context),
           ],
         ),
       ),
@@ -56,17 +61,20 @@ class HomeScreen extends StatelessWidget {
   Widget _processState(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        bool isLoading = false;
         String loadingMsg = "";
         if (state is ErrorState) {
           Fn.showToast(EToast.danger, state.errMsg.toString());
-        } else if (state is ItemsLoadingState) {
-          loadingMsg = state.loadingMsg.toString();
+        } else if (state is UpdateLoadingState) {
           isLoading = true;
+          loadingMsg = state.labelLoading.toString();
         } else if (state is ItemsLoadedState) {
           EToast eToast = EToast.success;
           if (!state.isSuccess) eToast = EToast.danger;
           Fn.showToast(eToast, state.msg.toString());
+        } else if (state is OrdersLoadedState ||
+            state is OrderSubmitSuccessState ||
+            state is OrderSubmitFailState) {
+          isLoading = false;
         }
         return Processing(msg: loadingMsg, show: isLoading);
       },
@@ -94,6 +102,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _leftSide(BuildContext context) {
+    bool isNew = true;
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is OrdersLoadedState) {
@@ -101,6 +110,19 @@ class HomeScreen extends StatelessWidget {
         } else if (state is OrdersChangedState) {
           lstOrderDetails = state.lstOrderDetails;
           selectedOrder = state.orderId;
+        } else if (state is OrdersDoneChangedState) {
+          lstOrderDetails = state.lstOrderDetails;
+          selectedOrderDone = state.orderId;
+        } else if (state is OrderTabChangedState) {
+          isNew = state.isNew;
+          lstOrderDetails = state.lstCurrentOrderDetail;
+        } else if (state is OrderSubmitSuccessState) {
+          lstOrderDetails = state.lstDetails;
+          pinnedOrder = state.pinnedOrder;
+        } else if (state is RecieveNewOrderState) {
+          if (selectedOrder.isEmpty) {
+            lstOrderDetails = state.lstDetail;
+          }
         }
         return Expanded(
           flex: 5,
@@ -110,15 +132,67 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: lstOrderDetails.isEmpty
                   ? const Center(child: Empty())
-                  : SingleChildScrollView(
-                      child: Column(
-                        children: List.generate(lstOrderDetails.length, (i) {
-                          var orderDetailModel = lstOrderDetails[i];
-                          return OrderDetailCard(
-                            model: orderDetailModel,
-                          );
-                        }),
-                      ),
+                  : Column(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children:
+                                  List.generate(lstOrderDetails.length, (i) {
+                                var orderDetailModel = lstOrderDetails[i];
+                                return BlocBuilder<HomeBloc, HomeState>(
+                                  builder: (context, state) {
+                                    List<int> itemCheck = <int>[];
+                                    if (state is ItemCheckboxChangedState) {
+                                      itemCheck = state.check;
+                                    }
+                                    return OrderDetailCard(
+                                      model: orderDetailModel,
+                                      itemCheck: itemCheck,
+                                      showCheckItem: isNew,
+                                      onItemCheckChanged: (value) {
+                                        if (value == true) {
+                                          itemCheck
+                                              .add(orderDetailModel.uniqueKey!);
+                                        } else {
+                                          itemCheck = itemCheck
+                                              .where((x) =>
+                                                  x !=
+                                                  orderDetailModel.uniqueKey!)
+                                              .toList();
+                                        }
+                                        BlocProvider.of<HomeBloc>(context).add(
+                                          ItemCheckboxChangeEvent(itemCheck),
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              }),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15),
+                          child: FillBtn(
+                            title: isNew ? 'Hoàn thành' : 'Hoàn tác',
+                            btnBgColor: isNew ? EColor.primary : EColor.danger,
+                            onPressed: () {
+                              BlocProvider.of<HomeBloc>(context).add(
+                                OrderSubmitEvent(
+                                  isNew,
+                                  selectedOrder,
+                                  lstOrders,
+                                  selectedOrderDone,
+                                  lstOrdersDone,
+                                  lstOrderDetails,
+                                  pinnedOrder,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
             ),
           ),
@@ -128,6 +202,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _rightSide(BuildContext context) {
+    TabController tabController = TabController(length: 2, vsync: this);
     return Expanded(
       flex: 3,
       child: SizedBox(
@@ -137,12 +212,25 @@ class HomeScreen extends StatelessWidget {
             _userInfo(context),
             Expanded(
               child: CardCustom(
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 15,
+                ),
                 child: Column(
                   children: [
-                    _orderArrorUp(context),
-                    _listOrder(context),
-                    _orderArrorDown(context),
+                    _tabOrder(context, tabController),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: TabBarView(
+                        controller: tabController,
+                        children: [
+                          // _orderArrorUp(context),
+                          Column(children: [_listOrder(context, true)]),
+                          Column(children: [_listOrder(context, false)]),
+                          // _orderArrorDown(context),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -153,35 +241,114 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _listOrder(BuildContext context) {
+  Widget _tabOrder(BuildContext context, TabController tabController) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is OrdersLoadedState) {
-          lstOrders = state.lstOrders;
-          selectedOrder = lstOrders[0].id.toString();
+          tabController.index = 0;
+          fullName = state.fullName;
         }
-        if (state is OrdersPinnedState) {
+        tabController.addListener(() {
+          switch (tabController.index) {
+            case 0:
+              var lstDetail = <OrderDetailModel>[];
+              if (lstOrders.isNotEmpty && selectedOrder.isNotEmpty) {
+                lstDetail = lstOrders
+                    .firstWhere((x) => x.id == selectedOrder)
+                    .orderDetails!;
+              }
+              BlocProvider.of<HomeBloc>(context).add(
+                OrderTabChangeEvent(true, lstOrders, lstDetail),
+              );
+              break;
+            case 1:
+              var lstDetail = <OrderDetailModel>[];
+              if (lstOrdersDone.isNotEmpty && selectedOrderDone.isNotEmpty) {
+                lstDetail = lstOrdersDone
+                    .firstWhere((x) => x.id == selectedOrderDone)
+                    .orderDetails!;
+              }
+              BlocProvider.of<HomeBloc>(context).add(
+                OrderTabChangeEvent(false, lstOrdersDone, lstDetail),
+              );
+              break;
+          }
+        });
+        return TabBar(
+          unselectedLabelColor: MColor.primaryBlack,
+          labelColor: MColor.primaryGreen,
+          tabs: const [
+            Tab(text: 'Hiện tại'),
+            Tab(text: 'Hoàn thành'),
+          ],
+          controller: tabController,
+          indicatorSize: TabBarIndicatorSize.tab,
+          // onTap: ((value) {}),
+        );
+      },
+    );
+  }
+
+  Widget _listOrder(BuildContext context, bool isNew) {
+    List<OrderModel> currentLstOrder = <OrderModel>[];
+    String currentId = '';
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        if (state is OrdersLoadedState) {
+          selectedOrder = state.selectedOrder;
+          lstOrders = state.lstOrders;
+          lstOrdersDone = state.lstOrdersDone;
+          selectedOrderDone = state.selectedOrderDone;
+        } else if (state is OrdersPinnedState) {
           pinnedOrder = state.order?.id;
           lstOrders = state.lstOrders;
+        } else if (state is OrderSubmitSuccessState) {
+          selectedOrder = state.selectedOrder;
+          lstOrders = state.lstOrders;
+          selectedOrderDone = state.selectedOrderDone;
+          lstOrdersDone = state.lstOrdersDone;
+        } else if (state is RecieveNewOrderState) {
+          lstOrders.addAll(state.lstOrder);
+          if (selectedOrder.isEmpty) {
+            selectedOrder = lstOrders[0].id!;
+            lstOrderDetails = lstOrders[0].orderDetails!;
+          }
+        }
+        if (isNew) {
+          currentLstOrder = lstOrders;
+          currentId = selectedOrder;
+        } else {
+          currentLstOrder = lstOrdersDone;
+          currentId = selectedOrderDone;
         }
         return Expanded(
-          child: lstOrders.isEmpty
-              ? Center(child: Empty(msg: 'Không có order'))
+          child: currentLstOrder.isEmpty
+              ? const Center(child: Empty(msg: 'Không có order'))
               : SingleChildScrollView(
                   child: Column(
-                    children: List.generate(lstOrders.length, (i) {
-                      var orderModel = lstOrders[i];
+                    children: List.generate(currentLstOrder.length, (i) {
+                      var orderModel = currentLstOrder[i];
                       return OrderCard(
                         model: orderModel,
-                        isSelected: selectedOrder == orderModel.id,
+                        isSelected: currentId == orderModel.id,
                         isPinned: pinnedOrder == orderModel.id,
+                        showPinned: isNew,
                         onClick: () {
-                          BlocProvider.of<HomeBloc>(context).add(
-                            OrderChangeEvent(
-                              orderModel.id,
-                              orderModel.orderDetails,
-                            ),
-                          );
+                          if (isNew) {
+                            BlocProvider.of<HomeBloc>(context).add(
+                              OrderChangeEvent(
+                                orderModel.id,
+                                orderModel.orderDetails,
+                              ),
+                            );
+                          } else {
+                            BlocProvider.of<HomeBloc>(context).add(
+                              OrderDoneChangeEvent(
+                                orderModel.id,
+                                orderModel.orderDetails,
+                              ),
+                            );
+                          }
                         },
                         onPin: () {
                           dynamic data = orderModel;
@@ -189,7 +356,7 @@ class HomeScreen extends StatelessWidget {
                             data = null;
                           }
                           BlocProvider.of<HomeBloc>(context).add(
-                            OrderPinEvent(data, lstOrders),
+                            OrderPinEvent(data, currentLstOrder),
                           );
                         },
                       );
@@ -201,74 +368,88 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _orderArrorUp(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        return Visibility(
-          visible: showArrowTop,
-          child: const Icon(
-            Icons.keyboard_arrow_up_rounded,
-            size: 50,
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _orderArrorDown(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        return Visibility(
-          visible: showArrowBot,
-          child: const Icon(
-            Icons.keyboard_arrow_down_rounded,
-            size: 50,
-          ),
-        );
-      },
-    );
-  }
-
   Widget _userInfo(BuildContext context) {
-    return BlocConsumer<HomeBloc, HomeState>(
+    double? fontSize1 = 15;
+    double? fontSize2 = 12;
+    return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is LogoutState) {
           Navigator.pushNamed(context, RouteName.login);
         }
       },
-      builder: (context, state) {
-        if (state is UserInfoLoadedState) {
-          fullname = state.fullName;
-        }
-        return CardCustom(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  child: Text(
-                    Fn.renderData(fullname, 'Không xác định'),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+      child: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          if (state is UserInfoLoadedState) {
+            fullName = state.fullName;
+          }
+          return CardCustom(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    child: Text(
+                      Fn.renderData(fullName, ''),
+                      style: TextStyle(
+                        fontSize: fontSize1,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              InkWell(
-                onTap: () {
-                  BlocProvider.of<HomeBloc>(context).add(LogoutEvent());
-                },
-                child: const Icon(
-                  Icons.logout_outlined,
-                  color: MColor.danger,
-                  size: 30,
+                const SizedBox(width: 5),
+                InkWell(
+                  onTap: () {
+                    BlocProvider.of<HomeBloc>(context).add(LoadDataEvent());
+                  },
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.refresh_outlined,
+                        color: MColor.primaryGreen,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        child: Text(
+                          'Tải lại',
+                          style: TextStyle(
+                            fontSize: fontSize2,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+                const SizedBox(width: 10),
+                InkWell(
+                  onTap: () {
+                    BlocProvider.of<HomeBloc>(context).add(LogoutEvent());
+                  },
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.logout_outlined,
+                        color: MColor.danger,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        child: Text(
+                          'Đăng xuất',
+                          style: TextStyle(
+                            fontSize: fontSize2,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

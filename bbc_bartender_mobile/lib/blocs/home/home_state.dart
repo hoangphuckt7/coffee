@@ -22,13 +22,14 @@ class ErrorState extends HomeState {
   ErrorState(this.errMsg);
 }
 
-// -------------------------------------------------- Items
-class ItemsLoadingState extends HomeState {
-  final loadingMsg;
+class UpdateLoadingState extends HomeState {
+  final isLoading;
+  final labelLoading;
 
-  ItemsLoadingState(this.loadingMsg);
+  UpdateLoadingState(this.isLoading, this.labelLoading);
 }
 
+// -------------------------------------------------- Items
 class ItemsLoadedState extends HomeState {
   final isSuccess;
   final msg;
@@ -37,17 +38,22 @@ class ItemsLoadedState extends HomeState {
 }
 
 // -------------------------------------------------- Orders
-class OrdersLoadingState extends HomeState {
-  final loadingMsg;
-
-  OrdersLoadingState(this.loadingMsg);
-}
-
 class OrdersLoadedState extends HomeState {
+  final selectedOrder;
   final lstOrders;
+  final selectedOrderDone;
+  final lstOrdersDone;
   final lstOrderDetails;
+  final fullName;
 
-  OrdersLoadedState(this.lstOrders, this.lstOrderDetails);
+  OrdersLoadedState(
+    this.selectedOrder,
+    this.lstOrders,
+    this.selectedOrderDone,
+    this.lstOrdersDone,
+    this.lstOrderDetails,
+    this.fullName,
+  );
 }
 
 class OrdersChangedState extends HomeState {
@@ -55,6 +61,13 @@ class OrdersChangedState extends HomeState {
   final lstOrderDetails;
 
   OrdersChangedState(this.orderId, this.lstOrderDetails);
+}
+
+class OrdersDoneChangedState extends HomeState {
+  final orderId;
+  final lstOrderDetails;
+
+  OrdersDoneChangedState(this.orderId, this.lstOrderDetails);
 }
 
 class OrdersPinnedState extends HomeState {
@@ -69,4 +82,50 @@ class OrderScrolledState extends HomeState {
   final showArrowBot;
 
   OrderScrolledState(this.showArrowTop, this.showArrowBot);
+}
+
+class ItemCheckboxChangedState extends HomeState {
+  final check;
+
+  ItemCheckboxChangedState(this.check);
+}
+
+class OrderTabChangedState extends HomeState {
+  final isNew;
+  final lstCurrentOrder;
+  final lstCurrentOrderDetail;
+
+  OrderTabChangedState(
+      this.isNew, this.lstCurrentOrder, this.lstCurrentOrderDetail);
+}
+
+class OrderSubmitSuccessState extends HomeState {
+  final selectedOrder;
+  final lstOrders;
+  final selectedOrderDone;
+  final lstOrdersDone;
+  final lstDetails;
+  final pinnedOrder;
+
+  OrderSubmitSuccessState(
+    this.selectedOrder,
+    this.lstOrders,
+    this.selectedOrderDone,
+    this.lstOrdersDone,
+    this.lstDetails,
+    this.pinnedOrder,
+  );
+}
+
+class OrderSubmitFailState extends HomeState {
+  final errMsg;
+
+  OrderSubmitFailState(this.errMsg);
+}
+
+class RecieveNewOrderState extends HomeState {
+  final lstOrder;
+  final lstDetail;
+
+  RecieveNewOrderState(this.lstOrder, this.lstDetail);
 }

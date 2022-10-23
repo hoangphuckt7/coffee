@@ -28,6 +28,7 @@ namespace Service.Services
         Guid SetUnCompletedOrder(Guid orderId);
         List<OrderViewModel> GetUnknowLocaltionOrders();
         List<OrderViewModel> TodayCompletedOrders(int count);
+        object GetBartenderOrders(int count);
     }
     public class OrderService : IOrderService
     {
@@ -228,6 +229,15 @@ namespace Service.Services
                 .Where(o => o.TableId == null && o.IsDeleted == false && o.IsCheckout == false)
                 .ToList();
             return _mapper.Map<List<OrderViewModel>>(orders);
+        }
+
+        public object GetBartenderOrders(int count)
+        {
+            return new
+            {
+                ListOrderNew = GetCurrentOrders(),
+                ListOrderCompleted = TodayCompletedOrders(count),
+            };
         }
     }
 }

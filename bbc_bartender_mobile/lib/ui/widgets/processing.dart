@@ -19,14 +19,9 @@ class Processing extends StatelessWidget {
       child: Container(
         color: Colors.black.withOpacity(.6),
         child: Center(
-          child: ConstrainedBox(
-            // width: 200,
-            constraints: const BoxConstraints(
-              minWidth: 200,
-              // maxWidth: Fn.getScreenWidth(context),
-              minHeight: 200,
-              // maxHeight: Fn.getScreenHeight(context),
-            ),
+          child: SizedBox(
+            width: Fn.getScreenWidth(context) * .3,
+            height: Fn.getScreenHeight(context) * .3,
             child: Card(
               color: MColor.white,
               shape: RoundedRectangleBorder(

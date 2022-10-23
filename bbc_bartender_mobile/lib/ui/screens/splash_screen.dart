@@ -2,7 +2,6 @@ import 'package:bbc_bartender_mobile/blocs/splash/splash_bloc.dart';
 import 'package:bbc_bartender_mobile/repositories/user_repo.dart';
 import 'package:bbc_bartender_mobile/routes.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/loader.dart';
-import 'package:bbc_bartender_mobile/utils/const.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';

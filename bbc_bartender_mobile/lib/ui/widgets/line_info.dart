@@ -4,13 +4,19 @@ import 'package:flutter/material.dart';
 
 class LineInfo extends StatelessWidget {
   final String title;
+  final Color? titleColor;
   final dynamic content;
+  final Color? contentColor;
+  final bool isBoldContent;
   final String? errMsg;
   final double? fontSize;
   const LineInfo({
     super.key,
     required this.title,
+    this.titleColor = MColor.primaryBlack,
     required this.content,
+    this.contentColor = MColor.primaryBlack,
+    this.isBoldContent = false,
     this.errMsg = 'không xác định',
     this.fontSize = 15,
   });
@@ -25,7 +31,7 @@ class LineInfo extends StatelessWidget {
             child: Text(
               '$title:',
               style: TextStyle(
-                color: MColor.primaryBlack,
+                color: titleColor,
                 fontWeight: FontWeight.bold,
                 fontSize: fontSize,
               ),
@@ -39,8 +45,9 @@ class LineInfo extends StatelessWidget {
             child: Text(
               Fn.renderData(content, errMsg),
               style: TextStyle(
-                color: MColor.primaryBlack,
+                color: contentColor,
                 fontSize: fontSize,
+                fontWeight: isBoldContent ? FontWeight.bold : FontWeight.normal,
               ),
             ),
           ),

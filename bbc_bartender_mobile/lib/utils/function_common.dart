@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bbc_bartender_mobile/utils/enum.dart';
@@ -60,9 +61,13 @@ class Fn {
   }
 
   static renderData(input, errMsg) {
-    if (input != null) {
-      return input.toString();
+    if (input == null || (input is String && input.isEmpty)) {
+      return errMsg;
     }
-    return errMsg;
+    return input.toString();
+  }
+
+  static logObj(title, obj) {
+    log('$title: ${jsonEncode(obj)}');
   }
 }

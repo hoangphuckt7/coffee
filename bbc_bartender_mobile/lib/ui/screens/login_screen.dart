@@ -126,7 +126,9 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                Processing(show: isLoading),
+                Processing(
+                  show: isLoading,
+                )
               ],
             );
           },

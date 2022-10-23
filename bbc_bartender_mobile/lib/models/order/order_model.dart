@@ -21,7 +21,7 @@ class OrderModel {
   final String? employeeId;
   final String? userRejectedId;
   final int? orderNumber;
-  final List<OrderDetailModel> orderDetails;
+  List<OrderDetailModel>? orderDetails;
 
   OrderModel(
     this.id,

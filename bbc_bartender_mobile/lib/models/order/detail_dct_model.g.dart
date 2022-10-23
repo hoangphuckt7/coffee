@@ -8,14 +8,14 @@ part of 'detail_dct_model.dart';
 
 DetailDctModel _$DetailDctModelFromJson(Map<String, dynamic> json) =>
     DetailDctModel(
-      json['sugar'] as int?,
-      json['ice'] as int?,
-      json['note'] as String?,
+      json['Sugar'] as int?,
+      json['Ice'] as int?,
+      json['Note'] as String?,
     );
 
 Map<String, dynamic> _$DetailDctModelToJson(DetailDctModel instance) =>
     <String, dynamic>{
-      'sugar': instance.sugar,
-      'ice': instance.ice,
-      'note': instance.note,
+      'Sugar': instance.Sugar,
+      'Ice': instance.Ice,
+      'Note': instance.Note,
     };

@@ -12,6 +12,7 @@ class OrderCard extends StatelessWidget {
   final OrderModel model;
   final bool isSelected;
   final bool isPinned;
+  final bool showPinned;
   final Function()? onClick;
   final Function()? onPin;
   const OrderCard({
@@ -19,6 +20,7 @@ class OrderCard extends StatelessWidget {
     required this.model,
     this.isSelected = false,
     this.isPinned = false,
+    this.showPinned = true,
     this.onClick,
     this.onPin,
   });
@@ -63,34 +65,37 @@ class OrderCard extends StatelessWidget {
                   const SizedBox(height: 10),
                   LineInfo(
                     title: 'Số món',
-                    content: model.orderDetails.length,
+                    content: model.orderDetails!.length,
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(width: 10),
-          InkWell(
-            onTap: onPin,
-            child: Column(
-              children: [
-                Icon(
-                  Icons.push_pin_outlined,
-                  size: 25,
-                  color: isPinned ? MColor.primaryGreen : MColor.danger,
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  child: Text(
-                    isPinned ? 'Bỏ ghim' : 'Ghim',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isPinned ? MColor.primaryGreen : MColor.danger,
-                      fontSize: 12,
-                    ),
+          Visibility(
+            visible: showPinned,
+            child: InkWell(
+              onTap: onPin,
+              child: Column(
+                children: [
+                  const SizedBox(width: 10),
+                  Icon(
+                    Icons.push_pin_outlined,
+                    size: 25,
+                    color: isPinned ? MColor.primaryGreen : MColor.danger,
                   ),
-                )
-              ],
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    child: Text(
+                      isPinned ? 'Bỏ ghim' : 'Ghim',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: isPinned ? MColor.primaryGreen : MColor.danger,
+                        fontSize: 12,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],
