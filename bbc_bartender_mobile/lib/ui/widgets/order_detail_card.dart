@@ -6,18 +6,21 @@ import 'package:bbc_bartender_mobile/models/order/order_detail_model.dart';
 import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/card_custom.dart';
 import 'package:bbc_bartender_mobile/ui/widgets/line_info.dart';
+import 'package:bbc_bartender_mobile/utils/color_custom.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
 class OrderDetailCard extends StatelessWidget {
   final OrderDetailModel model;
-  final List<String>? itemCheck;
+  final List<int>? itemCheck;
   final Function(bool?)? onItemCheckChanged;
+  final bool? showCheckItem;
   const OrderDetailCard({
     super.key,
     required this.model,
     this.itemCheck,
     this.onItemCheckChanged,
+    this.showCheckItem = true,
   });
   @override
   Widget build(BuildContext context) {
@@ -74,11 +77,21 @@ class OrderDetailCard extends StatelessWidget {
               ],
             ),
           ),
-          Checkbox(
-            checkColor: Colors.white,
-            // fillColor: MaterialStateProperty.,
-            value: itemCheck?.any((x) => x == model.itemId),
-            onChanged: onItemCheckChanged,
+          Visibility(
+            visible: showCheckItem!,
+            child: Transform.scale(
+              scale: 1.5,
+              child: Checkbox(
+                checkColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                fillColor:
+                    MaterialStateProperty.all<Color>(MColor.primaryGreen),
+                value: itemCheck?.any((x) => x == model.uniqueKey),
+                onChanged: onItemCheckChanged,
+              ),
+            ),
           ),
         ],
       ),

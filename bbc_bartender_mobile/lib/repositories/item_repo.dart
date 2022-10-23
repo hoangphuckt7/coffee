@@ -9,7 +9,7 @@ import 'package:bbc_bartender_mobile/utils/const.dart';
 import 'package:bbc_bartender_mobile/utils/local_storage.dart';
 
 class ItemRepo {
-  static const controllerUrl = '${Host.currentHost}/Item';
+  static const controllerUrl = '${Host.currentHostApi}/Item';
 
   static getImg(id) {
     log('$controllerUrl/Image/$id');

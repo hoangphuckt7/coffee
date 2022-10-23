@@ -7,7 +7,7 @@ import 'package:bbc_bartender_mobile/api/status_code.dart';
 import 'package:bbc_bartender_mobile/models/common/base_model.dart';
 
 class FloorRepo {
-  static const controllerUrl = '${Host.currentHost}/Floor';
+  static const controllerUrl = '${Host.currentHostApi}/Floor';
 
   Future<List<BaseModel>> getAll() async {
     var lstFloorModel = <BaseModel>[];

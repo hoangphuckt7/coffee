@@ -8,6 +8,7 @@ part of 'order_detail_model.dart';
 
 OrderDetailModel _$OrderDetailModelFromJson(Map<String, dynamic> json) =>
     OrderDetailModel(
+      json['uniqueKey'] as int?,
       json['dateUpdated'] == null
           ? null
           : DateTime.parse(json['dateUpdated'] as String),
@@ -27,6 +28,7 @@ OrderDetailModel _$OrderDetailModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$OrderDetailModelToJson(OrderDetailModel instance) =>
     <String, dynamic>{
+      'uniqueKey': instance.uniqueKey,
       'dateUpdated': instance.dateUpdated?.toIso8601String(),
       'quantity': instance.quantity,
       'finalQuantity': instance.finalQuantity,

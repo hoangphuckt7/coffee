@@ -8,6 +8,7 @@ part 'order_detail_model.g.dart';
 
 @JsonSerializable()
 class OrderDetailModel {
+  int? uniqueKey;
   final DateTime? dateUpdated;
   int? quantity;
   final int? finalQuantity;
@@ -20,6 +21,7 @@ class OrderDetailModel {
   final String? orderId;
 
   OrderDetailModel(
+    this.uniqueKey,
     this.dateUpdated,
     this.quantity,
     this.finalQuantity,

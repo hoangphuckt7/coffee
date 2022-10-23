@@ -71,8 +71,9 @@ class OrderCard extends StatelessWidget {
               ),
             ),
           ),
-          if (showPinned)
-            InkWell(
+          Visibility(
+            visible: showPinned,
+            child: InkWell(
               onTap: onPin,
               child: Column(
                 children: [
@@ -96,6 +97,7 @@ class OrderCard extends StatelessWidget {
                 ],
               ),
             ),
+          ),
         ],
       ),
     );
