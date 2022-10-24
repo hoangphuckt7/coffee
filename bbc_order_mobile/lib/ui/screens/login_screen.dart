@@ -22,8 +22,8 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenWidth = Fn.getScreenWidth(context);
     var screenHeight = Fn.getScreenHeight(context);
-    var cardWidth = screenWidth * .2;
-    var cardHeight = screenHeight * .5;
+    var cardWidth = screenWidth * .8;
+    var cardHeight = screenHeight * .4;
 
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
@@ -73,7 +73,7 @@ class LoginScreen extends StatelessWidget {
                               style: TextStyle(
                                 color: MColor.primaryBlack,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 30,
+                                fontSize: 25,
                               ),
                             ), // ----------------------------------------------------------------------------------------------------
                             const SizedBox(height: 10),

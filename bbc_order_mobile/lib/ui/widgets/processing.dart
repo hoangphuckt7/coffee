@@ -20,7 +20,7 @@ class Processing extends StatelessWidget {
         color: Colors.black.withOpacity(.6),
         child: Center(
           child: SizedBox(
-            width: Fn.getScreenWidth(context) * .3,
+            width: Fn.getScreenWidth(context) * .8,
             height: Fn.getScreenHeight(context) * .3,
             child: Card(
               color: MColor.white,
@@ -32,12 +32,12 @@ class Processing extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Loader(size: 50),
+                    const Loader(size: 30),
                     const SizedBox(height: 20),
                     Text(
                       msg,
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

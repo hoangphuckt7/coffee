@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class Loader extends StatelessWidget {
   final double size;
-  const Loader({super.key, this.size = 100.0});
+  const Loader({super.key, this.size = 50.0});
 
   @override
   Widget build(BuildContext context) {
