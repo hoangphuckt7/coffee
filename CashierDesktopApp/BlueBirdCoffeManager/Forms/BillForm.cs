@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -21,6 +24,7 @@ namespace BlueBirdCoffeManager.Forms
         private List<DescriptionViewModel> FLOORS = Sessions.Area.Areas;
         List<CheckSelected> checkSelecteds = new();
         List<TableViewModel> tables;
+        List<Control> shadowControls = new List<Control>();
 
         private List<OrderViewModel> currentOrders = new();
 
@@ -28,6 +32,11 @@ namespace BlueBirdCoffeManager.Forms
         {
             InitializeComponent();
             _orders = orders;
+            shadowControls.Add(mainPanel);
+            shadowControls.Add(lostBillPanel);
+
+            shadowControls.Add(areaPanel);
+            shadowControls.Add(oldBillPanel);
         }
 
         private async void BillForm_Load(object sender, EventArgs e)
@@ -36,22 +45,33 @@ namespace BlueBirdCoffeManager.Forms
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
 
-            leftPanel.Width = (int)(33.33 * Width / 100);
-            mainPanel.Width = (int)(33.33 * Width / 100);
-            lostBillPanel.Width = (int)(33.33 * Width / 100);
+            double three = 100 / 3;
 
-            areaPanel.Top = 0;
-            areaPanel.Left = 0;
-            areaPanel.Width = leftPanel.Width - 1;
-            areaPanel.Height = 50 * leftPanel.Height / 100;
+            areaPanel.Top = 10;
+            areaPanel.Width = (int)(three * Width / 100) - 20 - 1;
+            areaPanel.Left = 10;
+            areaPanel.Height = (Height * 50 / 100) - 20;
+
+            lostBillPanel.Top = 10;
+            lostBillPanel.Width = (int)(three * Width / 100) - 20;
+            lostBillPanel.Left = this.Width - lostBillPanel.Width - 10;
+            lostBillPanel.Height = Height - 20;
+
+            mainPanel.Top = 10;
+            mainPanel.Width = (int)(three * Width / 100) - 20;
+            mainPanel.Left = Width - lostBillPanel.Width - mainPanel.Width - 45;
+            mainPanel.Height = Height - 20;
+            mainPanel.BackColor = Color.White;
+
             areaPanel.BackColor = Color.White;
 
-            oldBillPanel.Top = areaPanel.Top + areaPanel.Height;
-            oldBillPanel.Left = 0;
-            oldBillPanel.Height = leftPanel.Height - areaPanel.Height;
-            oldBillPanel.Width = leftPanel.Width - 1;
+            oldBillPanel.Top = areaPanel.Top + areaPanel.Height + 20;
+            oldBillPanel.Left = areaPanel.Left;
+            oldBillPanel.Height = Height - areaPanel.Height - areaPanel.Top * 2 - 20;
+            oldBillPanel.Width = areaPanel.Width - 1;
             oldBillPanel.AutoScroll = true;
             oldBillPanel.BackColor = Color.White;
+
             oldBillPanel.Paint += (sender, e) =>
             {
                 ControlPaint.DrawBorder(e.Graphics, oldBillPanel.ClientRectangle,
@@ -61,14 +81,6 @@ namespace BlueBirdCoffeManager.Forms
                         Color.FromKnownColor(KnownColor.DarkGray), 0, ButtonBorderStyle.Solid);// bottom
             };
 
-            leftPanel.Height = Height;
-            mainPanel.Height = Height;
-            lostBillPanel.Height = Height;
-
-            mainPanel.BackColor = Color.White;
-            //lostBillPanel.BackColor = Color.Blue;
-
-            mainPanel.Left = leftPanel.Width;
             #region Area Setup
             areaToolPanel.Left = 0;
             areaToolPanel.Top = 0;
@@ -147,17 +159,17 @@ namespace BlueBirdCoffeManager.Forms
             tableOrderDataPn.AutoScroll = true;
             #endregion
 
-            lbOldOrdersTilte.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            lbOldOrdersTilte.Left = leftPanel.Width / 2 - lbOldOrdersTilte.Width / 2;
-            lbOldOrdersTilte.Top = 10;
+            //lbOldOrdersTilte.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            //lbOldOrdersTilte.Left = areaPanel.Width / 2 - lbOldOrdersTilte.Width / 2;
+            //lbOldOrdersTilte.Top = 10;
 
-            pnHistoryTitle.Top = 0;
-            pnHistoryTitle.Left = 0;
-            pnHistoryTitle.BackColor = areaToolPanel.BackColor;
-            pnHistoryTitle.Width = leftPanel.Width - 1;
-            pnHistoryTitle.Height = lbOldOrdersTilte.Height + lbOldOrdersTilte.Top + lbOldOrdersTilte.Top;
+            //pnHistoryTitle.Top = 0;
+            //pnHistoryTitle.Left = 0;
+            //pnHistoryTitle.BackColor = areaToolPanel.BackColor;
+            //pnHistoryTitle.Width = areaPanel.Width - 1;
+            //pnHistoryTitle.Height = areaToolPanel.Height;
 
-            var curTop = pnHistoryTitle.Height + pnHistoryTitle.Top + 5;
+            var curTop = 0;
 
             var oldOrdersDataJson = await ApiBuilder.SendRequest<List<BillViewModel>>("api/Bill/History/10", null, RequestMethod.GET);
             var oldOrdersData = JsonConvert.DeserializeObject<List<BillViewModel>>(oldOrdersDataJson);
@@ -177,7 +189,7 @@ namespace BlueBirdCoffeManager.Forms
                 {
                     Font = Sessions.Sessions.NORMAL_FONT,
                     Top = 1,
-                    Text = "Thời gian: " + BillPrinter.FormatDate(item.DateCreated) + " - Tổng: " + BillPrinter.FormatPrice(total) + "₫",
+                    Text = "#" + item.BillNumber.ToString("000") + " - " + (item.IsTakeAway ? "Mang đi" : "Tại bàn") 
                 };
                 timeLabel.Width = (int)(timeLabel.Text.Length * timeLabel.Font.Size);
 
@@ -185,7 +197,7 @@ namespace BlueBirdCoffeManager.Forms
                 {
                     Font = Sessions.Sessions.NORMAL_FONT,
                     Top = timeLabel.Top + timeLabel.Height,
-                    Text = item.IsTakeAway ? "Mang đi" : "Tại bàn"
+                    Text = "Thời gian: " + BillPrinter.FormatDate(item.DateCreated) + " - Tổng: " + BillPrinter.FormatPrice(total) + "₫"
                 };
                 typeLabel.Width = (int)(typeLabel.Text.Length * typeLabel.Font.Size);
 
@@ -328,15 +340,6 @@ namespace BlueBirdCoffeManager.Forms
             //                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // top
             //                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid, // right
             //                    Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid);// bottom
-        }
-
-        private void areaPanel_Paint(object sender, PaintEventArgs e)
-        {
-            ControlPaint.DrawBorder(e.Graphics, pnHistoryTitle.ClientRectangle,
-                                Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // left
-                                Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid, // top
-                                Color.FromKnownColor(KnownColor.Control), 1, ButtonBorderStyle.Solid, // right
-                                Color.FromKnownColor(KnownColor.Control), 0, ButtonBorderStyle.Solid);// bottom
         }
 
         private void areaToolPanel_Paint(object sender, PaintEventArgs e)
@@ -653,6 +656,47 @@ namespace BlueBirdCoffeManager.Forms
 
             var data = await ApiBuilder.SendRequest(path, new object(), RequestMethod.GET);
             return JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
+        }
+        Bitmap? shadowBmp = null;
+
+        private void BillForm_Paint(object sender, PaintEventArgs e)
+        {
+            if (shadowBmp == null || shadowBmp.Size != this.Size)
+            {
+                shadowBmp?.Dispose();
+                shadowBmp = new Bitmap(this.Width, this.Height, PixelFormat.Format32bppArgb);
+            }
+            foreach (Control control in shadowControls)
+            {
+                using (GraphicsPath gp = new GraphicsPath())
+                {
+                    gp.AddRectangle(new Rectangle(control.Location.X, control.Location.Y, control.Size.Width, control.Size.Height));
+                    DrawShadowSmooth(gp, 100, 20, shadowBmp);
+                }
+                e.Graphics.DrawImage(shadowBmp, new Point(0, 0));
+            }
+        }
+
+        private static void DrawShadowSmooth(GraphicsPath gp, int intensity, int radius, Bitmap dest)
+        {
+            using (Graphics g = Graphics.FromImage(dest))
+            {
+                g.Clear(Color.Transparent);
+                g.CompositingMode = CompositingMode.SourceCopy;
+                double alpha = 0;
+                double astep = 0;
+                double astepstep = (double)intensity / radius / (radius / 2D);
+                for (int thickness = radius; thickness > 0; thickness--)
+                {
+                    using (Pen p = new Pen(Color.FromArgb((int)alpha, 0, 0, 0), thickness))
+                    {
+                        p.LineJoin = LineJoin.Round;
+                        g.DrawPath(p, gp);
+                    }
+                    alpha += astep;
+                    astep += astepstep;
+                }
+            }
         }
     }
 }

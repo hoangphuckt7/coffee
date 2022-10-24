@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -67,7 +69,7 @@ namespace BlueBirdCoffeManager.Forms
             btnCheckout.Enabled = false;
             btnCheckout.BackColor = Color.Gray;
 
-            
+
             if (_orders != null && _orders.Count > 0)
             {
                 SetupBillData(0);
@@ -88,6 +90,8 @@ namespace BlueBirdCoffeManager.Forms
             }
             else
             {
+                SetupBillData(0);
+
                 //Bottom Data
                 lbapCp.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
                 lbapDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
@@ -375,7 +379,11 @@ namespace BlueBirdCoffeManager.Forms
             var totalVoucher = txtVoucher.Text.Replace("₫", "");
             totalVoucher = totalVoucher.Replace(".", "");
 
-            txtCash.Text = (int.Parse(totalPrice) - int.Parse(totalDiscout) - int.Parse(totalVoucher)).ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
+            try
+            {
+                txtCash.Text = (int.Parse(totalPrice) - int.Parse(totalDiscout) - int.Parse(totalVoucher)).ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
+            }
+            catch (Exception) { };
         }
         private void ChangeQuantity(Guid itemId, bool minus)
         {
@@ -543,5 +551,6 @@ namespace BlueBirdCoffeManager.Forms
         {
             e.Graphics.DrawImage(_img, 0, 0);
         }
+
     }
 }
