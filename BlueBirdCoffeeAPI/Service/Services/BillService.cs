@@ -216,6 +216,7 @@ namespace Service.Services
                     DateCreated = bill.DateCreated,
                     Discount = bill.Discount,
                     IsTakeAway = bill.IsTakeAway,
+                    BillNumber = bill.BillNumber
                     //Coupon = bill.Coupon,
                 };
 

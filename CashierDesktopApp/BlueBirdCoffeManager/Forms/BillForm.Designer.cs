@@ -28,10 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.leftPanel = new System.Windows.Forms.Panel();
             this.oldBillPanel = new System.Windows.Forms.Panel();
-            this.pnHistoryTitle = new System.Windows.Forms.Panel();
-            this.lbOldOrdersTilte = new System.Windows.Forms.Label();
             this.areaPanel = new System.Windows.Forms.Panel();
             this.areaToolPanel = new System.Windows.Forms.Panel();
             this.lbArea = new System.Windows.Forms.Label();
@@ -42,59 +39,26 @@
             this.btnAdd = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.mainPanel = new System.Windows.Forms.Panel();
             this.lostBillPanel = new System.Windows.Forms.Panel();
-            this.leftPanel.SuspendLayout();
-            this.oldBillPanel.SuspendLayout();
-            this.pnHistoryTitle.SuspendLayout();
             this.areaPanel.SuspendLayout();
             this.areaToolPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // leftPanel
-            // 
-            this.leftPanel.Controls.Add(this.oldBillPanel);
-            this.leftPanel.Controls.Add(this.areaPanel);
-            this.leftPanel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.leftPanel.Location = new System.Drawing.Point(0, 0);
-            this.leftPanel.Name = "leftPanel";
-            this.leftPanel.Size = new System.Drawing.Size(492, 827);
-            this.leftPanel.TabIndex = 0;
-            // 
             // oldBillPanel
             // 
-            this.oldBillPanel.Controls.Add(this.pnHistoryTitle);
-            this.oldBillPanel.Location = new System.Drawing.Point(3, 472);
+            this.oldBillPanel.Location = new System.Drawing.Point(120, 529);
             this.oldBillPanel.Name = "oldBillPanel";
-            this.oldBillPanel.Size = new System.Drawing.Size(463, 352);
+            this.oldBillPanel.Size = new System.Drawing.Size(440, 192);
             this.oldBillPanel.TabIndex = 1;
-            // 
-            // pnHistoryTitle
-            // 
-            this.pnHistoryTitle.Controls.Add(this.lbOldOrdersTilte);
-            this.pnHistoryTitle.Location = new System.Drawing.Point(3, 3);
-            this.pnHistoryTitle.Name = "pnHistoryTitle";
-            this.pnHistoryTitle.Size = new System.Drawing.Size(191, 38);
-            this.pnHistoryTitle.TabIndex = 1;
-            this.pnHistoryTitle.Paint += new System.Windows.Forms.PaintEventHandler(this.pnHistoryTitle_Paint);
-            // 
-            // lbOldOrdersTilte
-            // 
-            this.lbOldOrdersTilte.AutoSize = true;
-            this.lbOldOrdersTilte.Location = new System.Drawing.Point(66, 11);
-            this.lbOldOrdersTilte.Name = "lbOldOrdersTilte";
-            this.lbOldOrdersTilte.Size = new System.Drawing.Size(44, 15);
-            this.lbOldOrdersTilte.TabIndex = 0;
-            this.lbOldOrdersTilte.Text = "Lịch sử";
             // 
             // areaPanel
             // 
             this.areaPanel.Controls.Add(this.areaToolPanel);
             this.areaPanel.Controls.Add(this.tableOrderDataPn);
             this.areaPanel.Controls.Add(this.btnAdd);
-            this.areaPanel.Location = new System.Drawing.Point(0, 12);
+            this.areaPanel.Location = new System.Drawing.Point(120, 24);
             this.areaPanel.Name = "areaPanel";
-            this.areaPanel.Size = new System.Drawing.Size(463, 426);
+            this.areaPanel.Size = new System.Drawing.Size(440, 407);
             this.areaPanel.TabIndex = 0;
-            this.areaPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.areaPanel_Paint);
             // 
             // areaToolPanel
             // 
@@ -171,17 +135,16 @@
             // 
             // mainPanel
             // 
-            this.mainPanel.Location = new System.Drawing.Point(492, 0);
+            this.mainPanel.Location = new System.Drawing.Point(667, 118);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(1295, 827);
+            this.mainPanel.Size = new System.Drawing.Size(464, 407);
             this.mainPanel.TabIndex = 1;
             // 
             // lostBillPanel
             // 
-            this.lostBillPanel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lostBillPanel.Location = new System.Drawing.Point(1273, 0);
+            this.lostBillPanel.Location = new System.Drawing.Point(1297, 36);
             this.lostBillPanel.Name = "lostBillPanel";
-            this.lostBillPanel.Size = new System.Drawing.Size(514, 827);
+            this.lostBillPanel.Size = new System.Drawing.Size(446, 766);
             this.lostBillPanel.TabIndex = 2;
             // 
             // BillForm
@@ -189,16 +152,14 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1787, 827);
+            this.Controls.Add(this.oldBillPanel);
             this.Controls.Add(this.lostBillPanel);
+            this.Controls.Add(this.areaPanel);
             this.Controls.Add(this.mainPanel);
-            this.Controls.Add(this.leftPanel);
             this.Name = "BillForm";
             this.Text = "BillForm";
             this.Load += new System.EventHandler(this.BillForm_Load);
-            this.leftPanel.ResumeLayout(false);
-            this.oldBillPanel.ResumeLayout(false);
-            this.pnHistoryTitle.ResumeLayout(false);
-            this.pnHistoryTitle.PerformLayout();
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.BillForm_Paint);
             this.areaPanel.ResumeLayout(false);
             this.areaToolPanel.ResumeLayout(false);
             this.areaToolPanel.PerformLayout();
@@ -207,14 +168,10 @@
         }
 
         #endregion
-
-        private Panel leftPanel;
         private Panel mainPanel;
         private Panel lostBillPanel;
         private Panel oldBillPanel;
         private Panel areaPanel;
-        private Label lbOldOrdersTilte;
-        private Panel pnHistoryTitle;
         private ComboBox cbTable;
         private ComboBox cbArea;
         private Label lbTable;
