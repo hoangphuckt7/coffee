@@ -32,6 +32,8 @@ namespace BlueBirdCoffeManager.Models
     public class OrderCreateModel
     {
         public Guid? TableId { get; set; }
+        public double? Coupon { get; set; }
+        public double? Discount { get; set; }
         public List<OrderDetailViewModel> OrderDetail { get; set; } = new List<OrderDetailViewModel>();
     }
 

@@ -1,4 +1,5 @@
-﻿using Data.ViewModels;
+﻿using Data.Cache;
+using Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,18 +19,21 @@ namespace BlueBirdCoffeeAPI.Controllers
             _orderService = orderService;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpPost]
         public async Task<IActionResult> Create(OrderCreateModel model)
         {
-            return Ok(await _orderService.CreateOrder("93336e7f-4425-4c7a-948b-c4b8e18f5ff6", model));
+            return Ok(await _orderService.CreateOrder(User.GetId(), model));
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpGet("Table/{id}")]
         public IActionResult GetByTable(Guid id)
         {
             return Ok(_orderService.GetByTable(id));
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpGet("UnknowLocaltion")]
         public IActionResult GetUnknowLocaltionOrders()
         {
@@ -42,30 +46,35 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_orderService.GetByIds(ids));
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpGet("CurrentOrders")]
         public IActionResult CurrentOrders()
         {
             return Ok(_orderService.GetCurrentOrders());
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpGet("TodayCompletedOrders")]
         public IActionResult TodayCompletedOrders(int? count = 10)
         {
             return Ok(_orderService.TodayCompletedOrders(count!.Value));
         }
-        
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpGet("BartenderOrders")]
         public IActionResult GetBartenderOrders(int? count = 10)
         {
             return Ok(_orderService.GetBartenderOrders(count!.Value));
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpPut("Complete/{id}")]
         public IActionResult CompleteOrders(Guid id)
         {
             return Ok(_orderService.SetCompletedOrder(id));
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpPut("UnComplete/{id}")]
         public IActionResult UnCompleteOrders(Guid id)
         {

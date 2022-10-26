@@ -11,6 +11,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -159,16 +160,6 @@ namespace BlueBirdCoffeManager.Forms
             tableOrderDataPn.AutoScroll = true;
             #endregion
 
-            //lbOldOrdersTilte.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-            //lbOldOrdersTilte.Left = areaPanel.Width / 2 - lbOldOrdersTilte.Width / 2;
-            //lbOldOrdersTilte.Top = 10;
-
-            //pnHistoryTitle.Top = 0;
-            //pnHistoryTitle.Left = 0;
-            //pnHistoryTitle.BackColor = areaToolPanel.BackColor;
-            //pnHistoryTitle.Width = areaPanel.Width - 1;
-            //pnHistoryTitle.Height = areaToolPanel.Height;
-
             var curTop = 0;
 
             var oldOrdersDataJson = await ApiBuilder.SendRequest<List<BillViewModel>>("api/Bill/History/10", null, RequestMethod.GET);
@@ -189,7 +180,7 @@ namespace BlueBirdCoffeManager.Forms
                 {
                     Font = Sessions.Sessions.NORMAL_FONT,
                     Top = 1,
-                    Text = "#" + item.BillNumber.ToString("000") + " - " + (item.IsTakeAway ? "Mang đi" : "Tại bàn") 
+                    Text = "#" + item.BillNumber.ToString("000") + " - " + (item.IsTakeAway ? "Mang đi" : "Tại bàn")
                 };
                 timeLabel.Width = (int)(timeLabel.Text.Length * timeLabel.Font.Size);
 
@@ -294,34 +285,35 @@ namespace BlueBirdCoffeManager.Forms
             lostBillPanel.Controls.Add(lostF);
             lostF.Show();
         }
+
         private void SetupOldBill(BillViewModel? item)
         {
-            var orderCreateModel = new OrderCreateModel()
+            BillViewModel result = new BillViewModel()
             {
-                OrderDetail = item.OrderDetailViewModels
+                Id = item.Id,
+                BillNumber = item.BillNumber,
+                Coupon = item.Coupon,
+                DateCreated = item.DateCreated,
+                Discount = item.Discount,
+                IsTakeAway = item.IsTakeAway,
+                OrderDetailViewModels = new List<OrderDetailViewModel>()
             };
 
-            //Remove lost items
-            List<OrderDetailViewModel> removeList = new List<OrderDetailViewModel>();
-            foreach (var detail in orderCreateModel.OrderDetail)
+            foreach (var detail in item.OrderDetailViewModels)
             {
-                if (detail.Quantity == 0)
+                OrderDetailViewModel copyDetail = new OrderDetailViewModel()
                 {
-                    removeList.Add(detail);
-                }
-            }
-            foreach (var remove in removeList)
-            {
-                orderCreateModel.OrderDetail.Remove(remove);
+                    ItemId = detail.ItemId,
+                    DateCreated = detail.DateCreated,
+                    Description = detail.Description,
+                    Quantity = detail.Quantity
+                };
+                result.OrderDetailViewModels.Add(copyDetail);
             }
 
-            //Merge items
-            foreach (var detail in orderCreateModel.OrderDetail)
-            {
-                detail.Quantity = orderCreateModel.OrderDetail.Where(f => f.ItemId == detail.ItemId).Select(s => s.Quantity).Count();
-            }
-            orderCreateModel.OrderDetail = orderCreateModel.OrderDetail.DistinctBy(f => f.ItemId).ToList();
+            var orderCreateModel = BillPrinter.MergeOldBill(result);
 
+            //Setup bill
             var curImg = BillPrinter.SetupBill(orderCreateModel, item.DateCreated);
 
             mainPanel.Controls.Clear();
@@ -333,6 +325,7 @@ namespace BlueBirdCoffeManager.Forms
             mainPanel.Controls.Add(myForm);
             myForm.Show();
         }
+
         private void pnHistoryTitle_Paint(object sender, PaintEventArgs e)
         {
             //ControlPaint.DrawBorder(e.Graphics, pnHistoryTitle.ClientRectangle,

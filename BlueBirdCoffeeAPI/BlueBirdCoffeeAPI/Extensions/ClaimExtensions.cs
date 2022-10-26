@@ -16,7 +16,7 @@ namespace BlueBirdCoffeeAPI
             {
                 return idClaim.Value;
             }
-            return "";
+            throw new Exception("Invalid token");
         }
 
         public static string GetId(this ClaimsPrincipal user)
@@ -27,7 +27,7 @@ namespace BlueBirdCoffeeAPI
             {
                 return idClaim.Value;
             }
-            return "";
+            throw new Exception("Invalid token");
         }
     }
 }

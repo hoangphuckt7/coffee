@@ -80,6 +80,35 @@ namespace BlueBirdCoffeManager.Utils
                 var stringTotal = FormatPrice(total) + "₫";
                 g.DrawString(stringTotal, boldFont, Brushes.Black, 295 - stringTotal.Length * 13, line);
 
+                double totalDiscount = 0;
+                if (models.Discount != null && models.Discount != 0)
+                {
+                    line += 30;
+                    g.DrawString("Giảm giá: ", boldFont, Brushes.Black, 0, line);
+                    totalDiscount += models.Discount.Value;
+                    var stringDiscount = FormatPrice(models.Discount.Value) + "₫";
+                    g.DrawString(stringDiscount, boldFont, Brushes.Black, 295 - stringDiscount.Length * 13, line);
+                }
+
+                if (models.Coupon != null && models.Coupon != 0)
+                {
+                    line += 30;
+                    g.DrawString("Mã giảm giá: ", boldFont, Brushes.Black, 0, line);
+
+                    totalDiscount += models.Coupon.Value;
+                    var stringDiscount = FormatPrice(models.Coupon.Value * total / 100) + "₫";
+                    g.DrawString(stringDiscount, font, Brushes.Black, 295 - stringDiscount.Length * 13, line);
+                }
+
+                if ((models.Discount != null && models.Discount != 0) || (models.Coupon != null && models.Coupon != 0))
+                {
+                    line += 30;
+                    g.DrawString("Phải thanh toán: ", boldFont, Brushes.Black, 0, line);
+
+                    var stringDiscount = FormatPrice(total - totalDiscount) + "₫";
+                    g.DrawString(stringDiscount, boldFont, Brushes.Black, 295 - stringDiscount.Length * 13, line);
+                }
+
                 line += 50;
                 g.DrawString("Cảm ơn quý khách, hẹn gặp lại!", new Font("Calibri", 11, FontStyle.Italic, GraphicsUnit.Point), Brushes.Black, 35, line);
                 line += 20;
@@ -132,6 +161,60 @@ namespace BlueBirdCoffeManager.Utils
             if (continueBreak) { return BreakLines(result, limit); }
 
             return result;
+        }
+
+        public static OrderCreateModel MergeOldBill(BillViewModel? item)
+        {
+            var orderCreateModel = new OrderCreateModel()
+            {
+                OrderDetail = item.OrderDetailViewModels,
+                Coupon = item.Coupon,
+                Discount = item.Discount
+            };
+
+            //Remove lost items
+            List<OrderDetailViewModel> removeList = new List<OrderDetailViewModel>();
+            foreach (var detail in orderCreateModel.OrderDetail)
+            {
+                if (detail.Quantity == 0)
+                {
+                    removeList.Add(detail);
+                }
+            }
+            foreach (var remove in removeList)
+            {
+                orderCreateModel.OrderDetail.Remove(remove);
+            }
+
+            //Merge duplicate items
+            List<OrderDetailViewModel> finalList = new List<OrderDetailViewModel>();
+
+            foreach (var detail in orderCreateModel.OrderDetail)
+            {
+                var exsitedItem = finalList.Any(f => f.ItemId == detail.ItemId);
+
+                if (exsitedItem)
+                {
+                    continue;
+                }
+
+                var duplicateItems = orderCreateModel.OrderDetail.Where(f => f.ItemId == detail.ItemId).ToList();
+
+                if (duplicateItems.Count < 2)
+                {
+                    finalList.AddRange(duplicateItems);
+                }
+                else
+                {
+                    var mergeItem = duplicateItems.First();
+                    mergeItem.Quantity = duplicateItems.Sum(f => f.Quantity);
+
+                    finalList.Add(mergeItem);
+                }
+            }
+
+            orderCreateModel.OrderDetail = finalList;
+            return orderCreateModel;
         }
     }
     #endregion

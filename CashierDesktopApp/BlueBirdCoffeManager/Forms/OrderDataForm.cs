@@ -1,5 +1,6 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
 using BlueBirdCoffeManager.Models;
+using BlueBirdCoffeManager.Sessions;
 using BlueBirdCoffeManager.Utils;
 using Newtonsoft.Json;
 using System;
@@ -534,27 +535,41 @@ namespace BlueBirdCoffeManager.Forms
 
                 const string messageEx = "Xác nhận thông tin order.";
                 const string captionEx = "Xác nhận";
+
                 var result = MessageBox.Show(messageEx, captionEx, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-                // If the no button was pressed ...
                 if (result == DialogResult.Cancel)
                 {
                     return;
                 }
 
-                if (isTable.Checked) Sessions.Order.CurrentOrder.TableId = tables[cbTable.SelectedIndex < 0 ? 0 : cbTable.SelectedIndex].Id;
-
-                if (isTakeAway.Checked) printBill.Print();
-
-                if (!isTable.Checked) Sessions.Order.CurrentOrder.TableId = null;
-
                 var data = await ApiBuilder.SendRequest("api/Order", Sessions.Order.CurrentOrder, RequestMethod.POST);
 
+                if (isTable.Checked) Order.CurrentOrder.TableId = tables[cbTable.SelectedIndex < 0 ? 0 : cbTable.SelectedIndex].Id;
+
+                if (isTakeAway.Checked)
+                {
+                    CheckoutModel model = new()
+                    {
+                        Orders = new List<Guid>() { Guid.Parse(data.Trim().Replace("\"", "")) },
+                        RemovedItems = new List<ItemCheckoutModel>(),
+                        Coupon = "",
+                        Discout = 0,
+                        IsTakeAway = false
+                    };
+
+                    var response = await ApiBuilder.SendRequest("api/Bill/Checkout", model, RequestMethod.POST);
+
+                    printBill.Print();
+                }
+
+                if (!isTable.Checked) Order.CurrentOrder.TableId = null;
+
                 //Refresh
-                Sessions.Order.CurrentOrder.OrderDetail = new List<OrderDetailViewModel>();
-                Sessions.Order.Option = new();
+                Order.CurrentOrder.OrderDetail = new List<OrderDetailViewModel>();
+                Order.Option = new();
 
                 _orderDataPanel.Controls.Clear();
-                OrderDataForm myForm = new OrderDataForm(_orderDataPanel);
+                OrderDataForm myForm = new(_orderDataPanel);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 _orderDataPanel.Controls.Add(myForm);

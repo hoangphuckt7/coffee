@@ -1,4 +1,5 @@
-﻿using Data.ViewModels;
+﻿using Data.Cache;
+using Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace BlueBirdCoffeeAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [Consumes("multipart/form-data")]
         //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
         public IActionResult Add([FromForm] ItemAddModel model)
@@ -34,7 +35,7 @@ namespace BlueBirdCoffeeAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         //[Consumes("multipart/form-data")]
         public IActionResult Update(Guid id, [FromBody] ItemUpdateModel model)
         {
@@ -42,7 +43,7 @@ namespace BlueBirdCoffeeAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         public IActionResult Delete(Guid id)
         {
             return Ok(_itemService.Delete(id));
@@ -55,7 +56,7 @@ namespace BlueBirdCoffeeAPI.Controllers
             return File(rs.Data, rs.FileType);
         }
 
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpPut("Image/{itemId}")]
         [Consumes("multipart/form-data")]
         public IActionResult AddImages(Guid itemId, [FromForm] List<IFormFile> images)
@@ -63,7 +64,7 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_itemService.AddImages(itemId, images));
         }
 
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpDelete("Image/{imageId}")]
         public IActionResult RemoveImage(Guid imageId)
         {

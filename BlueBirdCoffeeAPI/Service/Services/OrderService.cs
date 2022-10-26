@@ -55,8 +55,8 @@ namespace Service.Services
             var order = new Order()
             {
                 TableId = models.TableId,
-                OrderNumber = GetCurrentOrderNumber()
-                //EmployeeId = employeeId
+                OrderNumber = GetCurrentOrderNumber(),
+                EmployeeId = employeeId
             };
 
             try
