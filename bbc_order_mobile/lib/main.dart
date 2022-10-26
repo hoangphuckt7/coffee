@@ -21,7 +21,7 @@ class BBCOrder extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.onGenerateRoute,
-      initialRoute: RouteName.splash,
+      initialRoute: RouteName.pickTable,
     );
   }
 }

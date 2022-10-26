@@ -6,6 +6,7 @@ import 'package:bbc_order_mobile/repositories/item_repo.dart';
 import 'package:bbc_order_mobile/repositories/order_repo.dart';
 import 'package:bbc_order_mobile/ui/controls/fill_btn.dart';
 import 'package:bbc_order_mobile/ui/widgets/appbar_custom.dart';
+import 'package:bbc_order_mobile/ui/widgets/frame_common.dart';
 import 'package:bbc_order_mobile/ui/widgets/processing.dart';
 import 'package:bbc_order_mobile/utils/enum.dart';
 import 'package:bbc_order_mobile/utils/function_common.dart';
@@ -19,29 +20,12 @@ class PickTableScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const AppbarCustom(
-        showBackBtn: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Container(
-          alignment: Alignment.center,
-          color: MColor.white,
-          child: BlocProvider(
-            create: (context) => PickTableBloc(
-              RepositoryProvider.of<CategoryRepo>(context),
-              RepositoryProvider.of<ItemRepo>(context),
-              RepositoryProvider.of<OrderRepo>(context),
-            )..add(LoadDataEvent()),
-            child: Stack(
-              children: [
-                _processState(context),
-                _main(context),
-              ],
-            ),
-          ),
-        ),
+    return MainFrame(
+      child: Stack(
+        children: [
+          _processState(context),
+          _main(context),
+        ],
       ),
     );
   }

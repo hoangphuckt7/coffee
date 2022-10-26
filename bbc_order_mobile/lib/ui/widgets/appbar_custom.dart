@@ -40,7 +40,7 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
-          const SizedBox(child: Text('Xin chào, 123')),
+          const SizedBox(child: Text('Xin chào!')),
           const SizedBox(width: 20),
           InkWell(
             onTap: (() {}),

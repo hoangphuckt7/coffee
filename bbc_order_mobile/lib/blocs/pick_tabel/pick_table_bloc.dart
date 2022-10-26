@@ -8,14 +8,11 @@ part 'pick_table_event.dart';
 part 'pick_table_state.dart';
 
 class PickTableBloc extends Bloc<PickTableEvent, PickTableState> {
-  final CategoryRepo _cateRepo;
-  final ItemRepo _itemRepo;
-  final OrderRepo _orderRepo;
+  final CategoryRepo _cateRepo = CategoryRepo();
+  final ItemRepo _itemRepo = ItemRepo();
+  final OrderRepo _orderRepo = OrderRepo();
 
   PickTableBloc(
-    this._cateRepo,
-    this._itemRepo,
-    this._orderRepo,
   ) : super(PickTableInitial()) {
     on<LoadDataEvent>(_onLoadData);
   }
