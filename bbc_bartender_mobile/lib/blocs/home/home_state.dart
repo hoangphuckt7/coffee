@@ -8,8 +8,6 @@ abstract class HomeState {}
 // -------------------------------------------------- Common
 class InitialState extends HomeState {}
 
-class LogoutState extends HomeState {}
-
 class UserInfoLoadedState extends HomeState {
   final fullName;
 
@@ -44,7 +42,7 @@ class OrdersLoadedState extends HomeState {
   final selectedOrderDone;
   final lstOrdersDone;
   final lstOrderDetails;
-  final fullName;
+  // final fullName;
 
   OrdersLoadedState(
     this.selectedOrder,
@@ -52,7 +50,7 @@ class OrdersLoadedState extends HomeState {
     this.selectedOrderDone,
     this.lstOrdersDone,
     this.lstOrderDetails,
-    this.fullName,
+    // this.fullName,
   );
 }
 
