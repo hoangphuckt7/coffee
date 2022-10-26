@@ -1,5 +1,6 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
 using BlueBirdCoffeManager.Models;
+using BlueBirdCoffeManager.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace BlueBirdCoffeManager.Forms
         private const string RE_PRINT = "In lại";
         private const string CHECK_OUT = "Thanh toán";
         private readonly List<OrderViewModel>? _orders;
-        private readonly Bitmap? _img;
+        private Bitmap? _img;
         private readonly Form? _billForm;
 
         public BillDataForm(List<OrderViewModel>? orders, Bitmap? img, Form? billForm)
@@ -506,6 +507,10 @@ namespace BlueBirdCoffeManager.Forms
         {
             if (btnCheckout.Text == CHECK_OUT)
             {
+                if (_orders.Count == 0)
+                {
+                    return;
+                }
                 const string message = "Hoàn tất hóa đơn?";
                 const string caption = "Thông báo";
                 var rr = MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
@@ -517,12 +522,16 @@ namespace BlueBirdCoffeManager.Forms
                         Orders = _orders.Select(s => s.Id).ToList(),
                         RemovedItems = removed,
                         Coupon = txtapCoupon.Text,
-                        Discout = txtapDiscout.Text.Length != 0 ? double.Parse(txtapCoupon.Text) : 0,
+                        Discout = txtapDiscout.Text.Length != 0 ? double.Parse(txtapDiscout.Text.Replace(".", "")) : 0,
                         IsTakeAway = false
                     };
 
                     var response = await ApiBuilder.SendRequest("api/Bill/Checkout", model, RequestMethod.POST);
-                    //response = JsonConvert.DeserializeObject<Guid>(response);
+                    var billData = JsonConvert.DeserializeObject<BillViewModel>(response);
+                    var data = BillPrinter.MergeOldBill(billData);
+
+                    _img = BillPrinter.SetupBill(data, billData.DateCreated);
+                    printDocument1.Print();
 
                     _billForm.Controls.Clear();
                     BillForm myForm = new BillForm(null);

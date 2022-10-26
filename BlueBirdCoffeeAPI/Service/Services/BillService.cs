@@ -13,7 +13,7 @@ namespace Service.Services
 {
     public interface IBillService
     {
-        Guid Checkout(CheckoutModel model);
+        BillViewModel Checkout(CheckoutModel model, string userId);
         List<BillViewModel> History(int count);
         List<BillMissingItemViewModel> MissingBillItemWithin48Hours();
         List<ChartViewModel> ChartData();
@@ -89,7 +89,7 @@ namespace Service.Services
 
             return 1;
         }
-        public Guid Checkout(CheckoutModel model)
+        public BillViewModel Checkout(CheckoutModel model, string userId)
         {
             var orders = _dbContext.Orders.Include(f => f.OrderDetails).Where(f => model.Orders.Contains(f.Id)).ToList();
 
@@ -137,7 +137,8 @@ namespace Service.Services
                 Discount = model.Discout,
                 Coupon = model.Coupon,
                 IsTakeAway = model.IsTakeAway,
-                BillNumber = GetCurrentBillNumber()
+                BillNumber = GetCurrentBillNumber(),
+                CasherId = userId
             };
 
             _dbContext.Add(newBill);
@@ -197,48 +198,12 @@ namespace Service.Services
             }
 
             _dbContext.SaveChanges();
-            return newBill.Id;
+            return GetById(newBill.Id);
         }
         public List<BillViewModel> History(int count)
         {
             var bills = _dbContext.Bills.OrderByDescending(o => o.DateCreated).Take(count).ToList();
-
-            var billOrders = _dbContext.BillOrders.Where(s => bills.Select(s => s.Id).Contains(s.BillId)).ToList();
-
-            var orderDetails = _dbContext.OrderDetails.Where(f => billOrders.Select(s => s.OrderId).Contains(f.OrderId)).ToList();
-
-            var result = new List<BillViewModel>();
-            foreach (var bill in bills)
-            {
-                var billData = new BillViewModel()
-                {
-                    Id = bill.Id,
-                    DateCreated = bill.DateCreated,
-                    Discount = bill.Discount,
-                    IsTakeAway = bill.IsTakeAway,
-                    BillNumber = bill.BillNumber
-                    //Coupon = bill.Coupon,
-                };
-
-                var orders = billOrders.Where(f => f.BillId == bill.Id).ToList();
-                var details = orderDetails.Where(f => orders.Select(s => s.OrderId).Contains(f.OrderId)).ToList();
-                var orderDetailViewModels = new List<OrderDetailViewModel>();
-
-                foreach (var item in details)
-                {
-                    var orderDetail = new OrderDetailViewModel()
-                    {
-                        ItemId = item.ItemId,
-                        Quantity = item.FinalQuantity,
-                        Description = item.Price.ToString(),
-                    };
-                    orderDetailViewModels.Add(orderDetail);
-                }
-
-                billData.OrderDetailViewModels = orderDetailViewModels;
-                result.Add(billData);
-            }
-            return result;
+            return GetByList(bills);
         }
         public List<BillMissingItemViewModel> MissingBillItemWithin48Hours()
         {
@@ -314,6 +279,52 @@ namespace Service.Services
                     Total = total
                 };
                 result.Add(chart);
+            }
+            return result;
+        }
+
+        public BillViewModel GetById(Guid id)
+        {
+            var bills = _dbContext.Bills.Where(f => f.Id == id).ToList();
+            return GetByList(bills).First();
+        }
+
+        private List<BillViewModel> GetByList(List<Bill>? bills)
+        {
+            var billOrders = _dbContext.BillOrders.Where(s => bills.Select(s => s.Id).Contains(s.BillId)).ToList();
+
+            var orderDetails = _dbContext.OrderDetails.Where(f => billOrders.Select(s => s.OrderId).Contains(f.OrderId)).ToList();
+
+            var result = new List<BillViewModel>();
+            foreach (var bill in bills)
+            {
+                var billData = new BillViewModel()
+                {
+                    Id = bill.Id,
+                    DateCreated = bill.DateCreated,
+                    Discount = bill.Discount,
+                    IsTakeAway = bill.IsTakeAway,
+                    BillNumber = bill.BillNumber,
+                    //Coupon = bill.Coupon,
+                };
+
+                var orders = billOrders.Where(f => f.BillId == bill.Id).ToList();
+                var details = orderDetails.Where(f => orders.Select(s => s.OrderId).Contains(f.OrderId)).ToList();
+                var orderDetailViewModels = new List<OrderDetailViewModel>();
+
+                foreach (var item in details)
+                {
+                    var orderDetail = new OrderDetailViewModel()
+                    {
+                        ItemId = item.ItemId,
+                        Quantity = item.FinalQuantity,
+                        Description = item.Price.ToString(),
+                    };
+                    orderDetailViewModels.Add(orderDetail);
+                }
+
+                billData.OrderDetailViewModels = orderDetailViewModels;
+                result.Add(billData);
             }
             return result;
         }

@@ -23,7 +23,7 @@ namespace BlueBirdCoffeeAPI.Controllers
         [HttpPost("Checkout")]
         public IActionResult Checkout([FromBody] CheckoutModel model)
         {
-            return Ok(_billService.Checkout(model));
+            return Ok(_billService.Checkout(model, User.GetId()));
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
@@ -33,6 +33,7 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_billService.History(count));
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpGet("MissingBillItemWithin48Hours")]
         public IActionResult TodateMissingItem()
         {
