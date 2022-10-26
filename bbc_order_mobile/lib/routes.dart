@@ -1,12 +1,17 @@
 // ignore_for_file: body_might_complete_normally_nullable
 
 import 'package:bbc_order_mobile/blocs/login/login_bloc.dart';
+import 'package:bbc_order_mobile/blocs/pick_tabel/pick_table_bloc.dart';
+import 'package:bbc_order_mobile/blocs/splash/splash_bloc.dart';
 import 'package:bbc_order_mobile/blocs/test/test_bloc.dart';
 import 'package:bbc_order_mobile/repositories/category_repo.dart';
 import 'package:bbc_order_mobile/repositories/item_repo.dart';
 import 'package:bbc_order_mobile/repositories/order_repo.dart';
 import 'package:bbc_order_mobile/repositories/user_repo.dart';
+import 'package:bbc_order_mobile/ui/screens/change_table_screen.dart';
+import 'package:bbc_order_mobile/ui/screens/check_out_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/login_screen.dart';
+import 'package:bbc_order_mobile/ui/screens/order_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/pick_table_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/splash_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/test_screen.dart';
@@ -18,6 +23,9 @@ class RouteName {
   static const String splash = '/splash';
   static const String login = '/login';
   static const String pickTable = '/pickTable';
+  static const String changeTable = '/changeTable';
+  static const String order = '/order';
+  static const String checkOut = '/checkOut';
 }
 
 class Routes {
@@ -33,8 +41,8 @@ class Routes {
 
       case RouteName.splash:
         return MaterialPageRoute(
-          builder: (context) => RepositoryProvider(
-            create: (_) => UserRepo(),
+          builder: (context) => BlocProvider(
+            create: (_) => SplashBloc()..add(CheckLoginEvent()),
             child: const SplashScreen(),
           ),
         );
@@ -49,19 +57,30 @@ class Routes {
 
       case RouteName.pickTable:
         return MaterialPageRoute(
-          builder: (context) => MultiRepositoryProvider(
-            providers: [
-              RepositoryProvider<ItemRepo>(
-                create: (context) => ItemRepo(),
-              ),
-              RepositoryProvider<CategoryRepo>(
-                create: (context) => CategoryRepo(),
-              ),
-              RepositoryProvider<OrderRepo>(
-                create: (context) => OrderRepo(),
-              ),
-            ],
+          builder: (context) => BlocProvider(
+            create: (context) => PickTableBloc()..add(LoadDataEvent()),
             child: PickTableScreen(),
+          ),
+        );
+      case RouteName.changeTable:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => PickTableBloc()..add(LoadDataEvent()),
+            child: ChangeTableScreen(),
+          ),
+        );
+      case RouteName.order:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => PickTableBloc()..add(LoadDataEvent()),
+            child: OrderScreen(),
+          ),
+        );
+      case RouteName.checkOut:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => PickTableBloc()..add(LoadDataEvent()),
+            child: CheckOutScreen(),
           ),
         );
       default:

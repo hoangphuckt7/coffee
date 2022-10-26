@@ -1,7 +1,6 @@
+import 'package:bbc_bartender_mobile/routes.dart';
 import 'package:bbc_bartender_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
-
-import 'routes.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +18,6 @@ class BBCBartender extends StatelessWidget {
         primarySwatch: MColor.primaryBlack,
         fontFamily: "Times New Roman",
       ),
-      // home: const Scaffold(body: LoginScreen()),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.onGenerateRoute,
       initialRoute: RouteName.splash,
