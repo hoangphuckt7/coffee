@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:bbc_bartender_mobile/blocs/auth/auth_bloc.dart';
 import 'package:bbc_bartender_mobile/blocs/home/home_bloc.dart';
 import 'package:bbc_bartender_mobile/models/order/order_detail_model.dart';
 import 'package:bbc_bartender_mobile/models/order/order_model.dart';
@@ -41,19 +42,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Container(
       color: MColor.white,
-      child: BlocProvider(
-        create: (context) => HomeBloc(
-          RepositoryProvider.of<ItemRepo>(context),
-          RepositoryProvider.of<OrderRepo>(context),
-        )
-          ..add(LoadDataEvent())
-          ..add(ListenRecieveNewOrderEvent()),
-        child: Stack(
-          children: [
-            _main(context),
-            _processState(context),
-          ],
-        ),
+      child: Stack(
+        children: [
+          _main(context),
+          _processState(context),
+        ],
       ),
     );
   }
@@ -246,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       builder: (context, state) {
         if (state is OrdersLoadedState) {
           tabController.index = 0;
-          fullName = state.fullName;
+          // fullName = state.fullName;
         }
         tabController.addListener(() {
           switch (tabController.index) {
@@ -371,84 +364,88 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _userInfo(BuildContext context) {
     double? fontSize1 = 15;
     double? fontSize2 = 12;
-    return BlocListener<HomeBloc, HomeState>(
-      listener: (context, state) {
-        if (state is LogoutState) {
-          Navigator.pushNamed(context, RouteName.login);
-        }
-      },
-      child: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
-          if (state is UserInfoLoadedState) {
-            fullName = state.fullName;
-          }
-          return CardCustom(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
+    return CardCustom(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Row(
+        children: [
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is LoadedUserInfoState) {
+                fullName = state.fullName;
+              }
+              return Expanded(
+                child: SizedBox(
+                  child: Text(
+                    Fn.renderData(fullName, ''),
+                    style: TextStyle(
+                      fontSize: fontSize1,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 5),
+          BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, state) {
+              return InkWell(
+                onTap: () {
+                  BlocProvider.of<HomeBloc>(context).add(LoadDataEvent());
+                },
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.refresh_outlined,
+                      color: MColor.primaryGreen,
+                      size: 30,
+                    ),
+                    SizedBox(
+                      child: Text(
+                        'Tải lại',
+                        style: TextStyle(
+                          fontSize: fontSize2,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 10),
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is LogoutState) {
+                Navigator.pushNamed(context, RouteName.login);
+              }
+            },
+            child: InkWell(
+              onTap: () {
+                BlocProvider.of<AuthBloc>(context).add(LogoutEvent());
+              },
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.logout_outlined,
+                    color: MColor.danger,
+                    size: 30,
+                  ),
+                  SizedBox(
                     child: Text(
-                      Fn.renderData(fullName, ''),
+                      'Đăng xuất',
                       style: TextStyle(
-                        fontSize: fontSize1,
+                        fontSize: fontSize2,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 5),
-                InkWell(
-                  onTap: () {
-                    BlocProvider.of<HomeBloc>(context).add(LoadDataEvent());
-                  },
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.refresh_outlined,
-                        color: MColor.primaryGreen,
-                        size: 30,
-                      ),
-                      SizedBox(
-                        child: Text(
-                          'Tải lại',
-                          style: TextStyle(
-                            fontSize: fontSize2,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                InkWell(
-                  onTap: () {
-                    BlocProvider.of<HomeBloc>(context).add(LogoutEvent());
-                  },
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.logout_outlined,
-                        color: MColor.danger,
-                        size: 30,
-                      ),
-                      SizedBox(
-                        child: Text(
-                          'Đăng xuất',
-                          style: TextStyle(
-                            fontSize: fontSize2,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

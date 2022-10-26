@@ -1,10 +1,9 @@
 // ignore_for_file: body_might_complete_normally_nullable
 
-import 'package:bbc_bartender_mobile/blocs/login/login_bloc.dart';
+import 'package:bbc_bartender_mobile/blocs/home/home_bloc.dart';
+import 'package:bbc_bartender_mobile/blocs/auth/auth_bloc.dart';
+import 'package:bbc_bartender_mobile/blocs/splash/splash_bloc.dart';
 import 'package:bbc_bartender_mobile/blocs/test/test_bloc.dart';
-import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
-import 'package:bbc_bartender_mobile/repositories/order_repo.dart';
-import 'package:bbc_bartender_mobile/repositories/user_repo.dart';
 import 'package:bbc_bartender_mobile/ui/screens/home_screen.dart';
 import 'package:bbc_bartender_mobile/ui/screens/login_screen.dart';
 import 'package:bbc_bartender_mobile/ui/screens/splash_screen.dart';
@@ -32,8 +31,8 @@ class Routes {
 
       case RouteName.splash:
         return MaterialPageRoute(
-          builder: (context) => RepositoryProvider(
-            create: (_) => UserRepo(),
+          builder: (context) => BlocProvider(
+            create: (_) => SplashBloc()..add(CheckLoginEvent()),
             child: const SplashScreen(),
           ),
         );
@@ -41,20 +40,22 @@ class Routes {
       case RouteName.login:
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (context) => LoginBloc(),
+            create: (context) => AuthBloc(),
             child: LoginScreen(),
           ),
         );
 
       case RouteName.home:
         return MaterialPageRoute(
-          builder: (context) => MultiRepositoryProvider(
+          builder: (context) => MultiBlocProvider(
             providers: [
-              RepositoryProvider<ItemRepo>(
-                create: (context) => ItemRepo(),
+              BlocProvider(
+                create: (context) => HomeBloc()
+                  ..add(LoadDataEvent())
+                  ..add(ListenRecieveNewOrderEvent()),
               ),
-              RepositoryProvider<OrderRepo>(
-                create: (context) => OrderRepo(),
+              BlocProvider(
+                create: (context) => AuthBloc()..add(LoadUserInfoEvent()),
               ),
             ],
             child: const HomeScreen(),

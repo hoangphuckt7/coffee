@@ -18,10 +18,10 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final ItemRepo _itemRepo;
-  final OrderRepo _orderRepo;
+  final ItemRepo _itemRepo = ItemRepo();
+  final OrderRepo _orderRepo = OrderRepo();
   final SignalR _signalr = SignalR();
-  HomeBloc(this._itemRepo, this._orderRepo) : super(InitialState()) {
+  HomeBloc() : super(InitialState()) {
     on<LoadDataEvent>(_onLoadData);
     on<OrderChangeEvent>(_onOrderChange);
     on<OrderDoneChangeEvent>(_onOrderDoneChange);
@@ -31,19 +31,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<OrderSubmitEvent>(_onOrderSubmit);
     on<ListenRecieveNewOrderEvent>(_onListenRecieveNewOrder);
     on<RecieveNewOrderEvent>(_onRecieveNewOrder);
-    on<LogoutEvent>(_onLogout);
   }
 
   void _onLoadData(LoadDataEvent event, Emitter<HomeState> emit) async {
     emit(UpdateLoadingState(true, "Đang tải Menu..."));
 
     try {
-      // lay thong tin user --------------------------------------------------
-      var userJson = await LocalStorage.getItem(KeyLS.user_json);
-      log('userJson: $userJson');
-      var user = LoginResModel.fromJson(jsonDecode(userJson));
-      log('fullName: ${user.fullName!}');
-      // emit(UserInfoLoadedState(user.fullName!));
+      // // lay thong tin user --------------------------------------------------
+      // var userJson = await LocalStorage.getItem(KeyLS.user_json);
+      // log('userJson: $userJson');
+      // var user = LoginResModel.fromJson(jsonDecode(userJson));
+      // log('fullName: ${user.fullName!}');
+      // // emit(UserInfoLoadedState(user.fullName!));
 
       // Load List Item --------------------------------------------------
       var lstItem = <ItemModel>[];
@@ -84,7 +83,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           selOrderDone,
           lstOrderDone,
           lstDetail,
-          user.fullName,
+          // user.fullName,
         ));
       } else {
         emit(ItemsLoadedState(false, 'Tải Menu thất bại'));
@@ -94,7 +93,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           '',
           const <OrderModel>[],
           const <OrderDetailModel>[],
-          user.fullName,
+          // user.fullName,
         ));
       }
     } catch (e) {
@@ -136,7 +135,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void _onOrderSubmit(OrderSubmitEvent event, Emitter<HomeState> emit) async {
     emit(UpdateLoadingState(true, 'Đang tải...'));
-    await Future.delayed(const Duration(seconds: 2));
     try {
       var pinnedOrder = event.pinnedOrder;
       if (pinnedOrder == event.selectedOrder) {
@@ -224,11 +222,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   void _onOrderTabChange(OrderTabChangeEvent event, Emitter<HomeState> emit) {
     emit(OrderTabChangedState(
         event.isNew, event.lstCurrentOrder, event.lstCurrentOrderDetail));
-  }
-
-  void _onLogout(LogoutEvent event, Emitter<HomeState> emit) async {
-    await LocalStorage.removeAll();
-    emit(LogoutState());
   }
 
   void _onListenRecieveNewOrder(

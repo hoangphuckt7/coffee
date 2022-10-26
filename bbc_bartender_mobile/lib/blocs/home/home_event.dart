@@ -9,8 +9,6 @@ class InitialEvent extends HomeEvent {}
 
 class LoadDataEvent extends HomeEvent {}
 
-class LogoutEvent extends HomeEvent {}
-
 class UpdateLoadingEvent extends HomeEvent {
   final isLoading;
   final labelLoading;

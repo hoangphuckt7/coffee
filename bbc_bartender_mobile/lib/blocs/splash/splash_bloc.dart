@@ -1,22 +1,23 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:bbc_bartender_mobile/repositories/user_repo.dart';
-import 'package:bbc_bartender_mobile/utils/const.dart';
-import 'package:bbc_bartender_mobile/utils/local_storage.dart';
 import 'package:meta/meta.dart';
 
 part 'splash_event.dart';
 part 'splash_state.dart';
 
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
-  final UserRepo _userRepo;
-  SplashBloc(this._userRepo) : super(InitialState()) {
+  final UserRepo _userRepo = UserRepo();
+  SplashBloc() : super(InitialState()) {
     on<CheckLoginEvent>(_onCheckLogin);
   }
 
   void _onCheckLogin(CheckLoginEvent event, Emitter<SplashState> emit) async {
     emit(InitialState());
+    log('message');
     try {
       var isLoginSuccess = await _userRepo.checkLogin();
       if (isLoginSuccess) {
@@ -32,9 +33,10 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       //   emit(LoginSuccessState());
       // }
     } catch (e) {
-      print(e);
+      log(e.toString());
       emit(LoginFailState());
       // emit(ErrorState("Lỗi"));
     }
+    log('message 1');
   }
 }
