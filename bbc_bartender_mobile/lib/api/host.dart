@@ -9,5 +9,5 @@ class Host {
 
   static const String currentHost = _dockerHost;
 
-  static const String currentHostApi = '$_localIp/api';
+  static const String currentHostApi = '$currentHost/api';
 }

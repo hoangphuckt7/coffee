@@ -31,7 +31,7 @@ builder.Services.ConfigIdentityDbContext(connectionString);
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.BusinessServices();
 builder.Services.AddSignalR();
-//builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
+builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
 
 var app = builder.Build();
 
