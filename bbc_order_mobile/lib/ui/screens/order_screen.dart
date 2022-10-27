@@ -7,8 +7,11 @@ class OrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainFrame(
+        showBackBtn: true,
+        showUserInfo: false,
+        showLogoutBtn: false,
         child: SizedBox(
-      child: Text('Order Screen'),
-    ));
+          child: Text('Order Screen'),
+        ));
   }
 }

@@ -1,20 +1,24 @@
 // ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables
 
-part of 'login_bloc.dart';
+part of 'auth_bloc.dart';
 
 @immutable
-abstract class LoginEvent {}
+abstract class AuthEvent {}
 
-class DataChangedEvent extends LoginEvent {
+class DataChangedEvent extends AuthEvent {
   final username;
   final password;
 
   DataChangedEvent(this.username, this.password);
 }
 
-class SubmittedEvent extends LoginEvent {
+class SubmittedEvent extends AuthEvent {
   final username;
   final password;
 
   SubmittedEvent(this.username, this.password);
 }
+
+class LoadUserInfoEvent extends AuthEvent {}
+
+class LogoutEvent extends AuthEvent {}

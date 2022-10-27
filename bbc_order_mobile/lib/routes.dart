@@ -1,13 +1,9 @@
 // ignore_for_file: body_might_complete_normally_nullable
 
-import 'package:bbc_order_mobile/blocs/login/login_bloc.dart';
+import 'package:bbc_order_mobile/blocs/auth/auth_bloc.dart';
 import 'package:bbc_order_mobile/blocs/pick_tabel/pick_table_bloc.dart';
 import 'package:bbc_order_mobile/blocs/splash/splash_bloc.dart';
 import 'package:bbc_order_mobile/blocs/test/test_bloc.dart';
-import 'package:bbc_order_mobile/repositories/category_repo.dart';
-import 'package:bbc_order_mobile/repositories/item_repo.dart';
-import 'package:bbc_order_mobile/repositories/order_repo.dart';
-import 'package:bbc_order_mobile/repositories/user_repo.dart';
 import 'package:bbc_order_mobile/ui/screens/change_table_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/check_out_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/login_screen.dart';
@@ -50,15 +46,22 @@ class Routes {
       case RouteName.login:
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (context) => LoginBloc(),
+            create: (context) => AuthBloc(),
             child: LoginScreen(),
           ),
         );
 
       case RouteName.pickTable:
         return MaterialPageRoute(
-          builder: (context) => BlocProvider(
-            create: (context) => PickTableBloc()..add(LoadDataEvent()),
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => PickTableBloc()..add(LoadDataEvent()),
+              ),
+              BlocProvider(
+                create: (context) => AuthBloc()..add(LoadUserInfoEvent()),
+              ),
+            ],
             child: PickTableScreen(),
           ),
         );
