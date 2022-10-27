@@ -1,6 +1,6 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:bbc_order_mobile/blocs/login/login_bloc.dart';
+import 'package:bbc_order_mobile/blocs/auth/auth_bloc.dart';
 import 'package:bbc_order_mobile/routes.dart';
 import 'package:bbc_order_mobile/ui/controls/field_outline.dart';
 import 'package:bbc_order_mobile/ui/controls/fill_btn.dart';
@@ -25,7 +25,7 @@ class LoginScreen extends StatelessWidget {
     var cardWidth = screenWidth * .8;
     var cardHeight = screenHeight * .4;
 
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is SubmitSuccessState) {
           Navigator.pushNamed(context, RouteName.pickTable);
@@ -43,7 +43,7 @@ class LoginScreen extends StatelessWidget {
             tileMode: TileMode.mirror,
           ),
         ),
-        child: BlocBuilder<LoginBloc, LoginState>(
+        child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             String? errUsername;
             String? errPassword;
@@ -83,7 +83,7 @@ class LoginScreen extends StatelessWidget {
                               controller: usernameTEC,
                               errorText: errUsername,
                               onChanged: (val) {
-                                BlocProvider.of<LoginBloc>(context)
+                                BlocProvider.of<AuthBloc>(context)
                                     .add(DataChangedEvent(
                                   usernameTEC.text,
                                   passwordTEC.text,
@@ -97,7 +97,7 @@ class LoginScreen extends StatelessWidget {
                               eFieldType: EFieldType.password,
                               errorText: errPassword,
                               onChanged: (val) {
-                                BlocProvider.of<LoginBloc>(context)
+                                BlocProvider.of<AuthBloc>(context)
                                     .add(DataChangedEvent(
                                   usernameTEC.text,
                                   passwordTEC.text,
@@ -109,7 +109,7 @@ class LoginScreen extends StatelessWidget {
                               title: "Đăng nhập",
                               onPressed: () {
                                 FocusManager.instance.primaryFocus?.unfocus();
-                                BlocProvider.of<LoginBloc>(context)
+                                BlocProvider.of<AuthBloc>(context)
                                     .add(SubmittedEvent(
                                   usernameTEC.text,
                                   passwordTEC.text,

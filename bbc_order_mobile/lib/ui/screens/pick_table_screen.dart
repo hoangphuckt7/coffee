@@ -1,26 +1,27 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:bbc_order_mobile/blocs/pick_tabel/pick_table_bloc.dart';
-import 'package:bbc_order_mobile/repositories/category_repo.dart';
-import 'package:bbc_order_mobile/repositories/item_repo.dart';
-import 'package:bbc_order_mobile/repositories/order_repo.dart';
+import 'package:bbc_order_mobile/models/table/table_model.dart';
 import 'package:bbc_order_mobile/ui/controls/fill_btn.dart';
-import 'package:bbc_order_mobile/ui/widgets/appbar_custom.dart';
 import 'package:bbc_order_mobile/ui/widgets/frame_common.dart';
 import 'package:bbc_order_mobile/ui/widgets/processing.dart';
 import 'package:bbc_order_mobile/utils/enum.dart';
 import 'package:bbc_order_mobile/utils/function_common.dart';
 import 'package:bbc_order_mobile/utils/ui_setting.dart';
+import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PickTableScreen extends StatelessWidget {
   PickTableScreen({super.key});
   bool isLoading = false;
-
+  List<TableModel> lstTable = <TableModel>[];
   @override
   Widget build(BuildContext context) {
     return MainFrame(
+      showBackBtn: false,
+      showUserInfo: true,
+      showLogoutBtn: true,
       child: Stack(
         children: [
           _processState(context),
@@ -72,7 +73,17 @@ class PickTableScreen extends StatelessWidget {
           width: Fn.getScreenWidth(context) * .6,
           child: Row(
             children: const [
-              Text("Khu vực:"),
+              const Text("Khu vực:"),
+CustomDropdownButton2(
+        hint: 'Select Item',
+        dropdownItems: ,
+        value: selectedValue,
+        onChanged: (value) {
+          setState(() {
+            selectedValue = value;
+          });
+        },
+      ),
             ],
           ),
         ),

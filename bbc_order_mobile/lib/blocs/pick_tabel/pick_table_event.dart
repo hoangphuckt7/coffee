@@ -9,8 +9,6 @@ class InitialEvent extends PickTableEvent {}
 
 class LoadDataEvent extends PickTableEvent {}
 
-class LogoutEvent extends PickTableEvent {}
-
 class ErrorEvent extends PickTableEvent {
   final errMsg;
 
@@ -25,5 +23,9 @@ class UpdateLoadingEvent extends PickTableEvent {
 }
 
 class GoToChangeTableEvent extends PickTableEvent {}
+
+class SelectTableEvent extends PickTableEvent {}
+
+class SelectFloorEvent extends PickTableEvent {}
 
 class GoToOrderEvent extends PickTableEvent {}
