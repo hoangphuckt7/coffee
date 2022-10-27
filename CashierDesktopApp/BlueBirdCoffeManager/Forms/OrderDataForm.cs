@@ -542,9 +542,11 @@ namespace BlueBirdCoffeManager.Forms
                     return;
                 }
 
-                var data = await ApiBuilder.SendRequest("api/Order", Sessions.Order.CurrentOrder, RequestMethod.POST);
-
                 if (isTable.Checked) Order.CurrentOrder.TableId = tables[cbTable.SelectedIndex < 0 ? 0 : cbTable.SelectedIndex].Id;
+
+                if (!isTable.Checked) Order.CurrentOrder.TableId = null;
+
+                var data = await ApiBuilder.SendRequest("api/Order", Sessions.Order.CurrentOrder, RequestMethod.POST);
 
                 if (isTakeAway.Checked)
                 {
@@ -562,7 +564,7 @@ namespace BlueBirdCoffeManager.Forms
                     printBill.Print();
                 }
 
-                if (!isTable.Checked) Order.CurrentOrder.TableId = null;
+               
 
                 //Refresh
                 Order.CurrentOrder.OrderDetail = new List<OrderDetailViewModel>();
