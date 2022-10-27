@@ -16,7 +16,7 @@ builder.Services.ConfigCors();
 builder.Services.ConfigJwt(configuration);
 builder.Services.AddSwaggerWithAuthentication("Blue Bird Coffee API", "v1.0");
 
-//GetConnection string
+#region Get connection string - setup db
 string connectionString = "";
 try
 {
@@ -26,12 +26,22 @@ catch (Exception)
 {
     connectionString = configuration.GetConnectionString("BlueBirdCoffeeDatabase");
 }
+#endregion
 
 builder.Services.ConfigIdentityDbContext(connectionString);
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.BusinessServices();
 builder.Services.AddSignalR();
-builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
+
+#region setup application settings
+try
+{
+#pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+    builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
+#pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+}
+catch (Exception) { }
+#endregion
 
 var app = builder.Build();
 
