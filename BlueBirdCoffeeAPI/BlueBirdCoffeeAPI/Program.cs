@@ -15,11 +15,23 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigCors();
 builder.Services.ConfigJwt(configuration);
 builder.Services.AddSwaggerWithAuthentication("Blue Bird Coffee API", "v1.0");
-builder.Services.ConfigIdentityDbContext(configuration.GetConnectionString("BlueBirdCoffeeDatabase"));
+
+//GetConnection string
+string connectionString = "";
+try
+{
+    connectionString = EnvironmentHelper.GetValue("ConnectionString");
+}
+catch (Exception)
+{
+    connectionString = configuration.GetConnectionString("BlueBirdCoffeeDatabase");
+}
+
+builder.Services.ConfigIdentityDbContext(connectionString);
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.BusinessServices();
 builder.Services.AddSignalR();
-builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
+//builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
 
 var app = builder.Build();
 
