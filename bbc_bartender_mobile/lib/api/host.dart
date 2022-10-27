@@ -5,7 +5,7 @@ class Host {
 
   static const String _localIp = 'http://192.168.1.3:7244';
 
-  static const String _dockerHost = "http://bluebirdcoffee-api/";
+  static const String _dockerHost = "http://bluebirdcoffee-api";
 
   static const String currentHost = _dockerHost;
 
