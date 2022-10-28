@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,6 +29,7 @@ namespace Data.DataAccessLayer
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Table> Tables { get; set; }
         public virtual DbSet<SystemSetting> SystemSettings { get; set; }
+        public virtual DbSet<Coupon> Coupons { get; set; }
         #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -44,12 +46,20 @@ namespace Data.DataAccessLayer
             modelBuilder.Entity<BillOrder>().HasKey(s => new { s.OrderId, s.BillId });
             #endregion
 
+            #region unique fields
+            modelBuilder.Entity<Coupon>(entity =>
+            {
+                entity.HasIndex(e => e.Description).IsUnique();
+            });
+
+            #endregion
+
             #region Seed
             modelBuilder.Entity<SystemSetting>().HasData(
                 new SystemSetting()
                 {
                     Key = MandatorySettings.ORDER_RECEIVER.ToString(),
-                    Value = JsonConvert.SerializeObject(new List<string>() { SystemRoles.BARTENDER })
+                    Value = JsonConvert.SerializeObject(new List<string>() { SystemRoles.BARTENDER, SystemRoles.CASHIER })
                 });
 
             modelBuilder.Entity<IdentityRole>().HasData(

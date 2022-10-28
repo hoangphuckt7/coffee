@@ -8,27 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
-
 builder.Services.AddControllers((opt) => opt.Filters.Add<ExceptionFilter>());
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigCors();
 builder.Services.ConfigJwt(configuration);
 builder.Services.AddSwaggerWithAuthentication("Blue Bird Coffee API", "v1.0");
 
-#region Get connection string - setup db
-string connectionString = "";
-try
-{
-    connectionString = EnvironmentHelper.GetValue("ConnectionString");
-}
-catch (Exception)
-{
-    connectionString = configuration.GetConnectionString("BlueBirdCoffeeDatabase");
-}
-#endregion
-
-builder.Services.ConfigIdentityDbContext(connectionString);
+builder.Services.ConfigIdentityDbContext(configuration);
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.BusinessServices();
 builder.Services.AddSignalR();

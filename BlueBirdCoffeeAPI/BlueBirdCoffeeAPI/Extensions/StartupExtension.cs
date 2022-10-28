@@ -9,8 +9,18 @@ namespace BlueBirdCoffeeAPI.Extensions
 {
     public static class StartupExtensions
     {
-        public static void ConfigIdentityDbContext(this IServiceCollection services, string connectionString)
+        public static void ConfigIdentityDbContext(this IServiceCollection services, ConfigurationManager configuration)
         {
+            string connectionString = "";
+            try
+            {
+                connectionString = EnvironmentHelper.GetValue("ConnectionString");
+            }
+            catch (Exception)
+            {
+                connectionString = configuration.GetConnectionString("BlueBirdCoffeeDatabase");
+            }
+
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
             services.AddIdentity<User, IdentityRole>(options =>
@@ -39,6 +49,7 @@ namespace BlueBirdCoffeeAPI.Extensions
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<ISettingService, SettingService>();
             services.AddScoped<IBillService, BillService>();
+            services.AddScoped<ICouponService, CouponService>();
         }
 
         public static void ConfigCors(this IServiceCollection services)

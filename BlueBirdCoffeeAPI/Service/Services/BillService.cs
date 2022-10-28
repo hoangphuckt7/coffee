@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,11 +25,13 @@ namespace Service.Services
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ICouponService _couponService;
 
-        public BillService(AppDbContext dbContext, IMapper mapper)
+        public BillService(AppDbContext dbContext, IMapper mapper, ICouponService couponService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _couponService = couponService;
         }
 
         public StatisticsModels Statistics()
@@ -132,16 +135,18 @@ namespace Service.Services
             orders = orders.OrderByDescending(s => (s.OrderDetails.Select(s => s.ItemId).Intersect(model.RemovedItems.Select(s => s.ItemId))).Count()).ToList();
             var tables = _dbContext.Tables.Where(f => orders.Select(s => s.TableId).ToList().Contains(f.Id)).ToList();
 
-            Bill newBill = new Bill()
+            Bill newBill = new()
             {
                 Discount = model.Discout,
-                Coupon = model.Coupon,
+                CouponCode = model.Coupon,
                 IsTakeAway = model.IsTakeAway,
                 BillNumber = GetCurrentBillNumber(),
-                CasherId = userId
+                CasherId = userId,
             };
 
             _dbContext.Add(newBill);
+
+            double total = 0;
 
             foreach (var order in orders)
             {
@@ -173,6 +178,7 @@ namespace Service.Services
                         isMissing = true;
                     }
                     _dbContext.Update(item);
+                    total += item.FinalQuantity * item.Price;
                 }
 
                 order.IsMissing = isMissing;
@@ -183,7 +189,7 @@ namespace Service.Services
                     var table = tables.First(f => f.Id == order.TableId);
                     if (table.CurrentOrder > 0)
                     {
-                        table.CurrentOrder -= 1;
+                        table.CurrentOrder--;
                     }
                     _dbContext.Update(table);
                 }
@@ -196,6 +202,10 @@ namespace Service.Services
                 };
                 _dbContext.Add(billOrder);
             }
+
+            newBill.Total = total;
+            newBill.Coupon = _couponService.UseCoupon(model.Coupon, total);
+            _dbContext.Update(newBill);
 
             _dbContext.SaveChanges();
             return GetById(newBill.Id);
@@ -305,7 +315,7 @@ namespace Service.Services
                     Discount = bill.Discount,
                     IsTakeAway = bill.IsTakeAway,
                     BillNumber = bill.BillNumber,
-                    //Coupon = bill.Coupon,
+                    Coupon = bill.Coupon,
                 };
 
                 var orders = billOrders.Where(f => f.BillId == bill.Id).ToList();

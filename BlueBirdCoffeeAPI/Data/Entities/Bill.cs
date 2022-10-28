@@ -10,10 +10,12 @@ namespace Data.Entities
     public class Bill: BaseEntity
     {
         public string? ItemMissingReason { get; set; }
-        public string? Coupon { get; set; }
-        public double Discount { get; set; }
+        public double? Coupon { get; set; }
+        public double? Discount { get; set; }
         public bool IsTakeAway { get; set; }
         public int BillNumber { get; set; }
+        public double Total { get; set; }
+        public string CouponCode { get; set; }
 
         [ForeignKey("Casher")]
         public string? CasherId { get; set; }

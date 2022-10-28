@@ -49,11 +49,6 @@ namespace Data.ViewModels
         public Guid ItemId { get; set; }
     }
 
-    public class SetMissingItemModel
-    {
-        public List<SetMissingItem> MissingItems { get; set; }
-    }
-
     public class CheckoutModel
     {
         public List<Guid> Orders { get; set; }

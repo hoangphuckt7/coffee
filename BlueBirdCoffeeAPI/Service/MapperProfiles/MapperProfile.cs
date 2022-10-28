@@ -40,6 +40,16 @@ namespace Service.MapperProfiles
 
             CreateMap<OrderDetail, OrderDetailViewModel>()
                 .ReverseMap();
+
+            //Coupon
+            CreateMap<Coupon, CouponAddModel>()
+                .ReverseMap();
+
+            CreateMap<Coupon, CouponViewModel>()
+                .ReverseMap();
+
+            CreateMap<Coupon, CouponUseableModel>()
+                .ReverseMap();
         }
     }
 }
