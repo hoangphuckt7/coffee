@@ -23,13 +23,17 @@ class LineInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String convertTitle = '';
+    if (title.isNotEmpty) {
+      convertTitle = '$title:';
+    }
     return Row(
       children: [
         Expanded(
           flex: 1,
           child: SizedBox(
             child: Text(
-              '$title:',
+              convertTitle,
               style: TextStyle(
                 color: titleColor,
                 fontWeight: FontWeight.bold,

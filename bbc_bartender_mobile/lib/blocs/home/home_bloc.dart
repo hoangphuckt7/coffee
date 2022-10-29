@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:bbc_bartender_mobile/api/signalr.dart';
 import 'package:bbc_bartender_mobile/models/item/item_model.dart';
-import 'package:bbc_bartender_mobile/models/login/login_res_model/login_res_model.dart';
 import 'package:bbc_bartender_mobile/models/order/detail_dct_model.dart';
 import 'package:bbc_bartender_mobile/models/order/order_detail_model.dart';
 import 'package:bbc_bartender_mobile/models/order/order_model.dart';
@@ -37,13 +36,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(UpdateLoadingState(true, "Đang tải Menu..."));
 
     try {
-      // // lay thong tin user --------------------------------------------------
-      // var userJson = await LocalStorage.getItem(KeyLS.user_json);
-      // log('userJson: $userJson');
-      // var user = LoginResModel.fromJson(jsonDecode(userJson));
-      // log('fullName: ${user.fullName!}');
-      // // emit(UserInfoLoadedState(user.fullName!));
-
       // Load List Item --------------------------------------------------
       var lstItem = <ItemModel>[];
       var lstItemJson = await LocalStorage.getItem(KeyLS.items);
@@ -65,7 +57,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         var lstOrder = <OrderModel>[];
         var lstDetail = <OrderDetailModel>[];
         if (barOrder!.listOrderNew.isNotEmpty) {
-          lstOrder = _convertLstOrder(barOrder.listOrderNew, lstItem);
+          lstOrder = _assignItemToOrder(barOrder.listOrderNew, lstItem);
           selOrder = lstOrder[0].id!;
           lstDetail = lstOrder[0].orderDetails!;
         }
@@ -73,7 +65,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         String selOrderDone = '';
         var lstOrderDone = <OrderModel>[];
         if (barOrder.listOrderCompleted.isNotEmpty) {
-          lstOrderDone = _convertLstOrder(barOrder.listOrderCompleted, lstItem);
+          lstOrderDone =
+              _assignItemToOrder(barOrder.listOrderCompleted, lstItem);
           selOrderDone = lstOrderDone[0].id!;
         }
 
@@ -232,7 +225,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       List<OrderModel> lstOrders = List<OrderModel>.from(
         jsonDecode(json).map((model) => OrderModel.fromJson(model)),
       );
-      log('hub: $json');
+      // log('hub: $json');
       add(RecieveNewOrderEvent(lstOrders));
     });
   }
@@ -250,7 +243,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } else {
       lstItem = await _itemRepo.getAll();
     }
-    List<OrderModel> lstOrder = _convertLstOrder(event.lstOrder, lstItem);
+    List<OrderModel> lstOrder = _assignItemToOrder(event.lstOrder, lstItem);
     var lstDetail = <OrderDetailModel>[];
     if (lstOrder.isNotEmpty) {
       lstDetail = lstOrder[0].orderDetails!;
@@ -258,34 +251,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(RecieveNewOrderState(lstOrder, lstDetail));
   }
 
-  List<OrderModel> _convertLstOrder(
+  List<OrderModel> _assignItemToOrder(
       List<OrderModel> lstOrder, List<ItemModel> lstItem) {
-    var count = 0;
     for (var order in lstOrder) {
-      var lstOD = <OrderDetailModel>[];
-
       for (var detail in order.orderDetails!) {
         detail.item = lstItem.firstWhere((x) => x.id == detail.itemId);
         if (detail.description!.isNotEmpty) {
-          var lstDct = List<DetailDctModel>.from(
+          detail.listDescription = List<DetailDctModel>.from(
             jsonDecode(detail.description!)
                 .map((model) => DetailDctModel.fromJson(model)),
           );
-          for (var dct in lstDct) {
-            var detailClone = OrderDetailModel.clone(detail);
-            detailClone.dctModel = dct;
-            detailClone.quantity = 1;
-            detailClone.uniqueKey = count;
-            lstOD.add(detailClone);
-            count++;
-          }
-        } else {
-          detail.uniqueKey = count;
-          lstOD.add(detail);
-          count++;
         }
       }
-      order.orderDetails = lstOD;
     }
     return lstOrder;
   }

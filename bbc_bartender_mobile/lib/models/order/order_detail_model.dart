@@ -8,26 +8,25 @@ part 'order_detail_model.g.dart';
 
 @JsonSerializable()
 class OrderDetailModel {
-  int? uniqueKey;
   final DateTime? dateUpdated;
   int? quantity;
   final int? finalQuantity;
   final String? missingReason;
   final double? price;
   final String? description;
-  DetailDctModel? dctModel;
+  List<DetailDctModel?>? listDescription = <DetailDctModel>[];
   final String? itemId;
   ItemModel? item;
   final String? orderId;
 
   OrderDetailModel(
-    this.uniqueKey,
     this.dateUpdated,
     this.quantity,
     this.finalQuantity,
     this.missingReason,
     this.price,
     this.description,
+    this.listDescription,
     this.itemId,
     this.item,
     this.orderId,

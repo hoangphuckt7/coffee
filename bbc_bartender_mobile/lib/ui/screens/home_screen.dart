@@ -56,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       builder: (context, state) {
         String loadingMsg = "";
         if (state is ErrorState) {
+          isLoading = false;
           Fn.showToast(EToast.danger, state.errMsg.toString());
         } else if (state is UpdateLoadingState) {
           isLoading = true;
@@ -135,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 var orderDetailModel = lstOrderDetails[i];
                                 return BlocBuilder<HomeBloc, HomeState>(
                                   builder: (context, state) {
-                                    List<int> itemCheck = <int>[];
+                                    List<String> itemCheck = <String>[];
                                     if (state is ItemCheckboxChangedState) {
                                       itemCheck = state.check;
                                     }
@@ -146,12 +147,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       onItemCheckChanged: (value) {
                                         if (value == true) {
                                           itemCheck
-                                              .add(orderDetailModel.uniqueKey!);
+                                              .add(orderDetailModel.itemId!);
                                         } else {
                                           itemCheck = itemCheck
                                               .where((x) =>
-                                                  x !=
-                                                  orderDetailModel.uniqueKey!)
+                                                  x != orderDetailModel.itemId!)
                                               .toList();
                                         }
                                         BlocProvider.of<HomeBloc>(context).add(
