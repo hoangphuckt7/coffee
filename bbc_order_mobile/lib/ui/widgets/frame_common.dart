@@ -12,7 +12,7 @@ class MainFrame extends StatelessWidget {
     super.key,
     this.showUserInfo = false,
     this.showLogoutBtn = false,
-    this.showBackBtn = true,
+    this.showBackBtn = false,
     this.onClickBackBtn,
     required this.child,
   });
@@ -20,20 +20,14 @@ class MainFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: MColor.white,
       appBar: AppbarCustom(
         showUserInfo: showUserInfo,
         showLogoutBtn: showLogoutBtn,
         showBackBtn: showBackBtn,
         onClickBackBtn: onClickBackBtn,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Container(
-          alignment: Alignment.center,
-          color: MColor.white,
-          child: child,
-        ),
-      ),
+      body: child,
     );
   }
 }

@@ -13,4 +13,6 @@ class KeyLS {
   static const String login_resp = "login_resp";
   static const String cates = "cates";
   static const String items = "items";
+  static const String tables = "tables";
+  static const String floors = "floors";
 }

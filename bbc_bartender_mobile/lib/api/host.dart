@@ -7,7 +7,7 @@ class Host {
 
   static const String _dockerHost = "http://192.168.0.102:8000";
 
-  static const String currentHost = _dockerHost;
+  static const String currentHost = _localIp;
 
   static const String currentHostApi = '$currentHost/api';
 }

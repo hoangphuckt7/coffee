@@ -7,7 +7,7 @@ abstract class PickTableEvent {}
 
 class InitialEvent extends PickTableEvent {}
 
-class LoadDataEvent extends PickTableEvent {}
+class LoadFloorTableEvent extends PickTableEvent {}
 
 class ErrorEvent extends PickTableEvent {
   final errMsg;
@@ -15,17 +15,14 @@ class ErrorEvent extends PickTableEvent {
   ErrorEvent(this.errMsg);
 }
 
-class UpdateLoadingEvent extends PickTableEvent {
-  final isLoading;
-  final labelLoading;
+class ChangeFloorEvent extends PickTableEvent {
+  final floor;
 
-  UpdateLoadingEvent(this.isLoading, this.labelLoading);
+  ChangeFloorEvent(this.floor);
 }
 
-class GoToChangeTableEvent extends PickTableEvent {}
+class ChangeTableEvent extends PickTableEvent {
+  final table;
 
-class SelectTableEvent extends PickTableEvent {}
-
-class SelectFloorEvent extends PickTableEvent {}
-
-class GoToOrderEvent extends PickTableEvent {}
+  ChangeTableEvent(this.table);
+}
