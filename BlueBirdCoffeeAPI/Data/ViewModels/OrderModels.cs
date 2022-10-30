@@ -53,8 +53,8 @@ namespace Data.ViewModels
     {
         public List<Guid> Orders { get; set; }
         public bool IsTakeAway { get; set; }
-        public double Discout { get; set; }
-        public string Coupon { get; set; }
+        public double? Discout { get; set; }
+        public string? Coupon { get; set; }
         public List<ItemCheckoutModel> RemovedItems { get; set; }
     }
 

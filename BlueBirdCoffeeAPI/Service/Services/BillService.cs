@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Castle.Core.Internal;
+using Data.AppException;
 using Data.DataAccessLayer;
 using Data.Entities;
 using Data.ViewModels;
@@ -94,121 +96,145 @@ namespace Service.Services
         }
         public BillViewModel Checkout(CheckoutModel model, string userId)
         {
-            var orders = _dbContext.Orders.Include(f => f.OrderDetails).Where(f => model.Orders.Contains(f.Id)).ToList();
+            var trans = _dbContext.Database.BeginTransaction();
 
-            var removedOrders = new List<Order>();
-            foreach (var order in orders)
+            Guid id;
+            try
             {
-                var check = false;
-                foreach (var item in order.OrderDetails)
+                var orders = _dbContext.Orders.Include(f => f.OrderDetails).Where(f => model.Orders.Contains(f.Id)).ToList();
+
+                var removedOrders = new List<Order>();
+                foreach (var order in orders)
                 {
-                    var x = model.RemovedItems.FirstOrDefault(f => f.ItemId == item.ItemId);
-                    if (x == null || x.Quantity < item.Quantity)
-                    {
-                        check = true;
-                        break;
-                    }
-                }
-                if (!check)
-                {
-                    removedOrders.Add(order);
+                    var check = false;
                     foreach (var item in order.OrderDetails)
                     {
-                        var x = model.RemovedItems.First(f => f.ItemId == item.ItemId);
-                        model.RemovedItems.Remove(x);
-                        if (x.Quantity > item.Quantity)
+                        var x = model.RemovedItems.FirstOrDefault(f => f.ItemId == item.ItemId);
+                        if (x == null || x.Quantity < item.Quantity)
                         {
-                            x.Quantity -= item.Quantity;
-                            model.RemovedItems.Add(x);
+                            check = true;
+                            break;
                         }
                     }
-                    order.IsMissing = true;
-                    order.IsCheckout = true;
-                    _dbContext.Update(order);
+                    if (!check)
+                    {
+                        removedOrders.Add(order);
+                        foreach (var item in order.OrderDetails)
+                        {
+                            var x = model.RemovedItems.First(f => f.ItemId == item.ItemId);
+                            model.RemovedItems.Remove(x);
+                            if (x.Quantity > item.Quantity)
+                            {
+                                x.Quantity -= item.Quantity;
+                                model.RemovedItems.Add(x);
+                            }
+                        }
+                        order.IsMissing = true;
+                        order.IsCheckout = true;
+                        _dbContext.Update(order);
+                    }
                 }
-            }
-            foreach (var item in removedOrders)
-            {
-                orders.Remove(orders.First(f => f.Id == item.Id));
-            }
-
-            orders = orders.OrderByDescending(s => (s.OrderDetails.Select(s => s.ItemId).Intersect(model.RemovedItems.Select(s => s.ItemId))).Count()).ToList();
-            var tables = _dbContext.Tables.Where(f => orders.Select(s => s.TableId).ToList().Contains(f.Id)).ToList();
-
-            Bill newBill = new()
-            {
-                Discount = model.Discout,
-                CouponCode = model.Coupon,
-                IsTakeAway = model.IsTakeAway,
-                BillNumber = GetCurrentBillNumber(),
-                CasherId = userId,
-            };
-
-            _dbContext.Add(newBill);
-
-            double total = 0;
-
-            foreach (var order in orders)
-            {
-                bool isMissing = false;
-                foreach (var item in order.OrderDetails)
+                foreach (var item in removedOrders)
                 {
-                    var x = model.RemovedItems.FirstOrDefault(f => f.ItemId == item.ItemId);
-                    if (x == null)
+                    orders.Remove(orders.First(f => f.Id == item.Id));
+                }
+
+                orders = orders.OrderByDescending(s => (s.OrderDetails.Select(s => s.ItemId).Intersect(model.RemovedItems.Select(s => s.ItemId))).Count()).ToList();
+                var tables = _dbContext.Tables.Where(f => orders.Select(s => s.TableId).ToList().Contains(f.Id)).ToList();
+
+                Bill newBill = new()
+                {
+                    Discount = model.Discout,
+                    CouponCode = model.Coupon,
+                    IsTakeAway = model.IsTakeAway,
+                    BillNumber = GetCurrentBillNumber(),
+                    CasherId = userId,
+                };
+
+                _dbContext.Add(newBill);
+
+                double total = 0;
+
+                foreach (var order in orders)
+                {
+                    bool isMissing = false;
+                    foreach (var item in order.OrderDetails)
                     {
-                        item.FinalQuantity = item.Quantity;
-                    }
-                    else
-                    {
-                        model.RemovedItems.Remove(x);
-                        if (x.Quantity == item.Quantity)
+                        var x = model.RemovedItems.FirstOrDefault(f => f.ItemId == item.ItemId);
+                        if (x == null)
                         {
-                            item.FinalQuantity = 0;
-                        }
-                        else if (x.Quantity < item.Quantity)
-                        {
-                            item.FinalQuantity -= x.Quantity;
+                            item.FinalQuantity = item.Quantity;
                         }
                         else
                         {
-                            item.FinalQuantity = item.Quantity;
-                            x.Quantity -= item.Quantity;
-                            model.RemovedItems.Add(x);
+                            model.RemovedItems.Remove(x);
+                            if (x.Quantity == item.Quantity)
+                            {
+                                item.FinalQuantity = 0;
+                            }
+                            else if (x.Quantity < item.Quantity)
+                            {
+                                item.FinalQuantity -= x.Quantity;
+                            }
+                            else
+                            {
+                                item.FinalQuantity = item.Quantity;
+                                x.Quantity -= item.Quantity;
+                                model.RemovedItems.Add(x);
+                            }
+                            isMissing = true;
                         }
-                        isMissing = true;
+                        _dbContext.Update(item);
+                        total += item.FinalQuantity * item.Price;
                     }
-                    _dbContext.Update(item);
-                    total += item.FinalQuantity * item.Price;
-                }
 
-                order.IsMissing = isMissing;
-                order.IsCheckout = true;
+                    order.IsMissing = isMissing;
+                    order.IsCheckout = true;
 
-                if (order.TableId != null)
-                {
-                    var table = tables.First(f => f.Id == order.TableId);
-                    if (table.CurrentOrder > 0)
+                    if (order.TableId != null)
                     {
-                        table.CurrentOrder--;
+                        var table = tables.First(f => f.Id == order.TableId);
+                        if (table.CurrentOrder > 0)
+                        {
+                            table.CurrentOrder--;
+                        }
+                        _dbContext.Update(table);
                     }
-                    _dbContext.Update(table);
-                }
-                _dbContext.Update(order);
+                    _dbContext.Update(order);
 
-                BillOrder billOrder = new BillOrder()
+                    BillOrder billOrder = new BillOrder()
+                    {
+                        BillId = newBill.Id,
+                        OrderId = order.Id
+                    };
+                    _dbContext.Add(billOrder);
+                }
+
+                _dbContext.SaveChanges();
+
+                newBill.Total = total;
+                if (!string.IsNullOrEmpty(model.Coupon))
                 {
-                    BillId = newBill.Id,
-                    OrderId = order.Id
-                };
-                _dbContext.Add(billOrder);
+                    newBill.Coupon = _couponService.UseCoupon(model.Coupon, total);
+                    newBill.CouponCode = model.Coupon;
+                }
+                _dbContext.Update(newBill);
+                _dbContext.SaveChanges();
+                id = newBill.Id;
+
+                trans.Commit();
+            }
+            catch (Exception e)
+            {
+                trans.Rollback();
+                throw new AppException("Error: " + e.Message);
+            }
+            finally
+            {
+                trans.Dispose();
             }
 
-            newBill.Total = total;
-            newBill.Coupon = _couponService.UseCoupon(model.Coupon, total);
-            _dbContext.Update(newBill);
-
-            _dbContext.SaveChanges();
-            return GetById(newBill.Id);
+            return GetById(id);
         }
         public List<BillViewModel> History(int count)
         {

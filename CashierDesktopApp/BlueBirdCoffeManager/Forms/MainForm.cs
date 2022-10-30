@@ -35,7 +35,12 @@ namespace BlueBirdCoffeManager.Forms
             #region screen setup
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
+
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
+
+            //this.ControlBox = false;
+            //this.Text = String.Empty;
 
             this.menuPanel.Left = 0;
             this.menuPanel.Top = 0;
@@ -181,8 +186,9 @@ namespace BlueBirdCoffeManager.Forms
             // If the no button was pressed ...
             if (result == DialogResult.OK)
             {
-                MainForm mainScreen = (MainForm)Application.OpenForms["MainForm"];
-                mainScreen.Close();
+                this.Close();
+                //MainForm mainScreen = (MainForm)Application.OpenForms["MainForm"];
+                //mainScreen.Close();
             }
         }
 

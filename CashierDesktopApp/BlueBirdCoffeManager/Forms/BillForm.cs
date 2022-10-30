@@ -71,16 +71,8 @@ namespace BlueBirdCoffeManager.Forms
             oldBillPanel.Height = Height - areaPanel.Height - areaPanel.Top * 2 - 20;
             oldBillPanel.Width = areaPanel.Width - 1;
             oldBillPanel.AutoScroll = true;
+            //oldBillPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
             oldBillPanel.BackColor = Color.White;
-
-            oldBillPanel.Paint += (sender, e) =>
-            {
-                ControlPaint.DrawBorder(e.Graphics, oldBillPanel.ClientRectangle,
-                        Color.FromKnownColor(KnownColor.Control), 1, ButtonBorderStyle.Solid, // left
-                        Color.FromKnownColor(KnownColor.Control), 1, ButtonBorderStyle.Solid, // top
-                        Color.FromKnownColor(KnownColor.DarkGray), 0, ButtonBorderStyle.Solid, // right
-                        Color.FromKnownColor(KnownColor.DarkGray), 0, ButtonBorderStyle.Solid);// bottom
-            };
 
             #region Area Setup
             areaToolPanel.Left = 0;
@@ -167,7 +159,8 @@ namespace BlueBirdCoffeManager.Forms
 
             foreach (var item in oldOrdersData)
             {
-                var total = item.OrderDetailViewModels.Select(s => s.Quantity * double.Parse(s.Description)).Sum();
+                double all = (double)(item.OrderDetailViewModels.Select(s => s.Quantity * double.Parse(s.Description)).Sum() - item.Discount - (item.Coupon == null ? 0 : item.Coupon.Value));
+                double total = all > 0 ? all : 0;
 
                 var borderPanel = new Panel()
                 {
@@ -188,7 +181,7 @@ namespace BlueBirdCoffeManager.Forms
                 {
                     Font = Sessions.Sessions.NORMAL_FONT,
                     Top = timeLabel.Top + timeLabel.Height,
-                    Text = "Thời gian: " + BillPrinter.FormatDate(item.DateCreated) + " - Tổng: " + BillPrinter.FormatPrice(total) + "₫"
+                    Text = "Thời gian: " + BillPrinter.FormatDate(item.DateCreated) + " - Tổng: " + ((total == 0) ? "0₫" : BillPrinter.FormatPrice(total) + "₫")
                 };
                 typeLabel.Width = (int)(typeLabel.Text.Length * typeLabel.Font.Size);
 
@@ -196,7 +189,8 @@ namespace BlueBirdCoffeManager.Forms
 
                 curTop += borderPanel.Height + 5;
 
-                borderPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
+                var historyColor = Color.FromArgb(229, 242, 126);
+                borderPanel.BackColor = historyColor;
                 borderPanel.Paint += (sender, e) =>
                 {
                     ControlPaint.DrawBorder(e.Graphics, borderPanel.ClientRectangle,
@@ -219,7 +213,7 @@ namespace BlueBirdCoffeManager.Forms
 
                 borderPanel.MouseLeave += (sender, e) =>
                 {
-                    borderPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
+                    borderPanel.BackColor = historyColor;
                 };
 
                 timeLabel.MouseMove += (sender, e) =>
@@ -229,7 +223,7 @@ namespace BlueBirdCoffeManager.Forms
 
                 timeLabel.MouseLeave += (sender, e) =>
                 {
-                    borderPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
+                    borderPanel.BackColor = historyColor;
                 };
 
                 typeLabel.MouseMove += (sender, e) =>
@@ -239,7 +233,7 @@ namespace BlueBirdCoffeManager.Forms
 
                 typeLabel.MouseLeave += (sender, e) =>
                 {
-                    borderPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
+                    borderPanel.BackColor = historyColor;
                 };
                 #endregion
 

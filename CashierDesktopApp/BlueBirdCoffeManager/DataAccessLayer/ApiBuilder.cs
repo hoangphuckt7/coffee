@@ -58,12 +58,11 @@ namespace BlueBirdCoffeManager.DataAccessLayer
                     string message = "Bạn không có quyền xử dụng tính năng này";
                     string caption = "Thông báo";
                     MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-
                 }
                 else
                 {
                     string caption = "Lỗi";
-                    string? x = responseMessage.Content.ToString();
+                    string? x = await responseMessage.Content.ReadAsStringAsync();
                     MessageBox.Show(x, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }

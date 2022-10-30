@@ -68,7 +68,9 @@ namespace BlueBirdCoffeManager.Utils
 
                     g.DrawString(models.OrderDetail[i].Quantity + "", font, Brushes.Black, 120, line);
                     g.DrawString(FormatPrice(itemData.Price), font, Brushes.Black, 150, line);
-                    g.DrawString(FormatPrice(itemData.Price * models.OrderDetail[i].Quantity), font, Brushes.Black, 220, line);
+
+                    double subTotal = itemData.Price * models.OrderDetail[i].Quantity;
+                    g.DrawString(FormatPrice(subTotal), font, Brushes.Black, subTotal > 1000000 ? 210 : 220, line);
                     line = line + 20 + (nameLines.Count - 1) * 20;
                 }
 
@@ -77,8 +79,9 @@ namespace BlueBirdCoffeManager.Utils
                 g.DrawString("Tổng: ", boldFont, Brushes.Black, 0, line);
 
                 var total = models.OrderDetail.Select(s => Sessions.ItemSession.ItemData.First(f => f.Id == s.ItemId).Price * s.Quantity).Sum();
+
                 var stringTotal = FormatPrice(total) + "₫";
-                g.DrawString(stringTotal, boldFont, Brushes.Black, 295 - stringTotal.Length * 13, line);
+                g.DrawString(stringTotal, boldFont, Brushes.Black, 295 - GetLeft(stringTotal.Length), line);
 
                 double totalDiscount = 0;
                 if (models.Discount != null && models.Discount != 0)
@@ -87,7 +90,7 @@ namespace BlueBirdCoffeManager.Utils
                     g.DrawString("Giảm giá: ", boldFont, Brushes.Black, 0, line);
                     totalDiscount += models.Discount.Value;
                     var stringDiscount = FormatPrice(models.Discount.Value) + "₫";
-                    g.DrawString(stringDiscount, boldFont, Brushes.Black, 295 - stringDiscount.Length * 13, line);
+                    g.DrawString(stringDiscount, boldFont, Brushes.Black, 295 - GetLeft(stringDiscount.Length), line);
                 }
 
                 if (models.Coupon != null && models.Coupon != 0)
@@ -96,8 +99,8 @@ namespace BlueBirdCoffeManager.Utils
                     g.DrawString("Mã giảm giá: ", boldFont, Brushes.Black, 0, line);
 
                     totalDiscount += models.Coupon.Value;
-                    var stringDiscount = FormatPrice(models.Coupon.Value * total / 100) + "₫";
-                    g.DrawString(stringDiscount, font, Brushes.Black, 295 - stringDiscount.Length * 13, line);
+                    var stringDiscount = FormatPrice(models.Coupon.Value) + "₫";
+                    g.DrawString(stringDiscount, boldFont, Brushes.Black, 295 - GetLeft(stringDiscount.Length), line);
                 }
 
                 if ((models.Discount != null && models.Discount != 0) || (models.Coupon != null && models.Coupon != 0))
@@ -105,8 +108,9 @@ namespace BlueBirdCoffeManager.Utils
                     line += 30;
                     g.DrawString("Phải thanh toán: ", boldFont, Brushes.Black, 0, line);
 
-                    var stringDiscount = FormatPrice(total - totalDiscount) + "₫";
-                    g.DrawString(stringDiscount, boldFont, Brushes.Black, 295 - stringDiscount.Length * 13, line);
+                    var stringDiscount = (total - totalDiscount) > 0 ? (FormatPrice(total - totalDiscount) + "₫") : "0₫";
+
+                    g.DrawString(stringDiscount, boldFont, Brushes.Black, 295 - GetLeft(stringDiscount.Length), line);
                 }
 
                 line += 50;
@@ -116,6 +120,35 @@ namespace BlueBirdCoffeManager.Utils
             System.Drawing.Imaging.BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format1bppIndexed);
             Bitmap newBitmap = new(270, line, bmpData.Stride, System.Drawing.Imaging.PixelFormat.Format1bppIndexed, bmpData.Scan0);
             return newBitmap;
+        }
+
+        private static int GetLeft(int length)
+        {
+            if (length == 4)
+            {
+                return (int)(14.5 * length);
+            }
+            if (length == 5)
+            {
+                return (int)(14 * length);
+            }
+            if (length == 6)
+            {
+                return (int)(13.5 * length);
+            }
+            if (length == 7)
+            {
+                return (int)(13 * length);
+            }
+            if (length == 8)
+            {
+                return (int)(12.5 * length);
+            }
+            if (length == 10)
+            {
+                return (int)(11.5 * length);
+            }
+            return 25 * length;
         }
 
         public static string FormatDate(DateTime? date)

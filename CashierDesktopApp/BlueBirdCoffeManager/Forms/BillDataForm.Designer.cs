@@ -53,6 +53,7 @@
             this.txtCustomerP = new System.Windows.Forms.TextBox();
             this.txtEx = new System.Windows.Forms.Label();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
+            this.btnApplyCode = new BlueBirdCoffeManager.Utils.RoundedButton();
             ((System.ComponentModel.ISupportInitialize)(this.oldBillPicture)).BeginInit();
             this.dataPanel.SuspendLayout();
             this.SuspendLayout();
@@ -184,7 +185,7 @@
             // 
             // txtapCoupon
             // 
-            this.txtapCoupon.Location = new System.Drawing.Point(638, 577);
+            this.txtapCoupon.Location = new System.Drawing.Point(529, 577);
             this.txtapCoupon.Name = "txtapCoupon";
             this.txtapCoupon.Size = new System.Drawing.Size(100, 23);
             this.txtapCoupon.TabIndex = 16;
@@ -282,11 +283,31 @@
             // 
             this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage);
             // 
+            // btnApplyCode
+            // 
+            this.btnApplyCode.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnApplyCode.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnApplyCode.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btnApplyCode.BorderRadius = 40;
+            this.btnApplyCode.BorderSize = 0;
+            this.btnApplyCode.FlatAppearance.BorderSize = 0;
+            this.btnApplyCode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnApplyCode.ForeColor = System.Drawing.Color.White;
+            this.btnApplyCode.Location = new System.Drawing.Point(638, 573);
+            this.btnApplyCode.Name = "btnApplyCode";
+            this.btnApplyCode.Size = new System.Drawing.Size(150, 40);
+            this.btnApplyCode.TabIndex = 27;
+            this.btnApplyCode.Text = "Áp dụng";
+            this.btnApplyCode.TextColor = System.Drawing.Color.White;
+            this.btnApplyCode.UseVisualStyleBackColor = false;
+            this.btnApplyCode.Click += new System.EventHandler(this.btnApplyCode_Click);
+            // 
             // BillDataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(872, 698);
+            this.Controls.Add(this.btnApplyCode);
             this.Controls.Add(this.txtEx);
             this.Controls.Add(this.txtCustomerP);
             this.Controls.Add(this.lbEx);
@@ -346,5 +367,6 @@
         private TextBox txtCustomerP;
         private Label txtEx;
         private System.Drawing.Printing.PrintDocument printDocument1;
+        private Utils.RoundedButton btnApplyCode;
     }
 }
