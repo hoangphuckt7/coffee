@@ -156,11 +156,20 @@ namespace BlueBirdCoffeManager.Forms
                 lbaTotal.Left = btnCheckout.Left;
 
                 txtapCoupon.Top = lbapCp.Top;
-                txtapCoupon.Left = btnCheckout.Left + btnCheckout.Width - txtapCoupon.Width;
+
+                btnApplyCode.Width = (int)(btnApplyCode.Font.Size * btnApplyCode.Text.Length) + 20;
+                btnApplyCode.Top = lbapCp.Top - txtapCoupon.Height / 2;
+                btnApplyCode.Left = btnCheckout.Left + btnCheckout.Width - btnApplyCode.Width;
+                btnApplyCode.BackColor = Sessions.Sessions.BUTTON_COLOR;
+
+                txtapCoupon.Left = btnCheckout.Left + btnCheckout.Width - txtapCoupon.Width - btnApplyCode.Width;
 
                 txtapDiscout.Top = lbapDiscout.Top;
-                txtapDiscout.Left = btnCheckout.Left + btnCheckout.Width - txtapDiscout.Width;
+                txtapDiscout.Left = txtapCoupon.Left;
+                txtapDiscout.Width = txtapCoupon.Width + btnApplyCode.Width;
+
                 txtapDiscout.RightToLeft = RightToLeft.Yes;
+                txtapCoupon.RightToLeft = RightToLeft.Yes;
 
                 txtEx.Top = lbEx.Top;
                 txtEx.Left = btnCheckout.Left + btnCheckout.Width - txtEx.Width;
@@ -465,42 +474,7 @@ namespace BlueBirdCoffeManager.Forms
 
         private void txtapDiscout_TextChanged(object sender, EventArgs e)
         {
-            CultureInfo culture = new CultureInfo("vi-VN");
-            if (txtapDiscout.Text.Length == 0)
-            {
-                txtapDiscout.Text = "0";
-            }
-            else
-            {
-                decimal value = decimal.Parse(txtapDiscout.Text, NumberStyles.AllowThousands);
-                txtapDiscout.Text = String.Format(culture, "{0:N0}", value);
-                txtapDiscout.Select(txtapDiscout.Text.Length, 0);
-            }
-
-            var totalCash = total.Text.Replace("₫", "");
-            totalCash = totalCash.Replace(".", "");
-
-            var discout = double.Parse(txtapDiscout.Text);
-            txtDiscout.Text = discout.ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
-
-            var cash = int.Parse(totalCash);
-
-            if (discout <= cash)
-            {
-                txtCash.Text = (cash - discout).ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
-
-            }
-            else
-            {
-                txtCash.Text = "0₫";
-            }
-
-            txtCash.Left = btnCheckout.Left + btnCheckout.Width - txtCash.Width;
-            txtDiscout.Left = btnCheckout.Left + btnCheckout.Width - txtDiscout.Width;
-
-            var temp = txtCustomerP.Text;
-            txtCustomerP.Text = "0";
-            txtCustomerP.Text = temp;
+            CalculateTotal(null);
         }
 
         private async void btnCheckout_Click(object sender, EventArgs e)
@@ -561,5 +535,68 @@ namespace BlueBirdCoffeManager.Forms
             e.Graphics.DrawImage(_img, 0, 0);
         }
 
+        private async void btnApplyCode_Click(object sender, EventArgs e)
+        {
+            var totalCash = total.Text.Replace("₫", "");
+            totalCash = totalCash.Replace(".", "");
+
+            double discout;
+            try
+            {
+                var rawData = await ApiBuilder.SendRequest<object>($"api/Coupon/Check?coupon={txtapCoupon.Text}&total={totalCash}", null, RequestMethod.GET);
+                discout = JsonConvert.DeserializeObject<double>(rawData);
+            }
+            catch (Exception) { return; }
+
+            txtVoucher.Text = discout.ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
+
+            txtapDiscout.Enabled = false;
+            txtapCoupon.Enabled = false;
+
+            txtVoucher.Left = btnCheckout.Left + btnCheckout.Width - txtVoucher.Width;
+
+            CalculateTotal(discout);
+        }
+
+        private void CalculateTotal(double? voucher)
+        {
+            CultureInfo culture = new CultureInfo("vi-VN");
+            if (txtapDiscout.Text.Length == 0)
+            {
+                txtapDiscout.Text = "0";
+            }
+            else
+            {
+                decimal value = decimal.Parse(txtapDiscout.Text, NumberStyles.AllowThousands);
+                txtapDiscout.Text = String.Format(culture, "{0:N0}", value);
+                txtapDiscout.Select(txtapDiscout.Text.Length, 0);
+            }
+
+            var totalCash = total.Text.Replace("₫", "");
+            totalCash = totalCash.Replace(".", "");
+
+            var discout = double.Parse(txtapDiscout.Text);
+            txtDiscout.Text = discout.ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
+
+            var cash = int.Parse(totalCash);
+
+            double voucherValue = voucher == null ? 0 : voucher.Value;
+
+            if ((discout + voucherValue) <= cash)
+            {
+                txtCash.Text = (cash - discout - voucherValue).ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
+            }
+            else
+            {
+                txtCash.Text = "0₫";
+            }
+
+            txtCash.Left = btnCheckout.Left + btnCheckout.Width - txtCash.Width;
+            txtDiscout.Left = btnCheckout.Left + btnCheckout.Width - txtDiscout.Width;
+
+            var temp = txtCustomerP.Text;
+            txtCustomerP.Text = "0";
+            txtCustomerP.Text = temp;
+        }
     }
 }

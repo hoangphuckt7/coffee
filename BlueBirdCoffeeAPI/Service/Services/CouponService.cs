@@ -94,14 +94,14 @@ namespace Service.Services
         public double CheckCoupon(string coupon, double total)
         {
             var current = _dbContext.Coupons.FirstOrDefault(f => f.Description == coupon);
-            if (current == null) throw new AppException("Invalid coupon");
+            if (current == null) throw new AppException("Mã giảm giá không tồn tại");
 
-            if (current.IsDeleted) throw new AppException("Coupon out of date");
+            if (current.IsDeleted) throw new AppException("Mã giảm giá hết hạn");
 
-            if (current.FromDate >= DateTime.UtcNow.AddHours(7)) throw new AppException("Coupon out of date");
-            if (current.ToDate <= DateTime.UtcNow.AddHours(7)) throw new AppException("Coupon out of date");
+            if (current.FromDate >= DateTime.UtcNow.AddHours(7)) throw new AppException("Mã giảm giá hết hạn");
+            if (current.ToDate <= DateTime.UtcNow.AddHours(7)) throw new AppException("Mã giảm giá hết hạn");
 
-            if (current.Limit != null && current.Limit == 0) throw new AppException("Coupon out of date");
+            if (current.Limit != null && current.Limit == 0) throw new AppException("Mã giảm giá hết hạn");
 
             var result = total;
 
@@ -127,7 +127,7 @@ namespace Service.Services
         public double UseCoupon(string coupon, double total)
         {
             var current = _dbContext.Coupons.FirstOrDefault(f => f.Description == coupon);
-            if (current == null) throw new AppException("Invalid coupon");
+            if (current == null) throw new AppException("Mã giảm giá không tồn tại");
 
             var result = CheckCoupon(coupon, total);
 

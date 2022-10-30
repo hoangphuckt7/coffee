@@ -12,7 +12,7 @@ namespace BlueBirdCoffeManager.Models
         public int BillNumber { get; set; }
         public double Discount { get; set; }
         public bool IsTakeAway { get; set; }
-        public double Coupon { get; set; }
+        public double? Coupon { get; set; }
         public DateTime DateCreated { get; set; }
         public List<OrderDetailViewModel> OrderDetailViewModels { get; set; }
     }
