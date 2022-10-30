@@ -15,7 +15,7 @@ namespace Data.Entities
         public bool IsTakeAway { get; set; }
         public int BillNumber { get; set; }
         public double Total { get; set; }
-        public string CouponCode { get; set; }
+        public string? CouponCode { get; set; }
 
         [ForeignKey("Casher")]
         public string? CasherId { get; set; }

@@ -474,7 +474,26 @@ namespace BlueBirdCoffeManager.Forms
 
         private void txtapDiscout_TextChanged(object sender, EventArgs e)
         {
-            CalculateTotal(null);
+            if (total.Text.Length == 1)
+            {
+                txtapDiscout.Text = "0";
+            }
+            else
+            {
+                CultureInfo culture = new CultureInfo("vi-VN");
+                if (txtapDiscout.Text.Length == 0)
+                {
+                    txtapDiscout.Text = "0";
+                }
+                else
+                {
+                    decimal value = decimal.Parse(txtapDiscout.Text, NumberStyles.AllowThousands);
+                    txtapDiscout.Text = String.Format(culture, "{0:N0}", value);
+                    txtapDiscout.Select(txtapDiscout.Text.Length, 0);
+                }
+
+                CalculateTotal(null);
+            }
         }
 
         private async void btnCheckout_Click(object sender, EventArgs e)
@@ -495,7 +514,7 @@ namespace BlueBirdCoffeManager.Forms
                     {
                         Orders = _orders.Select(s => s.Id).ToList(),
                         RemovedItems = removed,
-                        Coupon = txtapCoupon.Text,
+                        Coupon = btnApplyCode.Enabled == false ? txtapCoupon.Text : null,
                         Discout = txtapDiscout.Text.Length != 0 ? double.Parse(txtapDiscout.Text.Replace(".", "")) : 0,
                         IsTakeAway = false
                     };
@@ -537,6 +556,10 @@ namespace BlueBirdCoffeManager.Forms
 
         private async void btnApplyCode_Click(object sender, EventArgs e)
         {
+            if (total.Text.Length == 1)
+            {
+                return;
+            }
             var totalCash = total.Text.Replace("₫", "");
             totalCash = totalCash.Replace(".", "");
 
@@ -552,6 +575,7 @@ namespace BlueBirdCoffeManager.Forms
 
             txtapDiscout.Enabled = false;
             txtapCoupon.Enabled = false;
+            btnApplyCode.Enabled = false;
 
             txtVoucher.Left = btnCheckout.Left + btnCheckout.Width - txtVoucher.Width;
 
@@ -560,18 +584,6 @@ namespace BlueBirdCoffeManager.Forms
 
         private void CalculateTotal(double? voucher)
         {
-            CultureInfo culture = new CultureInfo("vi-VN");
-            if (txtapDiscout.Text.Length == 0)
-            {
-                txtapDiscout.Text = "0";
-            }
-            else
-            {
-                decimal value = decimal.Parse(txtapDiscout.Text, NumberStyles.AllowThousands);
-                txtapDiscout.Text = String.Format(culture, "{0:N0}", value);
-                txtapDiscout.Select(txtapDiscout.Text.Length, 0);
-            }
-
             var totalCash = total.Text.Replace("₫", "");
             totalCash = totalCash.Replace(".", "");
 

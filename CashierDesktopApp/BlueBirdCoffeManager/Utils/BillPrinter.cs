@@ -124,6 +124,18 @@ namespace BlueBirdCoffeManager.Utils
 
         private static int GetLeft(int length)
         {
+            if (length == 4)
+            {
+                return (int)(14.5 * length);
+            }
+            if (length == 5)
+            {
+                return (int)(14 * length);
+            }
+            if (length == 6)
+            {
+                return (int)(13.5 * length);
+            }
             if (length == 7)
             {
                 return (int)(13 * length);

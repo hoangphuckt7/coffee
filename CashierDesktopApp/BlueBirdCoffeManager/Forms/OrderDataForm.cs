@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -339,6 +340,13 @@ namespace BlueBirdCoffeManager.Forms
             ComboBox cbArea = new();
             ComboBox cbTable = new();
 
+            Label lbDiscout = new Label();
+            Label lbCoupon = new Label();
+            TextBox txtDiscout = new TextBox();
+            TextBox txtCoupon = new TextBox();
+            RoundedButton btnAplly = new RoundedButton();
+            string? couponCode = null;
+
             //First section
             Label quanLable = new Label
             {
@@ -411,6 +419,15 @@ namespace BlueBirdCoffeManager.Forms
             if (!Sessions.Order.Option.Unknow && !Sessions.Order.Option.Table && !Sessions.Order.Option.TakeAway)
             {
                 Sessions.Order.Option.Unknow = true;
+            }
+
+            if (Sessions.Order.Option.TakeAway == false)
+            {
+                lbDiscout.Visible = false;
+                lbCoupon.Visible = false;
+                txtDiscout.Visible = false;
+                txtCoupon.Visible = false;
+                btnAplly.Visible = false;
             }
 
             isTable.Text = "Tại bàn";
@@ -492,6 +509,12 @@ namespace BlueBirdCoffeManager.Forms
 
             isTable.CheckedChanged += (sender, e) =>
             {
+                lbDiscout.Visible = false;
+                lbCoupon.Visible = false;
+                txtDiscout.Visible = false;
+                txtCoupon.Visible = false;
+                btnAplly.Visible = false;
+
                 submitButton.Text = "Order";
                 cbArea.Visible = true;
                 cbTable.Visible = true;
@@ -504,6 +527,12 @@ namespace BlueBirdCoffeManager.Forms
 
             isTakeAway.CheckedChanged += (sender, e) =>
             {
+                lbDiscout.Visible = true;
+                lbCoupon.Visible = true;
+                txtDiscout.Visible = true;
+                txtCoupon.Visible = true;
+                btnAplly.Visible = true;
+
                 submitButton.Text = "Thanh toán";
                 cbArea.Visible = false;
                 cbTable.Visible = false;
@@ -516,6 +545,12 @@ namespace BlueBirdCoffeManager.Forms
 
             unknow.CheckedChanged += (sender, e) =>
             {
+                lbDiscout.Visible = false;
+                lbCoupon.Visible = false;
+                txtDiscout.Visible = false;
+                txtCoupon.Visible = false;
+                btnAplly.Visible = false;
+
                 submitButton.Text = "Order";
                 cbArea.Visible = false;
                 cbTable.Visible = false;
@@ -554,8 +589,8 @@ namespace BlueBirdCoffeManager.Forms
                     {
                         Orders = new List<Guid>() { Guid.Parse(data.Trim().Replace("\"", "")) },
                         RemovedItems = new List<ItemCheckoutModel>(),
-                        Coupon = "",
-                        Discout = 0,
+                        Coupon = couponCode == null ? "" : couponCode,
+                        Discout = txtDiscout.Text.Length != 0 ? double.Parse(txtDiscout.Text.Replace(".", "")) : 0,
                         IsTakeAway = false
                     };
 
@@ -564,7 +599,11 @@ namespace BlueBirdCoffeManager.Forms
                     printBill.Print();
                 }
 
-               
+                btnAplly.Enabled = true;
+                txtDiscout.Enabled = true;
+                txtCoupon.Enabled = true;
+                txtDiscout.Text = "";
+                txtCoupon.Text = "";
 
                 //Refresh
                 Order.CurrentOrder.OrderDetail = new List<OrderDetailViewModel>();
@@ -597,6 +636,76 @@ namespace BlueBirdCoffeManager.Forms
 
             oFooterPanel.Controls.Add(lableTable);
             oFooterPanel.Controls.Add(cbTable);
+
+            //take away
+            lbDiscout.Text = "Giảm giá: ";
+            lbDiscout.Top = lableArea.Top + 20;
+            lbDiscout.Left = lableArea.Left + lbDiscout.Width;
+            lbDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+
+            txtDiscout.Top = lbDiscout.Top;
+            txtDiscout.Left = lbDiscout.Width + lbDiscout.Left;
+            txtDiscout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+
+            lbCoupon.Text = "Mã giảm giá: ";
+            lbCoupon.Top = (lbDiscout.Top + lbDiscout.Height) + 20;
+            lbCoupon.Left = lbDiscout.Left;
+            lbCoupon.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+
+            txtCoupon.Top = lbCoupon.Top;
+            txtCoupon.Left = txtDiscout.Left;
+            txtCoupon.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+
+            btnAplly.Text = "Áp dụng";
+            btnAplly.Top = lbCoupon.Top - lbCoupon.Height / 2;
+            btnAplly.Left = txtCoupon.Left + txtCoupon.Width + 10;
+            btnAplly.Font = Sessions.Sessions.NORMAL_FONT;
+            btnAplly.Width = (int)(btnAplly.Text.Length * btnAplly.Font.Size) + 30;
+            btnAplly.Click += async (sender, ev) =>
+            {
+                double discout;
+                try
+                {
+                    double total = Order.CurrentOrder.OrderDetail.Sum(s => s.Quantity * (Sessions.ItemSession.ItemData.First(f => f.Id == s.ItemId)).Price);
+                    var rawData = await ApiBuilder.SendRequest<object>($"api/Coupon/Check?coupon={txtCoupon.Text}&total={total}", null, RequestMethod.GET);
+                    discout = JsonConvert.DeserializeObject<double>(rawData);
+
+                    couponCode = txtCoupon.Text;
+
+                    Sessions.Order.CurrentOrder.Coupon = discout;
+
+                    btnAplly.Enabled = false;
+                    txtDiscout.Enabled = false;
+                    txtCoupon.Enabled = false;
+                }
+                catch (Exception) { return; }
+            };
+            txtDiscout.Width = btnAplly.Width + txtCoupon.Width + 10;
+
+            txtDiscout.RightToLeft = RightToLeft.Yes;
+            txtCoupon.RightToLeft = RightToLeft.Yes;
+            txtDiscout.TextChanged += (sender, ev) =>
+            {
+                CultureInfo culture = new CultureInfo("vi-VN");
+                if (txtDiscout.Text.Length == 0)
+                {
+                    txtDiscout.Text = "0";
+                }
+                else
+                {
+                    decimal value = decimal.Parse(txtDiscout.Text, NumberStyles.AllowThousands);
+                    txtDiscout.Text = String.Format(culture, "{0:N0}", value);
+                    txtDiscout.Select(txtDiscout.Text.Length, 0);
+                }
+
+                Sessions.Order.CurrentOrder.Discount = double.Parse(txtDiscout.Text.Replace(".", ""));
+            };
+
+            oFooterPanel.Controls.Add(lbDiscout);
+            oFooterPanel.Controls.Add(lbCoupon);
+            oFooterPanel.Controls.Add(txtDiscout);
+            oFooterPanel.Controls.Add(txtCoupon);
+            oFooterPanel.Controls.Add(btnAplly);
 
             oFooterPanel.Controls.Add(submitButton);
             #endregion
@@ -662,7 +771,6 @@ namespace BlueBirdCoffeManager.Forms
             this.oDataPanel.Focus();
 
         }
-
         private void printBill_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             Sessions.Order.OldOrders.Add(new OrderHistoryModel()

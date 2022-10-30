@@ -109,16 +109,16 @@ namespace Service.Services
             {
                 result = (total * current.Discount.Value) / 100;
             }
-            else if (current.Maximum != null)
+            else if (current.Maximum != null && current.Maximum.Value != 0)
             {
                 result = current.Maximum.Value;
             }
 
-            if (current.Maximum != null && result > current.Maximum)
+            if (current.Maximum != null && current.Maximum.Value != 0 && result > current.Maximum)
             {
                 result = current.Maximum.Value;
             }
-            if (current.Minium != null && result < current.Maximum)
+            if (current.Minium != null && current.Minium.Value != 0 && result < current.Maximum)
             {
                 result = current.Minium.Value;
             }

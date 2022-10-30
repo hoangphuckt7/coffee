@@ -99,7 +99,11 @@ namespace BlueBirdCoffeManager.Forms
             rbtnEdit.Text = "Chỉnh sửa";
             rbtnEdit.Top = this.Height - rbtnEdit.Height - 2 * Height / 100;
             rbtnEdit.Left = this.Width - rbtnEdit.Width - 2 * Height / 100;
-            rbtnEdit.Visible = true;
+
+            if (Sessions.Sessions.ROLE == "ADMIN")
+            {
+                rbtnEdit.Visible = true;
+            }
 
             try
             {
