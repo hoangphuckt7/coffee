@@ -23,7 +23,7 @@ class LoginScreen extends StatelessWidget {
     var screenWidth = Fn.getScreenWidth(context);
     var screenHeight = Fn.getScreenHeight(context);
     var cardWidth = screenWidth * .8;
-    var cardHeight = screenHeight * .4;
+    var cardHeight = screenHeight * .5;
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {

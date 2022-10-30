@@ -13,7 +13,7 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     this.showUserInfo = false,
     this.showLogoutBtn = false,
-    this.showBackBtn = true,
+    this.showBackBtn = false,
     this.onClickBackBtn,
   });
 
@@ -25,7 +25,7 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       foregroundColor: MColor.white,
       backgroundColor: MColor.primaryBlack,
-      automaticallyImplyLeading: showBackBtn,
+      automaticallyImplyLeading: false,
       titleTextStyle: const TextStyle(fontSize: 15),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.end,

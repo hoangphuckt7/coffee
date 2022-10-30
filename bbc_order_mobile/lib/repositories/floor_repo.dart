@@ -20,7 +20,7 @@ class FloorRepo {
         );
       }
     } catch (e) {
-      log('lỗi');
+      log('FloorRepo - lỗi');
       log(e.toString());
     }
     return lstFloorModel;
