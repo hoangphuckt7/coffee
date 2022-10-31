@@ -26,10 +26,10 @@ namespace BlueBirdCoffeeAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
-        [HttpGet("useable")]
-        public IActionResult Useable()
+        [HttpGet("Default")]
+        public IActionResult GetDefault()
         {
-            return Ok(_couponService.Useable());
+            return Ok(_couponService.GetDefault());
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]

@@ -30,6 +30,12 @@ namespace BlueBirdCoffeManager.Forms
                 var itemsRequest = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET);
                 ItemSession.ItemData = JsonConvert.DeserializeObject<List<ItemViewModel>>(itemsRequest);
             }
+            var rawCoupon = await ApiBuilder.SendRequest<object>("api/Coupon/Default", null, RequestMethod.GET);
+            var coupon = JsonConvert.DeserializeObject<CouponUseableModel>(rawCoupon);
+            if (!string.IsNullOrEmpty(coupon.Description))
+            {
+                Sessions.Sessions.DEFAULT_COUPON = coupon.Description;
+            }
             #endregion
 
             #region screen setup

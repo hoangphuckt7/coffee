@@ -1,4 +1,6 @@
-﻿namespace BlueBirdCoffeManager
+﻿using BlueBirdCoffeManager.Utils;
+
+namespace BlueBirdCoffeManager
 {
     partial class LoginForm
     {
@@ -29,31 +31,31 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lbUsername = new System.Windows.Forms.Label();
+            this.lbPassword = new System.Windows.Forms.Label();
             this.txtUserName = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
-            this.btnLogin = new System.Windows.Forms.Button();
-            this.lbError = new System.Windows.Forms.Label();
+            this.lbTitle = new System.Windows.Forms.Label();
+            this.btnLogin = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.SuspendLayout();
             // 
-            // label1
+            // lbUsername
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(50, 162);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(85, 15);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Tên đăng nhập";
+            this.lbUsername.AutoSize = true;
+            this.lbUsername.Location = new System.Drawing.Point(50, 162);
+            this.lbUsername.Name = "lbUsername";
+            this.lbUsername.Size = new System.Drawing.Size(85, 15);
+            this.lbUsername.TabIndex = 0;
+            this.lbUsername.Text = "Tên đăng nhập";
             // 
-            // label2
+            // lbPassword
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(50, 224);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(57, 15);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Mật khẩu";
+            this.lbPassword.AutoSize = true;
+            this.lbPassword.Location = new System.Drawing.Point(50, 224);
+            this.lbPassword.Name = "lbPassword";
+            this.lbPassword.Size = new System.Drawing.Size(57, 15);
+            this.lbPassword.TabIndex = 1;
+            this.lbPassword.Text = "Mật khẩu";
             // 
             // txtUserName
             // 
@@ -71,36 +73,45 @@
             this.txtPassword.TabIndex = 3;
             this.txtPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPassword_KeyDown);
             // 
+            // lbTitle
+            // 
+            this.lbTitle.AutoSize = true;
+            this.lbTitle.Location = new System.Drawing.Point(154, 62);
+            this.lbTitle.Name = "lbTitle";
+            this.lbTitle.Size = new System.Drawing.Size(87, 15);
+            this.lbTitle.TabIndex = 5;
+            this.lbTitle.Text = "The Sun Coffee";
+            // 
             // btnLogin
             // 
-            this.btnLogin.Location = new System.Drawing.Point(166, 290);
+            this.btnLogin.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnLogin.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnLogin.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btnLogin.BorderRadius = 40;
+            this.btnLogin.BorderSize = 0;
+            this.btnLogin.FlatAppearance.BorderSize = 0;
+            this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLogin.ForeColor = System.Drawing.Color.Transparent;
+            this.btnLogin.Location = new System.Drawing.Point(117, 296);
             this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(75, 23);
-            this.btnLogin.TabIndex = 4;
+            this.btnLogin.Size = new System.Drawing.Size(150, 40);
+            this.btnLogin.TabIndex = 6;
             this.btnLogin.Text = "Đăng nhập";
-            this.btnLogin.UseVisualStyleBackColor = true;
+            this.btnLogin.TextColor = System.Drawing.Color.Transparent;
+            this.btnLogin.UseVisualStyleBackColor = false;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
-            // 
-            // lbError
-            // 
-            this.lbError.AutoSize = true;
-            this.lbError.Location = new System.Drawing.Point(154, 89);
-            this.lbError.Name = "lbError";
-            this.lbError.Size = new System.Drawing.Size(38, 15);
-            this.lbError.TabIndex = 5;
-            this.lbError.Text = "label3";
             // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(379, 390);
-            this.Controls.Add(this.lbError);
             this.Controls.Add(this.btnLogin);
+            this.Controls.Add(this.lbTitle);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.txtUserName);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lbPassword);
+            this.Controls.Add(this.lbUsername);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "LoginForm";
             this.Text = "Đăng nhập";
@@ -113,11 +124,11 @@
 
         #endregion
 
-        private Label label1;
-        private Label label2;
+        private Label lbUsername;
+        private Label lbPassword;
         private TextBox txtUserName;
         private TextBox txtPassword;
-        private Button btnLogin;
-        private Label lbError;
+        private Label lbTitle;
+        private RoundedButton btnLogin;
     }
 }

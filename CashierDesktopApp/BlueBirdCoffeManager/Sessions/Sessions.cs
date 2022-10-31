@@ -9,7 +9,7 @@ namespace BlueBirdCoffeManager.Sessions
 {
     public class Sessions
     {
-        public static readonly string HOST = "https://localhost:7244/";
+        public static readonly string HOST = "http://localhost:8000/";
 
         public static string TOKEN = "";
         public static string USER_NAME = "";
@@ -30,5 +30,6 @@ namespace BlueBirdCoffeManager.Sessions
         public static bool SHOW_ORDER_ITEM_DETAILS = false;
 
         public static Point? TABLE_WORK_SPACE;
+        public static string? DEFAULT_COUPON;
     }
 }

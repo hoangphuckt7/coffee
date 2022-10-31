@@ -36,7 +36,7 @@
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnSubmit = new BlueBirdCoffeManager.Utils.RoundedButton();
-            this.lostBillPanel = new System.Windows.Forms.Panel();
+            this.lbEmpty = new System.Windows.Forms.Label();
             this.dataPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lostItems)).BeginInit();
             this.SuspendLayout();
@@ -123,28 +123,32 @@
             this.btnSubmit.Text = "Hoàn tất";
             this.btnSubmit.TextColor = System.Drawing.Color.White;
             this.btnSubmit.UseVisualStyleBackColor = false;
+            this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
             // 
-            // lostBillPanel
+            // lbEmpty
             // 
-            this.lostBillPanel.Location = new System.Drawing.Point(149, 452);
-            this.lostBillPanel.Name = "lostBillPanel";
-            this.lostBillPanel.Size = new System.Drawing.Size(200, 100);
-            this.lostBillPanel.TabIndex = 1;
+            this.lbEmpty.AutoSize = true;
+            this.lbEmpty.Location = new System.Drawing.Point(327, 520);
+            this.lbEmpty.Name = "lbEmpty";
+            this.lbEmpty.Size = new System.Drawing.Size(95, 15);
+            this.lbEmpty.TabIndex = 1;
+            this.lbEmpty.Text = "Không có lịch sử";
             // 
             // LostBillForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 630);
-            this.Controls.Add(this.lostBillPanel);
+            this.Controls.Add(this.lbEmpty);
             this.Controls.Add(this.dataPanel);
             this.Name = "LostBillForm";
-            this.Text = "LostBillForm";
+            this.Text = "f";
             this.Load += new System.EventHandler(this.LostBillForm_Load);
             this.dataPanel.ResumeLayout(false);
             this.dataPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lostItems)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -152,12 +156,12 @@
 
         private Panel dataPanel;
         private Utils.RoundedButton btnSubmit;
-        private Panel lostBillPanel;
         private DataGridView lostItems;
         private DataGridViewTextBoxColumn Order;
         private DataGridViewTextBoxColumn name;
         private DataGridViewTextBoxColumn quantity;
         private Label lbReason;
         private TextBox txtReason;
+        private Label lbEmpty;
     }
 }

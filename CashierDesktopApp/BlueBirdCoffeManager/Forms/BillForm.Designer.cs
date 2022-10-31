@@ -45,7 +45,7 @@
             // 
             // oldBillPanel
             // 
-            this.oldBillPanel.Location = new System.Drawing.Point(120, 529);
+            this.oldBillPanel.Location = new System.Drawing.Point(1264, 79);
             this.oldBillPanel.Name = "oldBillPanel";
             this.oldBillPanel.Size = new System.Drawing.Size(440, 192);
             this.oldBillPanel.TabIndex = 1;
@@ -142,9 +142,9 @@
             // 
             // lostBillPanel
             // 
-            this.lostBillPanel.Location = new System.Drawing.Point(1297, 36);
+            this.lostBillPanel.Location = new System.Drawing.Point(120, 467);
             this.lostBillPanel.Name = "lostBillPanel";
-            this.lostBillPanel.Size = new System.Drawing.Size(446, 766);
+            this.lostBillPanel.Size = new System.Drawing.Size(446, 312);
             this.lostBillPanel.TabIndex = 2;
             // 
             // BillForm

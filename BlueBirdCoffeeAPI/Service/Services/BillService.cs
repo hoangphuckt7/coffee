@@ -21,6 +21,7 @@ namespace Service.Services
         List<BillMissingItemViewModel> MissingBillItemWithin48Hours();
         List<ChartViewModel> ChartData();
         StatisticsModels Statistics();
+        Guid UpdateReason(BillMissingItemUpdateModel model);
     }
 
     public class BillService : IBillService
@@ -364,6 +365,20 @@ namespace Service.Services
                 result.Add(billData);
             }
             return result;
+        }
+
+        public Guid UpdateReason(BillMissingItemUpdateModel model)
+        {
+            var bill = _dbContext.Bills.FirstOrDefault(f => f.Id == model.Id);
+            if (bill == null) throw new AppException("Invalid id");
+
+            bill.ItemMissingReason = model.MissingItemReason;
+            bill.DateUpdated = DateTime.UtcNow.AddHours(7);
+
+            _dbContext.Update(bill);
+            _dbContext.SaveChanges();
+
+            return bill.Id;
         }
     }
 }

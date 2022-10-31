@@ -22,6 +22,12 @@ namespace BlueBirdCoffeManager.Models
         public DateTime DateCreated { get; set; } = DateTime.Now;
     }
 
+    public class MaxQuantityOrderModel
+    {
+        public Guid ItemId { get; set; }
+        public int Quantity { get; set; }
+    }
+
     public class OrderDetailModel
     {
         public Guid ItemId { get; set; }

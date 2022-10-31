@@ -53,10 +53,17 @@ namespace BlueBirdCoffeManager.Forms
             areaPanel.Left = 10;
             areaPanel.Height = (Height * 50 / 100) - 20;
 
-            lostBillPanel.Top = 10;
-            lostBillPanel.Width = (int)(three * Width / 100) - 20;
-            lostBillPanel.Left = this.Width - lostBillPanel.Width - 10;
-            lostBillPanel.Height = Height - 20;
+            oldBillPanel.Top = 10;
+            oldBillPanel.Width = (int)(three * Width / 100) - 20;
+            oldBillPanel.Left = this.Width - oldBillPanel.Width - 10;
+            oldBillPanel.Height = Height - 20;
+
+            lostBillPanel.Top = areaPanel.Top + areaPanel.Height + 20;
+            lostBillPanel.Left = areaPanel.Left;
+            lostBillPanel.Height = Height - areaPanel.Height - areaPanel.Top * 2 - 20;
+            lostBillPanel.Width = areaPanel.Width - 1;
+            lostBillPanel.AutoScroll = true;
+            lostBillPanel.BackColor = Color.White;
 
             mainPanel.Top = 10;
             mainPanel.Width = (int)(three * Width / 100) - 20;
@@ -65,14 +72,6 @@ namespace BlueBirdCoffeManager.Forms
             mainPanel.BackColor = Color.White;
 
             areaPanel.BackColor = Color.White;
-
-            oldBillPanel.Top = areaPanel.Top + areaPanel.Height + 20;
-            oldBillPanel.Left = areaPanel.Left;
-            oldBillPanel.Height = Height - areaPanel.Height - areaPanel.Top * 2 - 20;
-            oldBillPanel.Width = areaPanel.Width - 1;
-            oldBillPanel.AutoScroll = true;
-            //oldBillPanel.BackColor = Color.FromKnownColor(KnownColor.Control);
-            oldBillPanel.BackColor = Color.White;
 
             #region Area Setup
             areaToolPanel.Left = 0;

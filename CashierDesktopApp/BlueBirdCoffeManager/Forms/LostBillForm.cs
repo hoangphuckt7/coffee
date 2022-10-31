@@ -16,6 +16,7 @@ namespace BlueBirdCoffeManager.Forms
 {
     public partial class LostBillForm : Form
     {
+        Guid? billId;
         public LostBillForm()
         {
             InitializeComponent();
@@ -27,24 +28,30 @@ namespace BlueBirdCoffeManager.Forms
             this.WindowState = FormWindowState.Maximized;
             this.MaximizeBox = false;
 
+            this.BackColor = Color.White;
+
             dataPanel.Width = this.Width;
-            dataPanel.Height = 50 * Height / 100;
+            dataPanel.Height = Height;
             dataPanel.Left = 0;
             dataPanel.Top = 0;
 
-            lostBillPanel.Top = dataPanel.Top + dataPanel.Height;
-            lostBillPanel.Left = 0;
-            lostBillPanel.Width = Width;
-            lostBillPanel.Height = Height - lostBillPanel.Top;
+            lbEmpty.Font = Sessions.Sessions.NORMAL_FONT;
+            lbEmpty.Width = (int)(lbEmpty.Text.Length * lbEmpty.Font.Size);
+            lbEmpty.Top = Height / 2 - lbEmpty.Height / 2;
+            lbEmpty.Left = Width / 2 - lbEmpty.Width / 2;
 
             var rawData = await ApiBuilder.SendRequest<object>("api/Bill/MissingBillItemWithin48Hours", null, RequestMethod.GET);
             var data = JsonConvert.DeserializeObject<List<BillMissingItemViewModel>>(rawData);
+            
+            dataPanel.Visible = false;
 
             #region Data
-            if (data != null && data.Count > 0 && string.IsNullOrEmpty(data.First().ItemMissingReason))
+            if (data != null && data.Count > 0 && data.Any(f => f.ItemMissingReason == null))
             {
+                lbEmpty.Visible = false;
+                var lastestData = data.First(f => f.ItemMissingReason == null);
+                billId = lastestData.Id;
                 //Lastest data
-                var lastestData = data.First();
                 var totalLost = 0;
 
                 foreach (var order in lastestData.Orders)
@@ -127,7 +134,7 @@ namespace BlueBirdCoffeManager.Forms
                 lostItems.Enabled = false;
 
                 lbReason.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-                lbReason.Top = lostItems.Top + lostItems.Height + 10;
+                lbReason.Top = this.Height - lbReason.Height - 20;
                 lbReason.Left = 5;
 
                 txtReason.Top = lbReason.Top;
@@ -140,8 +147,24 @@ namespace BlueBirdCoffeManager.Forms
                 btnSubmit.Left = Width - btnSubmit.Width - 5;
 
                 txtReason.Width = Width - lbReason.Left - lbReason.Width - btnSubmit.Width - 10;
+                dataPanel.Visible = true;
             }
             #endregion
+        }
+
+        private async void btnSubmit_Click(object sender, EventArgs e)
+        {
+            if (billId == null) return;
+            var model = new BillMissingItemUpdateModel()
+            {
+                Id = billId.Value,
+                MissingItemReason = txtReason.Text
+            };
+            await ApiBuilder.SendRequest<object>("api/Bill/Reason", model, RequestMethod.PUT);
+
+            this.Controls.Clear();
+            this.InitializeComponent();
+            LostBillForm_Load(sender, e);
         }
     }
 }

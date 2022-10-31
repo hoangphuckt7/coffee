@@ -56,11 +56,12 @@ namespace BlueBirdCoffeManager.Forms
             lbQuan.Top = lbName.Top;
             lbTotal.Top = lbName.Top;
 
-            lbSTT.Left = 5 * Width / 100;
+            lbSTT.Left = 5 * Width / 100 - 10;
             lbQuan.Left = 55 * this.Width / 100;
             lbPrice.Left = lbQuan.Left + lbQuan.Width + 10 * Width / 100;
             lbTotal.Left = this.Width - lbTotal.Width - lbSTT.Left;
             lbName.Left = 10 * Width / 100;
+            lbSTT.Width = (int)(lbSTT.Text.Length * lbSTT.Font.Size);
 
             btnCheckout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             btnCheckout.Top = Height - btnCheckout.Height - 10;
@@ -69,7 +70,6 @@ namespace BlueBirdCoffeManager.Forms
             btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
             btnCheckout.Enabled = false;
             btnCheckout.BackColor = Color.Gray;
-
 
             if (_orders != null && _orders.Count > 0)
             {
@@ -204,6 +204,11 @@ namespace BlueBirdCoffeManager.Forms
                 dataPanel.AutoScroll = true;
                 this.Controls.Add(s2);
                 oldBillPicture.Visible = false;
+
+                if (!string.IsNullOrEmpty(Sessions.Sessions.DEFAULT_COUPON))
+                {
+                    txtapCoupon.Text = Sessions.Sessions.DEFAULT_COUPON;
+                }
             }
         }
 
@@ -220,6 +225,7 @@ namespace BlueBirdCoffeManager.Forms
 
         List<OrderDetailViewModel> _mergeOders = new();
         List<ItemCheckoutModel> removed = new();
+        List<MaxQuantityOrderModel> _maxQuantity = new();
 
         public void SetupBillData(int curTop)
         {
@@ -244,6 +250,10 @@ namespace BlueBirdCoffeManager.Forms
                             _mergeOders.Add(item);
                         }
                     }
+                }
+                foreach (var item in _mergeOders)
+                {
+                    _maxQuantity.Add(new MaxQuantityOrderModel() { ItemId = item.ItemId, Quantity = item.Quantity });
                 }
             }
 
@@ -401,6 +411,11 @@ namespace BlueBirdCoffeManager.Forms
 
             var index = _mergeOders.IndexOf(curItem);
 
+            if (minus && _mergeOders[index].Quantity == 1 && _mergeOders.Count == 1)
+            {
+                return;
+            }
+
             if (minus)
             {
                 if (_mergeOders[index].Quantity > 1)
@@ -424,22 +439,28 @@ namespace BlueBirdCoffeManager.Forms
             }
             else
             {
-                _mergeOders[index].Quantity += 1;
-            }
+                if (_mergeOders[index].Quantity < _maxQuantity.First(f => f.ItemId == _mergeOders[index].ItemId).Quantity)
+                {
+                    _mergeOders[index].Quantity += 1;
+                }
 
-            //if (curItem.Quantity > 0)
-            //{
-            //    _mergeOders.Add(curItem);
-            //}
+                var existed = removed.FirstOrDefault(f => f.ItemId == curItem.ItemId);
+                if (existed != null)
+                {
+                    if (existed != null && existed.Quantity != 1)
+                    {
+                        existed.Quantity = -1;
+                    }
+                    else
+                    {
+                        removed.Remove(existed);
+                    }
+                }
+            }
 
             dataPanel.Controls.Clear();
             SetupBillData(0);
             dataPanel.Update();
-            //BillDataForm myForm = new BillDataForm(_orders, null);
-            //myForm.TopLevel = false;
-            //myForm.AutoScroll = false;
-            //this.Controls.Add(myForm);
-            //myForm.Show();
         }
 
         private void txtCustomerP_TextChanged(object sender, EventArgs e)
@@ -587,7 +608,7 @@ namespace BlueBirdCoffeManager.Forms
             var totalCash = total.Text.Replace("₫", "");
             totalCash = totalCash.Replace(".", "");
 
-            var discout = double.Parse(txtapDiscout.Text);
+            var discout = double.Parse(string.IsNullOrEmpty(txtapDiscout.Text) ? "0" : txtapDiscout.Text);
             txtDiscout.Text = discout.ToString("#,###", Application.CurrentCulture.NumberFormat) + "₫";
 
             var cash = int.Parse(totalCash);

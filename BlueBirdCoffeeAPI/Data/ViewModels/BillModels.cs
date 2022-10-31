@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace Data.ViewModels
 {
+    public class BillMissingItemUpdateModel
+    {
+        public Guid Id { get; set; }
+        public string MissingItemReason { get; set; }
+    }
     public class BillViewModel
     {
         public Guid Id { get; set; }

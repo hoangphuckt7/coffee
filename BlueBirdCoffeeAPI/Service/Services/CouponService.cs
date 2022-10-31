@@ -14,7 +14,7 @@ namespace Service.Services
 {
     public interface ICouponService
     {
-        List<CouponUseableModel> Useable();
+        CouponUseableModel GetDefault();
         List<CouponViewModel> Get(string? seachValue);
         Guid Add(CouponAddModel model);
         Guid Update(Guid id, CouponAddModel model);
@@ -33,14 +33,15 @@ namespace Service.Services
             _mapper = mapper;
         }
 
-        public List<CouponUseableModel> Useable()
+        public CouponUseableModel GetDefault()
         {
             var coupons = _dbContext.Coupons
                 .Where(f => f.FromDate <= DateTime.UtcNow.AddHours(7) && f.ToDate >= DateTime.UtcNow.AddHours(7))
                 .Where(f => f.Limit == null || f.Limit > 0)
-                .ToList();
+                .Where(f => f.IsDeleted == false)
+                .FirstOrDefault();
 
-            return _mapper.Map<List<CouponUseableModel>>(coupons);
+            return _mapper.Map<CouponUseableModel>(coupons);
         }
         public List<CouponViewModel> Get(string? seachValue)
         {

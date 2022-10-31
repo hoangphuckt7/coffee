@@ -652,6 +652,11 @@ namespace BlueBirdCoffeManager.Forms
             lbCoupon.Left = lbDiscout.Left;
             lbCoupon.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
 
+            if (!string.IsNullOrEmpty(Sessions.Sessions.DEFAULT_COUPON))
+            {
+                txtCoupon.Text = Sessions.Sessions.DEFAULT_COUPON;
+            }
+
             txtCoupon.Top = lbCoupon.Top;
             txtCoupon.Left = txtDiscout.Left;
             txtCoupon.Font = Sessions.Sessions.NORMAL_BOLD_FONT;

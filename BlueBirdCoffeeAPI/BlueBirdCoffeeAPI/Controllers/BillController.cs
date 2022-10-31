@@ -53,5 +53,12 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(_billService.Statistics());
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
+        [HttpPut("Reason")]
+        public IActionResult UpdateReason([FromBody]BillMissingItemUpdateModel model)
+        {
+            return Ok(_billService.UpdateReason(model));
+        }
     }
 }
