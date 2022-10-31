@@ -1,4 +1,5 @@
 import 'package:bbc_order_mobile/utils/enum.dart';
+import 'package:bbc_order_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -17,6 +18,9 @@ class FieldOutnine extends StatelessWidget {
     this.onChanged,
   });
 
+  final TextStyle _textStyle =
+      const TextStyle(fontSize: ScreenSetting.fontSize);
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -25,6 +29,7 @@ class FieldOutnine extends StatelessWidget {
         obscureText: eFieldType == EFieldType.password,
         decoration: InputDecoration(
           border: const UnderlineInputBorder(),
+          labelStyle: _textStyle,
           labelText: labelText,
           // labelStyle: TextStyle(fontWeight: FontWeight.bold),
           errorText: errorText,

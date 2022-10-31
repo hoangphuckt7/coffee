@@ -16,6 +16,9 @@ class DropdownFloor extends StatelessWidget {
     this.onChanged,
   });
 
+  final TextStyle _textStyle =
+      const TextStyle(fontSize: ScreenSetting.fontSize);
+
   @override
   Widget build(BuildContext context) {
     return DropdownButton<BaseModel>(
@@ -25,13 +28,13 @@ class DropdownFloor extends StatelessWidget {
       borderRadius: const BorderRadius.all(
         Radius.circular(CardSetting.border_radius),
       ),
-      hint: const Text('Chọn khu vực'),
+      hint: Text('Chọn khu vực', style: _textStyle),
       value: selectedFloor,
       items: listFloor.map((BaseModel model) {
         return DropdownMenuItem<BaseModel>(
           alignment: Alignment.center,
           value: model,
-          child: Text(model.description!),
+          child: Text(model.description!, style: _textStyle),
         );
       }).toList(),
       onChanged: onChanged,

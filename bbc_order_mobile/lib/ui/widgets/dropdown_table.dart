@@ -16,6 +16,9 @@ class DropdownTable extends StatelessWidget {
     this.onChanged,
   });
 
+  final TextStyle _textStyle =
+      const TextStyle(fontSize: ScreenSetting.fontSize);
+
   @override
   Widget build(BuildContext context) {
     return DropdownButton<TableModel>(
@@ -25,13 +28,13 @@ class DropdownTable extends StatelessWidget {
       borderRadius: const BorderRadius.all(
         Radius.circular(CardSetting.border_radius),
       ),
-      hint: const Text('Chọn bàn'),
+      hint: Text('Chọn bàn', style: _textStyle),
       value: selectedTable,
       items: listTable.map((TableModel model) {
         return DropdownMenuItem<TableModel>(
           alignment: Alignment.center,
           value: model,
-          child: Text(model.description!),
+          child: Text(model.description!, style: _textStyle),
         );
       }).toList(),
       onChanged: onChanged,

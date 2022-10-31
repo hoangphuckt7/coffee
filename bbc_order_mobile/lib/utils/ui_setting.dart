@@ -25,9 +25,10 @@ class CardSetting {
 }
 
 class BtnSetting {
-  static const double border_radius = 10;
+  static const double border_radius = 5;
 }
 
 class ScreenSetting {
   static const double padding_all = 10;
+  static const double fontSize = 15;
 }

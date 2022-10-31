@@ -29,7 +29,7 @@ class FillBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 35,
+      height: 25,
       child: ElevatedButton(
         style: ButtonStyle(
           shape: MaterialStateProperty.all(
@@ -43,7 +43,7 @@ class FillBtn extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           title,
-          style: const TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 12),
         ),
       ),
     );

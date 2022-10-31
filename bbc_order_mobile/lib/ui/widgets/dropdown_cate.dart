@@ -16,6 +16,9 @@ class DropdownCategory extends StatelessWidget {
     this.onChanged,
   });
 
+  final TextStyle _textStyle =
+      const TextStyle(fontSize: ScreenSetting.fontSize);
+
   @override
   Widget build(BuildContext context) {
     return DropdownButton<BaseModel>(
@@ -25,13 +28,19 @@ class DropdownCategory extends StatelessWidget {
       borderRadius: const BorderRadius.all(
         Radius.circular(CardSetting.border_radius),
       ),
-      hint: const Text('Lọc theo loại'),
+      hint: Text(
+        'Lọc theo loại',
+        style: _textStyle,
+      ),
       value: selectedCategory,
       items: listCategory.map((BaseModel model) {
         return DropdownMenuItem<BaseModel>(
           alignment: Alignment.center,
           value: model,
-          child: Text(model.description!),
+          child: Text(
+            model.description!,
+            style: _textStyle,
+          ),
         );
       }).toList(),
       onChanged: onChanged,

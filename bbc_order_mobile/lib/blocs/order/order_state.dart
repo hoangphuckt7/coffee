@@ -7,6 +7,19 @@ abstract class OrderState {}
 
 class InitialState extends OrderState {}
 
+class ErrorState extends OrderState {
+  final errMsg;
+
+  ErrorState(this.errMsg);
+}
+
+class UpdatedLoadingState extends OrderState {
+  final isLoading;
+  final labelLoading;
+
+  UpdatedLoadingState(this.isLoading, this.labelLoading);
+}
+
 class LoadedCateItemState extends OrderState {
   final lstCate;
   final selectedCate;
