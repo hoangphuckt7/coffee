@@ -1,5 +1,6 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
 using BlueBirdCoffeManager.Models;
+using BlueBirdCoffeManager.Sessions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace BlueBirdCoffeManager.Forms
             #region Data
             if (data != null && data.Count > 0 && string.IsNullOrEmpty(data.First().ItemMissingReason))
             {
+                //Lastest data
                 var lastestData = data.First();
                 var totalLost = 0;
 
@@ -53,6 +55,7 @@ namespace BlueBirdCoffeManager.Forms
                     }
                 }
 
+                //Setup header
                 Label billNumber = new Label()
                 {
                     Text = "Hóa đơn: #" + lastestData.BillNumber.ToString("000"),
@@ -95,10 +98,48 @@ namespace BlueBirdCoffeManager.Forms
 
                 dataPanel.Controls.Add(headerPanel);
 
-                foreach (var item in lastestData.Orders)
-                {
+                //Setup data
+                lostItems.Top = headerPanel.Top + headerPanel.Height;
+                lostItems.Width = this.Width;
+                lostItems.Left = 0;
+                lostItems.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                lostItems.ScrollBars = ScrollBars.Vertical;
+                lostItems.BackgroundColor = dataPanel.BackColor;
+                lostItems.BorderStyle = BorderStyle.None;
 
+                foreach (var order in lastestData.Orders)
+                {
+                    foreach (var item in order.Items)
+                    {
+                        lostItems.Rows.Add("#" + order.OrderNumber.ToString("000"), ItemSession.ItemData.First(f => f.Id == item.ItemId).Name, (item.Quantity - item.FinalQuantity).ToString());
+                    }
                 }
+
+                var height = 40;
+                foreach (DataGridViewRow dr in lostItems.Rows)
+                {
+                    height += dr.Height;
+                }
+                lostItems.Height = height;
+
+                txtReason.Focus();
+                lostItems.ClearSelection();
+                lostItems.Enabled = false;
+
+                lbReason.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+                lbReason.Top = lostItems.Top + lostItems.Height + 10;
+                lbReason.Left = 5;
+
+                txtReason.Top = lbReason.Top;
+                txtReason.Left = lbReason.Left + lbReason.Width;
+                txtReason.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+
+                btnSubmit.Top = lbReason.Top - (txtReason.Height * 60 / 100) / 2;
+                btnSubmit.Width = 80 * btnSubmit.Width / 100;
+                btnSubmit.Height = 80 * btnSubmit.Height / 100;
+                btnSubmit.Left = Width - btnSubmit.Width - 5;
+
+                txtReason.Width = Width - lbReason.Left - lbReason.Width - btnSubmit.Width - 10;
             }
             #endregion
         }

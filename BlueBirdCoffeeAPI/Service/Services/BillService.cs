@@ -160,27 +160,28 @@ namespace Service.Services
                     bool isMissing = false;
                     foreach (var item in order.OrderDetails)
                     {
-                        var x = model.RemovedItems.FirstOrDefault(f => f.ItemId == item.ItemId);
-                        if (x == null)
+                        var currentRemoveItem = model.RemovedItems.FirstOrDefault(f => f.ItemId == item.ItemId);
+                        if (currentRemoveItem == null)
                         {
                             item.FinalQuantity = item.Quantity;
                         }
                         else
                         {
-                            model.RemovedItems.Remove(x);
-                            if (x.Quantity == item.Quantity)
+                            model.RemovedItems.Remove(currentRemoveItem);
+                            if (currentRemoveItem.Quantity == item.Quantity)
                             {
                                 item.FinalQuantity = 0;
                             }
-                            else if (x.Quantity < item.Quantity)
+                            else if (currentRemoveItem.Quantity < item.Quantity)
                             {
-                                item.FinalQuantity -= x.Quantity;
+                                item.FinalQuantity -= currentRemoveItem.Quantity;
+                                //model.RemovedItems.Add(currentRemoveItem);
                             }
                             else
                             {
-                                item.FinalQuantity = item.Quantity;
-                                x.Quantity -= item.Quantity;
-                                model.RemovedItems.Add(x);
+                                item.FinalQuantity = 0;
+                                currentRemoveItem.Quantity -= item.Quantity;
+                                model.RemovedItems.Add(currentRemoveItem);
                             }
                             isMissing = true;
                         }

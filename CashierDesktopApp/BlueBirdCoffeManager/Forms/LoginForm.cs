@@ -37,7 +37,6 @@ namespace BlueBirdCoffeManager
             if (string.IsNullOrEmpty(response))
             {
                 txtPassword.Text = "";
-                lbError.Text = "Sai tên đăng nhập hoặc mật khẩu.";
             }
             else
             {
