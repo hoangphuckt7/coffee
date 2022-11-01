@@ -38,7 +38,7 @@
                                 {
                                     <div class="form-group">
                                         <label style="color:red">@ViewBag.Mes</label>
-                                        <label style="color:red">@AdminManager.Utils.Sessions.LOGIN_ERROR_MESSAGE</label>
+                                        <label style="color:red">@Context.Session.GetString("LoginErrorMessage")</label>
                                     </div>
                                     <div class="form-group">
                                         <label for="username">Tên đăng nhập</label>

@@ -22,6 +22,7 @@
     <!-- Template CSS -->
     <link rel="stylesheet" href="assets/css/style.min.css">
     <link rel="stylesheet" href="assets/css/components.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 </head>
 
 <body class="layout-4">
@@ -38,6 +39,7 @@
             <nav class="navbar navbar-expand-lg main-navbar">
                 <form class="form-inline mr-auto">
                     <ul class="navbar-nav mr-3">
+                        <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
                     </ul>
 
                 </form>
@@ -45,7 +47,7 @@
                     <li class="dropdown">
                         <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                             <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-                            <div class="d-sm-none d-lg-inline-block">Hi, @AdminManager.Utils.Sessions.FULLNAME</div>
+                            <div class="d-sm-none d-lg-inline-block">Hi, @Context.Session.GetString("FullName")</div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a href="" class="dropdown-item has-icon"> Profile</a>
@@ -67,15 +69,15 @@
                     <ul class="sidebar-menu">
                         <li class="menu-header">Trang chủ</li>
                         <li class="dropdown active">
-                            <a href="" class="nav-link"><span>Dashboard</span></a>
+                            <a href="@Url.Action("index","home")" class="nav-link"><span>Dashboard</span></a>
                         </li>
                         <li class="menu-header">Dữ liệu thống kê</li>
                         <li><a class="nav-link" href="/product/add"><span>Thêm danh mục</span></a></li>
                         <li><a class="nav-link" href="/product/add"><span>Danh sách</span></a></li>
 
                         <li class="menu-header">Menu</li>
+                        <li><a class="nav-link" href="/item"><span>Danh sách sản phẩm</span></a></li>
                         <li><a class="nav-link" href="/product/add"><span>Thêm sản phẩm</span></a></li>
-                        <li><a class="nav-link" href="/product/add"><span>Danh sách</span></a></li>
                         @*                        <li class="dropdown">
                         <a href="#" class="nav-link has-dropdown"><i class="fas fa-th"></i> <span>Bootstrap</span></a>
                         <ul class="dropdown-menu">
@@ -87,15 +89,14 @@
                         <li><a class="nav-link" href="/product/add"><span>Thêm danh mục</span></a></li>
                         <li><a class="nav-link" href="/product/add"><span>Danh sách</span></a></li>
                         <li class="menu-header">Nhân viên</li>
-                        <li><a class="nav-link" href="/product/add"><span>Thêm nhân viên</span></a></li>
-                        <li><a class="nav-link" href="/product/add"><span>Danh sách</span></a></li>
+                        <li><a class="nav-link" href="/employee"><span>Quản lý nhân viên</span></a></li>
                     </ul>
                     <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
-                        <a href="" class="btn btn-primary btn-lg btn-block btn-icon-split">Dashboard</a>
+                        <a href="@Url.Action("index","home")" class="btn btn-primary btn-lg btn-block btn-icon-split">Dashboard</a>
                     </div>
                 </aside>
             </div>
-            @RenderBody();
+            @RenderBody()
 
             <!-- Start app Footer part -->
             <footer class="main-footer">
@@ -181,7 +182,7 @@
 
             series: [{
                 data: @ViewBag.SeriesData
-                                                    },
+                                                            },
 
             ],
             markers: {

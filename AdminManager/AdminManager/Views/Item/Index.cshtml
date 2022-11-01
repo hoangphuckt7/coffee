@@ -1,0 +1,87 @@
+﻿@using AdminManager.Models
+@using System.Globalization
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1>Danh sách sản phẩm</h1>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4></h4>
+                        <div class="card-header-form">
+                            <div>
+                                <input id="searchValue" type="text" class="form-control" placeholder="Search" onchange="search(this.value)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="dataTable" class="table table-striped mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Tên</th>
+                                        <th>Giá</th>
+                                        <th>Danh mục</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in (List<ItemViewModel>)ViewBag.Items)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <img alt="avatar" width="30" src="@(AdminManager.Utils.Sessions.HOST + $"api/Item/Image/{item.Images!.FirstOrDefault()}")" />
+                                                @item.Name
+                                                <div class="table-links">
+                                                    <a href="#">@item.Description</a>
+                                                </div>
+                                            </td>
+                                            <td>@item.Price.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat)₫</td>
+                                            <td>@item.Category!.Description</td>
+                                            <td>
+                                                <a class="btn btn-primary btn-action mr-1" data-toggle="tooltip" title="Edit"><i class="fas fa-pencil-alt"></i></a>
+                                                <a class="btn btn-danger btn-action" data-toggle="tooltip" title="Delete" data-confirm="Are You Sure?|This action can not be undone. Do you want to continue?" data-confirm-yes="alert('Deleted')"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    function search(value) {
+        document.getElementById("searchValue").value = value;
+
+        console.log(value);
+
+        var input, filter, table, tr, td, i, txtValue;
+        input = value;
+        filter = input.toUpperCase();
+        table = document.getElementById("dataTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
