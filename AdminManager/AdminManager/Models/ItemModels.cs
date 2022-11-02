@@ -16,4 +16,14 @@
         public Guid Id { get; set; }
         public string? Description { get; set; }
     }
+
+    public class ItemAddModel
+    {
+        public string? Description { get; set; }
+        public string Name { get; set; } = null!;
+        public double Price { get; set; }
+        public Guid CategoryId { get; set; }
+
+        public List<IFormFile>? Images { get; set; }
+    }
 }
