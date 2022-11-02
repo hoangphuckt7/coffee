@@ -31,4 +31,18 @@ namespace Data.ViewModels
         public string FullName { get; set; }
         public string Role { get; set; }
     }
+
+    public class UserViewModel
+    {
+        public string Id { get; set; }
+        public string Username { get; set; }
+        public string FullName { get; set; }
+        public DateTime DateCreated { get; set; }
+        public string Role { get; set; }
+    }
+
+    public class ResetPasswordModel
+    {
+        public string Username { get; set; }
+    }
 }

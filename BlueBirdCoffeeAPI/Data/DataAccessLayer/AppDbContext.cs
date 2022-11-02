@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security;
 using System.Text;
@@ -16,7 +17,10 @@ namespace Data.DataAccessLayer
 {
     public class AppDbContext : IdentityDbContext<User>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
 
         #region Entities
         public virtual DbSet<Bill> Bills { get; set; }
@@ -108,7 +112,7 @@ namespace Data.DataAccessLayer
                 new Category() { Id = Guid.Parse("4f16c29d-f0dd-4c41-8481-48f32d4cd5b5"), Description = "Sinh tố", DateCreated = DateTime.UtcNow.AddHours(7), DateUpdated = DateTime.UtcNow.AddHours(7) },
                 new Category() { Id = Guid.Parse("4f16c29d-f0dd-4c41-8481-48f32d4cd5b6"), Description = "Trà sữa", DateCreated = DateTime.UtcNow.AddHours(7), DateUpdated = DateTime.UtcNow.AddHours(7) },
                 new Category() { Id = Guid.Parse("4f16c29d-f0dd-4c41-8481-48f32d4cd5b7"), Description = "Trà nóng", DateCreated = DateTime.UtcNow.AddHours(7), DateUpdated = DateTime.UtcNow.AddHours(7) },
-                new Category() { Id = Guid.Parse("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"), Description = "Trà trà", DateCreated = DateTime.UtcNow.AddHours(7), DateUpdated = DateTime.UtcNow.AddHours(7) },
+                new Category() { Id = Guid.Parse("4f16c29d-f0dd-4c41-8481-48f32d4cd5b8"), Description = "Trà", DateCreated = DateTime.UtcNow.AddHours(7), DateUpdated = DateTime.UtcNow.AddHours(7) },
                 new Category() { Id = Guid.Parse("4f16c29d-f0dd-4c41-8481-48f32d4cd5b9"), Description = "Ăn vặt", DateCreated = DateTime.UtcNow.AddHours(7), DateUpdated = DateTime.UtcNow.AddHours(7) }
                 );
 

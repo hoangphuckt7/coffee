@@ -5,6 +5,8 @@
         GET,
         POST,
         PUT,
-        DELETE
+        DELETE,
+        MULTIPART_POST,
+        MULTIPART_PUT
     }
 }

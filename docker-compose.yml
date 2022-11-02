@@ -22,7 +22,7 @@ services:
     environment:  
       - ConnectionString=Server=postgreslq;Port=5432;Database=BlueBirdCoffee;Username=postgres;Password=mysecretpassword;CommandTimeout=200;Trust Server Certificate=true
       - ASPNETCORE_ENVIRONMENT=Development
-    restart: "no"
+    restart: always
 
   bartender-web:
     image: bartender-web
@@ -34,7 +34,7 @@ services:
       - bluebirdcoffee-api
     ports:
        - "8001:80"
-    restart: "no"
+    restart: always
 
   admin-website:
     image: admin-website
@@ -49,4 +49,4 @@ services:
     environment:  
       - Host=http://bluebirdcoffee-api/
       - ASPNETCORE_ENVIRONMENT=Development
-    restart: "no"
+    restart: always

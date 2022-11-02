@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Xml.Linq;
 
 namespace AdminManager.Controllers
 {
@@ -13,7 +14,7 @@ namespace AdminManager.Controllers
     {
         public IActionResult Login(string mes, string returnUrl)
         {
-            if (!string.IsNullOrEmpty(Sessions.TOKEN))
+            if (!string.IsNullOrEmpty(HttpContext.Session.GetString("Token")))
             {
                 if (string.IsNullOrEmpty(returnUrl))
                 {
@@ -30,16 +31,16 @@ namespace AdminManager.Controllers
         [HttpGet]
         public IActionResult Logout()
         {
-            Sessions.TOKEN = "";
-            Sessions.FULLNAME = "";
-            Sessions.ROLE = "";
+            HttpContext.Session.SetString("FullName", "");
+            HttpContext.Session.SetString("Role", "");
+            HttpContext.Session.SetString("Token", "");
             return RedirectToAction("Login", "User");
         }
 
         public async Task<IActionResult> Authenitcation(UserLoginModel model)
         {
-            Sessions.LOGIN_ERROR_MESSAGE = "";
-            var result = await ApiBuilder.SendRequest<object>("api/User/Login", new { Phone = model.Username, PassWord = model.Password }, RequestMethod.POST, false, model.ReturnUrl!);
+            HttpContext.Session.SetString("LoginErrorMessage", "");
+            var result = await ApiBuilder.SendRequest<object>("api/User/Login", new { Phone = model.Username, PassWord = model.Password }, RequestMethod.POST, false, model.ReturnUrl!, HttpContext.Session);
 
             if (result.StatusCode == HttpStatusCode.BadRequest)
             {
@@ -53,10 +54,12 @@ namespace AdminManager.Controllers
 
             var data = await ApiBuilder.ParseToData<LoginSuccessViewModel>(result);
 
-            Sessions.TOKEN = data?.Token.ToString()!;
-            Sessions.FULLNAME = data?.FullName!;
-            Sessions.ROLE = data?.Role!;
-            
+            var x = HttpContext.Session;
+
+            HttpContext.Session.SetString("FullName", data?.FullName!);
+            HttpContext.Session.SetString("Role", data?.Role!);
+            HttpContext.Session.SetString("Token", data?.Token.ToString()!);
+
             if (string.IsNullOrEmpty(model.ReturnUrl))
             {
                 return RedirectToAction("index", "home");

@@ -16,11 +16,10 @@ namespace AdminManager.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var request = await ApiBuilder.SendRequest<object>("api/Bill/Chart", null, RequestMethod.GET, true, Request.GetDisplayUrl());
+            var request = await ApiBuilder.SendRequest<object>("api/Bill/Chart", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
             if (request.IsSuccessStatusCode)
             {
                 var data = await ApiBuilder.ParseToData<List<ChartViewModel>>(request);
-
                 string seriesData = "[";
                 foreach (var item in data)
                 {
@@ -30,7 +29,7 @@ namespace AdminManager.Controllers
                 ViewBag.SeriesData = seriesData;
             }
 
-            var statisticsRaw = await ApiBuilder.SendRequest<object>("api/Bill/Statistics", null, RequestMethod.GET, true, Request.GetDisplayUrl());
+            var statisticsRaw = await ApiBuilder.SendRequest<object>("api/Bill/Statistics", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
             if (request.IsSuccessStatusCode)
             {
                 var data = await ApiBuilder.ParseToData<StatisticsModels>(statisticsRaw);
@@ -41,7 +40,7 @@ namespace AdminManager.Controllers
 
         public async Task<IActionResult> Privacy()
         {
-            await ApiBuilder.SendRequest<object>("x", null, RequestMethod.GET, true, Request.GetDisplayUrl());
+            await ApiBuilder.SendRequest<object>("x", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
             return View();
         }
     }
