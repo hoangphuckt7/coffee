@@ -9,6 +9,7 @@ class FieldOutnine extends StatelessWidget {
   final String? errorText;
   final EFieldType? eFieldType;
   final Function(String)? onChanged;
+  final Function()? onEditingComplete;
   const FieldOutnine({
     super.key,
     required this.labelText,
@@ -16,6 +17,7 @@ class FieldOutnine extends StatelessWidget {
     required this.errorText,
     this.eFieldType = EFieldType.text,
     this.onChanged,
+    this.onEditingComplete,
   });
 
   final TextStyle _textStyle =
@@ -24,6 +26,7 @@ class FieldOutnine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      height: 55,
       child: TextFormField(
         controller: controller,
         obscureText: eFieldType == EFieldType.password,
@@ -35,6 +38,7 @@ class FieldOutnine extends StatelessWidget {
           errorText: errorText,
         ),
         onChanged: onChanged,
+        onEditingComplete: onEditingComplete,
       ),
     );
   }

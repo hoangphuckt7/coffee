@@ -60,7 +60,7 @@ class Fn {
     }
   }
 
-  static renderData(input, errMsg) {
+  static renderData({input, errMsg = 'Không xác định'}) {
     if (input == null || (input is String && input.isEmpty)) {
       return errMsg;
     }

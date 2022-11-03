@@ -39,7 +39,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       if (lstCateDB.isNotEmpty) {
         lstCate.addAll(lstCateDB);
       }
-
+      log('items: ${lstItem.length}');
       emit(LoadedCateItemState(lstCate, selectedCate, lstItem));
     } catch (e) {
       log('OrderBloc - _onLoadCateItem - ${e.toString()}');
