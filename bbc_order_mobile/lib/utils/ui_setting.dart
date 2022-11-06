@@ -32,3 +32,8 @@ class ScreenSetting {
   static const double padding_all = 10;
   static const double fontSize = 15;
 }
+
+class BorderSetting {
+  static const double border_radius = 5;
+  static const double focus_border_side_width = 1.5;
+}

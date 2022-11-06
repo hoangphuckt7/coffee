@@ -21,3 +21,24 @@ class FilterEvent extends OrderEvent {
 
   FilterEvent(this.cate, this.search);
 }
+
+class ChangeSugarEvent extends OrderEvent {
+  final item;
+  final step;
+
+  ChangeSugarEvent(this.item, this.step);
+}
+
+class ChangeIceEvent extends OrderEvent {
+  final item;
+  final step;
+
+  ChangeIceEvent(this.item, this.step);
+}
+
+class AddToCartEvent extends OrderEvent {
+  final lstODetail;
+  final item;
+
+  AddToCartEvent(this.lstODetail, this.item);
+}

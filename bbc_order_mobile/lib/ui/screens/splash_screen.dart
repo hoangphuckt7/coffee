@@ -1,5 +1,4 @@
 import 'package:bbc_order_mobile/blocs/splash/splash_bloc.dart';
-import 'package:bbc_order_mobile/repositories/user_repo.dart';
 import 'package:bbc_order_mobile/routes.dart';
 import 'package:bbc_order_mobile/ui/widgets/loader.dart';
 import 'package:bbc_order_mobile/utils/ui_setting.dart';

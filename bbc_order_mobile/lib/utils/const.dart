@@ -3,6 +3,8 @@
 class AppInfo {
   static const String Name = "BBC Order";
   static const List<String> Roles = ["ADMIN", "BARTENDER"];
+  static const int IncreaseStep = 25;
+  static const int DecreaseStep = -25;
 }
 
 // LS = Local Storage
