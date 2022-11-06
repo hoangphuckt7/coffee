@@ -17,3 +17,8 @@ enum EColor {
   danger,
   dark,
 }
+
+enum EBorder {
+  all,
+  underline,
+}

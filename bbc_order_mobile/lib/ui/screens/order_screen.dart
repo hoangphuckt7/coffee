@@ -5,19 +5,24 @@ import 'dart:developer';
 import 'package:bbc_order_mobile/blocs/order/order_bloc.dart';
 import 'package:bbc_order_mobile/models/common/base_model.dart';
 import 'package:bbc_order_mobile/models/item/item_model.dart';
+import 'package:bbc_order_mobile/models/order/order_detail_create_model.dart';
+import 'package:bbc_order_mobile/models/order/order_detail_model.dart';
 import 'package:bbc_order_mobile/models/table/table_model.dart';
 import 'package:bbc_order_mobile/routes.dart';
 import 'package:bbc_order_mobile/ui/controls/field_outline.dart';
+import 'package:bbc_order_mobile/ui/controls/fill_btn.dart';
 import 'package:bbc_order_mobile/ui/controls/icon_btn.dart';
 import 'package:bbc_order_mobile/ui/widgets/dropdown_cate.dart';
 import 'package:bbc_order_mobile/ui/widgets/frame_common.dart';
 import 'package:bbc_order_mobile/ui/widgets/item_order_card.dart';
 import 'package:bbc_order_mobile/ui/widgets/processing.dart';
+import 'package:bbc_order_mobile/utils/const.dart';
 import 'package:bbc_order_mobile/utils/enum.dart';
 import 'package:bbc_order_mobile/utils/function_common.dart';
 import 'package:bbc_order_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OrderScreen extends StatelessWidget {
   final BaseModel floor;
@@ -32,15 +37,20 @@ class OrderScreen extends StatelessWidget {
   List<BaseModel> lstCate = <BaseModel>[];
   BaseModel? selectedCate;
   String? search;
+  var searchController = TextEditingController();
+  List<OrderDetailCreateModel> lstODetailCreate = <OrderDetailCreateModel>[];
+
   @override
   Widget build(BuildContext context) {
     return MainFrame(
       showBackBtn: true,
       showUserInfo: false,
       showLogoutBtn: false,
+      title: 'Order',
       onClickBackBtn: () {
         Navigator.pushNamed(context, RouteName.pickTable);
       },
+      bottomBar: _bottom(context),
       child: Stack(children: [
         _main(context),
         _processState(context),
@@ -54,7 +64,7 @@ class OrderScreen extends StatelessWidget {
         bool isLoading = false;
         String loadingMsg = "";
         if (state is ErrorState) {
-          Fn.showToast(EToast.danger, state.errMsg.toString());
+          Fn.showToast(eToast: EToast.danger, msg: state.errMsg.toString());
         } else if (state is UpdatedLoadingState) {
           isLoading = state.isLoading;
           loadingMsg = state.labelLoading;
@@ -69,10 +79,65 @@ class OrderScreen extends StatelessWidget {
       padding: const EdgeInsets.all(ScreenSetting.padding_all),
       child: Column(
         children: [
-          _firstInfo(context),
+          _postion(context),
           _filter(context),
           Expanded(child: _menu(context)),
         ],
+      ),
+    );
+  }
+
+  Widget? _bottom(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 15),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 0, left: 0, right: 0),
+        child: Container(
+          color: MColor.white,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.add_shopping_cart_rounded,
+                  color: MColor.danger,
+                ),
+                const SizedBox(width: 5),
+                BlocBuilder<OrderBloc, OrderState>(
+                  builder: (context, state) {
+                    if (state is AddedToCartState) {
+                      lstODetailCreate = state.lstODetail;
+                    }
+                    return Expanded(
+                      child: Text('${lstODetailCreate.length} món'),
+                    );
+                  },
+                ),
+                FillBtn(
+                  title: 'Kiểm tra',
+                  btnBgColor: lstODetailCreate.isNotEmpty
+                      ? EColor.primary
+                      : EColor.dark,
+                  onPressed: () {
+                    if (lstODetailCreate.isNotEmpty) {
+                    } else {
+                      Fn.showToast(
+                        eToast: EToast.danger,
+                        msg: 'Vui lòng chọn món!',
+                        index: ToastGravity.CENTER,
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -100,12 +165,54 @@ class OrderScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: List.generate(lstItem.length, (i) {
-                    log('alo item length: ${lstItem.length}');
-                    return Column(
-                      children: [
-                        ItemOrderCard(model: lstItem[i]),
-                        const SizedBox(height: 10),
-                      ],
+                    var item = lstItem[i];
+                    return BlocBuilder<OrderBloc, OrderState>(
+                      builder: (context, state) {
+                        ItemModel? newItem;
+                        if (state is ChangedSugarState) {
+                          newItem = state.item;
+                        } else if (state is ChangedIceState) {
+                          newItem = state.item;
+                        } else if (state is AddedToCartState) {
+                          newItem = state.item;
+                        }
+                        if (newItem?.id == item.id) {
+                          lstItem[i] = newItem!;
+                          item = lstItem[i];
+                        }
+                        return Column(
+                          children: [
+                            ItemOrderCard(
+                              model: item,
+                              currentSugar: item.sugar,
+                              addToCart: () {
+                                BlocProvider.of<OrderBloc>(context).add(
+                                    AddToCartEvent(lstODetailCreate, item));
+                              },
+                              increaseSugar: () {
+                                BlocProvider.of<OrderBloc>(context).add(
+                                    ChangeSugarEvent(
+                                        item, AppInfo.IncreaseStep));
+                              },
+                              decreaseSugar: () {
+                                BlocProvider.of<OrderBloc>(context).add(
+                                    ChangeSugarEvent(
+                                        item, AppInfo.DecreaseStep));
+                              },
+                              currentIce: item.ice,
+                              increaseIce: () {
+                                BlocProvider.of<OrderBloc>(context).add(
+                                    ChangeIceEvent(item, AppInfo.IncreaseStep));
+                              },
+                              decreaseIce: () {
+                                BlocProvider.of<OrderBloc>(context).add(
+                                    ChangeIceEvent(item, AppInfo.DecreaseStep));
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        );
+                      },
                     );
                   }),
                 ),
@@ -118,7 +225,6 @@ class OrderScreen extends StatelessWidget {
   }
 
   Widget _filter(BuildContext context) {
-    var searchController = TextEditingController();
     return BlocBuilder<OrderBloc, OrderState>(
       builder: (context, state) {
         if (state is LoadedCateItemState) {
@@ -126,10 +232,8 @@ class OrderScreen extends StatelessWidget {
           lstCate = state.lstCate;
           lstItem = state.lstItem;
         } else if (state is FilteredState) {
+          lstItem = state.lstItem;
           selectedCate = state.cate;
-          searchController.text = state.search;
-          log('state.cate ${state.cate.description}');
-          log('state.search ${state.search}');
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,52 +245,88 @@ class OrderScreen extends StatelessWidget {
               indent: 50,
               endIndent: 50,
             ),
-            const SizedBox(child: Text('Chọn loại')),
-            SizedBox(
-              height: 40,
-              child: DropdownCategory(
-                listCategory: lstCate,
-                selectedCategory: selectedCate,
-                onChanged: (value) {
-                  BlocProvider.of<OrderBloc>(context)
-                      .add(FilterEvent(value, searchController.text));
-                },
-              ),
-            ),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: SizedBox(
-                    height: 50,
-                    child: FieldOutnine(
-                      labelText: 'Tìm kiếm',
-                      controller: searchController,
-                      errorText: null,
-                      onEditingComplete: () {
-                        BlocProvider.of<OrderBloc>(context).add(
-                            FilterEvent(selectedCate, searchController.text));
-                      },
-                    ),
+                  flex: 6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        child: Text(
+                          'Chọn loại',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: MColor.primaryBlack),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(BtnSetting.border_radius),
+                          ),
+                        ),
+                        child: DropdownCategory(
+                          fontSize: 13,
+                          height: 43,
+                          listCategory: lstCate,
+                          selectedCategory: selectedCate,
+                          onChanged: (value) {
+                            BlocProvider.of<OrderBloc>(context)
+                                .add(FilterEvent(value, searchController.text));
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 10),
-                IconBtn(
-                  icons: Icons.search_rounded,
-                  size: 30,
-                  onPressed: (() {
-                    BlocProvider.of<OrderBloc>(context)
-                        .add(FilterEvent(selectedCate, searchController.text));
-                  }),
+                Expanded(
+                  flex: 6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        child: Text(
+                          'Tìm kiếm',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      FieldOutline(
+                        height: 45,
+                        fontSize: 13,
+                        controller: searchController,
+                        eBorder: EBorder.all,
+                        onChanged: (value) {
+                          BlocProvider.of<OrderBloc>(context).add(
+                              FilterEvent(selectedCate, searchController.text));
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                IconBtn(
-                  icons: Icons.clear_rounded,
-                  btnBgColor: EColor.danger,
-                  size: 33,
-                  onPressed: (() {
-                    BlocProvider.of<OrderBloc>(context)
-                        .add(FilterEvent(selectedCate, searchController.text));
-                  }),
+                const SizedBox(width: 5),
+                Expanded(
+                  flex: 1,
+                  child: IconBtn(
+                    icons: Icons.clear_rounded,
+                    btnBgColor: EColor.danger,
+                    size: 35,
+                    onPressed: (() {
+                      BlocProvider.of<OrderBloc>(context)
+                          .add(FilterEvent(lstCate[0], ''));
+                      searchController.clear();
+                      FocusScope.of(context).unfocus();
+                    }),
+                  ),
                 )
               ],
             ),
@@ -196,7 +336,7 @@ class OrderScreen extends StatelessWidget {
     );
   }
 
-  Widget _firstInfo(BuildContext context) {
+  Widget _postion(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

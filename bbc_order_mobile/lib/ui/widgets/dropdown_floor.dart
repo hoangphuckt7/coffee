@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bbc_order_mobile/models/common/base_model.dart';
 import 'package:bbc_order_mobile/utils/function_common.dart';
 import 'package:bbc_order_mobile/utils/ui_setting.dart';

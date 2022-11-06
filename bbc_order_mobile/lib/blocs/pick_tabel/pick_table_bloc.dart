@@ -4,10 +4,7 @@ import 'dart:convert';
 
 import 'package:bbc_order_mobile/models/common/base_model.dart';
 import 'package:bbc_order_mobile/models/table/table_model.dart';
-import 'package:bbc_order_mobile/repositories/category_repo.dart';
 import 'package:bbc_order_mobile/repositories/floor_repo.dart';
-import 'package:bbc_order_mobile/repositories/item_repo.dart';
-import 'package:bbc_order_mobile/repositories/order_repo.dart';
 import 'package:bbc_order_mobile/repositories/table_repo.dart';
 import 'package:bbc_order_mobile/utils/const.dart';
 import 'package:bbc_order_mobile/utils/local_storage.dart';

@@ -1,4 +1,4 @@
-// ignore_for_file: body_might_complete_normally_nullable, unused_local_variable
+// ignore_for_file: body_might_complete_normally_nullable, unused_local_variable, prefer_const_constructors
 
 import 'package:bbc_order_mobile/blocs/auth/auth_bloc.dart';
 import 'package:bbc_order_mobile/blocs/order/order_bloc.dart';

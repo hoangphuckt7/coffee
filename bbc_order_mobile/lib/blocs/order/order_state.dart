@@ -35,3 +35,22 @@ class FilteredState extends OrderState {
 
   FilteredState(this.cate, this.search, this.lstItem);
 }
+
+class ChangedSugarState extends OrderState {
+  final item;
+
+  ChangedSugarState(this.item);
+}
+
+class ChangedIceState extends OrderState {
+  final item;
+
+  ChangedIceState(this.item);
+}
+
+class AddedToCartState extends OrderState {
+  final lstODetail;
+  final item;
+
+  AddedToCartState(this.lstODetail, this.item);
+}

@@ -7,13 +7,29 @@ import 'package:flutter/material.dart';
 
 class ItemOrderCard extends StatelessWidget {
   final ItemModel model;
+  final int? currentSugar;
+  final int? currentIce;
+  final void Function() addToCart;
+  final void Function() increaseSugar;
+  final void Function() decreaseSugar;
+  final void Function() increaseIce;
+  final void Function() decreaseIce;
   const ItemOrderCard({
     super.key,
     required this.model,
+    this.currentSugar = 100,
+    this.currentIce = 100,
+    required this.addToCart,
+    required this.increaseSugar,
+    required this.decreaseSugar,
+    required this.increaseIce,
+    required this.decreaseIce,
   });
 
   @override
   Widget build(BuildContext context) {
+    const double sizeIcon = 20;
+    const TextStyle textStyle = TextStyle(fontWeight: FontWeight.bold);
     return Row(
       children: [
         Expanded(
@@ -27,12 +43,71 @@ class ItemOrderCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                  child: Text(
-                      Fn.renderData(input: '${model.name} ${model.name}'))),
+                child: Text(
+                  Fn.renderData(input: model.name),
+                  style: textStyle,
+                ),
+              ),
               const SizedBox(height: 10),
-              SizedBox(child: Text(Fn.renderData(input: model.name))),
+              Row(
+                children: [
+                  const Expanded(
+                    flex: 2,
+                    child: SizedBox(
+                      child: Text('Đường: '),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: Row(
+                      children: [
+                        IconBtn(
+                          icons: Icons.add_circle_rounded,
+                          onPressed: increaseSugar,
+                          size: sizeIcon,
+                        ),
+                        const SizedBox(width: 5),
+                        SizedBox(child: Text('${currentSugar ?? 100}%')),
+                        const SizedBox(width: 5),
+                        IconBtn(
+                          icons: Icons.remove_circle_rounded,
+                          onPressed: decreaseSugar,
+                          size: sizeIcon,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 10),
-              SizedBox(child: Text(Fn.renderData(input: model.name))),
+              Row(
+                children: [
+                  const Expanded(
+                    flex: 2,
+                    child: SizedBox(child: Text('Đá: ')),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: Row(
+                      children: [
+                        IconBtn(
+                          icons: Icons.add_circle_rounded,
+                          onPressed: increaseIce,
+                          size: sizeIcon,
+                        ),
+                        const SizedBox(width: 5),
+                        SizedBox(child: Text('${currentIce ?? 100}%')),
+                        const SizedBox(width: 5),
+                        IconBtn(
+                          icons: Icons.remove_circle_rounded,
+                          onPressed: decreaseIce,
+                          size: sizeIcon,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -43,7 +118,7 @@ class ItemOrderCard extends StatelessWidget {
             icons: Icons.add,
             size: 30,
             btnBgColor: EColor.dark,
-            onPressed: () {},
+            onPressed: addToCart,
           ),
         ),
       ],

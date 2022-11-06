@@ -16,20 +16,23 @@ class ItemModel {
   final String? categoryId;
   final BaseModel? category;
   final List<String>? images;
+  int? sugar;
+  int? ice;
 
   ItemModel(
-    this.id,
-    this.description,
-    this.dateCreated,
-    this.dateUpdated,
-    this.isDeleted,
-    this.name,
-    this.price,
-    this.available,
-    this.categoryId,
-    this.category,
-    this.images,
-  );
+      this.id,
+      this.description,
+      this.dateCreated,
+      this.dateUpdated,
+      this.isDeleted,
+      this.name,
+      this.price,
+      this.available,
+      this.categoryId,
+      this.category,
+      this.images,
+      this.sugar,
+      this.ice);
 
   factory ItemModel.fromJson(Map<String, dynamic> json) =>
       _$ItemModelFromJson(json);

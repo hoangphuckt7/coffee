@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -22,7 +24,11 @@ class Fn {
   //   return vndFormat.format(double.parse(currency));
   // }
 
-  static showToast(EToast eToast, String msg) {
+  static showToast({
+    EToast? eToast,
+    String msg = '',
+    ToastGravity? index = ToastGravity.BOTTOM,
+  }) {
     dynamic toastColor;
     switch (eToast) {
       case EToast.success:
@@ -41,6 +47,7 @@ class Fn {
     Fluttertoast.showToast(
       msg: msg,
       backgroundColor: toastColor,
+      gravity: index,
     );
   }
 

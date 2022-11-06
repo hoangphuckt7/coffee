@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:bbc_order_mobile/blocs/auth/auth_bloc.dart';
 import 'package:bbc_order_mobile/routes.dart';
 import 'package:bbc_order_mobile/utils/ui_setting.dart';
@@ -8,12 +10,14 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
   final bool showUserInfo;
   final bool showLogoutBtn;
   final bool showBackBtn;
+  final String title;
   final void Function()? onClickBackBtn;
   AppbarCustom({
     super.key,
     this.showUserInfo = false,
     this.showLogoutBtn = false,
     this.showBackBtn = false,
+    this.title = '',
     this.onClickBackBtn,
   });
 
@@ -41,6 +45,20 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
                       Icons.arrow_back_rounded,
                       color: MColor.primaryGreen,
                       size: 25,
+                    ),
+                  ),
+                  Visibility(
+                    visible: title.isNotEmpty,
+                    child: const SizedBox(width: 10),
+                  ),
+                  Visibility(
+                    visible: title.isNotEmpty,
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ),
                 ],

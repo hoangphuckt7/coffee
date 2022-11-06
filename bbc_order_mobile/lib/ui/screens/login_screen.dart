@@ -52,7 +52,7 @@ class LoginScreen extends StatelessWidget {
               errUsername = state.errUsername;
               errPassword = state.errPassword;
             } else if (state is SubmitFailState) {
-              Fn.showToast(EToast.danger, state.errMsg);
+              Fn.showToast(eToast: EToast.danger, msg: state.errMsg);
             } else if (state is SubmittingState) {
               isLoading = true;
             }
@@ -78,7 +78,7 @@ class LoginScreen extends StatelessWidget {
                             ), // ----------------------------------------------------------------------------------------------------
                             const SizedBox(height: 10),
                             // Username
-                            FieldOutnine(
+                            FieldOutline(
                               labelText: 'Tên đăng nhập',
                               controller: usernameTEC,
                               errorText: errUsername,
@@ -91,7 +91,7 @@ class LoginScreen extends StatelessWidget {
                               },
                             ), // ----------------------------------------------------------------------------------------------------
                             // Password
-                            FieldOutnine(
+                            FieldOutline(
                               labelText: 'Mật khẩu',
                               controller: passwordTEC,
                               eFieldType: EFieldType.password,

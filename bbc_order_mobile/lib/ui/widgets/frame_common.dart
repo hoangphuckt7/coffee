@@ -6,6 +6,8 @@ class MainFrame extends StatelessWidget {
   final bool showUserInfo;
   final bool showLogoutBtn;
   final bool showBackBtn;
+  final String title;
+  final Widget? bottomBar;
   final void Function()? onClickBackBtn;
   final Widget child;
   const MainFrame({
@@ -13,6 +15,8 @@ class MainFrame extends StatelessWidget {
     this.showUserInfo = false,
     this.showLogoutBtn = false,
     this.showBackBtn = false,
+    this.title = '',
+    this.bottomBar,
     this.onClickBackBtn,
     required this.child,
   });
@@ -25,9 +29,11 @@ class MainFrame extends StatelessWidget {
         showUserInfo: showUserInfo,
         showLogoutBtn: showLogoutBtn,
         showBackBtn: showBackBtn,
+        title: title,
         onClickBackBtn: onClickBackBtn,
       ),
       body: child,
+      bottomNavigationBar: bottomBar,
     );
   }
 }

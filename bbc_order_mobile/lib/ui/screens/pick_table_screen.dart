@@ -43,7 +43,7 @@ class PickTableScreen extends StatelessWidget {
         bool isLoading = false;
         String loadingMsg = "";
         if (state is ErrorState) {
-          Fn.showToast(EToast.danger, state.errMsg.toString());
+          Fn.showToast(eToast: EToast.danger, msg: state.errMsg.toString());
         } else if (state is UpdatedLoadingState) {
           isLoading = state.isLoading;
           loadingMsg = state.labelLoading;
@@ -149,11 +149,24 @@ class PickTableScreen extends StatelessWidget {
           FillBtn(
               title: 'Tiếp theo',
               onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  RouteName.order,
-                  arguments: [selectedFloor, selectedTable],
-                );
+                if (selectedTable != null && selectedFloor != null) {
+                  Navigator.pushNamed(
+                    context,
+                    RouteName.order,
+                    arguments: [selectedFloor, selectedTable],
+                  );
+                }
+                if (selectedFloor == null) {
+                  Fn.showToast(
+                    eToast: EToast.danger,
+                    msg: 'Vui lòng chọn khu vục!',
+                  );
+                } else if (selectedTable == null) {
+                  Fn.showToast(
+                    eToast: EToast.danger,
+                    msg: 'Vui lòng chọn bàn!',
+                  );
+                }
               }),
         ],
       ),
