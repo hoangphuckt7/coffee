@@ -11,13 +11,14 @@ OrderCreateModel _$OrderCreateModelFromJson(Map<String, dynamic> json) =>
       json['tableId'] as String?,
       json['table'] == null
           ? null
-          : BaseModel.fromJson(json['table'] as Map<String, dynamic>),
+          : TableModel.fromJson(json['table'] as Map<String, dynamic>),
       json['floorId'] as String?,
       json['floor'] == null
           ? null
           : BaseModel.fromJson(json['floor'] as Map<String, dynamic>),
       (json['orderDetail'] as List<dynamic>?)
-          ?.map((e) => OrderDetailModel.fromJson(e as Map<String, dynamic>))
+          ?.map(
+              (e) => OrderDetailCreateModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

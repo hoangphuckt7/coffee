@@ -12,7 +12,7 @@ class ItemRepo {
   static const controllerUrl = '${Host.currentHostApi}/Item';
 
   static getImg(id) {
-    log('$controllerUrl/Image/$id');
+    // log('$controllerUrl/Image/$id');
     return '$controllerUrl/Image/$id';
   }
 

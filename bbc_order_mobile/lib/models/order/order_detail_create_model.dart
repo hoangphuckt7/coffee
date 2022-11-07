@@ -25,4 +25,9 @@ class OrderDetailCreateModel {
     this.description,
     this.listDct,
   );
+
+  factory OrderDetailCreateModel.fromJson(Map<String, dynamic> json) =>
+      _$OrderDetailCreateModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OrderDetailCreateModelToJson(this);
 }

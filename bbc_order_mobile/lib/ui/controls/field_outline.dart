@@ -71,11 +71,9 @@ class FieldOutline extends StatelessWidget {
         obscureText: eFieldType == EFieldType.password,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
-          alignLabelWithHint: true,
           border: _getBorder(),
           labelStyle: TextStyle(fontSize: fontSize),
           labelText: labelText,
-          // labelStyle: TextStyle(fontWeight: FontWeight.bold),
           errorText: errorText,
           focusedBorder: _getFocusBorder(),
         ),

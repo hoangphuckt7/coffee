@@ -121,15 +121,14 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     try {
       List<OrderDetailCreateModel> lstODetail = event.lstODetail;
       ItemModel item = event.item;
-      var dct = DetailDctModel(item.sugar, item.ice, null);
+      var dct = DetailDctModel(item.sugar ??= 100, item.ice ??= 100, null);
       var details = lstODetail.where((x) => x.itemId == item.id).toList();
       if (details.isNotEmpty) {
         details[0].quantity += 1;
         details[0].item = item;
         details[0].listDct!.add(dct);
         details[0].description = jsonEncode(details[0].listDct);
-      }
-      else {
+      } else {
         var lstDct = <DetailDctModel>[];
         lstDct.add(dct);
         var detail = OrderDetailCreateModel(

@@ -1,14 +1,16 @@
 // ignore_for_file: body_might_complete_normally_nullable, unused_local_variable, prefer_const_constructors
 
 import 'package:bbc_order_mobile/blocs/auth/auth_bloc.dart';
+import 'package:bbc_order_mobile/blocs/checkout/checkout_bloc.dart';
 import 'package:bbc_order_mobile/blocs/order/order_bloc.dart';
 import 'package:bbc_order_mobile/blocs/pick_tabel/pick_table_bloc.dart';
 import 'package:bbc_order_mobile/blocs/splash/splash_bloc.dart';
 import 'package:bbc_order_mobile/blocs/test/test_bloc.dart';
 import 'package:bbc_order_mobile/models/common/base_model.dart';
+import 'package:bbc_order_mobile/models/order/order_create_model.dart';
 import 'package:bbc_order_mobile/models/table/table_model.dart';
 import 'package:bbc_order_mobile/ui/screens/change_table_screen.dart';
-import 'package:bbc_order_mobile/ui/screens/check_out_screen.dart';
+import 'package:bbc_order_mobile/ui/screens/checkout_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/login_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/order_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/pick_table_screen.dart';
@@ -87,10 +89,12 @@ class Routes {
           ),
         );
       case RouteName.checkOut:
+        var lstArg = settings.arguments! as List;
+        var order = lstArg[0] as OrderCreateModel;
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (context) => PickTableBloc()..add(LoadFloorTableEvent()),
-            child: CheckOutScreen(),
+            create: (context) => CheckoutBloc(),
+            child: CheckOutScreen(order: order),
           ),
         );
       default:

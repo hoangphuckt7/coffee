@@ -24,8 +24,8 @@ ItemModel _$ItemModelFromJson(Map<String, dynamic> json) => ItemModel(
           ? null
           : BaseModel.fromJson(json['category'] as Map<String, dynamic>),
       (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      json['sugar'] == null ? 100 : json['sugar'] as int?,
-      json['ice'] == null ? 100 : json['ice'] as int?,
+      json['sugar'] as int?,
+      json['ice'] as int?,
     );
 
 Map<String, dynamic> _$ItemModelToJson(ItemModel instance) => <String, dynamic>{

@@ -1,12 +1,15 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bbc_order_mobile/blocs/order/order_bloc.dart';
 import 'package:bbc_order_mobile/models/common/base_model.dart';
 import 'package:bbc_order_mobile/models/item/item_model.dart';
+import 'package:bbc_order_mobile/models/order/order_create_model.dart';
 import 'package:bbc_order_mobile/models/order/order_detail_create_model.dart';
 import 'package:bbc_order_mobile/models/order/order_detail_model.dart';
+import 'package:bbc_order_mobile/models/order/order_model.dart';
 import 'package:bbc_order_mobile/models/table/table_model.dart';
 import 'package:bbc_order_mobile/routes.dart';
 import 'package:bbc_order_mobile/ui/controls/field_outline.dart';
@@ -46,7 +49,7 @@ class OrderScreen extends StatelessWidget {
       showBackBtn: true,
       showUserInfo: false,
       showLogoutBtn: false,
-      title: 'Order',
+      title: 'Chọn món',
       onClickBackBtn: () {
         Navigator.pushNamed(context, RouteName.pickTable);
       },
@@ -100,41 +103,60 @@ class OrderScreen extends StatelessWidget {
           color: MColor.white,
           child: Padding(
             padding: const EdgeInsets.all(10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.add_shopping_cart_rounded,
-                  color: MColor.danger,
-                ),
-                const SizedBox(width: 5),
-                BlocBuilder<OrderBloc, OrderState>(
-                  builder: (context, state) {
-                    if (state is AddedToCartState) {
-                      lstODetailCreate = state.lstODetail;
-                    }
-                    return Expanded(
-                      child: Text('${lstODetailCreate.length} món'),
-                    );
-                  },
-                ),
-                FillBtn(
-                  title: 'Kiểm tra',
-                  btnBgColor: lstODetailCreate.isNotEmpty
-                      ? EColor.primary
-                      : EColor.dark,
-                  onPressed: () {
-                    if (lstODetailCreate.isNotEmpty) {
-                    } else {
-                      Fn.showToast(
-                        eToast: EToast.danger,
-                        msg: 'Vui lòng chọn món!',
-                        index: ToastGravity.CENTER,
-                      );
-                    }
-                  },
-                ),
-              ],
+            child: BlocBuilder<OrderBloc, OrderState>(
+              builder: (context, state) {
+                if (state is AddedToCartState) {
+                  lstODetailCreate = state.lstODetail;
+                }
+                int totalItem = 0;
+                if (lstODetailCreate.isNotEmpty) {
+                  for (var detail in lstODetailCreate) {
+                    totalItem += detail.quantity;
+                  }
+                }
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.add_shopping_cart_rounded,
+                      color: MColor.danger,
+                    ),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: Text('$totalItem món'),
+                    ),
+                    FillBtn(
+                      title: 'Kiểm tra',
+                      btnBgColor: lstODetailCreate.isNotEmpty
+                          ? EColor.primary
+                          : EColor.dark,
+                      onPressed: () {
+                        if (lstODetailCreate.isNotEmpty) {
+                          Navigator.pushNamed(
+                            context,
+                            RouteName.checkOut,
+                            arguments: [
+                              OrderCreateModel(
+                                table.id,
+                                table,
+                                floor.id,
+                                floor,
+                                lstODetailCreate,
+                              )
+                            ],
+                          );
+                        } else {
+                          Fn.showToast(
+                            eToast: EToast.danger,
+                            msg: 'Vui lòng chọn món!',
+                            index: ToastGravity.CENTER,
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -238,15 +260,8 @@ class OrderScreen extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 3),
-            const Divider(
-              color: MColor.primaryBlack,
-              thickness: 1,
-              indent: 50,
-              endIndent: 50,
-            ),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   flex: 6,
@@ -271,8 +286,8 @@ class OrderScreen extends StatelessWidget {
                           ),
                         ),
                         child: DropdownCategory(
-                          fontSize: 13,
-                          height: 43,
+                          fontSize: 12,
+                          height: 30,
                           listCategory: lstCate,
                           selectedCategory: selectedCate,
                           onChanged: (value) {
@@ -301,8 +316,8 @@ class OrderScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 5),
                       FieldOutline(
-                        height: 45,
-                        fontSize: 13,
+                        height: 32,
+                        fontSize: 12,
                         controller: searchController,
                         eBorder: EBorder.all,
                         onChanged: (value) {
@@ -337,27 +352,38 @@ class OrderScreen extends StatelessWidget {
   }
 
   Widget _postion(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       children: [
-        const SizedBox(
-          child: Text('Khu vực: '),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              child: Text('Khu vực: '),
+            ),
+            SizedBox(
+              child: Text(
+                floor.description!,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(child: Text(' - ')),
+            const SizedBox(
+              child: Text('Bàn: '),
+            ),
+            SizedBox(
+              child: Text(
+                table.description!,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
         ),
-        SizedBox(
-          child: Text(
-            floor.description!,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        const SizedBox(child: Text(' - ')),
-        const SizedBox(
-          child: Text('Bàn: '),
-        ),
-        SizedBox(
-          child: Text(
-            table.description!,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+        const SizedBox(height: 3),
+        const Divider(
+          color: MColor.primaryBlack,
+          thickness: 1,
+          indent: 50,
+          endIndent: 50,
         ),
       ],
     );
