@@ -122,17 +122,14 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       List<OrderDetailCreateModel> lstODetail = event.lstODetail;
       ItemModel item = event.item;
       var dct = DetailDctModel(item.sugar, item.ice, null);
-      if (lstODetail.isNotEmpty) {
-        var detail = lstODetail.firstWhere((x) => x.itemId == item.id);
-        if (detail != null) {
-          detail.quantity += 1;
-          if (detail.listDct!.isEmpty) {
-            detail.listDct = <DetailDctModel>[];
-          }
-          detail.listDct!.add(dct);
-          detail.description = jsonEncode(detail.listDct);
-        }
-      } else {
+      var details = lstODetail.where((x) => x.itemId == item.id).toList();
+      if (details.isNotEmpty) {
+        details[0].quantity += 1;
+        details[0].item = item;
+        details[0].listDct!.add(dct);
+        details[0].description = jsonEncode(details[0].listDct);
+      }
+      else {
         var lstDct = <DetailDctModel>[];
         lstDct.add(dct);
         var detail = OrderDetailCreateModel(
@@ -144,6 +141,28 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         );
         lstODetail.add(detail);
       }
+      // if (lstODetail.isNotEmpty) {
+      //   var detail = lstODetail.firstWhere((x) => x.itemId == item.id);
+      //   if (detail != null) {
+      //     detail.quantity += 1;
+      //     if (detail.listDct!.isEmpty) {
+      //       detail.listDct = <DetailDctModel>[];
+      //     }
+      //     detail.listDct!.add(dct);
+      //     detail.description = jsonEncode(detail.listDct);
+      //   }
+      // } else {
+      //   var lstDct = <DetailDctModel>[];
+      //   lstDct.add(dct);
+      //   var detail = OrderDetailCreateModel(
+      //     item.id,
+      //     item,
+      //     1,
+      //     jsonEncode(lstDct),
+      //     lstDct,
+      //   );
+      //   lstODetail.add(detail);
+      // }
       item.sugar = 100;
       item.ice = 100;
       emit(AddedToCartState(lstODetail, item));
