@@ -25,109 +25,112 @@ class LoginScreen extends StatelessWidget {
     var cardWidth = screenWidth * .8;
     var cardHeight = screenHeight * .5;
 
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is SubmitSuccessState) {
-          Navigator.pushNamed(context, RouteName.pickTable);
-        }
-      },
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment(.5, 1),
-            colors: <Color>[
-              MColor.white,
-              MColor.primaryGreen,
-            ], // Gradient from https://learnui.design/tools/gradient-generator.html
-            tileMode: TileMode.mirror,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is SubmitSuccessState) {
+            Fn.pushScreen(context, RouteName.pickTable);
+          }
+        },
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment(.5, 1),
+              colors: <Color>[
+                MColor.white,
+                MColor.primaryGreen,
+              ], // Gradient from https://learnui.design/tools/gradient-generator.html
+              tileMode: TileMode.mirror,
+            ),
           ),
-        ),
-        child: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            String? errUsername;
-            String? errPassword;
-            bool isLoading = false;
-            if (state is DataInvalidState) {
-              errUsername = state.errUsername;
-              errPassword = state.errPassword;
-            } else if (state is SubmitFailState) {
-              Fn.showToast(eToast: EToast.danger, msg: state.errMsg);
-            } else if (state is SubmittingState) {
-              isLoading = true;
-            }
-            return Stack(
-              children: [
-                Center(
-                  child: CardCustom(
-                    child: SizedBox(
-                      width: cardWidth,
-                      height: cardHeight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(30),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              AppInfo.Name,
-                              style: TextStyle(
-                                color: MColor.primaryBlack,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25,
+          child: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              String? errUsername;
+              String? errPassword;
+              bool isLoading = false;
+              if (state is DataInvalidState) {
+                errUsername = state.errUsername;
+                errPassword = state.errPassword;
+              } else if (state is SubmitFailState) {
+                Fn.showToast(eToast: EToast.danger, msg: state.errMsg);
+              } else if (state is SubmittingState) {
+                isLoading = true;
+              }
+              return Stack(
+                children: [
+                  Center(
+                    child: CardCustom(
+                      child: SizedBox(
+                        width: cardWidth,
+                        height: cardHeight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(30),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                AppInfo.Name,
+                                style: TextStyle(
+                                  color: MColor.primaryBlack,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                ),
+                              ), // ----------------------------------------------------------------------------------------------------
+                              const SizedBox(height: 10),
+                              // Username
+                              FieldOutline(
+                                labelText: 'Tên đăng nhập',
+                                controller: usernameTEC,
+                                errorText: errUsername,
+                                onChanged: (val) {
+                                  BlocProvider.of<AuthBloc>(context)
+                                      .add(DataChangedEvent(
+                                    usernameTEC.text,
+                                    passwordTEC.text,
+                                  ));
+                                },
+                              ), // ----------------------------------------------------------------------------------------------------
+                              // Password
+                              FieldOutline(
+                                labelText: 'Mật khẩu',
+                                controller: passwordTEC,
+                                eFieldType: EFieldType.password,
+                                errorText: errPassword,
+                                onChanged: (val) {
+                                  BlocProvider.of<AuthBloc>(context)
+                                      .add(DataChangedEvent(
+                                    usernameTEC.text,
+                                    passwordTEC.text,
+                                  ));
+                                },
+                              ), // ----------------------------------------------------------------------------------------------------
+                              const SizedBox(height: 20),
+                              FillBtn(
+                                title: "Đăng nhập",
+                                onPressed: () {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  BlocProvider.of<AuthBloc>(context)
+                                      .add(SubmittedEvent(
+                                    usernameTEC.text,
+                                    passwordTEC.text,
+                                  ));
+                                },
                               ),
-                            ), // ----------------------------------------------------------------------------------------------------
-                            const SizedBox(height: 10),
-                            // Username
-                            FieldOutline(
-                              labelText: 'Tên đăng nhập',
-                              controller: usernameTEC,
-                              errorText: errUsername,
-                              onChanged: (val) {
-                                BlocProvider.of<AuthBloc>(context)
-                                    .add(DataChangedEvent(
-                                  usernameTEC.text,
-                                  passwordTEC.text,
-                                ));
-                              },
-                            ), // ----------------------------------------------------------------------------------------------------
-                            // Password
-                            FieldOutline(
-                              labelText: 'Mật khẩu',
-                              controller: passwordTEC,
-                              eFieldType: EFieldType.password,
-                              errorText: errPassword,
-                              onChanged: (val) {
-                                BlocProvider.of<AuthBloc>(context)
-                                    .add(DataChangedEvent(
-                                  usernameTEC.text,
-                                  passwordTEC.text,
-                                ));
-                              },
-                            ), // ----------------------------------------------------------------------------------------------------
-                            const SizedBox(height: 20),
-                            FillBtn(
-                              title: "Đăng nhập",
-                              onPressed: () {
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                BlocProvider.of<AuthBloc>(context)
-                                    .add(SubmittedEvent(
-                                  usernameTEC.text,
-                                  passwordTEC.text,
-                                ));
-                              },
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Processing(
-                  show: isLoading,
-                )
-              ],
-            );
-          },
+                  Processing(
+                    show: isLoading,
+                  )
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

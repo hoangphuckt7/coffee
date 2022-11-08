@@ -13,10 +13,43 @@ class ErrorEvent extends CheckoutEvent {
   ErrorEvent(this.errMsg);
 }
 
-class ChangeQuantityEvent extends CheckoutEvent {}
+class ChangeQuantityEvent extends CheckoutEvent {
+  final detail;
+  final step;
 
-class ChangeSugarEvent extends CheckoutEvent {}
+  ChangeQuantityEvent(this.detail, this.step);
+}
 
-class ChangeIceEvent extends CheckoutEvent {}
+class ChangeSugarEvent extends CheckoutEvent {
+  final detail;
+  final step;
+  final indexDct;
 
-class ChangeNoteEvent extends CheckoutEvent {}
+  ChangeSugarEvent(this.detail, this.step, this.indexDct);
+}
+
+class ChangeIceEvent extends CheckoutEvent {
+  final detail;
+  final step;
+  final indexDct;
+
+  ChangeIceEvent(this.detail, this.step, this.indexDct);
+}
+
+class ChangeNoteEvent extends CheckoutEvent {
+  final detail;
+  final note;
+  final indexDct;
+
+  ChangeNoteEvent(this.detail, this.note, this.indexDct);
+}
+
+class GoBackOrderEvent extends CheckoutEvent {}
+
+class ConfirmOrderEvent extends CheckoutEvent {
+  final order;
+
+  ConfirmOrderEvent(this.order);
+}
+
+class GoToPickTableEvent extends CheckoutEvent {}

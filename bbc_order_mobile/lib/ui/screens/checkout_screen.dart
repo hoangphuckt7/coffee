@@ -1,11 +1,15 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:bbc_order_mobile/blocs/checkout/checkout_bloc.dart';
 import 'package:bbc_order_mobile/models/order/order_create_model.dart';
 import 'package:bbc_order_mobile/models/order/order_detail_create_model.dart';
 import 'package:bbc_order_mobile/routes.dart';
 import 'package:bbc_order_mobile/ui/controls/fill_btn.dart';
+import 'package:bbc_order_mobile/ui/widgets/empty.dart';
 import 'package:bbc_order_mobile/ui/widgets/frame_common.dart';
 import 'package:bbc_order_mobile/ui/widgets/item_checkout_card.dart';
 import 'package:bbc_order_mobile/ui/widgets/processing.dart';
+import 'package:bbc_order_mobile/utils/const.dart';
 import 'package:bbc_order_mobile/utils/enum.dart';
 import 'package:bbc_order_mobile/utils/function_common.dart';
 import 'package:bbc_order_mobile/utils/ui_setting.dart';
@@ -27,13 +31,8 @@ class CheckOutScreen extends StatelessWidget {
       showUserInfo: false,
       showLogoutBtn: false,
       title: 'Kiểm tra - Xác nhận',
-      onClickBackBtn: () {
-        Navigator.pushNamed(
-          context,
-          RouteName.order,
-          arguments: [order],
-        );
-      },
+      onWillPop: () => _back(context),
+      onClickBackBtn: () => _back(context),
       bottomBar: _bottom(context),
       child: Stack(children: [
         _main(context),
@@ -72,79 +71,158 @@ class CheckOutScreen extends StatelessWidget {
 
   Widget _detail(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: List.generate(order.orderDetail!.length, (i) {
-          OrderDetailCreateModel model = order.orderDetail![i];
-          return Column(
-            children: [
-              const SizedBox(height: 8),
-              ItemCheckoutCard(model: model),
-              const SizedBox(height: 8),
-            ],
-          );
-        }),
+      child: BlocListener<CheckoutBloc, CheckoutState>(
+        listener: (context, state) {
+          if (state is GoBackOrderState) {
+            Fn.showToast(eToast: EToast.danger, msg: "Vui lòng chọn món!");
+            Fn.pushScreen(
+              context,
+              RouteName.order,
+              arguments: [order],
+            );
+          }
+        },
+        child: BlocBuilder<CheckoutBloc, CheckoutState>(
+          builder: (context, state) {
+            if (state is ChangedQuantityState) {
+              OrderDetailCreateModel detail = state.detail;
+              var index = order.orderDetail!.indexWhere(
+                (x) => x.itemId == detail.itemId,
+              );
+              if (detail.quantity == 0) {
+                if (order.orderDetail!.isNotEmpty) {
+                  order.orderDetail!.removeAt(index);
+                }
+              } else {
+                order.orderDetail![index] = detail;
+              }
+
+              if (order.orderDetail == null || order.orderDetail!.isEmpty) {
+                BlocProvider.of<CheckoutBloc>(context).add(GoBackOrderEvent());
+              }
+            }
+            return Column(
+              children: List.generate(order.orderDetail!.length, (i) {
+                OrderDetailCreateModel model = order.orderDetail![i];
+                if (state is ChangedSugarState) {
+                  OrderDetailCreateModel detail = state.detail;
+                  if (model.itemId == detail.itemId) {
+                    model = detail;
+                  }
+                } else if (state is ChangedIceState) {
+                  OrderDetailCreateModel detail = state.detail;
+                  if (model.itemId == detail.itemId) {
+                    model = detail;
+                  }
+                } else if (state is ChangedNoteState) {
+                  OrderDetailCreateModel detail = state.detail;
+                  if (model.itemId == detail.itemId) {
+                    model = detail;
+                  }
+                }
+                return Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    ItemCheckoutCard(
+                      model: model,
+                      // Cập nhập số lượng
+                      increaseQuantity: () {
+                        BlocProvider.of<CheckoutBloc>(context)
+                            .add(ChangeQuantityEvent(model, 1));
+                      },
+                      decreaseQuantity: () {
+                        BlocProvider.of<CheckoutBloc>(context)
+                            .add(ChangeQuantityEvent(model, -1));
+                      },
+                      // Cập nhật đường
+                      increaseSugar: () {
+                        BlocProvider.of<CheckoutBloc>(context).add(
+                            ChangeSugarEvent(model, AppInfo.IncreaseStep, i));
+                      },
+                      decreaseSugar: () {
+                        BlocProvider.of<CheckoutBloc>(context).add(
+                            ChangeSugarEvent(model, AppInfo.DecreaseStep, i));
+                      },
+                      // Cập nhật đá
+                      increaseIce: () {
+                        BlocProvider.of<CheckoutBloc>(context).add(
+                            ChangeIceEvent(model, AppInfo.IncreaseStep, i));
+                      },
+                      decreaseIce: () {
+                        BlocProvider.of<CheckoutBloc>(context).add(
+                            ChangeIceEvent(model, AppInfo.DecreaseStep, i));
+                      },
+                      // Cập nhật ghi chú
+                      onNoteChange: (value) {
+                        BlocProvider.of<CheckoutBloc>(context)
+                            .add(ChangeNoteEvent(model, value, i));
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                );
+              }),
+            );
+          },
+        ),
       ),
     );
   }
 
   Widget? _bottom(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 15),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 0, left: 0, right: 0),
-        child: Container(
-          color: MColor.white,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  child: Text(
-                    'Tổng: ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: MColor.danger,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 5),
-                BlocBuilder<CheckoutBloc, CheckoutState>(
-                  builder: (context, state) {
-                    int totalItem = 0;
-                    if (order.orderDetail!.isNotEmpty) {
-                      for (var detail in order.orderDetail!) {
-                        totalItem += detail.quantity;
-                      }
-                    }
-                    return Expanded(
-                      child: Text('$totalItem món'),
-                    );
-                  },
-                ),
-                FillBtn(
-                  title: 'Xác nhận',
-                  btnBgColor:
-                      order.orderDetail != null ? EColor.primary : EColor.dark,
-                  onPressed: () {
-                    if (order.orderDetail != null) {
-                    } else {
-                      Fn.showToast(
-                        eToast: EToast.danger,
-                        msg: 'Vui lòng chọn món!',
-                        index: ToastGravity.CENTER,
-                      );
-                    }
-                  },
-                ),
+    return BlocListener<CheckoutBloc, CheckoutState>(
+      listener: (context, state) {
+        if (state is GoToPickTableState) {
+          Fn.showToast(eToast: EToast.success, msg: "Order thành công!");
+          Fn.pushScreen(context, RouteName.pickTable);
+        }
+      },
+      child: BlocBuilder<CheckoutBloc, CheckoutState>(
+        builder: (context, state) {
+          int totalItem = 0;
+          if (order.orderDetail!.isNotEmpty) {
+            for (var detail in order.orderDetail!) {
+              totalItem += detail.quantity;
+            }
+          }
+
+          return Container(
+            decoration: const BoxDecoration(
+              boxShadow: [
+                BoxShadow(color: Colors.black12, blurRadius: 15),
               ],
             ),
-          ),
-        ),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 0, left: 0, right: 0),
+              child: Container(
+                color: MColor.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        child: Text(
+                          'Tổng: ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: MColor.danger,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Expanded(child: Text('$totalItem món')),
+                      FillBtn(
+                        title: 'Xác nhận',
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -186,4 +264,7 @@ class CheckOutScreen extends StatelessWidget {
       ],
     );
   }
+
+  _back(BuildContext context) =>
+      Fn.pushScreen(context, RouteName.order, arguments: [order]);
 }

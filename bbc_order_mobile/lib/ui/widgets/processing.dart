@@ -1,4 +1,5 @@
 import 'package:bbc_order_mobile/ui/widgets/loader.dart';
+import 'package:bbc_order_mobile/ui/widgets/popup.dart';
 import 'package:bbc_order_mobile/utils/function_common.dart';
 import 'package:bbc_order_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
@@ -14,40 +15,19 @@ class Processing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Visibility(
-      visible: show,
-      child: Container(
-        color: Colors.black.withOpacity(.6),
-        child: Center(
-          child: SizedBox(
-            width: Fn.getScreenWidth(context) * .8,
-            height: Fn.getScreenHeight(context) * .3,
-            child: Card(
-              color: MColor.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(CardSetting.border_radius),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Loader(size: 30),
-                    const SizedBox(height: 20),
-                    Text(
-                      msg,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+    return Popup(
+      show: show,
+      children: [
+        const Loader(size: 30),
+        const SizedBox(height: 20),
+        Text(
+          msg,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
           ),
         ),
-      ),
+      ],
     );
   }
 }

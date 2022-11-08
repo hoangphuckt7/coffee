@@ -9,9 +9,23 @@ import 'package:flutter/material.dart';
 
 class ItemCheckoutCard extends StatelessWidget {
   final OrderDetailCreateModel model;
+  final void Function()? increaseQuantity;
+  final void Function()? decreaseQuantity;
+  final void Function()? increaseSugar;
+  final void Function()? decreaseSugar;
+  final void Function()? increaseIce;
+  final void Function()? decreaseIce;
+  final void Function(String)? onNoteChange;
   const ItemCheckoutCard({
     super.key,
     required this.model,
+    this.increaseQuantity,
+    this.decreaseQuantity,
+    this.increaseSugar,
+    this.decreaseSugar,
+    this.increaseIce,
+    this.decreaseIce,
+    this.onNoteChange,
   });
 
   static const TextStyle textStyle = TextStyle(fontWeight: FontWeight.bold);
@@ -40,7 +54,7 @@ class ItemCheckoutCard extends StatelessWidget {
           child: FieldOutline(
             controller: noteController,
             fontSize: 12,
-            onChanged: ((value) {}),
+            onChanged: onNoteChange,
           ),
         ),
       ],
@@ -56,12 +70,13 @@ class ItemCheckoutCard extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(child: Text('Đường: ', style: textStyle)),
                     const SizedBox(width: 5),
                     IconBtn(
                       icons: Icons.add_circle_rounded,
-                      onPressed: () {},
+                      onPressed: increaseSugar ?? () {},
                       size: sizeIcon,
                     ),
                     const SizedBox(width: 5),
@@ -70,7 +85,7 @@ class ItemCheckoutCard extends StatelessWidget {
                     IconBtn(
                       icons: Icons.remove_circle_rounded,
                       btnBgColor: EColor.danger,
-                      onPressed: () {},
+                      onPressed: decreaseSugar ?? () {},
                       size: sizeIcon,
                     ),
                   ],
@@ -79,12 +94,13 @@ class ItemCheckoutCard extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(child: Text('Đá: ', style: textStyle)),
                     const SizedBox(width: 5),
                     IconBtn(
                       icons: Icons.add_circle_rounded,
-                      onPressed: () {},
+                      onPressed: increaseIce ?? () {},
                       size: sizeIcon,
                     ),
                     const SizedBox(width: 5),
@@ -93,7 +109,7 @@ class ItemCheckoutCard extends StatelessWidget {
                     IconBtn(
                       icons: Icons.remove_circle_rounded,
                       btnBgColor: EColor.danger,
-                      onPressed: () {},
+                      onPressed: decreaseIce ?? () {},
                       size: sizeIcon,
                     ),
                   ],
@@ -125,12 +141,10 @@ class ItemCheckoutCard extends StatelessWidget {
 
   Widget _itemInfo() {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 3,
+          flex: 6,
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
                 child: Text(
@@ -138,16 +152,15 @@ class ItemCheckoutCard extends StatelessWidget {
                   style: textStyle,
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 5),
               Expanded(child: Text(model.item!.name!)),
             ],
           ),
         ),
         const SizedBox(width: 10),
         Expanded(
-          flex: 2,
+          flex: 5,
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
                 child: Text(
@@ -158,16 +171,23 @@ class ItemCheckoutCard extends StatelessWidget {
               const SizedBox(width: 10),
               IconBtn(
                 icons: Icons.add_circle_rounded,
-                onPressed: () {},
+                onPressed: increaseQuantity ?? () {},
                 size: sizeIcon,
               ),
-              const SizedBox(width: 5),
-              SizedBox(child: Text('${model.quantity}%')),
-              const SizedBox(width: 5),
+              const SizedBox(width: 2),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(child: Text('${model.quantity}')),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 2),
               IconBtn(
                 icons: Icons.remove_circle_rounded,
                 btnBgColor: EColor.danger,
-                onPressed: () {},
+                onPressed: decreaseQuantity ?? () {},
                 size: sizeIcon,
               ),
             ],

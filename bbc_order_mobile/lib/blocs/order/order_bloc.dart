@@ -82,8 +82,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
       emit(FilteredState(cate, searchVal, lstItem));
     } catch (e) {
+      emit(ErrorState(AppInfo.ErrMsg));
       log('OrderBloc - _onFilter - ${e.toString()}');
-      emit(ErrorState('Lỗi!'));
     }
   }
 
@@ -93,11 +93,12 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       ItemModel item = event.item;
       if (item.sugar == null) {
         item.sugar = 100 + step;
-      } else if (item.sugar! + step >= 0) {
+      } else if (item.sugar! + step >= 0 && item.sugar! + step <= 200) {
         item.sugar = item.sugar! + step;
       }
       emit(ChangedSugarState(item));
     } catch (e) {
+      emit(ErrorState(AppInfo.ErrMsg));
       log('OrderBloc - _onChangeSugar - ${e.toString()}');
     }
   }
@@ -108,11 +109,12 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       ItemModel item = event.item;
       if (item.ice == null) {
         item.ice = 100 + step;
-      } else if (item.ice! + step >= 0) {
+      } else if (item.ice! + step >= 0 && item.ice! + step <= 200) {
         item.ice = item.ice! + step;
       }
       emit(ChangedIceState(item));
     } catch (e) {
+      emit(ErrorState(AppInfo.ErrMsg));
       log('OrderBloc - _onChangeIce - ${e.toString()}');
     }
   }
@@ -140,32 +142,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         );
         lstODetail.add(detail);
       }
-      // if (lstODetail.isNotEmpty) {
-      //   var detail = lstODetail.firstWhere((x) => x.itemId == item.id);
-      //   if (detail != null) {
-      //     detail.quantity += 1;
-      //     if (detail.listDct!.isEmpty) {
-      //       detail.listDct = <DetailDctModel>[];
-      //     }
-      //     detail.listDct!.add(dct);
-      //     detail.description = jsonEncode(detail.listDct);
-      //   }
-      // } else {
-      //   var lstDct = <DetailDctModel>[];
-      //   lstDct.add(dct);
-      //   var detail = OrderDetailCreateModel(
-      //     item.id,
-      //     item,
-      //     1,
-      //     jsonEncode(lstDct),
-      //     lstDct,
-      //   );
-      //   lstODetail.add(detail);
-      // }
       item.sugar = 100;
       item.ice = 100;
       emit(AddedToCartState(lstODetail, item));
     } catch (e) {
+      emit(ErrorState(AppInfo.ErrMsg));
       log('OrderBloc - _onAddingToCart - ${e.toString()}');
     }
   }

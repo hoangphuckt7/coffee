@@ -6,11 +6,11 @@ class ChangeTableScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MainFrame(
+    return MainFrame(
       showBackBtn: true,
       showUserInfo: false,
       showLogoutBtn: false,
-      child: SizedBox(
+      child: const SizedBox(
         child: Text('Change table screen'),
       ),
     );
