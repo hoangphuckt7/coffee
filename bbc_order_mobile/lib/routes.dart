@@ -53,8 +53,19 @@ class Routes {
             child: LoginScreen(),
           ),
         );
-
+      case RouteName.changeTable:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => PickTableBloc()..add(LoadFloorTableEvent()),
+            child: ChangeTableScreen(),
+          ),
+        );
       case RouteName.pickTable:
+        OrderCreateModel? order;
+        if (settings.arguments != null) {
+          var lstArg = settings.arguments! as List;
+          order = lstArg.isNotEmpty ? lstArg[0] as OrderCreateModel? : null;
+        }
         return MaterialPageRoute(
           builder: (context) => MultiBlocProvider(
             providers: [
@@ -66,14 +77,7 @@ class Routes {
                     PickTableBloc()..add(LoadFloorTableEvent()),
               ),
             ],
-            child: PickTableScreen(),
-          ),
-        );
-      case RouteName.changeTable:
-        return MaterialPageRoute(
-          builder: (context) => BlocProvider(
-            create: (context) => PickTableBloc()..add(LoadFloorTableEvent()),
-            child: ChangeTableScreen(),
+            child: PickTableScreen(order: order),
           ),
         );
       case RouteName.order:
@@ -95,7 +99,12 @@ class Routes {
           ),
         );
       default:
-        return null;
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => AuthBloc(),
+            child: LoginScreen(),
+          ),
+        );
     }
   }
 }

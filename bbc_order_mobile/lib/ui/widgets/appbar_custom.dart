@@ -2,6 +2,7 @@
 
 import 'package:bbc_order_mobile/blocs/auth/auth_bloc.dart';
 import 'package:bbc_order_mobile/routes.dart';
+import 'package:bbc_order_mobile/utils/function_common.dart';
 import 'package:bbc_order_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,7 +83,7 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
             child: BlocListener<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is LogoutState) {
-                  Navigator.pushNamed(context, RouteName.login);
+                  Fn.pushScreen(context, RouteName.login);
                 }
               },
               child: InkWell(

@@ -20,10 +20,30 @@ class UpdatedLoadingState extends CheckoutState {
   UpdatedLoadingState(this.isLoading, this.labelLoading);
 }
 
-class ChangeQuantityState extends CheckoutState {}
+class ChangedQuantityState extends CheckoutState {
+  final detail;
 
-class ChangeSugarState extends CheckoutState {}
+  ChangedQuantityState(this.detail);
+}
 
-class ChangeIceState extends CheckoutState {}
+class ChangedSugarState extends CheckoutState {
+  final detail;
 
-class ChangeNoteState extends CheckoutState {}
+  ChangedSugarState(this.detail);
+}
+
+class ChangedIceState extends CheckoutState {
+  final detail;
+
+  ChangedIceState(this.detail);
+}
+
+class ChangedNoteState extends CheckoutState {
+  final detail;
+
+  ChangedNoteState(this.detail);
+}
+
+class GoBackOrderState extends CheckoutState {}
+
+class GoToPickTableState extends CheckoutState {}

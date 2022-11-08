@@ -18,17 +18,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PickTableScreen extends StatelessWidget {
-  PickTableScreen({super.key});
   OrderCreateModel? order;
+  PickTableScreen({
+    super.key,
+    this.order,
+  });
   bool isLoading = false;
-  List<TableModel> lstTable = <TableModel>[];
   List<BaseModel> lstFloor = <BaseModel>[];
+  List<TableModel> lstTable = <TableModel>[];
   BaseModel? selectedFloor;
   TableModel? selectedTable;
   @override
   Widget build(BuildContext context) {
-    selectedFloor = order?.floor;
-    selectedTable = order?.table;
     return MainFrame(
       showBackBtn: false,
       showUserInfo: true,
@@ -66,10 +67,14 @@ class PickTableScreen extends StatelessWidget {
         children: [
           const SizedBox(height: 10),
           FillBtn(
-              title: 'Chuyển / Gộp bàn',
-              onPressed: () {
-                Navigator.pushNamed(context, RouteName.changeTable);
-              }),
+            title: 'Chuyển / Gộp bàn',
+            onPressed: () {
+              Fn.pushScreen(
+                context,
+                RouteName.changeTable,
+              );
+            },
+          ),
           const SizedBox(height: 20),
           const Divider(
             color: MColor.primaryBlack,
@@ -105,7 +110,12 @@ class PickTableScreen extends StatelessWidget {
                     if (state is LoadedFloorTableState) {
                       isLoading = false;
                       lstFloor = state.listFloor;
-                      selectedFloor ??= state.selectedFloor;
+                      if (order != null && order?.floor != null) {
+                        selectedFloor =
+                            lstFloor.firstWhere((x) => x.id == order?.floorId);
+                      } else {
+                        selectedFloor = state.selectedFloor;
+                      }
                     } else if (state is ChangedFloorState) {
                       selectedFloor = state.floor;
                       lstTable = state.listTable;
@@ -133,7 +143,12 @@ class PickTableScreen extends StatelessWidget {
                     if (state is LoadedFloorTableState) {
                       isLoading = false;
                       lstTable = state.listTable;
-                      selectedTable ??= state.selectedTable;
+                      if (order != null && order?.table != null) {
+                        selectedTable =
+                            lstTable.firstWhere((x) => x.id == order?.tableId);
+                      } else {
+                        selectedTable = state.selectedTable;
+                      }
                     } else if (state is ChangedTableState) {
                       selectedTable = state.table;
                     }
@@ -169,7 +184,7 @@ class PickTableScreen extends StatelessWidget {
                     order?.table = selectedTable;
                     order?.tableId = selectedTable?.id;
                   }
-                  Navigator.pushNamed(
+                  Fn.pushScreen(
                     context,
                     RouteName.order,
                     arguments: [order],

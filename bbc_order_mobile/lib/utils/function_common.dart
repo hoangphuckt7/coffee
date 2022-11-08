@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: unnecessary_null_comparison, avoid_init_to_null
 
 import 'dart:convert';
 import 'dart:developer';
@@ -76,5 +76,18 @@ class Fn {
 
   static logObj(title, obj) {
     log('$title: ${jsonEncode(obj)}');
+  }
+
+  static pushScreen(
+    BuildContext context,
+    String route, {
+    Object? arguments = null,
+  }) {
+    return Navigator.pushNamedAndRemoveUntil(
+      context,
+      route,
+      (Route<dynamic> route) => false,
+      arguments: arguments,
+    );
   }
 }

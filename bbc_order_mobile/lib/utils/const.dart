@@ -5,6 +5,7 @@ class AppInfo {
   static const List<String> Roles = ["ADMIN", "BARTENDER"];
   static const int IncreaseStep = 25;
   static const int DecreaseStep = -25;
+  static const String ErrMsg = 'Đã xảy ra lỗi!';
 }
 
 // LS = Local Storage

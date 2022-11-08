@@ -22,7 +22,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class OrderScreen extends StatelessWidget {
-  final OrderCreateModel order;
+  OrderCreateModel order;
   OrderScreen({
     super.key,
     required this.order,
@@ -37,18 +37,16 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (order.orderDetail!.isNotEmpty) {
+      lstODetailCreate = order.orderDetail!;
+    }
     return MainFrame(
       showBackBtn: true,
       showUserInfo: false,
       showLogoutBtn: false,
       title: 'Chọn món',
-      onClickBackBtn: () {
-        Navigator.pushNamed(
-          context,
-          RouteName.pickTable,
-          arguments: [order],
-        );
-      },
+      onWillPop: () => _back(context),
+      onClickBackBtn: () => _back(context),
       bottomBar: _bottom(context),
       child: Stack(children: [
         _main(context),
@@ -103,6 +101,7 @@ class OrderScreen extends StatelessWidget {
               builder: (context, state) {
                 if (state is AddedToCartState) {
                   lstODetailCreate = state.lstODetail;
+                  order.orderDetail = state.lstODetail;
                 }
                 int totalItem = 0;
                 if (lstODetailCreate.isNotEmpty) {
@@ -129,7 +128,7 @@ class OrderScreen extends StatelessWidget {
                       onPressed: () {
                         if (lstODetailCreate.isNotEmpty) {
                           order.orderDetail = lstODetailCreate;
-                          Navigator.pushNamed(
+                          Fn.pushScreen(
                             context,
                             RouteName.checkOut,
                             arguments: [order],
@@ -377,4 +376,7 @@ class OrderScreen extends StatelessWidget {
       ],
     );
   }
+
+  _back(BuildContext context) =>
+      Fn.pushScreen(context, RouteName.pickTable, arguments: [order]);
 }

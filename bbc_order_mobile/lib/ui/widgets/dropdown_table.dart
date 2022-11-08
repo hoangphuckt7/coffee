@@ -4,7 +4,7 @@ import 'package:bbc_order_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
 class DropdownTable extends StatelessWidget {
-  final List<TableModel> listTable;
+  final List<TableModel>? listTable;
   final TableModel? selectedTable;
   final void Function(TableModel?)? onChanged;
   const DropdownTable({
@@ -28,7 +28,7 @@ class DropdownTable extends StatelessWidget {
       ),
       hint: Text('Chọn bàn', style: _textStyle),
       value: selectedTable,
-      items: listTable.map((TableModel model) {
+      items: listTable?.map((TableModel model) {
         return DropdownMenuItem<TableModel>(
           alignment: Alignment.center,
           value: model,

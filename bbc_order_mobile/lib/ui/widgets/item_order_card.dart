@@ -9,21 +9,21 @@ class ItemOrderCard extends StatelessWidget {
   final ItemModel model;
   final int? currentSugar;
   final int? currentIce;
-  final void Function() addToCart;
-  final void Function() increaseSugar;
-  final void Function() decreaseSugar;
-  final void Function() increaseIce;
-  final void Function() decreaseIce;
+  final void Function()? addToCart;
+  final void Function()? increaseSugar;
+  final void Function()? decreaseSugar;
+  final void Function()? increaseIce;
+  final void Function()? decreaseIce;
   const ItemOrderCard({
     super.key,
     required this.model,
     this.currentSugar = 100,
     this.currentIce = 100,
-    required this.addToCart,
-    required this.increaseSugar,
-    required this.decreaseSugar,
-    required this.increaseIce,
-    required this.decreaseIce,
+    this.addToCart,
+    this.increaseSugar,
+    this.decreaseSugar,
+    this.increaseIce,
+    this.decreaseIce,
   });
 
   @override
@@ -63,7 +63,7 @@ class ItemOrderCard extends StatelessWidget {
                       children: [
                         IconBtn(
                           icons: Icons.add_circle_rounded,
-                          onPressed: increaseSugar,
+                          onPressed: increaseSugar ?? () {},
                           size: sizeIcon,
                         ),
                         const SizedBox(width: 5),
@@ -71,7 +71,7 @@ class ItemOrderCard extends StatelessWidget {
                         const SizedBox(width: 5),
                         IconBtn(
                           icons: Icons.remove_circle_rounded,
-                          onPressed: decreaseSugar,
+                          onPressed: decreaseSugar ?? () {},
                           btnBgColor: EColor.danger,
                           size: sizeIcon,
                         ),
@@ -93,7 +93,7 @@ class ItemOrderCard extends StatelessWidget {
                       children: [
                         IconBtn(
                           icons: Icons.add_circle_rounded,
-                          onPressed: increaseIce,
+                          onPressed: increaseIce ?? () {},
                           size: sizeIcon,
                         ),
                         const SizedBox(width: 5),
@@ -102,7 +102,7 @@ class ItemOrderCard extends StatelessWidget {
                         IconBtn(
                           icons: Icons.remove_circle_rounded,
                           btnBgColor: EColor.danger,
-                          onPressed: decreaseIce,
+                          onPressed: decreaseIce ?? () {},
                           size: sizeIcon,
                         ),
                       ],
@@ -120,7 +120,7 @@ class ItemOrderCard extends StatelessWidget {
             icons: Icons.add,
             size: 30,
             btnBgColor: EColor.dark,
-            onPressed: addToCart,
+            onPressed: addToCart ?? () {},
           ),
         ),
       ],

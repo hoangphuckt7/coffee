@@ -4,7 +4,7 @@ import 'package:bbc_order_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
 class DropdownFloor extends StatelessWidget {
-  final List<BaseModel> listFloor;
+  final List<BaseModel>? listFloor;
   final BaseModel? selectedFloor;
   final void Function(BaseModel?)? onChanged;
   const DropdownFloor({
@@ -28,7 +28,7 @@ class DropdownFloor extends StatelessWidget {
       ),
       hint: Text('Chọn khu vực', style: _textStyle),
       value: selectedFloor,
-      items: listFloor.map((BaseModel model) {
+      items: listFloor?.map((BaseModel model) {
         return DropdownMenuItem<BaseModel>(
           alignment: Alignment.center,
           value: model,
