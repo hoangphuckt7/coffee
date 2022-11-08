@@ -12,3 +12,11 @@ class ErrorEvent extends CheckoutEvent {
 
   ErrorEvent(this.errMsg);
 }
+
+class ChangeQuantityEvent extends CheckoutEvent {}
+
+class ChangeSugarEvent extends CheckoutEvent {}
+
+class ChangeIceEvent extends CheckoutEvent {}
+
+class ChangeNoteEvent extends CheckoutEvent {}

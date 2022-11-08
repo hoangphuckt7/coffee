@@ -72,6 +72,7 @@ class ItemOrderCard extends StatelessWidget {
                         IconBtn(
                           icons: Icons.remove_circle_rounded,
                           onPressed: decreaseSugar,
+                          btnBgColor: EColor.danger,
                           size: sizeIcon,
                         ),
                       ],
@@ -100,6 +101,7 @@ class ItemOrderCard extends StatelessWidget {
                         const SizedBox(width: 5),
                         IconBtn(
                           icons: Icons.remove_circle_rounded,
+                          btnBgColor: EColor.danger,
                           onPressed: decreaseIce,
                           size: sizeIcon,
                         ),

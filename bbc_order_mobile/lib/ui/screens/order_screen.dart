@@ -1,16 +1,10 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:bbc_order_mobile/blocs/order/order_bloc.dart';
 import 'package:bbc_order_mobile/models/common/base_model.dart';
 import 'package:bbc_order_mobile/models/item/item_model.dart';
 import 'package:bbc_order_mobile/models/order/order_create_model.dart';
 import 'package:bbc_order_mobile/models/order/order_detail_create_model.dart';
-import 'package:bbc_order_mobile/models/order/order_detail_model.dart';
-import 'package:bbc_order_mobile/models/order/order_model.dart';
-import 'package:bbc_order_mobile/models/table/table_model.dart';
 import 'package:bbc_order_mobile/routes.dart';
 import 'package:bbc_order_mobile/ui/controls/field_outline.dart';
 import 'package:bbc_order_mobile/ui/controls/fill_btn.dart';
@@ -28,12 +22,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class OrderScreen extends StatelessWidget {
-  final BaseModel floor;
-  final TableModel table;
+  final OrderCreateModel order;
   OrderScreen({
     super.key,
-    required this.floor,
-    required this.table,
+    required this.order,
   });
 
   List<ItemModel> lstItem = <ItemModel>[];
@@ -51,7 +43,11 @@ class OrderScreen extends StatelessWidget {
       showLogoutBtn: false,
       title: 'Chọn món',
       onClickBackBtn: () {
-        Navigator.pushNamed(context, RouteName.pickTable);
+        Navigator.pushNamed(
+          context,
+          RouteName.pickTable,
+          arguments: [order],
+        );
       },
       bottomBar: _bottom(context),
       child: Stack(children: [
@@ -132,18 +128,11 @@ class OrderScreen extends StatelessWidget {
                           : EColor.dark,
                       onPressed: () {
                         if (lstODetailCreate.isNotEmpty) {
+                          order.orderDetail = lstODetailCreate;
                           Navigator.pushNamed(
                             context,
                             RouteName.checkOut,
-                            arguments: [
-                              OrderCreateModel(
-                                table.id,
-                                table,
-                                floor.id,
-                                floor,
-                                lstODetailCreate,
-                              )
-                            ],
+                            arguments: [order],
                           );
                         } else {
                           Fn.showToast(
@@ -362,7 +351,7 @@ class OrderScreen extends StatelessWidget {
             ),
             SizedBox(
               child: Text(
-                floor.description!,
+                order.floor!.description!,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -372,7 +361,7 @@ class OrderScreen extends StatelessWidget {
             ),
             SizedBox(
               child: Text(
-                table.description!,
+                order.table!.description!,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),

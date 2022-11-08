@@ -1,7 +1,6 @@
 import 'package:bbc_order_mobile/models/order/detail_dct_model.dart';
 import 'package:bbc_order_mobile/models/order/order_detail_create_model.dart';
 import 'package:bbc_order_mobile/ui/controls/field_outline.dart';
-import 'package:bbc_order_mobile/ui/controls/fill_btn.dart';
 import 'package:bbc_order_mobile/ui/controls/icon_btn.dart';
 import 'package:bbc_order_mobile/ui/widgets/card_custom.dart';
 import 'package:bbc_order_mobile/utils/enum.dart';
@@ -70,6 +69,7 @@ class ItemCheckoutCard extends StatelessWidget {
                     const SizedBox(width: 5),
                     IconBtn(
                       icons: Icons.remove_circle_rounded,
+                      btnBgColor: EColor.danger,
                       onPressed: () {},
                       size: sizeIcon,
                     ),
@@ -92,6 +92,7 @@ class ItemCheckoutCard extends StatelessWidget {
                     const SizedBox(width: 5),
                     IconBtn(
                       icons: Icons.remove_circle_rounded,
+                      btnBgColor: EColor.danger,
                       onPressed: () {},
                       size: sizeIcon,
                     ),
@@ -155,10 +156,19 @@ class ItemCheckoutCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Expanded(
-                child: Row(
-                  children: [],
-                ),
+              IconBtn(
+                icons: Icons.add_circle_rounded,
+                onPressed: () {},
+                size: sizeIcon,
+              ),
+              const SizedBox(width: 5),
+              SizedBox(child: Text('${model.quantity}%')),
+              const SizedBox(width: 5),
+              IconBtn(
+                icons: Icons.remove_circle_rounded,
+                btnBgColor: EColor.danger,
+                onPressed: () {},
+                size: sizeIcon,
               ),
             ],
           ),

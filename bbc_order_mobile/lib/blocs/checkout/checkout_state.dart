@@ -19,3 +19,11 @@ class UpdatedLoadingState extends CheckoutState {
 
   UpdatedLoadingState(this.isLoading, this.labelLoading);
 }
+
+class ChangeQuantityState extends CheckoutState {}
+
+class ChangeSugarState extends CheckoutState {}
+
+class ChangeIceState extends CheckoutState {}
+
+class ChangeNoteState extends CheckoutState {}

@@ -6,9 +6,7 @@ import 'package:bbc_order_mobile/blocs/order/order_bloc.dart';
 import 'package:bbc_order_mobile/blocs/pick_tabel/pick_table_bloc.dart';
 import 'package:bbc_order_mobile/blocs/splash/splash_bloc.dart';
 import 'package:bbc_order_mobile/blocs/test/test_bloc.dart';
-import 'package:bbc_order_mobile/models/common/base_model.dart';
 import 'package:bbc_order_mobile/models/order/order_create_model.dart';
-import 'package:bbc_order_mobile/models/table/table_model.dart';
 import 'package:bbc_order_mobile/ui/screens/change_table_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/checkout_screen.dart';
 import 'package:bbc_order_mobile/ui/screens/login_screen.dart';
@@ -80,12 +78,11 @@ class Routes {
         );
       case RouteName.order:
         var lstArg = settings.arguments! as List;
-        var floor = lstArg[0] as BaseModel;
-        var table = lstArg[1] as TableModel;
+        var order = lstArg[0] as OrderCreateModel;
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
             create: (context) => OrderBloc()..add(LoadCateItemEvent()),
-            child: OrderScreen(floor: floor, table: table),
+            child: OrderScreen(order: order),
           ),
         );
       case RouteName.checkOut:

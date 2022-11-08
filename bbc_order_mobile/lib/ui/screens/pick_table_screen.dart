@@ -2,6 +2,8 @@
 
 import 'package:bbc_order_mobile/blocs/pick_tabel/pick_table_bloc.dart';
 import 'package:bbc_order_mobile/models/common/base_model.dart';
+import 'package:bbc_order_mobile/models/order/order_create_model.dart';
+import 'package:bbc_order_mobile/models/order/order_detail_create_model.dart';
 import 'package:bbc_order_mobile/models/table/table_model.dart';
 import 'package:bbc_order_mobile/routes.dart';
 import 'package:bbc_order_mobile/ui/controls/fill_btn.dart';
@@ -17,6 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PickTableScreen extends StatelessWidget {
   PickTableScreen({super.key});
+  OrderCreateModel? order;
   bool isLoading = false;
   List<TableModel> lstTable = <TableModel>[];
   List<BaseModel> lstFloor = <BaseModel>[];
@@ -24,6 +27,8 @@ class PickTableScreen extends StatelessWidget {
   TableModel? selectedTable;
   @override
   Widget build(BuildContext context) {
+    selectedFloor = order?.floor;
+    selectedTable = order?.table;
     return MainFrame(
       showBackBtn: false,
       showUserInfo: true,
@@ -100,7 +105,7 @@ class PickTableScreen extends StatelessWidget {
                     if (state is LoadedFloorTableState) {
                       isLoading = false;
                       lstFloor = state.listFloor;
-                      selectedFloor = state.selectedFloor;
+                      selectedFloor ??= state.selectedFloor;
                     } else if (state is ChangedFloorState) {
                       selectedFloor = state.floor;
                       lstTable = state.listTable;
@@ -128,7 +133,7 @@ class PickTableScreen extends StatelessWidget {
                     if (state is LoadedFloorTableState) {
                       isLoading = false;
                       lstTable = state.listTable;
-                      selectedTable = state.selectedTable;
+                      selectedTable ??= state.selectedTable;
                     } else if (state is ChangedTableState) {
                       selectedTable = state.table;
                     }
@@ -150,10 +155,24 @@ class PickTableScreen extends StatelessWidget {
               title: 'Tiếp theo',
               onPressed: () {
                 if (selectedTable != null && selectedFloor != null) {
+                  if (order == null) {
+                    order = OrderCreateModel(
+                      selectedTable?.id,
+                      selectedTable,
+                      selectedFloor?.id,
+                      selectedFloor,
+                      const <OrderDetailCreateModel>[],
+                    );
+                  } else {
+                    order?.floor = selectedFloor;
+                    order?.floorId = selectedFloor?.id;
+                    order?.table = selectedTable;
+                    order?.tableId = selectedTable?.id;
+                  }
                   Navigator.pushNamed(
                     context,
                     RouteName.order,
-                    arguments: [selectedFloor, selectedTable],
+                    arguments: [order],
                   );
                 }
                 if (selectedFloor == null) {

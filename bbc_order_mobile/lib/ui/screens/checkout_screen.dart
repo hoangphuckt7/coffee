@@ -28,7 +28,11 @@ class CheckOutScreen extends StatelessWidget {
       showLogoutBtn: false,
       title: 'Kiểm tra - Xác nhận',
       onClickBackBtn: () {
-        Navigator.pushNamed(context, RouteName.pickTable);
+        Navigator.pushNamed(
+          context,
+          RouteName.order,
+          arguments: [order],
+        );
       },
       bottomBar: _bottom(context),
       child: Stack(children: [
