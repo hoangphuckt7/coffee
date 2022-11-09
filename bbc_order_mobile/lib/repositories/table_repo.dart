@@ -23,4 +23,19 @@ class TableRepo {
     }
     return lstTableModel;
   }
+
+  Future<dynamic> changeTable(String tableIdOld, String tableIdNew) async {
+    try {
+      var resp = await Fetch.POST(controllerUrl, null);
+      if (resp.statusCode == HttpStatusCode.OK) {
+        return resp.body.isNotEmpty;
+      } else if (resp.statusCode == HttpStatusCode.BadRequest) {
+        return resp.body.toString();
+      }
+    } catch (e) {
+      log(e.toString());
+      throw Exception('Lỗi! Order thất bại');
+    }
+    return false;
+  }
 }

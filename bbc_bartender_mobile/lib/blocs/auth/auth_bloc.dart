@@ -1,8 +1,9 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bbc_bartender_mobile/models/login/login_res_model/login_res_model.dart';
-import 'package:bbc_bartender_mobile/repositories/item_repo.dart';
 import 'package:bbc_bartender_mobile/utils/const.dart';
 import 'package:bbc_bartender_mobile/utils/local_storage.dart';
 import 'package:bloc/bloc.dart';

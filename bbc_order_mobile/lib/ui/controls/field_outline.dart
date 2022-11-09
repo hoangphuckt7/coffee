@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class FieldOutline extends StatelessWidget {
+  final Key? fieldKey;
   final String? labelText;
   final TextEditingController controller;
   final String? errorText;
@@ -17,6 +18,7 @@ class FieldOutline extends StatelessWidget {
   final Function()? onEditingComplete;
   const FieldOutline({
     super.key,
+    this.fieldKey,
     this.labelText,
     required this.controller,
     this.errorText,
@@ -67,6 +69,7 @@ class FieldOutline extends StatelessWidget {
     return SizedBox(
       height: height,
       child: TextFormField(
+        key: fieldKey,
         controller: controller,
         obscureText: eFieldType == EFieldType.password,
         textAlignVertical: TextAlignVertical.center,

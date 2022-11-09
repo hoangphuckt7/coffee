@@ -16,8 +16,9 @@ class ErrorEvent extends CheckoutEvent {
 class ChangeQuantityEvent extends CheckoutEvent {
   final detail;
   final step;
+  final listController;
 
-  ChangeQuantityEvent(this.detail, this.step);
+  ChangeQuantityEvent(this.detail, this.step, this.listController);
 }
 
 class ChangeSugarEvent extends CheckoutEvent {
@@ -51,5 +52,3 @@ class ConfirmOrderEvent extends CheckoutEvent {
 
   ConfirmOrderEvent(this.order);
 }
-
-class GoToPickTableEvent extends CheckoutEvent {}

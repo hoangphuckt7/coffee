@@ -308,7 +308,7 @@ class OrderScreen extends StatelessWidget {
                         fontSize: 12,
                         controller: searchController,
                         eBorder: EBorder.all,
-                        onChanged: (value) {
+                        onChanged: (val) {
                           BlocProvider.of<OrderBloc>(context).add(
                               FilterEvent(selectedCate, searchController.text));
                         },

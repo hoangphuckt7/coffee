@@ -22,8 +22,9 @@ class UpdatedLoadingState extends CheckoutState {
 
 class ChangedQuantityState extends CheckoutState {
   final detail;
+  final listController;
 
-  ChangedQuantityState(this.detail);
+  ChangedQuantityState(this.detail, this.listController);
 }
 
 class ChangedSugarState extends CheckoutState {

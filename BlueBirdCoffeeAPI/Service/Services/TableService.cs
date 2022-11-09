@@ -3,6 +3,7 @@ using Data.AppException;
 using Data.DataAccessLayer;
 using Data.Entities;
 using Data.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Service.Services
         Guid Add(TableAddModel model);
         int UpdateOrAdd(List<TableUpdateModel> models);
         int Delete(List<Guid> ids);
+        Guid ChangeTable(Guid oldTableId, Guid newTableId);
     }
     public class TableService : ITableService
     {
@@ -99,6 +101,38 @@ namespace Service.Services
             _dbContext.SaveChanges();
 
             return ids.Count;
+        }
+
+        public Guid ChangeTable(Guid oldTableId, Guid newTableId)
+        {
+            var tableOld = _dbContext.Tables.FirstOrDefault(x => x.Id == oldTableId);
+            if(tableOld == null)
+            {
+                throw new AppException("Mã số bàn cũ không hợp lệ!");
+            }
+
+            var tableNew = _dbContext.Tables.FirstOrDefault(x => x.Id == newTableId);
+            if (tableNew == null)
+            {
+                throw new AppException("Mã số bàn mới không hợp lệ!");
+            }
+
+            var lstOrderByTable = _dbContext.Orders.Where(x => !x.IsCheckout && !x.IsCompleted && !x.IsDeleted && !x.IsMissing && x.TableId == oldTableId).ToList();
+            if (!lstOrderByTable.Any())
+            {
+                throw new AppException($"Bàn {tableOld.Description} không có order nào!");
+            }
+
+            foreach (var order in lstOrderByTable)
+            {
+                order.TableId = newTableId;
+                order.DateUpdated = DateTime.UtcNow.AddHours(7);
+            }
+
+            _dbContext.UpdateRange(lstOrderByTable);
+            _dbContext.SaveChanges();
+
+            return newTableId;
         }
     }
 }

@@ -44,5 +44,12 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(_tableService.Delete(ids));
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
+        [HttpPut("Change/{oldTableId}/{newTableId}")]
+        public IActionResult Change(Guid oldTableId, Guid newTableId)
+        {
+            return Ok(_tableService.ChangeTable(oldTableId, newTableId));
+        }
     }
 }

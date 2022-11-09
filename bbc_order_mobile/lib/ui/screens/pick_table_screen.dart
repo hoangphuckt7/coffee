@@ -69,9 +69,17 @@ class PickTableScreen extends StatelessWidget {
           FillBtn(
             title: 'Chuyển / Gộp bàn',
             onPressed: () {
+              order ??= OrderCreateModel(
+                selectedTable?.id,
+                selectedTable,
+                selectedFloor?.id,
+                selectedFloor,
+                <OrderDetailCreateModel>[],
+              );
               Fn.pushScreen(
                 context,
                 RouteName.changeTable,
+                arguments: [order],
               );
             },
           ),

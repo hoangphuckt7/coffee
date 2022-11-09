@@ -1,6 +1,7 @@
 // ignore_for_file: body_might_complete_normally_nullable, unused_local_variable, prefer_const_constructors
 
 import 'package:bbc_order_mobile/blocs/auth/auth_bloc.dart';
+import 'package:bbc_order_mobile/blocs/change_table/change_table_bloc.dart';
 import 'package:bbc_order_mobile/blocs/checkout/checkout_bloc.dart';
 import 'package:bbc_order_mobile/blocs/order/order_bloc.dart';
 import 'package:bbc_order_mobile/blocs/pick_tabel/pick_table_bloc.dart';
@@ -54,10 +55,15 @@ class Routes {
           ),
         );
       case RouteName.changeTable:
+        OrderCreateModel? order;
+        if (settings.arguments != null) {
+          var lstArg = settings.arguments! as List;
+          order = lstArg.isNotEmpty ? lstArg[0] as OrderCreateModel? : null;
+        }
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (context) => PickTableBloc()..add(LoadFloorTableEvent()),
-            child: ChangeTableScreen(),
+            create: (context) => ChangeTableBloc(),
+            child: ChangeTableScreen(order: order),
           ),
         );
       case RouteName.pickTable:

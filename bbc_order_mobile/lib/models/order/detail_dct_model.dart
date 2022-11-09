@@ -6,9 +6,9 @@ part 'detail_dct_model.g.dart';
 
 @JsonSerializable()
 class DetailDctModel {
-  final int? Sugar;
-  final int? Ice;
-  final String? Note;
+  int? Sugar;
+  int? Ice;
+  String? Note;
 
   DetailDctModel(this.Sugar, this.Ice, this.Note);
 

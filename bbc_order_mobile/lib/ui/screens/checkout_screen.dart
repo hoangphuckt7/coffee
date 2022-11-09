@@ -5,27 +5,36 @@ import 'package:bbc_order_mobile/models/order/order_create_model.dart';
 import 'package:bbc_order_mobile/models/order/order_detail_create_model.dart';
 import 'package:bbc_order_mobile/routes.dart';
 import 'package:bbc_order_mobile/ui/controls/fill_btn.dart';
-import 'package:bbc_order_mobile/ui/widgets/empty.dart';
 import 'package:bbc_order_mobile/ui/widgets/frame_common.dart';
 import 'package:bbc_order_mobile/ui/widgets/item_checkout_card.dart';
 import 'package:bbc_order_mobile/ui/widgets/processing.dart';
-import 'package:bbc_order_mobile/utils/const.dart';
 import 'package:bbc_order_mobile/utils/enum.dart';
 import 'package:bbc_order_mobile/utils/function_common.dart';
 import 'package:bbc_order_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class CheckOutScreen extends StatelessWidget {
   final OrderCreateModel order;
-  const CheckOutScreen({
+  CheckOutScreen({
     super.key,
     required this.order,
   });
 
+  List<List<TextEditingController>> lstListController =
+      <List<TextEditingController>>[];
+
   @override
   Widget build(BuildContext context) {
+    if (order.orderDetail!.isNotEmpty) {
+      for (var detail in order.orderDetail!) {
+        List<TextEditingController> lstTEC = <TextEditingController>[];
+        for (var dct in detail.listDct!) {
+          lstTEC.add(TextEditingController(text: dct.Note));
+        }
+        lstListController.add(lstTEC);
+      }
+    }
     return MainFrame(
       showBackBtn: true,
       showUserInfo: false,
@@ -42,18 +51,30 @@ class CheckOutScreen extends StatelessWidget {
   }
 
   Widget _processState(BuildContext context) {
-    return BlocBuilder<CheckoutBloc, CheckoutState>(
-      builder: (context, state) {
-        bool isLoading = false;
-        String loadingMsg = "";
-        if (state is ErrorState) {
-          Fn.showToast(eToast: EToast.danger, msg: state.errMsg.toString());
-        } else if (state is UpdatedLoadingState) {
-          isLoading = state.isLoading;
-          loadingMsg = state.labelLoading;
+    return BlocListener<CheckoutBloc, CheckoutState>(
+      listener: (context, state) {
+        if (state is GoBackOrderState) {
+          Fn.showToast(eToast: EToast.danger, msg: "Vui lòng chọn món!");
+          Fn.pushScreen(
+            context,
+            RouteName.order,
+            arguments: [order],
+          );
         }
-        return Processing(msg: loadingMsg, show: isLoading);
       },
+      child: BlocBuilder<CheckoutBloc, CheckoutState>(
+        builder: (context, state) {
+          bool isLoading = false;
+          String loadingMsg = "";
+          if (state is ErrorState) {
+            Fn.showToast(eToast: EToast.danger, msg: state.errMsg.toString());
+          } else if (state is UpdatedLoadingState) {
+            isLoading = state.isLoading;
+            loadingMsg = state.labelLoading;
+          }
+          return Processing(msg: loadingMsg, show: isLoading);
+        },
+      ),
     );
   }
 
@@ -71,100 +92,59 @@ class CheckOutScreen extends StatelessWidget {
 
   Widget _detail(BuildContext context) {
     return SingleChildScrollView(
-      child: BlocListener<CheckoutBloc, CheckoutState>(
-        listener: (context, state) {
-          if (state is GoBackOrderState) {
-            Fn.showToast(eToast: EToast.danger, msg: "Vui lòng chọn món!");
-            Fn.pushScreen(
-              context,
-              RouteName.order,
-              arguments: [order],
+      child: BlocBuilder<CheckoutBloc, CheckoutState>(
+        builder: (context, state) {
+          if (state is ChangedQuantityState) {
+            OrderDetailCreateModel detail = state.detail;
+            var index = order.orderDetail!.indexWhere(
+              (x) => x.itemId == detail.itemId,
             );
-          }
-        },
-        child: BlocBuilder<CheckoutBloc, CheckoutState>(
-          builder: (context, state) {
-            if (state is ChangedQuantityState) {
-              OrderDetailCreateModel detail = state.detail;
-              var index = order.orderDetail!.indexWhere(
-                (x) => x.itemId == detail.itemId,
-              );
-              if (detail.quantity == 0) {
-                if (order.orderDetail!.isNotEmpty) {
-                  order.orderDetail!.removeAt(index);
-                }
-              } else {
-                order.orderDetail![index] = detail;
+            if (detail.quantity == 0) {
+              if (order.orderDetail!.isNotEmpty) {
+                order.orderDetail!.removeAt(index);
+                lstListController.removeAt(index);
               }
-
-              if (order.orderDetail == null || order.orderDetail!.isEmpty) {
-                BlocProvider.of<CheckoutBloc>(context).add(GoBackOrderEvent());
-              }
+            } else {
+              order.orderDetail![index] = detail;
+              lstListController[index] = state.listController;
             }
-            return Column(
-              children: List.generate(order.orderDetail!.length, (i) {
-                OrderDetailCreateModel model = order.orderDetail![i];
-                if (state is ChangedSugarState) {
-                  OrderDetailCreateModel detail = state.detail;
-                  if (model.itemId == detail.itemId) {
-                    model = detail;
-                  }
-                } else if (state is ChangedIceState) {
-                  OrderDetailCreateModel detail = state.detail;
-                  if (model.itemId == detail.itemId) {
-                    model = detail;
-                  }
-                } else if (state is ChangedNoteState) {
-                  OrderDetailCreateModel detail = state.detail;
-                  if (model.itemId == detail.itemId) {
-                    model = detail;
-                  }
+
+            if (order.orderDetail == null || order.orderDetail!.isEmpty) {
+              BlocProvider.of<CheckoutBloc>(context).add(GoBackOrderEvent());
+            }
+          }
+          return Column(
+            children: List.generate(order.orderDetail!.length, (i) {
+              OrderDetailCreateModel model = order.orderDetail![i];
+              if (state is ChangedSugarState) {
+                OrderDetailCreateModel detail = state.detail;
+                if (model.itemId == detail.itemId) {
+                  model = detail;
                 }
-                return Column(
-                  children: [
-                    const SizedBox(height: 8),
-                    ItemCheckoutCard(
-                      model: model,
-                      // Cập nhập số lượng
-                      increaseQuantity: () {
-                        BlocProvider.of<CheckoutBloc>(context)
-                            .add(ChangeQuantityEvent(model, 1));
-                      },
-                      decreaseQuantity: () {
-                        BlocProvider.of<CheckoutBloc>(context)
-                            .add(ChangeQuantityEvent(model, -1));
-                      },
-                      // Cập nhật đường
-                      increaseSugar: () {
-                        BlocProvider.of<CheckoutBloc>(context).add(
-                            ChangeSugarEvent(model, AppInfo.IncreaseStep, i));
-                      },
-                      decreaseSugar: () {
-                        BlocProvider.of<CheckoutBloc>(context).add(
-                            ChangeSugarEvent(model, AppInfo.DecreaseStep, i));
-                      },
-                      // Cập nhật đá
-                      increaseIce: () {
-                        BlocProvider.of<CheckoutBloc>(context).add(
-                            ChangeIceEvent(model, AppInfo.IncreaseStep, i));
-                      },
-                      decreaseIce: () {
-                        BlocProvider.of<CheckoutBloc>(context).add(
-                            ChangeIceEvent(model, AppInfo.DecreaseStep, i));
-                      },
-                      // Cập nhật ghi chú
-                      onNoteChange: (value) {
-                        BlocProvider.of<CheckoutBloc>(context)
-                            .add(ChangeNoteEvent(model, value, i));
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                );
-              }),
-            );
-          },
-        ),
+              } else if (state is ChangedIceState) {
+                OrderDetailCreateModel detail = state.detail;
+                if (model.itemId == detail.itemId) {
+                  model = detail;
+                }
+              } else if (state is ChangedNoteState) {
+                OrderDetailCreateModel detail = state.detail;
+                if (model.itemId == detail.itemId) {
+                  model = detail;
+                }
+              }
+              return Column(
+                children: [
+                  const SizedBox(height: 8),
+                  ItemCheckoutCard(
+                    model: model,
+                    listController: lstListController[i],
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              );
+            }),
+          );
+        },
       ),
     );
   }
@@ -214,7 +194,11 @@ class CheckOutScreen extends StatelessWidget {
                       Expanded(child: Text('$totalItem món')),
                       FillBtn(
                         title: 'Xác nhận',
-                        onPressed: () {},
+                        onPressed: () {
+                          BlocProvider.of<CheckoutBloc>(context).add(
+                            ConfirmOrderEvent(order),
+                          );
+                        },
                       ),
                     ],
                   ),

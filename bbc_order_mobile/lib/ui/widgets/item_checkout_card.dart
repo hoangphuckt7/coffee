@@ -1,31 +1,22 @@
+import 'package:bbc_order_mobile/blocs/checkout/checkout_bloc.dart';
 import 'package:bbc_order_mobile/models/order/detail_dct_model.dart';
 import 'package:bbc_order_mobile/models/order/order_detail_create_model.dart';
 import 'package:bbc_order_mobile/ui/controls/field_outline.dart';
 import 'package:bbc_order_mobile/ui/controls/icon_btn.dart';
 import 'package:bbc_order_mobile/ui/widgets/card_custom.dart';
+import 'package:bbc_order_mobile/utils/const.dart';
 import 'package:bbc_order_mobile/utils/enum.dart';
 import 'package:bbc_order_mobile/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ItemCheckoutCard extends StatelessWidget {
   final OrderDetailCreateModel model;
-  final void Function()? increaseQuantity;
-  final void Function()? decreaseQuantity;
-  final void Function()? increaseSugar;
-  final void Function()? decreaseSugar;
-  final void Function()? increaseIce;
-  final void Function()? decreaseIce;
-  final void Function(String)? onNoteChange;
+  final List<TextEditingController> listController;
   const ItemCheckoutCard({
     super.key,
     required this.model,
-    this.increaseQuantity,
-    this.decreaseQuantity,
-    this.increaseSugar,
-    this.decreaseSugar,
-    this.increaseIce,
-    this.decreaseIce,
-    this.onNoteChange,
+    required this.listController,
   });
 
   static const TextStyle textStyle = TextStyle(fontWeight: FontWeight.bold);
@@ -38,13 +29,12 @@ class ItemCheckoutCard extends StatelessWidget {
       borderSide: const BorderSide(color: MColor.primaryGreen),
       padding: const EdgeInsets.all(15),
       child: Column(
-        children: [_itemInfo(), _line(), _dct()],
+        children: [_itemInfo(context), _line(), _dct(context)],
       ),
     );
   }
 
-  Widget _note(DetailDctModel dct) {
-    var noteController = TextEditingController();
+  Widget _note(BuildContext context, DetailDctModel dct, int index) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -52,16 +42,21 @@ class ItemCheckoutCard extends StatelessWidget {
         const SizedBox(width: 5),
         Expanded(
           child: FieldOutline(
-            controller: noteController,
+            fieldKey: Key(index.toString()),
+            controller: listController[index],
             fontSize: 12,
-            onChanged: onNoteChange,
+            onChanged: (val) {
+              BlocProvider.of<CheckoutBloc>(context).add(
+                ChangeNoteEvent(model, listController[index].text, index),
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  Widget _sugarIce(DetailDctModel dct) {
+  Widget _sugarIce(BuildContext context, DetailDctModel dct, int index) {
     return Row(
       children: [
         Expanded(
@@ -76,7 +71,11 @@ class ItemCheckoutCard extends StatelessWidget {
                     const SizedBox(width: 5),
                     IconBtn(
                       icons: Icons.add_circle_rounded,
-                      onPressed: increaseSugar ?? () {},
+                      onPressed: () {
+                        BlocProvider.of<CheckoutBloc>(context).add(
+                          ChangeSugarEvent(model, AppInfo.IncreaseStep, index),
+                        );
+                      },
                       size: sizeIcon,
                     ),
                     const SizedBox(width: 5),
@@ -85,7 +84,11 @@ class ItemCheckoutCard extends StatelessWidget {
                     IconBtn(
                       icons: Icons.remove_circle_rounded,
                       btnBgColor: EColor.danger,
-                      onPressed: decreaseSugar ?? () {},
+                      onPressed: () {
+                        BlocProvider.of<CheckoutBloc>(context).add(
+                          ChangeSugarEvent(model, AppInfo.DecreaseStep, index),
+                        );
+                      },
                       size: sizeIcon,
                     ),
                   ],
@@ -100,7 +103,11 @@ class ItemCheckoutCard extends StatelessWidget {
                     const SizedBox(width: 5),
                     IconBtn(
                       icons: Icons.add_circle_rounded,
-                      onPressed: increaseIce ?? () {},
+                      onPressed: () {
+                        BlocProvider.of<CheckoutBloc>(context).add(
+                          ChangeIceEvent(model, AppInfo.IncreaseStep, index),
+                        );
+                      },
                       size: sizeIcon,
                     ),
                     const SizedBox(width: 5),
@@ -109,7 +116,11 @@ class ItemCheckoutCard extends StatelessWidget {
                     IconBtn(
                       icons: Icons.remove_circle_rounded,
                       btnBgColor: EColor.danger,
-                      onPressed: decreaseIce ?? () {},
+                      onPressed: () {
+                        BlocProvider.of<CheckoutBloc>(context).add(
+                          ChangeIceEvent(model, AppInfo.DecreaseStep, index),
+                        );
+                      },
                       size: sizeIcon,
                     ),
                   ],
@@ -122,7 +133,7 @@ class ItemCheckoutCard extends StatelessWidget {
     );
   }
 
-  Widget _dct() {
+  Widget _dct(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: List.generate(model.listDct!.length, (i) {
@@ -130,8 +141,8 @@ class ItemCheckoutCard extends StatelessWidget {
           return Column(
             children: [
               _line(show: i > 0),
-              _sugarIce(dct),
-              _note(dct),
+              _sugarIce(context, dct, i),
+              _note(context, dct, i),
             ],
           );
         }),
@@ -139,7 +150,7 @@ class ItemCheckoutCard extends StatelessWidget {
     );
   }
 
-  Widget _itemInfo() {
+  Widget _itemInfo(BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -171,7 +182,11 @@ class ItemCheckoutCard extends StatelessWidget {
               const SizedBox(width: 10),
               IconBtn(
                 icons: Icons.add_circle_rounded,
-                onPressed: increaseQuantity ?? () {},
+                onPressed: () {
+                  BlocProvider.of<CheckoutBloc>(context).add(
+                    ChangeQuantityEvent(model, 1, listController),
+                  );
+                },
                 size: sizeIcon,
               ),
               const SizedBox(width: 2),
@@ -187,7 +202,11 @@ class ItemCheckoutCard extends StatelessWidget {
               IconBtn(
                 icons: Icons.remove_circle_rounded,
                 btnBgColor: EColor.danger,
-                onPressed: decreaseQuantity ?? () {},
+                onPressed: () {
+                  BlocProvider.of<CheckoutBloc>(context).add(
+                    ChangeQuantityEvent(model, -1, listController),
+                  );
+                },
                 size: sizeIcon,
               ),
             ],
