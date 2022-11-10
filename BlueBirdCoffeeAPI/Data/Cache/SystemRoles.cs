@@ -13,6 +13,6 @@ namespace Data.Cache
         public const string BARTENDER = "BARTENDER";
         public const string EMPLOYEE = "EMPLOYEE";
         public const string CUSTOMER = "CUSTOMER";
-        public const string EXCEPT_CUSTOMER = "ADMIN, CASHER, BARTENDER, EMPLOYEE";
+        public const string EXCEPT_CUSTOMER = "ADMIN, CASHIER, BARTENDER, EMPLOYEE";
     }
 }

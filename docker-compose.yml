@@ -36,6 +36,18 @@ services:
        - "8001:80"
     restart: always
 
+  employee-web:
+    image: employee-web
+    build:
+         context: ./bbc_order_mobile
+         dockerfile: ./Dockerfile
+    container_name: bbc_order_mobile
+    depends_on:
+      - bluebirdcoffee-api
+    ports:
+       - "8002:80"
+    restart: always
+
   admin-website:
     image: admin-website
     build:

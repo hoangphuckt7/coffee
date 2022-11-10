@@ -21,8 +21,8 @@ namespace BlueBirdCoffeManager
             txtUserName.Focus();
             this.BackColor = Color.White;
 
-            this.Height = Screen.PrimaryScreen.WorkingArea.Height * 30 / 100;
-            this.Width = Screen.PrimaryScreen.WorkingArea.Width * 20 / 100;
+            this.Height = Screen.PrimaryScreen.WorkingArea.Height * 40 / 100;
+            this.Width = Screen.PrimaryScreen.WorkingArea.Width * 30 / 100;
 
             this.BackgroundImage = Resources.background;
 
