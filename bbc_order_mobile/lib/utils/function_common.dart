@@ -27,7 +27,7 @@ class Fn {
   static showToast({
     EToast? eToast,
     String msg = '',
-    ToastGravity? index = ToastGravity.BOTTOM,
+    ToastGravity? index = ToastGravity.TOP,
   }) {
     dynamic toastColor;
     switch (eToast) {

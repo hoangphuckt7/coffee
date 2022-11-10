@@ -172,37 +172,37 @@ class CheckOutScreen extends StatelessWidget {
                 BoxShadow(color: Colors.black12, blurRadius: 15),
               ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 0, left: 0, right: 0),
-              child: Container(
-                color: MColor.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(
-                        child: Text(
-                          'Tổng: ',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: MColor.danger,
-                          ),
-                        ),
+            child: Container(
+              color: MColor.white,
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 20,
+                left: 20,
+                right: 20,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    child: Text(
+                      'Tổng: ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: MColor.danger,
                       ),
-                      const SizedBox(width: 5),
-                      Expanded(child: Text('$totalItem món')),
-                      FillBtn(
-                        title: 'Xác nhận',
-                        onPressed: () {
-                          BlocProvider.of<CheckoutBloc>(context).add(
-                            ConfirmOrderEvent(order),
-                          );
-                        },
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 5),
+                  Expanded(child: Text('$totalItem món')),
+                  FillBtn(
+                    title: 'Xác nhận',
+                    onPressed: () {
+                      BlocProvider.of<CheckoutBloc>(context).add(
+                        ConfirmOrderEvent(order),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           );

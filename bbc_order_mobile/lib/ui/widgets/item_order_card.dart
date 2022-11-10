@@ -28,12 +28,15 @@ class ItemOrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double sizeIcon = 20;
-    const TextStyle textStyle = TextStyle(fontWeight: FontWeight.bold);
+    const double sizeIcon = 25;
+    const TextStyle textStyle = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 14.5,
+    );
     return Row(
       children: [
         Expanded(
-          flex: 3,
+          flex: 4,
           child: Image.network(ItemRepo.getImg(model.images?.first)),
         ),
         const SizedBox(width: 10),
@@ -44,11 +47,11 @@ class ItemOrderCard extends StatelessWidget {
             children: [
               SizedBox(
                 child: Text(
-                  Fn.renderData(input: model.name),
+                  Fn.renderData(input: '${model.name}'),
                   style: textStyle,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               Row(
                 children: [
                   const Expanded(
@@ -66,13 +69,13 @@ class ItemOrderCard extends StatelessWidget {
                           onPressed: increaseSugar ?? () {},
                           size: sizeIcon,
                         ),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 10),
                         SizedBox(child: Text('${currentSugar ?? 100}%')),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 10),
                         IconBtn(
                           icons: Icons.remove_circle_rounded,
                           onPressed: decreaseSugar ?? () {},
-                          btnBgColor: EColor.danger,
+                          btnBgColor: EColor.secondary,
                           size: sizeIcon,
                         ),
                       ],
@@ -80,7 +83,7 @@ class ItemOrderCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               Row(
                 children: [
                   const Expanded(
@@ -96,12 +99,12 @@ class ItemOrderCard extends StatelessWidget {
                           onPressed: increaseIce ?? () {},
                           size: sizeIcon,
                         ),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 10),
                         SizedBox(child: Text('${currentIce ?? 100}%')),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 10),
                         IconBtn(
                           icons: Icons.remove_circle_rounded,
-                          btnBgColor: EColor.danger,
+                          btnBgColor: EColor.secondary,
                           onPressed: decreaseIce ?? () {},
                           size: sizeIcon,
                         ),
@@ -118,7 +121,7 @@ class ItemOrderCard extends StatelessWidget {
           flex: 1,
           child: IconBtn(
             icons: Icons.add,
-            size: 30,
+            size: 40,
             btnBgColor: EColor.dark,
             onPressed: addToCart ?? () {},
           ),

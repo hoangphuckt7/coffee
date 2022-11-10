@@ -91,62 +91,62 @@ class OrderScreen extends StatelessWidget {
           BoxShadow(color: Colors.black12, blurRadius: 15),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 0, left: 0, right: 0),
-        child: Container(
-          color: MColor.white,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: BlocBuilder<OrderBloc, OrderState>(
-              builder: (context, state) {
-                if (state is AddedToCartState) {
-                  lstODetailCreate = state.lstODetail;
-                  order.orderDetail = state.lstODetail;
-                }
-                int totalItem = 0;
-                if (lstODetailCreate.isNotEmpty) {
-                  for (var detail in lstODetailCreate) {
-                    totalItem += detail.quantity;
-                  }
-                }
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.add_shopping_cart_rounded,
-                      color: MColor.danger,
-                    ),
-                    const SizedBox(width: 5),
-                    Expanded(
-                      child: Text('$totalItem món'),
-                    ),
-                    FillBtn(
-                      title: 'Kiểm tra',
-                      btnBgColor: lstODetailCreate.isNotEmpty
-                          ? EColor.primary
-                          : EColor.dark,
-                      onPressed: () {
-                        if (lstODetailCreate.isNotEmpty) {
-                          order.orderDetail = lstODetailCreate;
-                          Fn.pushScreen(
-                            context,
-                            RouteName.checkOut,
-                            arguments: [order],
-                          );
-                        } else {
-                          Fn.showToast(
-                            eToast: EToast.danger,
-                            msg: 'Vui lòng chọn món!',
-                            index: ToastGravity.CENTER,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
+      child: Container(
+        color: MColor.white,
+        padding: const EdgeInsets.only(
+          top: 10,
+          bottom: 20,
+          left: 20,
+          right: 20,
+        ),
+        child: BlocBuilder<OrderBloc, OrderState>(
+          builder: (context, state) {
+            if (state is AddedToCartState) {
+              lstODetailCreate = state.lstODetail;
+              order.orderDetail = state.lstODetail;
+            }
+            int totalItem = 0;
+            if (lstODetailCreate.isNotEmpty) {
+              for (var detail in lstODetailCreate) {
+                totalItem += detail.quantity;
+              }
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.add_shopping_cart_rounded,
+                  color: MColor.danger,
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Text('$totalItem món'),
+                ),
+                FillBtn(
+                  title: 'Kiểm tra',
+                  btnBgColor: lstODetailCreate.isNotEmpty
+                      ? EColor.primary
+                      : EColor.dark,
+                  onPressed: () {
+                    if (lstODetailCreate.isNotEmpty) {
+                      order.orderDetail = lstODetailCreate;
+                      Fn.pushScreen(
+                        context,
+                        RouteName.checkOut,
+                        arguments: [order],
+                      );
+                    } else {
+                      Fn.showToast(
+                        eToast: EToast.danger,
+                        msg: 'Vui lòng chọn món!',
+                        index: ToastGravity.CENTER,
+                      );
+                    }
+                  },
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -260,7 +260,7 @@ class OrderScreen extends StatelessWidget {
                         child: Text(
                           'Chọn loại',
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -274,8 +274,8 @@ class OrderScreen extends StatelessWidget {
                           ),
                         ),
                         child: DropdownCategory(
-                          fontSize: 12,
-                          height: 30,
+                          fontSize: 14,
+                          height: 35,
                           listCategory: lstCate,
                           selectedCategory: selectedCate,
                           onChanged: (value) {
@@ -297,15 +297,15 @@ class OrderScreen extends StatelessWidget {
                         child: Text(
                           'Tìm kiếm',
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                       const SizedBox(height: 5),
                       FieldOutline(
-                        height: 32,
-                        fontSize: 12,
+                        height: 37.5,
+                        fontSize: 13,
                         controller: searchController,
                         eBorder: EBorder.all,
                         onChanged: (val) {
@@ -322,7 +322,7 @@ class OrderScreen extends StatelessWidget {
                   child: IconBtn(
                     icons: Icons.clear_rounded,
                     btnBgColor: EColor.danger,
-                    size: 35,
+                    size: 40,
                     onPressed: (() {
                       BlocProvider.of<OrderBloc>(context)
                           .add(FilterEvent(lstCate[0], ''));

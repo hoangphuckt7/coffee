@@ -12,7 +12,7 @@ class IconBtn extends StatelessWidget {
   const IconBtn({
     super.key,
     required this.icons,
-    this.size = 25,
+    this.size = 30,
     this.btnBgColor = EColor.primary,
     required this.onPressed,
   });
@@ -25,6 +25,8 @@ class IconBtn extends StatelessWidget {
         return MColor.danger;
       case EColor.dark:
         return MColor.primaryBlack;
+      case EColor.secondary:
+        return MColor.secondary;
       default:
         return MColor.primaryBlack;
     }
@@ -33,7 +35,6 @@ class IconBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      // height: 25,
       child: InkWell(
         onTap: onPressed,
         child: Icon(

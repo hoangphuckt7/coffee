@@ -72,8 +72,11 @@ class FieldOutline extends StatelessWidget {
         key: fieldKey,
         controller: controller,
         obscureText: eFieldType == EFieldType.password,
-        textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 5,
+            horizontal: 10,
+          ),
           border: _getBorder(),
           labelStyle: TextStyle(fontSize: fontSize),
           labelText: labelText,

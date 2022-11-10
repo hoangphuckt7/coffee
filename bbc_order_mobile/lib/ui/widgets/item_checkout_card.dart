@@ -20,7 +20,7 @@ class ItemCheckoutCard extends StatelessWidget {
   });
 
   static const TextStyle textStyle = TextStyle(fontWeight: FontWeight.bold);
-  static const double sizeIcon = 20;
+  static const double sizeIcon = 25;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class ItemCheckoutCard extends StatelessWidget {
                     const SizedBox(width: 5),
                     IconBtn(
                       icons: Icons.remove_circle_rounded,
-                      btnBgColor: EColor.danger,
+                      btnBgColor: EColor.secondary,
                       onPressed: () {
                         BlocProvider.of<CheckoutBloc>(context).add(
                           ChangeSugarEvent(model, AppInfo.DecreaseStep, index),
@@ -115,7 +115,7 @@ class ItemCheckoutCard extends StatelessWidget {
                     const SizedBox(width: 5),
                     IconBtn(
                       icons: Icons.remove_circle_rounded,
-                      btnBgColor: EColor.danger,
+                      btnBgColor: EColor.secondary,
                       onPressed: () {
                         BlocProvider.of<CheckoutBloc>(context).add(
                           ChangeIceEvent(model, AppInfo.DecreaseStep, index),
@@ -201,7 +201,7 @@ class ItemCheckoutCard extends StatelessWidget {
               const SizedBox(width: 2),
               IconBtn(
                 icons: Icons.remove_circle_rounded,
-                btnBgColor: EColor.danger,
+                btnBgColor: EColor.secondary,
                 onPressed: () {
                   BlocProvider.of<CheckoutBloc>(context).add(
                     ChangeQuantityEvent(model, -1, listController),

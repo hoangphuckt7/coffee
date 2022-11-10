@@ -16,6 +16,7 @@ enum EColor {
   primary,
   danger,
   dark,
+  secondary,
 }
 
 enum EBorder {

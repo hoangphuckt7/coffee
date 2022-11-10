@@ -28,7 +28,6 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      foregroundColor: MColor.white,
       backgroundColor: MColor.primaryBlack,
       automaticallyImplyLeading: false,
       titleTextStyle: const TextStyle(fontSize: 15),
@@ -59,6 +58,7 @@ class AppbarCustom extends StatelessWidget implements PreferredSizeWidget {
                       style: const TextStyle(
                         fontSize: 18,
                         fontStyle: FontStyle.italic,
+                        color: Color.fromARGB(255, 254, 254, 254),
                       ),
                     ),
                   ),

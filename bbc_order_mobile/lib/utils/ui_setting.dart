@@ -11,6 +11,7 @@ class MColor {
   static const MaterialColor danger = Colors.red;
   static const MaterialColor success = Colors.green;
   static const MaterialColor warning = Colors.yellow;
+  static Color secondary = Colors.grey.shade800;
 }
 
 class MAColor {

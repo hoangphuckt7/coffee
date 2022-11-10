@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 class FillBtn extends StatelessWidget {
   final String title;
   final EColor btnBgColor;
+  final double? height;
   final void Function() onPressed;
   const FillBtn({
     super.key,
     required this.title,
+    this.height = 30,
     this.btnBgColor = EColor.primary,
     required this.onPressed,
   });
@@ -29,7 +31,7 @@ class FillBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 25,
+      height: height,
       child: ElevatedButton(
         style: ButtonStyle(
           shape: MaterialStateProperty.all(
@@ -43,7 +45,7 @@ class FillBtn extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           title,
-          style: const TextStyle(fontSize: 12),
+          style: const TextStyle(fontSize: 13),
         ),
       ),
     );

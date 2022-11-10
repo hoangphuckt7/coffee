@@ -25,7 +25,7 @@ class DropdownCategory extends StatelessWidget {
     return SizedBox(
       height: height,
       child: Padding(
-        padding: const EdgeInsets.all(3),
+        padding: const EdgeInsets.all(5),
         child: DropdownButton<BaseModel>(
           isExpanded: true,
           alignment: Alignment.center,

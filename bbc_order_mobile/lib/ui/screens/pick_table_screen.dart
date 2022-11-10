@@ -60,156 +60,179 @@ class PickTableScreen extends StatelessWidget {
   }
 
   Widget _main(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(ScreenSetting.padding_all),
+    return Container(
+      padding: const EdgeInsets.all(20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 10),
-          FillBtn(
-            title: 'Chuyển / Gộp bàn',
-            onPressed: () {
-              order ??= OrderCreateModel(
-                selectedTable?.id,
-                selectedTable,
-                selectedFloor?.id,
-                selectedFloor,
-                <OrderDetailCreateModel>[],
-              );
-              Fn.pushScreen(
-                context,
-                RouteName.changeTable,
-                arguments: [order],
-              );
-            },
-          ),
-          const SizedBox(height: 20),
-          const Divider(
-            color: MColor.primaryBlack,
-            thickness: 1,
-            indent: 50,
-            endIndent: 50,
-          ),
-          const SizedBox(height: 20),
-          const SizedBox(
-            child: Text(
-              'Chọn bàn order',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: MColor.primaryBlack,
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: Fn.getScreenWidth(context) * .8,
+          Expanded(
+            flex: 1,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Khu vực:",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                BlocBuilder<PickTableBloc, PickTableState>(
-                  builder: (context, state) {
-                    if (state is LoadedFloorTableState) {
-                      isLoading = false;
-                      lstFloor = state.listFloor;
-                      if (order != null && order?.floor != null) {
-                        selectedFloor =
-                            lstFloor.firstWhere((x) => x.id == order?.floorId);
-                      } else {
-                        selectedFloor = state.selectedFloor;
-                      }
-                    } else if (state is ChangedFloorState) {
-                      selectedFloor = state.floor;
-                      lstTable = state.listTable;
-                      selectedTable = state.selectedTable;
-                    }
-                    return DropdownFloor(
-                      listFloor: lstFloor,
-                      selectedFloor: selectedFloor,
-                      onChanged: (value) {
-                        BlocProvider.of<PickTableBloc>(context)
-                            .add(ChangeFloorEvent(value));
-                      },
+                FillBtn(
+                  title: 'Chuyển / Gộp bàn',
+                  height: 40,
+                  onPressed: () {
+                    order ??= OrderCreateModel(
+                      selectedTable?.id,
+                      selectedTable,
+                      selectedFloor?.id,
+                      selectedFloor,
+                      <OrderDetailCreateModel>[],
                     );
-                  },
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  "Bàn:",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                BlocBuilder<PickTableBloc, PickTableState>(
-                  builder: (context, state) {
-                    if (state is LoadedFloorTableState) {
-                      isLoading = false;
-                      lstTable = state.listTable;
-                      if (order != null && order?.table != null) {
-                        selectedTable =
-                            lstTable.firstWhere((x) => x.id == order?.tableId);
-                      } else {
-                        selectedTable = state.selectedTable;
-                      }
-                    } else if (state is ChangedTableState) {
-                      selectedTable = state.table;
-                    }
-                    return DropdownTable(
-                      listTable: lstTable,
-                      selectedTable: selectedTable,
-                      onChanged: (value) {
-                        BlocProvider.of<PickTableBloc>(context)
-                            .add(ChangeTableEvent(value));
-                      },
+                    Fn.pushScreen(
+                      context,
+                      RouteName.changeTable,
+                      arguments: [order],
                     );
                   },
                 ),
               ],
             ),
           ),
+          Expanded(
+            flex: 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Divider(
+                  color: MColor.primaryBlack,
+                  thickness: 1,
+                  indent: 50,
+                  endIndent: 50,
+                ),
+                const SizedBox(height: 10),
+                const SizedBox(
+                  child: Text(
+                    'Chọn bàn order',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: MColor.primaryBlack,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: Fn.getScreenWidth(context) * .8,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Khu vực:",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      BlocBuilder<PickTableBloc, PickTableState>(
+                        builder: (context, state) {
+                          if (state is LoadedFloorTableState) {
+                            isLoading = false;
+                            lstFloor = state.listFloor;
+                            if (order != null && order?.floor != null) {
+                              selectedFloor = lstFloor
+                                  .firstWhere((x) => x.id == order?.floorId);
+                            } else {
+                              selectedFloor = state.selectedFloor;
+                            }
+                          } else if (state is ChangedFloorState) {
+                            selectedFloor = state.floor;
+                            lstTable = state.listTable;
+                            selectedTable = state.selectedTable;
+                          }
+                          return DropdownFloor(
+                            listFloor: lstFloor,
+                            selectedFloor: selectedFloor,
+                            onChanged: (value) {
+                              BlocProvider.of<PickTableBloc>(context)
+                                  .add(ChangeFloorEvent(value));
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Bàn:",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      BlocBuilder<PickTableBloc, PickTableState>(
+                        builder: (context, state) {
+                          if (state is LoadedFloorTableState) {
+                            isLoading = false;
+                            lstTable = state.listTable;
+                            if (order != null && order?.table != null) {
+                              selectedTable = lstTable
+                                  .firstWhere((x) => x.id == order?.tableId);
+                            } else {
+                              selectedTable = state.selectedTable;
+                            }
+                          } else if (state is ChangedTableState) {
+                            selectedTable = state.table;
+                          }
+                          return DropdownTable(
+                            listTable: lstTable,
+                            selectedTable: selectedTable,
+                            onChanged: (value) {
+                              BlocProvider.of<PickTableBloc>(context)
+                                  .add(ChangeTableEvent(value));
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 20),
-          FillBtn(
-              title: 'Tiếp theo',
-              onPressed: () {
-                if (selectedTable != null && selectedFloor != null) {
-                  if (order == null) {
-                    order = OrderCreateModel(
-                      selectedTable?.id,
-                      selectedTable,
-                      selectedFloor?.id,
-                      selectedFloor,
-                      const <OrderDetailCreateModel>[],
-                    );
-                  } else {
-                    order?.floor = selectedFloor;
-                    order?.floorId = selectedFloor?.id;
-                    order?.table = selectedTable;
-                    order?.tableId = selectedTable?.id;
-                  }
-                  Fn.pushScreen(
-                    context,
-                    RouteName.order,
-                    arguments: [order],
-                  );
-                }
-                if (selectedFloor == null) {
-                  Fn.showToast(
-                    eToast: EToast.danger,
-                    msg: 'Vui lòng chọn khu vục!',
-                  );
-                } else if (selectedTable == null) {
-                  Fn.showToast(
-                    eToast: EToast.danger,
-                    msg: 'Vui lòng chọn bàn!',
-                  );
-                }
-              }),
+          Expanded(
+            flex: 1,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FillBtn(
+                    title: 'Tiếp theo',
+                    onPressed: () {
+                      if (selectedTable != null && selectedFloor != null) {
+                        if (order == null) {
+                          order = OrderCreateModel(
+                            selectedTable?.id,
+                            selectedTable,
+                            selectedFloor?.id,
+                            selectedFloor,
+                            const <OrderDetailCreateModel>[],
+                          );
+                        } else {
+                          order?.floor = selectedFloor;
+                          order?.floorId = selectedFloor?.id;
+                          order?.table = selectedTable;
+                          order?.tableId = selectedTable?.id;
+                        }
+                        Fn.pushScreen(
+                          context,
+                          RouteName.order,
+                          arguments: [order],
+                        );
+                      }
+                      if (selectedFloor == null) {
+                        Fn.showToast(
+                          eToast: EToast.danger,
+                          msg: 'Vui lòng chọn khu vục!',
+                        );
+                      } else if (selectedTable == null) {
+                        Fn.showToast(
+                          eToast: EToast.danger,
+                          msg: 'Vui lòng chọn bàn!',
+                        );
+                      }
+                    }),
+              ],
+            ),
+          ),
         ],
       ),
     );
