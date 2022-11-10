@@ -67,6 +67,8 @@ namespace BlueBirdCoffeManager.Forms
             var data = await ApiBuilder.SendRequest<List<OrderViewModel>>("api/Order/Table/" + _tableId, null, RequestMethod.GET);
             orders = JsonConvert.DeserializeObject<List<OrderViewModel>>(data);
 
+            if (orders == null) orders = new List<OrderViewModel>();
+
             if (orders.Count > 0)
             {
                 btnCheckoutAll.BackColor = Sessions.Sessions.BUTTON_COLOR;

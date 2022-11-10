@@ -156,6 +156,8 @@ namespace BlueBirdCoffeManager.Forms
             var oldOrdersDataJson = await ApiBuilder.SendRequest<List<BillViewModel>>("api/Bill/History/10", null, RequestMethod.GET);
             var oldOrdersData = JsonConvert.DeserializeObject<List<BillViewModel>>(oldOrdersDataJson);
 
+            if(oldOrdersData == null) oldOrdersData = new List<BillViewModel>();
+
             foreach (var item in oldOrdersData)
             {
                 double all = (double)(item.OrderDetailViewModels.Select(s => s.Quantity * double.Parse(s.Description)).Sum() - item.Discount - (item.Coupon == null ? 0 : item.Coupon.Value));
@@ -337,7 +339,7 @@ namespace BlueBirdCoffeManager.Forms
             //        Color.FromKnownColor(KnownColor.Black), 1, ButtonBorderStyle.Solid);// bottom
         }
 
-        List<OrderViewModel> tableOrders;
+        List<OrderViewModel> tableOrders = new List<OrderViewModel>();
 
         private void ChangeTable()
         {
@@ -345,6 +347,8 @@ namespace BlueBirdCoffeManager.Forms
             checkSelecteds = new List<CheckSelected>();
 
             tableOrderDataPn.Controls.Clear();
+
+            if (tableOrders == null) tableOrders = new List<OrderViewModel>();
 
             for (int i = 0; i < tableOrders.Count; i++)
             {
