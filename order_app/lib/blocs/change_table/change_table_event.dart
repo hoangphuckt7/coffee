@@ -14,3 +14,11 @@ class CTErrorEvent extends ChangeTableEvent {
 }
 
 class CTLoadFloorTableEvent extends ChangeTableEvent {}
+
+class CTChangeFloorOldEvent extends ChangeTableEvent {}
+
+class CTChangeFloorNewEvent extends ChangeTableEvent {}
+
+class CTChangeTableOldEvent extends ChangeTableEvent {}
+
+class CTChangeTableNewEvent extends ChangeTableEvent {}
