@@ -27,9 +27,9 @@ services:
   bartender-web:
     image: bartender-web
     build:
-         context: ./bbc_bartender_mobile
+         context: ./batender_app
          dockerfile: ./Dockerfile
-    container_name: bbc_bartender_mobile
+    container_name: batender_app
     depends_on:
       - bluebirdcoffee-api
     ports:
@@ -39,9 +39,9 @@ services:
   employee-web:
     image: employee-web
     build:
-         context: ./bbc_order_mobile
+         context: ./order_app
          dockerfile: ./Dockerfile
-    container_name: bbc_order_mobile
+    container_name: order_app
     depends_on:
       - bluebirdcoffee-api
     ports:
