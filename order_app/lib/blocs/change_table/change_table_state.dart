@@ -39,3 +39,37 @@ class CTLoadedFloorTableState extends ChangeTableState {
     this.lstTableNew,
   );
 }
+
+class CTChangedFloorOldState extends ChangeTableState {
+  final floor;
+  final listTable;
+  final selectedTable;
+
+  CTChangedFloorOldState(this.floor, this.listTable, this.selectedTable);
+}
+
+class CTChangedFloorNewState extends ChangeTableState {
+  final floor;
+  final listTable;
+  final selectedTable;
+
+  CTChangedFloorNewState(this.floor, this.listTable, this.selectedTable);
+}
+
+class CTChangedTableOldState extends ChangeTableState {
+  final table;
+
+  CTChangedTableOldState(this.table);
+}
+
+class CTChangedTableNewState extends ChangeTableState {
+  final table;
+
+  CTChangedTableNewState(this.table);
+}
+
+class CTChangedVisibleConfirmPopupState extends ChangeTableState {
+  final isVisible;
+
+  CTChangedVisibleConfirmPopupState(this.isVisible);
+}

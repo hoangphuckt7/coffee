@@ -129,10 +129,18 @@ class ChangeTableScreen extends StatelessWidget {
                 Row(children: [Text("Khu vực:", style: txtStyleFT)]),
                 BlocBuilder<ChangeTableBloc, ChangeTableState>(
                   builder: (context, state) {
+                    if (state is CTChangedFloorOldState) {
+                      selectedFloorOld = state.floor;
+                      selectedTableOld = state.selectedTable;
+                      lstTableOld = state.listTable;
+                    }
                     return DropdownFloor(
                       listFloor: lstFloor,
                       selectedFloor: selectedFloorOld,
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        BlocProvider.of<ChangeTableBloc>(context)
+                            .add(CTChangeFloorOldEvent(value));
+                      },
                     );
                   },
                 ),
@@ -140,10 +148,16 @@ class ChangeTableScreen extends StatelessWidget {
                 Row(children: [Text("Bàn:", style: txtStyleFT)]),
                 BlocBuilder<ChangeTableBloc, ChangeTableState>(
                   builder: (context, state) {
+                    if (state is CTChangedTableOldState) {
+                      selectedTableOld = state.table;
+                    }
                     return DropdownTable(
                       listTable: lstTableOld,
                       selectedTable: selectedTableOld,
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        BlocProvider.of<ChangeTableBloc>(context)
+                            .add(CTChangeTableOldEvent(value));
+                      },
                     );
                   },
                 ),
@@ -174,10 +188,18 @@ class ChangeTableScreen extends StatelessWidget {
                 Row(children: [Text("Khu vực:", style: txtStyleFT)]),
                 BlocBuilder<ChangeTableBloc, ChangeTableState>(
                   builder: (context, state) {
+                    if (state is CTChangedFloorNewState) {
+                      selectedFloorNew = state.floor;
+                      selectedTableNew = state.selectedTable;
+                      lstTableNew = state.listTable;
+                    }
                     return DropdownFloor(
                       listFloor: lstFloor,
-                      selectedFloor: selectedFloorOld,
-                      onChanged: (value) {},
+                      selectedFloor: selectedFloorNew,
+                      onChanged: (value) {
+                        BlocProvider.of<ChangeTableBloc>(context)
+                            .add(CTChangeFloorNewEvent(value));
+                      },
                     );
                   },
                 ),
@@ -185,10 +207,16 @@ class ChangeTableScreen extends StatelessWidget {
                 Row(children: [Text("Bàn:", style: txtStyleFT)]),
                 BlocBuilder<ChangeTableBloc, ChangeTableState>(
                   builder: (context, state) {
+                    if (state is CTChangedTableNewState) {
+                      selectedTableNew = state.table;
+                    }
                     return DropdownTable(
                       listTable: lstTableNew,
-                      selectedTable: selectedTableOld,
-                      onChanged: (value) {},
+                      selectedTable: selectedTableNew,
+                      onChanged: (value) {
+                        BlocProvider.of<ChangeTableBloc>(context)
+                            .add(CTChangeTableNewEvent(value));
+                      },
                     );
                   },
                 ),

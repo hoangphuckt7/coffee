@@ -6,6 +6,8 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:orderr_app/models/common/base_model.dart';
 import 'package:orderr_app/models/table/table_model.dart';
+import 'package:orderr_app/repositories/floor_repo.dart';
+import 'package:orderr_app/repositories/table_repo.dart';
 import 'package:orderr_app/utils/const.dart';
 import 'package:orderr_app/utils/local_storage.dart';
 
@@ -13,14 +15,18 @@ part 'change_table_event.dart';
 part 'change_table_state.dart';
 
 class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
+  final _floorRepo = FloorRepo();
+  final _tableRepo = TableRepo();
   ChangeTableBloc() : super(CTInitialState()) {
     on<CTLoadFloorTableEvent>(_onLoadFloorTable);
+    on<CTChangeVisibleConfirmPopupEvent>(_onChangeVisibleConfirmPopup);
   }
 
   void _onLoadFloorTable(
       CTLoadFloorTableEvent event, Emitter<ChangeTableState> emit) async {
     emit(CTUpdatedLoadingState(true, 'Đang tải dữ liệu...'));
     try {
+      // Lấy thông tin khu vực
       BaseModel? selectedFloorOld;
       BaseModel? selectedFloorNew;
       List<BaseModel> lstFloor = <BaseModel>[];
@@ -30,12 +36,18 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
           jsonDecode(floorJson).map((model) => BaseModel.fromJson(model)),
         );
 
+        if (lstFloor.isEmpty) {
+          lstFloor = await _floorRepo.getAll();
+          await LocalStorage.setItem(KeyLS.floors, jsonEncode(lstFloor));
+        }
+
         if (lstFloor.isNotEmpty) {
           selectedFloorOld = lstFloor[0];
           selectedFloorNew = lstFloor[0];
         }
       }
 
+      // Lấy thông tin bàn
       TableModel? selectedTableOld;
       TableModel? selectedTableNew;
       List<TableModel> lstTableOld = <TableModel>[];
@@ -45,6 +57,11 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
         lstTableOld = List<TableModel>.from(
           jsonDecode(tableJson).map((model) => TableModel.fromJson(model)),
         );
+
+        if (lstTableOld.isEmpty) {
+          lstTableOld = await _tableRepo.getAll();
+          await LocalStorage.setItem(KeyLS.tables, jsonEncode(lstTableOld));
+        }
 
         lstTableNew = lstTableOld;
 
@@ -87,5 +104,10 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
         const <TableModel>[],
       ));
     }
+  }
+
+  void _onChangeVisibleConfirmPopup(
+      CTChangeVisibleConfirmPopupEvent event, Emitter<ChangeTableState> emit) {
+    emit(CTChangedVisibleConfirmPopupState(event.isVisible));
   }
 }

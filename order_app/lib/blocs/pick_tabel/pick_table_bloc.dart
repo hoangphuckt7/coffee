@@ -46,7 +46,11 @@ class PickTableBloc extends Bloc<PickTableEvent, PickTableState> {
         }
       }
       emit(LoadedFloorTableState(
-          selectedFloor, lstFloor, selectedTable, lstTable));
+        selectedFloor,
+        lstFloor,
+        selectedTable,
+        lstTable,
+      ));
     } catch (e) {
       emit(LoadedFloorTableState(
         null,

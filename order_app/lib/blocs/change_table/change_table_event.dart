@@ -15,10 +15,32 @@ class CTErrorEvent extends ChangeTableEvent {
 
 class CTLoadFloorTableEvent extends ChangeTableEvent {}
 
-class CTChangeFloorOldEvent extends ChangeTableEvent {}
+class CTChangeFloorOldEvent extends ChangeTableEvent {
+  final floor;
 
-class CTChangeFloorNewEvent extends ChangeTableEvent {}
+  CTChangeFloorOldEvent(this.floor);
+}
 
-class CTChangeTableOldEvent extends ChangeTableEvent {}
+class CTChangeFloorNewEvent extends ChangeTableEvent {
+  final floor;
 
-class CTChangeTableNewEvent extends ChangeTableEvent {}
+  CTChangeFloorNewEvent(this.floor);
+}
+
+class CTChangeTableOldEvent extends ChangeTableEvent {
+  final table;
+
+  CTChangeTableOldEvent(this.table);
+}
+
+class CTChangeTableNewEvent extends ChangeTableEvent {
+  final table;
+
+  CTChangeTableNewEvent(this.table);
+}
+
+class CTChangeVisibleConfirmPopupEvent extends ChangeTableEvent {
+  final isVisible;
+
+  CTChangeVisibleConfirmPopupEvent(this.isVisible);
+}

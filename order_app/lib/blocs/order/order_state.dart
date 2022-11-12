@@ -54,3 +54,9 @@ class AddedToCartState extends OrderState {
 
   AddedToCartState(this.lstODetail, this.item);
 }
+
+class ORChangedVisibleConfirmPopupState extends OrderState {
+  final isVisible;
+
+  ORChangedVisibleConfirmPopupState(this.isVisible);
+}
