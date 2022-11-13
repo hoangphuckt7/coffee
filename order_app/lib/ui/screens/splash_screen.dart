@@ -1,5 +1,4 @@
 import 'package:orderr_app/blocs/splash/splash_bloc.dart';
-import 'package:orderr_app/models/order/order_create_model.dart';
 import 'package:orderr_app/routes.dart';
 import 'package:orderr_app/ui/widgets/loader.dart';
 import 'package:orderr_app/utils/function_common.dart';
@@ -16,9 +15,9 @@ class SplashScreen extends StatelessWidget {
       onWillPop: () async => false,
       child: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
-          if (state is LoginSuccessState) {
+          if (state is SPLoginSuccessState) {
             Fn.pushScreen(context, RouteName.pickTable);
-          } else if (state is LoginFailState) {
+          } else if (state is SPLoginFailState) {
             Fn.pushScreen(context, RouteName.login);
           }
         },
@@ -27,10 +26,7 @@ class SplashScreen extends StatelessWidget {
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                // Text(AppInfo.Name),
-                Loader(),
-              ],
+              children: const [Loader()],
             ),
           ),
         ),

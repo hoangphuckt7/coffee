@@ -43,10 +43,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (errUsername != null || errPassword != null) {
       emit(AuthDataInvalidState(errUsername, errPassword));
     } else {
-      // LocalStorage.setItem(KeyLS.login_info, "alo");
-      // emit(SubmitSuccessState());
-      // return;
-      // await Future.delayed(Duration(seconds: 5));
       var model = LoginReqModel(
         event.username.toString(),
         event.password.toString(),

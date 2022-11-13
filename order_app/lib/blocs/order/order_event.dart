@@ -42,9 +42,3 @@ class ORAddToCartEvent extends OrderEvent {
 
   ORAddToCartEvent(this.lstODetail, this.item);
 }
-
-class ORChangeVisibleConfirmPopupEvent extends OrderEvent {
-  final isVisible;
-
-  ORChangeVisibleConfirmPopupEvent(this.isVisible);
-}

@@ -39,8 +39,15 @@ class CTChangeTableNewEvent extends ChangeTableEvent {
   CTChangeTableNewEvent(this.table);
 }
 
-class CTChangeVisibleConfirmPopupEvent extends ChangeTableEvent {
+class CTShowPopupConfirmChangeEvent extends ChangeTableEvent {
   final isVisible;
 
-  CTChangeVisibleConfirmPopupEvent(this.isVisible);
+  CTShowPopupConfirmChangeEvent(this.isVisible);
+}
+
+class CTConfirmChangeEvent extends ChangeTableEvent {
+  final tableIdOld;
+  final tableIdNew;
+
+  CTConfirmChangeEvent(this.tableIdOld, this.tableIdNew);
 }

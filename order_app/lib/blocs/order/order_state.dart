@@ -5,58 +5,52 @@ part of 'order_bloc.dart';
 @immutable
 abstract class OrderState {}
 
-class InitialState extends OrderState {}
+class ORInitialState extends OrderState {}
 
-class ErrorState extends OrderState {
+class ORErrorState extends OrderState {
   final errMsg;
 
-  ErrorState(this.errMsg);
+  ORErrorState(this.errMsg);
 }
 
-class UpdatedLoadingState extends OrderState {
+class ORUpdatedLoadingState extends OrderState {
   final isLoading;
   final labelLoading;
 
-  UpdatedLoadingState(this.isLoading, this.labelLoading);
+  ORUpdatedLoadingState(this.isLoading, this.labelLoading);
 }
 
-class LoadedCateItemState extends OrderState {
+class ORLoadedCateItemState extends OrderState {
   final lstCate;
   final selectedCate;
   final lstItem;
 
-  LoadedCateItemState(this.lstCate, this.selectedCate, this.lstItem);
+  ORLoadedCateItemState(this.lstCate, this.selectedCate, this.lstItem);
 }
 
-class FilteredState extends OrderState {
+class ORFilteredState extends OrderState {
   final cate;
   final search;
   final lstItem;
 
-  FilteredState(this.cate, this.search, this.lstItem);
+  ORFilteredState(this.cate, this.search, this.lstItem);
 }
 
-class ChangedSugarState extends OrderState {
+class ORChangedSugarState extends OrderState {
   final item;
 
-  ChangedSugarState(this.item);
+  ORChangedSugarState(this.item);
 }
 
-class ChangedIceState extends OrderState {
+class ORChangedIceState extends OrderState {
   final item;
 
-  ChangedIceState(this.item);
+  ORChangedIceState(this.item);
 }
 
-class AddedToCartState extends OrderState {
+class ORAddedToCartState extends OrderState {
   final lstODetail;
   final item;
 
-  AddedToCartState(this.lstODetail, this.item);
-}
-
-class ORChangedVisibleConfirmPopupState extends OrderState {
-  final isVisible;
-
-  ORChangedVisibleConfirmPopupState(this.isVisible);
+  ORAddedToCartState(this.lstODetail, this.item);
 }

@@ -68,8 +68,10 @@ class CTChangedTableNewState extends ChangeTableState {
   CTChangedTableNewState(this.table);
 }
 
-class CTChangedVisibleConfirmPopupState extends ChangeTableState {
+class CTShowPopupConfirmChangeState extends ChangeTableState {
   final isVisible;
 
-  CTChangedVisibleConfirmPopupState(this.isVisible);
+  CTShowPopupConfirmChangeState(this.isVisible);
 }
+
+class CTGoToPickTableState extends ChangeTableState {}

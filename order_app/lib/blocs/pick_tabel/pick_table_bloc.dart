@@ -18,15 +18,16 @@ class PickTableBloc extends Bloc<PickTableEvent, PickTableState> {
   final FloorRepo _floorRepo = FloorRepo();
   final TableRepo _tableRepo = TableRepo();
 
-  PickTableBloc() : super(InitialState()) {
-    on<LoadFloorTableEvent>(_onLoadData);
-    on<ChangeFloorEvent>(_onChangeFloor);
-    on<ChangeTableEvent>(_onChangeTable);
+  PickTableBloc() : super(PTInitialState()) {
+    on<PTLoadFloorTableEvent>(_onLoadData);
+    on<PTChangeFloorEvent>(_onChangeFloor);
+    on<PTChangeTableEvent>(_onChangeTable);
+    on<PTShowPopupConfirmExitEvent>(_onShowPopupConfirmExit);
   }
 
   void _onLoadData(
-      LoadFloorTableEvent event, Emitter<PickTableState> emit) async {
-    emit(UpdatedLoadingState(true, 'Đang tải dữ liệu...'));
+      PTLoadFloorTableEvent event, Emitter<PickTableState> emit) async {
+    emit(PTUpdatedLoadingState(true, 'Đang tải dữ liệu...'));
     try {
       var lstFloor = await _floorRepo.getAll();
       await LocalStorage.setItem(KeyLS.floors, jsonEncode(lstFloor));
@@ -45,14 +46,14 @@ class PickTableBloc extends Bloc<PickTableEvent, PickTableState> {
           selectedTable = lstTable[0];
         }
       }
-      emit(LoadedFloorTableState(
+      emit(PTLoadedFloorTableState(
         selectedFloor,
         lstFloor,
         selectedTable,
         lstTable,
       ));
     } catch (e) {
-      emit(LoadedFloorTableState(
+      emit(PTLoadedFloorTableState(
         null,
         const <BaseModel>[],
         null,
@@ -62,7 +63,7 @@ class PickTableBloc extends Bloc<PickTableEvent, PickTableState> {
   }
 
   void _onChangeFloor(
-      ChangeFloorEvent event, Emitter<PickTableState> emit) async {
+      PTChangeFloorEvent event, Emitter<PickTableState> emit) async {
     BaseModel floor = event.floor;
     var tableJson = await LocalStorage.getItem(KeyLS.tables);
     List<TableModel> listTable = List<TableModel>.from(
@@ -74,10 +75,15 @@ class PickTableBloc extends Bloc<PickTableEvent, PickTableState> {
     if (listTable.isNotEmpty) {
       selectedTable = listTable[0];
     }
-    emit(ChangedFloorState(floor, listTable, selectedTable));
+    emit(PTChangedFloorState(floor, listTable, selectedTable));
   }
 
-  void _onChangeTable(ChangeTableEvent event, Emitter<PickTableState> emit) {
-    emit(ChangedTableState(event.table));
+  void _onChangeTable(PTChangeTableEvent event, Emitter<PickTableState> emit) {
+    emit(PTChangedTableState(event.table));
+  }
+
+  void _onShowPopupConfirmExit(
+      PTShowPopupConfirmExitEvent event, Emitter<PickTableState> emit) {
+    emit(PTShowPopupConfirmExitState(event.isVisible));
   }
 }

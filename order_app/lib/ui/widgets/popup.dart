@@ -1,15 +1,19 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:orderr_app/utils/function_common.dart';
 import 'package:orderr_app/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class Popup extends StatelessWidget {
   final bool show;
   final List<Widget> children;
-  const Popup({
+  double? width;
+  double? height;
+  Popup({
     super.key,
     this.show = false,
+    this.width,
+    this.height,
     required this.children,
   });
 
@@ -21,8 +25,8 @@ class Popup extends StatelessWidget {
         color: Colors.black.withOpacity(.6),
         child: Center(
           child: SizedBox(
-            width: Fn.getScreenWidth(context) * .8,
-            height: Fn.getScreenHeight(context) * .3,
+            width: width ??= Fn.getScreenWidth(context) * .8,
+            height: height ??= Fn.getScreenHeight(context) * .3,
             child: Card(
               color: MColor.white,
               shape: RoundedRectangleBorder(

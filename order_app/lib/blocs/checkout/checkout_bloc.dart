@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, unnecessary_import
 
 import 'dart:convert';
 import 'dart:developer';
@@ -24,6 +24,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     on<COChangeNoteEvent>(_onChangeNote);
     on<COGoBackOrderEvent>(_onGoBackOrder);
     on<COConfirmOrderEvent>(_onConfirmOrder);
+    on<COShowPopupConfirmCheckoutEvent>(_onShowPopupConfirmCheckout);
   }
 
   void _onChangeQuantity(
@@ -135,5 +136,10 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       emit(COErrorState(AppInfo.ErrMsg));
       log('OrderBloc - _onConfirmOrder - ${e.toString()}');
     }
+  }
+
+  void _onShowPopupConfirmCheckout(
+      COShowPopupConfirmCheckoutEvent event, Emitter<CheckoutState> emit) {
+    emit(COShowConfirmCheckoutPopupState(event.isVisible));
   }
 }

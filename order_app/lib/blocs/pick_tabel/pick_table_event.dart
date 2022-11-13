@@ -5,24 +5,30 @@ part of 'pick_table_bloc.dart';
 @immutable
 abstract class PickTableEvent {}
 
-class InitialEvent extends PickTableEvent {}
+class PTInitialEvent extends PickTableEvent {}
 
-class LoadFloorTableEvent extends PickTableEvent {}
-
-class ErrorEvent extends PickTableEvent {
+class PTErrorEvent extends PickTableEvent {
   final errMsg;
 
-  ErrorEvent(this.errMsg);
+  PTErrorEvent(this.errMsg);
 }
 
-class ChangeFloorEvent extends PickTableEvent {
+class PTLoadFloorTableEvent extends PickTableEvent {}
+
+class PTChangeFloorEvent extends PickTableEvent {
   final floor;
 
-  ChangeFloorEvent(this.floor);
+  PTChangeFloorEvent(this.floor);
 }
 
-class ChangeTableEvent extends PickTableEvent {
+class PTChangeTableEvent extends PickTableEvent {
   final table;
 
-  ChangeTableEvent(this.table);
+  PTChangeTableEvent(this.table);
+}
+
+class PTShowPopupConfirmExitEvent extends PickTableEvent {
+  final isVisible;
+
+  PTShowPopupConfirmExitEvent(this.isVisible);
 }

@@ -60,9 +60,9 @@ class OrderScreen extends StatelessWidget {
       builder: (context, state) {
         bool isLoading = false;
         String loadingMsg = "";
-        if (state is ErrorState) {
+        if (state is ORErrorState) {
           Fn.showToast(eToast: EToast.danger, msg: state.errMsg.toString());
-        } else if (state is UpdatedLoadingState) {
+        } else if (state is ORUpdatedLoadingState) {
           isLoading = state.isLoading;
           loadingMsg = state.labelLoading;
         }
@@ -101,7 +101,7 @@ class OrderScreen extends StatelessWidget {
         ),
         child: BlocBuilder<OrderBloc, OrderState>(
           builder: (context, state) {
-            if (state is AddedToCartState) {
+            if (state is ORAddedToCartState) {
               lstODetailCreate = state.lstODetail;
               order.orderDetail = state.lstODetail;
             }
@@ -123,7 +123,7 @@ class OrderScreen extends StatelessWidget {
                   child: Text('$totalItem món'),
                 ),
                 FillBtn(
-                  title: 'Kiểm tra',
+                  label: 'Kiểm tra',
                   btnBgColor: lstODetailCreate.isNotEmpty
                       ? EColor.primary
                       : EColor.dark,
@@ -168,7 +168,7 @@ class OrderScreen extends StatelessWidget {
         const SizedBox(height: 10),
         BlocBuilder<OrderBloc, OrderState>(
           builder: (context, state) {
-            if (state is LoadedCateItemState) {
+            if (state is ORLoadedCateItemState) {
               lstItem = state.lstItem;
             }
             return Expanded(
@@ -179,11 +179,11 @@ class OrderScreen extends StatelessWidget {
                     return BlocBuilder<OrderBloc, OrderState>(
                       builder: (context, state) {
                         ItemModel? newItem;
-                        if (state is ChangedSugarState) {
+                        if (state is ORChangedSugarState) {
                           newItem = state.item;
-                        } else if (state is ChangedIceState) {
+                        } else if (state is ORChangedIceState) {
                           newItem = state.item;
-                        } else if (state is AddedToCartState) {
+                        } else if (state is ORAddedToCartState) {
                           newItem = state.item;
                         }
                         if (newItem?.id == item.id) {
@@ -239,11 +239,11 @@ class OrderScreen extends StatelessWidget {
   Widget _filter(BuildContext context) {
     return BlocBuilder<OrderBloc, OrderState>(
       builder: (context, state) {
-        if (state is LoadedCateItemState) {
+        if (state is ORLoadedCateItemState) {
           selectedCate = state.selectedCate;
           lstCate = state.lstCate;
           lstItem = state.lstItem;
-        } else if (state is FilteredState) {
+        } else if (state is ORFilteredState) {
           lstItem = state.lstItem;
           selectedCate = state.cate;
         }

@@ -1,7 +1,5 @@
 import 'package:orderr_app/ui/widgets/loader.dart';
 import 'package:orderr_app/ui/widgets/popup.dart';
-import 'package:orderr_app/utils/function_common.dart';
-import 'package:orderr_app/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
 class Processing extends StatelessWidget {

@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'dart:convert';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -8,8 +8,6 @@ import 'package:orderr_app/models/common/base_model.dart';
 import 'package:orderr_app/models/table/table_model.dart';
 import 'package:orderr_app/repositories/floor_repo.dart';
 import 'package:orderr_app/repositories/table_repo.dart';
-import 'package:orderr_app/utils/const.dart';
-import 'package:orderr_app/utils/local_storage.dart';
 
 part 'change_table_event.dart';
 part 'change_table_state.dart';
@@ -19,7 +17,15 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
   final _tableRepo = TableRepo();
   ChangeTableBloc() : super(CTInitialState()) {
     on<CTLoadFloorTableEvent>(_onLoadFloorTable);
-    on<CTChangeVisibleConfirmPopupEvent>(_onChangeVisibleConfirmPopup);
+    on<CTShowPopupConfirmChangeEvent>(_onChangeVisibleConfirmPopup);
+    // Change floor and table old
+    on<CTChangeFloorOldEvent>(_conChangeFloorOld);
+    on<CTChangeTableOldEvent>(_onChangeTableOld);
+    // Change floor and table old
+    on<CTChangeFloorNewEvent>(_onChangeFloorNew);
+    on<CTChangeTableNewEvent>(_onChangeTableNew);
+    // confirm
+    on<CTConfirmChangeEvent>(_onConfirmChange);
   }
 
   void _onLoadFloorTable(
@@ -29,58 +35,33 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
       // Lấy thông tin khu vực
       BaseModel? selectedFloorOld;
       BaseModel? selectedFloorNew;
-      List<BaseModel> lstFloor = <BaseModel>[];
-      String? floorJson = await LocalStorage.getItem(KeyLS.floors);
-      if (floorJson != null && floorJson.isNotEmpty) {
-        lstFloor = List<BaseModel>.from(
-          jsonDecode(floorJson).map((model) => BaseModel.fromJson(model)),
-        );
-
-        if (lstFloor.isEmpty) {
-          lstFloor = await _floorRepo.getAll();
-          await LocalStorage.setItem(KeyLS.floors, jsonEncode(lstFloor));
-        }
-
-        if (lstFloor.isNotEmpty) {
-          selectedFloorOld = lstFloor[0];
-          selectedFloorNew = lstFloor[0];
-        }
+      List<BaseModel> lstFloor = await _floorRepo.fetchListFloor();
+      if (lstFloor.isNotEmpty) {
+        selectedFloorOld = lstFloor[0];
+        selectedFloorNew = lstFloor[0];
       }
 
       // Lấy thông tin bàn
       TableModel? selectedTableOld;
       TableModel? selectedTableNew;
-      List<TableModel> lstTableOld = <TableModel>[];
-      List<TableModel> lstTableNew = <TableModel>[];
-      String? tableJson = await LocalStorage.getItem(KeyLS.tables);
-      if (tableJson != null && tableJson.isNotEmpty) {
-        lstTableOld = List<TableModel>.from(
-          jsonDecode(tableJson).map((model) => TableModel.fromJson(model)),
-        );
+      List<TableModel> lstTableOld = await _tableRepo.fetchListTable();
+      List<TableModel> lstTableNew = lstTableOld;
 
-        if (lstTableOld.isEmpty) {
-          lstTableOld = await _tableRepo.getAll();
-          await LocalStorage.setItem(KeyLS.tables, jsonEncode(lstTableOld));
+      if (lstTableOld.isNotEmpty && selectedFloorOld != null) {
+        lstTableOld = lstTableOld
+            .where((x) => x.floor!.id == selectedFloorOld!.id)
+            .toList();
+        if (lstTableOld.isNotEmpty) {
+          selectedTableOld = lstTableOld[0];
         }
+      }
 
-        lstTableNew = lstTableOld;
-
-        if (selectedFloorOld != null) {
-          lstTableOld = lstTableOld
-              .where((x) => x.floor!.id == selectedFloorOld!.id)
-              .toList();
-          if (lstTableOld.isNotEmpty) {
-            selectedTableOld = lstTableOld[0];
-          }
-        }
-
-        if (selectedFloorNew != null) {
-          lstTableNew = lstTableNew
-              .where((x) => x.floor!.id == selectedFloorNew!.id)
-              .toList();
-          if (lstTableNew.isNotEmpty) {
-            selectedTableNew = lstTableNew[0];
-          }
+      if (selectedFloorNew != null) {
+        lstTableNew = lstTableNew
+            .where((x) => x.floor!.id == selectedFloorNew!.id)
+            .toList();
+        if (lstTableNew.isNotEmpty) {
+          selectedTableNew = lstTableNew[0];
         }
       }
 
@@ -94,6 +75,7 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
         lstTableNew,
       ));
     } catch (e) {
+      log('ChangeTableBloc - _onLoadFloorTable - ${e.toString()}');
       emit(CTLoadedFloorTableState(
         null,
         null,
@@ -107,7 +89,63 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
   }
 
   void _onChangeVisibleConfirmPopup(
-      CTChangeVisibleConfirmPopupEvent event, Emitter<ChangeTableState> emit) {
-    emit(CTChangedVisibleConfirmPopupState(event.isVisible));
+      CTShowPopupConfirmChangeEvent event, Emitter<ChangeTableState> emit) {
+    emit(CTShowPopupConfirmChangeState(event.isVisible));
+  }
+
+  void _conChangeFloorOld(
+      CTChangeFloorOldEvent event, Emitter<ChangeTableState> emit) async {
+    BaseModel floor = event.floor;
+    List<TableModel> listTable = await _tableRepo.fetchListTable();
+    listTable = listTable.where((x) => x.floor?.id == floor.id).toList();
+
+    TableModel? selectedTable;
+    if (listTable.isNotEmpty) {
+      selectedTable = listTable[0];
+    }
+    emit(CTChangedFloorOldState(floor, listTable, selectedTable));
+  }
+
+  void _onChangeFloorNew(
+      CTChangeFloorNewEvent event, Emitter<ChangeTableState> emit) async {
+    BaseModel floor = event.floor;
+    List<TableModel> listTable = await _tableRepo.fetchListTable();
+    listTable = listTable.where((x) => x.floor?.id == floor.id).toList();
+
+    TableModel? selectedTable;
+    if (listTable.isNotEmpty) {
+      selectedTable = listTable[0];
+    }
+    emit(CTChangedFloorNewState(floor, listTable, selectedTable));
+  }
+
+  void _onChangeTableOld(
+      CTChangeTableOldEvent event, Emitter<ChangeTableState> emit) {
+    emit(CTChangedTableOldState(event.table));
+  }
+
+  void _onChangeTableNew(
+      CTChangeTableNewEvent event, Emitter<ChangeTableState> emit) {
+    emit(CTChangedTableNewState(event.table));
+  }
+
+  void _onConfirmChange(
+      CTConfirmChangeEvent event, Emitter<ChangeTableState> emit) async {
+    try {
+      var resp =
+          await _tableRepo.changeTable(event.tableIdOld, event.tableIdNew);
+      if (resp is bool && resp) {
+        emit(CTGoToPickTableState());
+        return;
+      }
+      if (resp is String && resp.isNotEmpty) {
+        throw resp;
+      } else {
+        emit(CTErrorState('Chuyển / Gộp bàn thất bại'));
+      }
+    } catch (e) {
+      log('ChangeTableBloc - _onLoadFloorTable - ${e.toString()}');
+      emit(CTErrorState(e.toString()));
+    }
   }
 }

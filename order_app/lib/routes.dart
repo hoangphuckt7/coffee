@@ -7,6 +7,7 @@ import 'package:orderr_app/blocs/order/order_bloc.dart';
 import 'package:orderr_app/blocs/pick_tabel/pick_table_bloc.dart';
 import 'package:orderr_app/blocs/splash/splash_bloc.dart';
 import 'package:orderr_app/blocs/test/test_bloc.dart';
+import 'package:orderr_app/blocs/user_info/user_info_bloc.dart';
 import 'package:orderr_app/models/order/order_create_model.dart';
 import 'package:orderr_app/ui/screens/change_table_screen.dart';
 import 'package:orderr_app/ui/screens/checkout_screen.dart';
@@ -17,6 +18,7 @@ import 'package:orderr_app/ui/screens/splash_screen.dart';
 import 'package:orderr_app/ui/screens/test_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:orderr_app/ui/screens/user_info_sceen.dart';
 
 class RouteName {
   static const String test = '/test';
@@ -26,6 +28,7 @@ class RouteName {
   static const String changeTable = '/changeTable';
   static const String order = '/order';
   static const String checkOut = '/checkOut';
+  static const String userInfo = '/userInfo';
 }
 
 class Routes {
@@ -42,7 +45,7 @@ class Routes {
       case RouteName.splash:
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (_) => SplashBloc()..add(CheckLoginEvent()),
+            create: (_) => SplashBloc()..add(SPCheckLoginEvent()),
             child: const SplashScreen(),
           ),
         );
@@ -88,7 +91,7 @@ class Routes {
               ),
               BlocProvider(
                 create: (context) =>
-                    PickTableBloc()..add(LoadFloorTableEvent()),
+                    PickTableBloc()..add(PTLoadFloorTableEvent()),
               ),
             ],
             child: PickTableScreen(order: order),
@@ -110,6 +113,18 @@ class Routes {
           builder: (context) => BlocProvider(
             create: (context) => CheckoutBloc(),
             child: CheckOutScreen(order: order),
+          ),
+        );
+      case RouteName.userInfo:
+        OrderCreateModel? order;
+        if (settings.arguments != null) {
+          var lstArg = settings.arguments! as List;
+          order = lstArg.isNotEmpty ? lstArg[0] as OrderCreateModel? : null;
+        }
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => UserInfoBloc(),
+            child: UserInfoScreen(order: order),
           ),
         );
       default:

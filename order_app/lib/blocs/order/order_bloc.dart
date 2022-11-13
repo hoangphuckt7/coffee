@@ -6,9 +6,7 @@ import 'dart:developer';
 import 'package:orderr_app/models/common/base_model.dart';
 import 'package:orderr_app/models/item/item_model.dart';
 import 'package:orderr_app/models/order/detail_dct_model.dart';
-import 'package:orderr_app/models/order/order_create_model.dart';
 import 'package:orderr_app/models/order/order_detail_create_model.dart';
-import 'package:orderr_app/models/order/order_detail_model.dart';
 import 'package:orderr_app/repositories/category_repo.dart';
 import 'package:orderr_app/repositories/item_repo.dart';
 import 'package:orderr_app/utils/const.dart';
@@ -23,7 +21,7 @@ part 'order_state.dart';
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final CategoryRepo _cateRepo = CategoryRepo();
   final ItemRepo _itemRepo = ItemRepo();
-  OrderBloc() : super(InitialState()) {
+  OrderBloc() : super(ORInitialState()) {
     on<ORLoadCateItemEvent>(_onLoadCateItem);
     on<ORFilterEvent>(_onFilter);
     on<ORChangeSugarEvent>(_onChangeSugar);
@@ -33,7 +31,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   void _onLoadCateItem(
       ORLoadCateItemEvent event, Emitter<OrderState> emit) async {
-    emit(UpdatedLoadingState(true, 'Đang tải dữ liệu...'));
+    emit(ORUpdatedLoadingState(true, 'Đang tải dữ liệu...'));
     try {
       var lstItem = await _itemRepo.getAll();
       if (lstItem.isNotEmpty) {
@@ -49,10 +47,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         lstCate.addAll(lstCateDB);
       }
       log('items: ${lstItem.length}');
-      emit(LoadedCateItemState(lstCate, selectedCate, lstItem));
+      emit(ORLoadedCateItemState(lstCate, selectedCate, lstItem));
     } catch (e) {
       log('OrderBloc - _onLoadCateItem - ${e.toString()}');
-      emit(LoadedCateItemState(const <BaseModel>[], null, const <ItemModel>[]));
+      emit(ORLoadedCateItemState(
+          const <BaseModel>[], null, const <ItemModel>[]));
     }
   }
 
@@ -80,9 +79,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         }).toList();
       }
 
-      emit(FilteredState(cate, searchVal, lstItem));
+      emit(ORFilteredState(cate, searchVal, lstItem));
     } catch (e) {
-      emit(ErrorState(AppInfo.ErrMsg));
+      emit(ORErrorState(AppInfo.ErrMsg));
       log('OrderBloc - _onFilter - ${e.toString()}');
     }
   }
@@ -96,9 +95,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       } else if (item.sugar! + step >= 0 && item.sugar! + step <= 200) {
         item.sugar = item.sugar! + step;
       }
-      emit(ChangedSugarState(item));
+      emit(ORChangedSugarState(item));
     } catch (e) {
-      emit(ErrorState(AppInfo.ErrMsg));
+      emit(ORErrorState(AppInfo.ErrMsg));
       log('OrderBloc - _onChangeSugar - ${e.toString()}');
     }
   }
@@ -112,9 +111,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       } else if (item.ice! + step >= 0 && item.ice! + step <= 200) {
         item.ice = item.ice! + step;
       }
-      emit(ChangedIceState(item));
+      emit(ORChangedIceState(item));
     } catch (e) {
-      emit(ErrorState(AppInfo.ErrMsg));
+      emit(ORErrorState(AppInfo.ErrMsg));
       log('OrderBloc - _onChangeIce - ${e.toString()}');
     }
   }
@@ -144,9 +143,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       }
       item.sugar = 100;
       item.ice = 100;
-      emit(AddedToCartState(lstODetail, item));
+      emit(ORAddedToCartState(lstODetail, item));
     } catch (e) {
-      emit(ErrorState(AppInfo.ErrMsg));
+      emit(ORErrorState(AppInfo.ErrMsg));
       log('OrderBloc - _onAddingToCart - ${e.toString()}');
     }
   }

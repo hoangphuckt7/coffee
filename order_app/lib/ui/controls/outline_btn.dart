@@ -1,25 +1,25 @@
-// ignore_for_file: must_be_immutable
-
+import 'package:flutter/material.dart';
 import 'package:orderr_app/utils/enum.dart';
 import 'package:orderr_app/utils/function_common.dart';
 import 'package:orderr_app/utils/ui_setting.dart';
-import 'package:flutter/material.dart';
 
-class FillBtn extends StatelessWidget {
+class OutlineBtn extends StatelessWidget {
   final String label;
-  final EColor? btnBgColor;
-  final EColor? labelColor;
   final double? width;
   final double? height;
+  final EColor? syncColor;
+  final EColor textColor;
+  final EColor borderColor;
   final void Function() onPressed;
-  const FillBtn({
+  const OutlineBtn({
     super.key,
     required this.label,
     required this.onPressed,
     this.width,
     this.height = 30,
-    this.btnBgColor = EColor.primary,
-    this.labelColor = EColor.white,
+    this.syncColor,
+    this.textColor = EColor.dark,
+    this.borderColor = EColor.dark,
   });
 
   @override
@@ -27,21 +27,28 @@ class FillBtn extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: ElevatedButton(
+      child: OutlinedButton(
         style: ButtonStyle(
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(BtnSetting.border_radius),
             ),
           ),
-          backgroundColor: MaterialStateProperty.all<Color>(
-            Fn.getColor(btnBgColor),
+          side: MaterialStateProperty.all(
+            BorderSide(
+              color: Fn.getColor(syncColor ?? borderColor),
+              width: BtnSetting.border_width,
+            ),
           ),
+          backgroundColor: MaterialStateProperty.all<Color>(MColor.white),
         ),
         onPressed: onPressed,
         child: Text(
           label,
-          style: TextStyle(fontSize: 13, color: Fn.getColor(labelColor)),
+          style: TextStyle(
+            fontSize: 13,
+            color: Fn.getColor(syncColor ?? textColor),
+          ),
         ),
       ),
     );

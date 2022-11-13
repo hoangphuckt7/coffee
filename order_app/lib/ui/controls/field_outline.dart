@@ -6,20 +6,25 @@ import 'package:flutter/material.dart';
 class FieldOutline extends StatelessWidget {
   final Key? fieldKey;
   final String? labelText;
+  final String? hintText;
   final TextEditingController controller;
   final String? errorText;
   final EFieldType? eFieldType;
   final EBorder? eBorder;
+  final double? width;
   final double? height;
   final BorderRadius borderRadius;
   final Color focusBorderSideColor;
   final double? fontSize;
+  final double paddingVertical;
+  final double paddingHorizontal;
   final Function(String)? onChanged;
   final Function()? onEditingComplete;
   const FieldOutline({
     super.key,
     this.fieldKey,
     this.labelText,
+    this.hintText,
     required this.controller,
     this.errorText,
     this.eFieldType = EFieldType.text,
@@ -27,9 +32,12 @@ class FieldOutline extends StatelessWidget {
     this.borderRadius = const BorderRadius.all(
       Radius.circular(BtnSetting.border_radius),
     ),
+    this.width,
     this.height = 55,
     this.fontSize = ScreenSetting.fontSize,
     this.focusBorderSideColor = MColor.primaryBlack,
+    this.paddingVertical = 5,
+    this.paddingHorizontal = 10,
     this.onChanged,
     this.onEditingComplete,
   });
@@ -73,15 +81,16 @@ class FieldOutline extends StatelessWidget {
         controller: controller,
         obscureText: eFieldType == EFieldType.password,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 5,
-            horizontal: 10,
+          contentPadding: EdgeInsets.symmetric(
+            vertical: paddingVertical,
+            horizontal: paddingHorizontal,
           ),
           border: _getBorder(),
           labelStyle: TextStyle(fontSize: fontSize),
           labelText: labelText,
           errorText: errorText,
           focusedBorder: _getFocusBorder(),
+          hintText: hintText,
         ),
         onChanged: onChanged,
         onEditingComplete: onEditingComplete,

@@ -9,7 +9,9 @@ import 'package:orderr_app/ui/controls/fill_btn.dart';
 import 'package:orderr_app/ui/widgets/dropdown_floor.dart';
 import 'package:orderr_app/ui/widgets/dropdown_table.dart';
 import 'package:orderr_app/ui/widgets/frame_common.dart';
+import 'package:orderr_app/ui/widgets/popup_confirm.dart';
 import 'package:orderr_app/ui/widgets/processing.dart';
+import 'package:orderr_app/ui/widgets/title_custom.dart';
 import 'package:orderr_app/utils/enum.dart';
 import 'package:orderr_app/utils/function_common.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,7 @@ class ChangeTableScreen extends StatelessWidget {
   });
 
   bool isLoading = false;
+  bool isShowPopupConfirm = false;
   List<BaseModel> lstFloor = <BaseModel>[];
   List<TableModel> lstTableOld = <TableModel>[];
   List<TableModel> lstTableNew = <TableModel>[];
@@ -40,43 +43,57 @@ class ChangeTableScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MainFrame(
       showBackBtn: true,
-      showUserInfo: true,
-      showLogoutBtn: true,
+      showUserInfo: false,
+      showLogoutBtn: false,
+      title: 'Chuyển / Gộp bàn',
       onWillPop: () => _back(context),
       onClickBackBtn: () => _back(context),
       child: Stack(
         children: [
           _main(context),
           _processState(context),
+          _popupConfirmChange(context),
         ],
       ),
     );
   }
 
   Widget _processState(BuildContext context) {
-    return BlocBuilder<ChangeTableBloc, ChangeTableState>(
-      builder: (context, state) {
-        bool isLoading = false;
-        String loadingMsg = "";
-        if (state is CTErrorState) {
-          Fn.showToast(eToast: EToast.danger, msg: state.errMsg.toString());
-        } else if (state is CTUpdatedLoadingState) {
-          isLoading = state.isLoading;
-          loadingMsg = state.labelLoading;
-        } else if (state is CTLoadedFloorTableState) {
-          selectedFloorOld = state.selectedFloorOld;
-          selectedFloorNew = state.selectedFloorNew;
-
-          selectedTableOld = state.selectedTableOld;
-          selectedTableNew = state.selectedTableNew;
-
-          lstFloor = state.lstFloor;
-
-          lstTableOld = state.lstTableOld;
-          lstTableNew = state.lstTableNew;
+    return BlocListener<ChangeTableBloc, ChangeTableState>(
+      listener: (context, state) {
+        if (state is CTGoToPickTableState) {
+          Fn.showToast(
+            eToast: EToast.success,
+            msg: 'Chuyển / Gộp bàn thành công',
+          );
+          _back(context);
         }
-        return Processing(msg: loadingMsg, show: isLoading);
       },
+      child: BlocBuilder<ChangeTableBloc, ChangeTableState>(
+        builder: (context, state) {
+          bool isLoading = false;
+          String loadingMsg = "";
+          if (state is CTErrorState) {
+            isShowPopupConfirm = false;
+            Fn.showToast(eToast: EToast.danger, msg: state.errMsg.toString());
+          } else if (state is CTUpdatedLoadingState) {
+            isLoading = state.isLoading;
+            loadingMsg = state.labelLoading;
+          } else if (state is CTLoadedFloorTableState) {
+            selectedFloorOld = state.selectedFloorOld;
+            selectedFloorNew = state.selectedFloorNew;
+
+            selectedTableOld = state.selectedTableOld;
+            selectedTableNew = state.selectedTableNew;
+
+            lstFloor = state.lstFloor;
+
+            lstTableOld = state.lstTableOld;
+            lstTableNew = state.lstTableNew;
+          }
+          return Processing(msg: loadingMsg, show: isLoading);
+        },
+      ),
     );
   }
 
@@ -100,8 +117,15 @@ class ChangeTableScreen extends StatelessWidget {
             ),
           ),
           FillBtn(
-            title: 'Xác nhận',
-            onPressed: () => {},
+            label: 'Xác nhận',
+            onPressed: () {
+              if (_validate()) {
+                BlocProvider.of<ChangeTableBloc>(context)
+                    .add(CTShowPopupConfirmChangeEvent(true));
+              }
+              // if (_validate()) {
+              // }
+            },
           ),
           const SizedBox(height: 20),
         ],
@@ -116,14 +140,14 @@ class ChangeTableScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            flex: 1,
+            flex: 2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [_title(context, 'Chuyển / Gộp bàn')],
+              children: const [TitleCustom(title: 'Bàn chuyển đi')],
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 5,
             child: Column(
               children: [
                 Row(children: [Text("Khu vực:", style: txtStyleFT)]),
@@ -173,16 +197,17 @@ class ChangeTableScreen extends StatelessWidget {
     return SizedBox(
       width: Fn.getScreenWidth(context) * .8,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            flex: 1,
+            flex: 2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [_title(context, 'Tới bàn')],
+              children: const [TitleCustom(title: 'Bàn chuyển tới')],
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 5,
             child: Column(
               children: [
                 Row(children: [Text("Khu vực:", style: txtStyleFT)]),
@@ -228,18 +253,68 @@ class ChangeTableScreen extends StatelessWidget {
     );
   }
 
-  Widget _title(BuildContext context, String title) {
-    return SizedBox(
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: ScreenSetting.fontSize + 3,
-        ),
-      ),
+  Widget _popupConfirmChange(BuildContext context) {
+    return BlocBuilder<ChangeTableBloc, ChangeTableState>(
+      builder: (context, state) {
+        if (state is CTShowPopupConfirmChangeState) {
+          isShowPopupConfirm = state.isVisible;
+        }
+        return PopupConfirm(
+          visible: isShowPopupConfirm,
+          title:
+              'Xác nhận chuyển bàn ${selectedTableOld?.description} qua ${selectedTableNew?.description}',
+          onLeftBtnPressed: () {
+            BlocProvider.of<ChangeTableBloc>(context)
+                .add(CTShowPopupConfirmChangeEvent(false));
+          },
+          onRightBtnPressed: () {
+            BlocProvider.of<ChangeTableBloc>(context).add(CTConfirmChangeEvent(
+              selectedTableOld!.id,
+              selectedTableNew!.id,
+            ));
+          },
+        );
+      },
     );
   }
 
-  _back(BuildContext context) =>
-      Fn.pushScreen(context, RouteName.pickTable, arguments: [order]);
+  _validate() {
+    bool isError = false;
+    String errMsg = '';
+
+    bool isValidTableOld =
+        selectedTableOld?.id != null && selectedTableOld?.id != '';
+    bool isValidTableNew =
+        selectedTableNew?.id != null && selectedTableNew?.id != '';
+
+    if (!isError && !isValidTableOld) {
+      errMsg = 'Vui lòng chọn bàn cần chuyển đi';
+      isError = true;
+    }
+
+    if (!isError && !isValidTableNew) {
+      errMsg = 'Vui lòng chọn bàn cần chuyển tới';
+      isError = true;
+    }
+
+    if (!isError && isValidTableOld && isValidTableNew) {
+      if (selectedTableOld?.id == selectedTableNew?.id) {
+        errMsg = 'Bàn chuyển đi trùng với bàn chuyển tới';
+        isError = true;
+      }
+    }
+
+    if (isError) {
+      Fn.showToast(eToast: EToast.danger, msg: errMsg);
+      return false;
+    }
+
+    return true;
+  }
+
+  _back(BuildContext context) => Fn.pushScreen(
+        context,
+        RouteName.pickTable,
+        arguments: [order],
+      );
 }

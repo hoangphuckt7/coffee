@@ -18,30 +18,60 @@ class Fn {
     return MediaQuery.of(context).size.height;
   }
 
+  static getColor(EColor? eColor) {
+    switch (eColor) {
+      case EColor.primary:
+        return MColor.primaryGreen;
+      case EColor.danger:
+        return MColor.danger;
+      case EColor.dark:
+        return MColor.primaryBlack;
+      case EColor.black:
+        return MColor.black;
+      case EColor.white:
+        return MColor.white;
+      case EColor.secondary:
+        return MColor.secondary;
+      case EColor.success:
+        return MColor.success;
+      case EColor.warning:
+        return MColor.warning;
+      default:
+        return MColor.primaryBlack;
+    }
+  }
+
   static showToast({
     EToast? eToast,
     String msg = '',
     ToastGravity? index = ToastGravity.TOP,
   }) {
     dynamic toastColor;
+    dynamic hexColor;
     switch (eToast) {
       case EToast.success:
         toastColor = MColor.success;
+        hexColor = HexColor.success;
         break;
       case EToast.danger:
         toastColor = MColor.danger;
+        hexColor = HexColor.danger;
         break;
       case EToast.warning:
         toastColor = MColor.warning;
+        hexColor = HexColor.warning;
         break;
       default:
         toastColor = MColor.black;
+        hexColor = HexColor.black;
         break;
     }
     Fluttertoast.showToast(
       msg: msg,
       backgroundColor: toastColor,
       gravity: index,
+      webBgColor: hexColor,
+      webPosition: 'center', //	String (left, center or right)
     );
   }
 
@@ -83,5 +113,10 @@ class Fn {
       (Route<dynamic> route) => false,
       arguments: arguments,
     );
+  }
+
+  // valid
+  static bool validHumanName(input) {
+    return RegExp(r'^[a-z\s]+$').hasMatch(input);
   }
 }

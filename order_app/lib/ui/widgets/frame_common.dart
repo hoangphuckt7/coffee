@@ -11,18 +11,20 @@ class MainFrame extends StatelessWidget {
   final String title;
   final Widget? bottomBar;
   final void Function()? onClickBackBtn;
+  final void Function()? onClickEditUserBtn;
   final Widget child;
   Future<bool> Function()? onWillPop;
   MainFrame({
     super.key,
+    required this.child,
     this.showUserInfo = false,
     this.showLogoutBtn = false,
     this.showBackBtn = false,
     this.title = '',
     this.bottomBar,
-    this.onClickBackBtn,
-    required this.child,
     this.onWillPop,
+    this.onClickBackBtn,
+    this.onClickEditUserBtn,
   });
 
   @override
@@ -37,6 +39,7 @@ class MainFrame extends StatelessWidget {
           showBackBtn: showBackBtn,
           title: title,
           onClickBackBtn: onClickBackBtn,
+          onClickEditUserBtn: onClickEditUserBtn,
         ),
         body: child,
         bottomNavigationBar: bottomBar,

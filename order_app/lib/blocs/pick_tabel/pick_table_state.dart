@@ -5,49 +5,55 @@ part of 'pick_table_bloc.dart';
 @immutable
 abstract class PickTableState {}
 
-class InitialState extends PickTableState {}
+class PTInitialState extends PickTableState {}
 
-class UpdatedLoadingState extends PickTableState {
+class PTUpdatedLoadingState extends PickTableState {
   final isLoading;
   final labelLoading;
 
-  UpdatedLoadingState(this.isLoading, this.labelLoading);
+  PTUpdatedLoadingState(this.isLoading, this.labelLoading);
 }
 
-class ErrorState extends PickTableState {
+class PTErrorState extends PickTableState {
   final errMsg;
 
-  ErrorState(this.errMsg);
+  PTErrorState(this.errMsg);
 }
 
-class ChangedTableState extends PickTableState {
+class PTChangedTableState extends PickTableState {
   final table;
 
-  ChangedTableState(this.table);
+  PTChangedTableState(this.table);
 }
 
-class ChangedFloorState extends PickTableState {
+class PTChangedFloorState extends PickTableState {
   final floor;
   final listTable;
   final selectedTable;
 
-  ChangedFloorState(
+  PTChangedFloorState(
     this.floor,
     this.listTable,
     this.selectedTable,
   );
 }
 
-class LoadedFloorTableState extends PickTableState {
+class PTLoadedFloorTableState extends PickTableState {
   final selectedFloor;
   final listFloor;
   final selectedTable;
   final listTable;
 
-  LoadedFloorTableState(
+  PTLoadedFloorTableState(
     this.selectedFloor,
     this.listFloor,
     this.selectedTable,
     this.listTable,
   );
+}
+
+class PTShowPopupConfirmExitState extends PickTableState {
+  final isVisible;
+
+  PTShowPopupConfirmExitState(this.isVisible);
 }

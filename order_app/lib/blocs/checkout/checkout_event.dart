@@ -52,3 +52,9 @@ class COConfirmOrderEvent extends CheckoutEvent {
 
   COConfirmOrderEvent(this.order);
 }
+
+class COShowPopupConfirmCheckoutEvent extends CheckoutEvent {
+  final isVisible;
+
+  COShowPopupConfirmCheckoutEvent(this.isVisible);
+}

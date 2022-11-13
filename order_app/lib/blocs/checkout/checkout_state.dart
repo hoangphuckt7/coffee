@@ -48,3 +48,9 @@ class COChangedNoteState extends CheckoutState {
 class COGoBackOrderState extends CheckoutState {}
 
 class COGoToPickTableState extends CheckoutState {}
+
+class COShowConfirmCheckoutPopupState extends CheckoutState {
+  final isVisible;
+
+  COShowConfirmCheckoutPopupState(this.isVisible);
+}

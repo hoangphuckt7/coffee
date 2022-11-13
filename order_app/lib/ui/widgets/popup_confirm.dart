@@ -2,49 +2,73 @@ import 'package:orderr_app/ui/controls/fill_btn.dart';
 import 'package:orderr_app/ui/widgets/popup.dart';
 import 'package:orderr_app/utils/enum.dart';
 import 'package:flutter/material.dart';
+import 'package:orderr_app/utils/function_common.dart';
 
 class PopupConfirm extends StatelessWidget {
-  final bool show;
+  final bool visible;
   final String title;
-  final String dangerTitle;
-  final void Function()? onDangerPressed;
-  final String primaryTitle;
-  final void Function()? onPrimaryPressed;
+  final double? width;
+  final double? height;
+  final String leftTitle;
+  final EColor leftBtnColor;
+  final void Function()? onLeftBtnPressed;
+  final String rightTitle;
+  final EColor rightBtnColor;
+  final void Function()? onRightBtnPressed;
   const PopupConfirm({
     super.key,
-    this.show = false,
+    this.visible = false,
     required this.title,
-    this.dangerTitle = 'Huỷ bỏ',
-    this.onDangerPressed,
-    this.primaryTitle = 'Ok',
-    this.onPrimaryPressed,
+    this.width,
+    this.height,
+    this.leftTitle = 'Huỷ bỏ',
+    this.leftBtnColor = EColor.danger,
+    this.onLeftBtnPressed,
+    this.rightTitle = 'Ok',
+    this.rightBtnColor = EColor.primary,
+    this.onRightBtnPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return Popup(
-      show: show,
+      show: visible,
+      height: height ?? Fn.getScreenHeight(context) * .2,
       children: [
-        const Text(
-          'Xác nhận đăng xuất',
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '$title?',
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            FillBtn(
-              title: dangerTitle,
-              btnBgColor: EColor.danger,
-              onPressed: onDangerPressed ?? () {},
-            ),
-            FillBtn(
-              title: primaryTitle,
-              onPressed: onPrimaryPressed ?? () {},
-            ),
-          ],
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  FillBtn(
+                    label: leftTitle,
+                    btnBgColor: leftBtnColor,
+                    onPressed: onLeftBtnPressed ?? () {},
+                  ),
+                  FillBtn(
+                    label: rightTitle,
+                    onPressed: onRightBtnPressed ?? () {},
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ],
     );

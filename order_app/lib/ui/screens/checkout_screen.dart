@@ -7,6 +7,7 @@ import 'package:orderr_app/routes.dart';
 import 'package:orderr_app/ui/controls/fill_btn.dart';
 import 'package:orderr_app/ui/widgets/frame_common.dart';
 import 'package:orderr_app/ui/widgets/item_checkout_card.dart';
+import 'package:orderr_app/ui/widgets/popup_confirm.dart';
 import 'package:orderr_app/ui/widgets/processing.dart';
 import 'package:orderr_app/utils/enum.dart';
 import 'package:orderr_app/utils/function_common.dart';
@@ -21,6 +22,7 @@ class CheckOutScreen extends StatelessWidget {
     required this.order,
   });
 
+  bool isShowPopupConfirmCheckout = false;
   List<List<TextEditingController>> lstListController =
       <List<TextEditingController>>[];
 
@@ -46,6 +48,7 @@ class CheckOutScreen extends StatelessWidget {
       child: Stack(children: [
         _main(context),
         _processState(context),
+        _popupConfirmCheckout(context),
       ]),
     );
   }
@@ -195,10 +198,10 @@ class CheckOutScreen extends StatelessWidget {
                   const SizedBox(width: 5),
                   Expanded(child: Text('$totalItem món')),
                   FillBtn(
-                    title: 'Xác nhận',
+                    label: 'Xác nhận',
                     onPressed: () {
                       BlocProvider.of<CheckoutBloc>(context).add(
-                        COConfirmOrderEvent(order),
+                        COShowPopupConfirmCheckoutEvent(true),
                       );
                     },
                   ),
@@ -246,6 +249,30 @@ class CheckOutScreen extends StatelessWidget {
           endIndent: 50,
         ),
       ],
+    );
+  }
+
+  Widget _popupConfirmCheckout(BuildContext context) {
+    return BlocBuilder<CheckoutBloc, CheckoutState>(
+      builder: (context, state) {
+        if (state is COShowConfirmCheckoutPopupState) {
+          isShowPopupConfirmCheckout = state.isVisible;
+        }
+        return PopupConfirm(
+          visible: isShowPopupConfirmCheckout,
+          title: 'Xác nhận thông tin order',
+          onLeftBtnPressed: () {
+            BlocProvider.of<CheckoutBloc>(context).add(
+              COShowPopupConfirmCheckoutEvent(false),
+            );
+          },
+          onRightBtnPressed: () {
+            BlocProvider.of<CheckoutBloc>(context).add(
+              COConfirmOrderEvent(order),
+            );
+          },
+        );
+      },
     );
   }
 
