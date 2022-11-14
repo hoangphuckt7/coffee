@@ -45,4 +45,14 @@ namespace Data.ViewModels
     {
         public string Username { get; set; }
     }
+    public class ChangePasswordModel
+    {
+        public string OldPassword { get; set; }
+        public string NewPassword { get; set; }
+    }
+
+    public class ChangeInfoModel
+    {
+        public string Fullname { get; set; }
+    }
 }

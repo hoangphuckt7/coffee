@@ -58,9 +58,17 @@ namespace BlueBirdCoffeManager.Forms
                 this.Invoke((Action)(() =>
                 {
                     var table = tables.First(f => f.Id == model.Id);
-                    tables.Remove(table);
-                    tables.Add(model);
-                    Refresh();
+                    table.Id = model.Id;
+                    table.Description = model.Description;
+                    table.CurrentOrder = model.CurrentOrder;
+                    table.Position = model.Position;
+                    table.Size = model.Size;
+                    table.Shape = model.Shape;
+                    table.Floor = model.Floor;
+                    table.Rectangle = model.Rectangle;
+                    table.Rotation = model.Rotation;
+
+                    pictureBox.Invalidate();
                 }));
             });
         }

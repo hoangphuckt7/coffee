@@ -31,7 +31,7 @@ namespace Service.Services
 
         public List<DescriptionViewModel> Get(Guid? id)
         {
-            var floors = _dbContext.Floors.Where(f => id == null || f.Id == id).Where(f => f.IsDeleted == false).ToList();
+            var floors = _dbContext.Floors.Where(f => id == null || f.Id == id).Where(f => f.IsDeleted == false).OrderBy(f => f.Description).ToList();
             return _mapper.Map<List<DescriptionViewModel>>(floors);
         }
 

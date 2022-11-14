@@ -25,8 +25,8 @@ namespace Service.Services
         List<UserViewModel> GetAllUser();
         Task<string> ReNewPassword(ResetPasswordModel model);
         string RemoveUser(string username);
-        //Task<ResultModel> GetById(string userId, string currentUserId);
-        //Task<ResultModel> UpdatePassword(EditPasswordViewModel model, string userId);
+        Task<string> ChangePassword(ChangePasswordModel model, string userId);
+        string ChangeInformation(ChangeInfoModel model, string userId);
     }
 
     public class UserService : IUserService
@@ -42,6 +42,34 @@ namespace Service.Services
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
+        }
+
+        public string ChangeInformation(ChangeInfoModel model, string userId)
+        {
+            var user = _dbContext.Users.FirstOrDefault(f => f.Id == userId);
+
+            if (user == null)
+            {
+                throw new AppException("Invalid user");
+            }
+
+            user.Fullname = model.Fullname;
+            _dbContext.Update(user);
+            _dbContext.SaveChanges();
+
+            return user.Id;
+        }
+
+        public async Task<string> ChangePassword(ChangePasswordModel model, string userId)
+        {
+            var appUser = _userManager.Users.SingleOrDefault(u => u.Id == userId);
+            var check = await _userManager.ChangePasswordAsync(appUser, model.OldPassword, model.NewPassword);
+
+            if (!check.Succeeded)
+            {
+                throw new AppException("Cập nhật mật khẩu thất bại");
+            }
+            return appUser.Id;
         }
 
         public async Task<string> Register(UserRegisterModel model, string role)

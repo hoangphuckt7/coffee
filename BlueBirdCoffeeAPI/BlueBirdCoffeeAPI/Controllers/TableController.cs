@@ -45,11 +45,11 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_tableService.Delete(ids));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpPut("Change/{oldTableId}/{newTableId}")]
-        public IActionResult Change(Guid oldTableId, Guid newTableId)
+        public async Task<IActionResult> Change(Guid oldTableId, Guid newTableId)
         {
-            return Ok(_tableService.ChangeTable(oldTableId, newTableId));
+            return Ok(await _tableService.ChangeTable(oldTableId, newTableId));
         }
     }
 }

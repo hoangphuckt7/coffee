@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Data.AppException;
+using Data.Cache;
 using Data.DataAccessLayer;
 using Data.Entities;
 using Data.ViewModels;
+using Hubs;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,17 +21,21 @@ namespace Service.Services
         Guid Add(TableAddModel model);
         int UpdateOrAdd(List<TableUpdateModel> models);
         int Delete(List<Guid> ids);
-        Guid ChangeTable(Guid oldTableId, Guid newTableId);
+        Task<Guid> ChangeTable(Guid oldTableId, Guid newTableId);
     }
     public class TableService : ITableService
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
+        private readonly ITableHub _tableHub;
 
-        public TableService(AppDbContext dbContext, IMapper mapper)
+        public TableService(AppDbContext dbContext, IMapper mapper, UserManager<User> userManager, ITableHub tableHub)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _userManager = userManager;
+            _tableHub = tableHub;
         }
 
         public List<TableViewModel> Get(Guid? id, Guid? floorId)
@@ -37,7 +44,7 @@ namespace Service.Services
                 .Where(t => id == null || t.Id == id)
                 .Where(f => f.IsDeleted == false)
                 .Where(f => floorId == null || f.FloorId == floorId)
-                //.OrderByDescending(f => f.Description)
+                .OrderBy(f => f.Description)
                 .ToList();
 
             return _mapper.Map<List<TableViewModel>>(tables);
@@ -103,10 +110,10 @@ namespace Service.Services
             return ids.Count;
         }
 
-        public Guid ChangeTable(Guid oldTableId, Guid newTableId)
+        public async Task<Guid> ChangeTable(Guid oldTableId, Guid newTableId)
         {
             var tableOld = _dbContext.Tables.FirstOrDefault(x => x.Id == oldTableId);
-            if(tableOld == null)
+            if (tableOld == null)
             {
                 throw new AppException("Mã số bàn cũ không hợp lệ!");
             }
@@ -129,8 +136,24 @@ namespace Service.Services
                 order.DateUpdated = DateTime.UtcNow.AddHours(7);
             }
 
+            tableNew.CurrentOrder += tableOld.CurrentOrder;
+            tableOld.CurrentOrder = 0;
+
             _dbContext.UpdateRange(lstOrderByTable);
             _dbContext.SaveChanges();
+
+            try
+            {
+                var cashers = await _userManager.GetUsersInRoleAsync(SystemRoles.CASHIER);
+
+                foreach (var casher in cashers)
+                {
+                    await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableNew), casher.Id);
+                    await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableOld), casher.Id);
+                }
+            }   
+            //Ignore errors
+            catch (Exception) { }
 
             return newTableId;
         }

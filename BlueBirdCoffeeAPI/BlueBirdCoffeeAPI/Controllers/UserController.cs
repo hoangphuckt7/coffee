@@ -44,6 +44,20 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(await _userService.ReNewPassword(model));
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPut("Password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+        {
+            return Ok(await _userService.ChangePassword(model, User.GetId()));
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPut("Info")]
+        public IActionResult ChangeInfo([FromBody] ChangeInfoModel model)
+        {
+            return Ok(_userService.ChangeInformation(model, User.GetId()));
+        }
+
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpDelete("{username}")]
         public IActionResult RemoveUser(string username)
