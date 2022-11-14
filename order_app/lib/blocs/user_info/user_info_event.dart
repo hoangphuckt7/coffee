@@ -48,6 +48,15 @@ class UIChangeNewPassConfirmEvent extends UserInfoEvent {
 // action
 class UILoadInfoEvent extends UserInfoEvent {}
 
-class UIUpdateInfoEvent extends UserInfoEvent {}
+class UIUpdateInfoEvent extends UserInfoEvent {
+  final fullname;
 
-class UIUpdatePasswordEvent extends UserInfoEvent {}
+  UIUpdateInfoEvent(this.fullname);
+}
+
+class UIUpdatePasswordEvent extends UserInfoEvent {
+  final oldPass;
+  final newPass;
+
+  UIUpdatePasswordEvent(this.oldPass, this.newPass);
+}

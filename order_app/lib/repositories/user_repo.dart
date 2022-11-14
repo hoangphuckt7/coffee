@@ -6,6 +6,7 @@ import 'package:orderr_app/api/host.dart';
 import 'package:orderr_app/api/status_code.dart';
 import 'package:orderr_app/models/login/login_req_model.dart/login_req_model.dart';
 import 'package:orderr_app/models/login/login_res_model/login_res_model.dart';
+import 'package:orderr_app/models/user/user_model.dart';
 import 'package:orderr_app/utils/const.dart';
 import 'package:orderr_app/utils/local_storage.dart';
 
@@ -68,5 +69,45 @@ class UserRepo {
 
   Future logout() async {
     await LocalStorage.removeAll();
+  }
+
+  Future<dynamic> updateInfo(UserModel model) async {
+    try {
+      var resp = await Fetch.PUT('$controllerUrl/Info', model.toJson());
+      if (resp.statusCode == HttpStatusCode.OK) {
+        LoginResModel? user;
+        String? userJson = await LocalStorage.getItem(KeyLS.user_json);
+        if (userJson != null && userJson.isNotEmpty) {
+          user = LoginResModel.fromJson(jsonDecode(userJson));
+          user.fullName = model.fullname;
+        } else {
+          user = LoginResModel(model.fullname, null, null);
+        }
+        await LocalStorage.setItem(KeyLS.user_json, user);
+
+        return resp.body.isNotEmpty;
+      } else if (resp.statusCode == HttpStatusCode.BadRequest) {
+        return resp.body.toString();
+      }
+    } catch (e) {
+      log(e.toString());
+      throw Exception('Lỗi! Không thể cập nhật thông tin');
+    }
+    return false;
+  }
+
+  Future<dynamic> updatePassword(UserModel model) async {
+    try {
+      var resp = await Fetch.PUT('$controllerUrl/Password', model.toJson());
+      if (resp.statusCode == HttpStatusCode.OK) {
+        return resp.body.isNotEmpty;
+      } else if (resp.statusCode == HttpStatusCode.BadRequest) {
+        return resp.body.toString();
+      }
+    } catch (e) {
+      log(e.toString());
+      throw Exception('Lỗi! Không thể đổi mật khẩu');
+    }
+    return false;
   }
 }

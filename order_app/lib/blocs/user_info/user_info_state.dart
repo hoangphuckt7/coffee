@@ -50,3 +50,13 @@ class UIInvalidNewPassConfirmState extends UserInfoState {
 
   UIInvalidNewPassConfirmState(this.errMsgNewPass, this.errMsgNewPassConfirm);
 }
+
+class UILoadedInfoState extends UserInfoState {}
+
+class UIUpdatedInfoState extends UserInfoState {
+  final fullname;
+
+  UIUpdatedInfoState(this.fullname);
+}
+
+class UIUpdatedPasswordState extends UserInfoState {}

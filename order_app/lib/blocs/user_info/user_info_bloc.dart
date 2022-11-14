@@ -4,6 +4,8 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:orderr_app/models/user/user_model.dart';
+import 'package:orderr_app/repositories/user_repo.dart';
 import 'package:orderr_app/utils/const.dart';
 import 'package:orderr_app/utils/function_common.dart';
 import 'package:tiengviet/tiengviet.dart';
@@ -12,11 +14,16 @@ part 'user_info_event.dart';
 part 'user_info_state.dart';
 
 class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
+  final _userRepo = UserRepo();
   UserInfoBloc() : super(UIInitialState()) {
     on<UIChangeFullNameEvent>(_onChangeFullName);
     on<UIChangeOldPassEvent>(_onChangeOldPass);
     on<UIChangeNewPassEvent>(_onChangeNewPass);
     on<UIChangeNewPassConfirmEvent>(_onChangeNewPassConfirm);
+    // action
+    on<UILoadInfoEvent>(_onLoadInfo);
+    on<UIUpdateInfoEvent>(_onUpdateInfo);
+    on<UIUpdatePasswordEvent>(_onUpdatePasswor);
   }
 
   void _onChangeFullName(
@@ -89,6 +96,43 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
     } catch (e) {
       emit(UIErrorState(AppInfo.ErrMsg));
       log('UserInfoBloc - _onChangeOldPass - ${e.toString()}');
+    }
+  }
+
+  void _onLoadInfo(UILoadInfoEvent event, Emitter<UserInfoState> emit) async {}
+
+  void _onUpdateInfo(
+      UIUpdateInfoEvent event, Emitter<UserInfoState> emit) async {
+    try {
+      var resp =
+          await _userRepo.updateInfo(UserModel(event.fullname, null, null));
+      if (resp is bool && resp) {
+        emit(UIUpdatedInfoState(event.fullname));
+        return;
+      }
+      emit(UIErrorState(resp ?? 'Cập nhật thông tin thất bại'));
+    } catch (e) {
+      emit(UIErrorState(AppInfo.ErrMsg));
+      log('UserInfoBloc - _onUpdateInfo - ${e.toString()}');
+    }
+  }
+
+  void _onUpdatePasswor(
+      UIUpdatePasswordEvent event, Emitter<UserInfoState> emit) async {
+    try {
+      var resp = await _userRepo.updateInfo(UserModel(
+        null,
+        event.oldPass,
+        event.newPass,
+      ));
+      if (resp is bool && resp) {
+        emit(UIUpdatedPasswordState());
+        return;
+      }
+      emit(UIErrorState(resp ?? 'Cập nhật mật khẩu thất bại'));
+    } catch (e) {
+      emit(UIErrorState(AppInfo.ErrMsg));
+      log('UserInfoBloc - _onUpdatePasswor - ${e.toString()}');
     }
   }
 }
