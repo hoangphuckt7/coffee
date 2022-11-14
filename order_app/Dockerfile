@@ -1,5 +1,6 @@
 #Stage 1 - Install dependencies and build the app
 FROM debian:latest AS build-env
+ARG ApiHost
 
 # Install flutter dependencies
 RUN apt-get update 
@@ -24,7 +25,7 @@ RUN flutter config --enable-web
 RUN mkdir /app/
 COPY . /app/
 WORKDIR /app/
-RUN flutter build web
+RUN flutter build web --dart-define=ApiHost=$ApiHost
 
 # Stage 2 - Create the run-time image
 FROM nginx:1.21.1-alpine

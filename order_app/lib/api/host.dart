@@ -7,9 +7,7 @@ class Host {
 
   static const String _localIp = 'http://192.168.1.4:7244';
 
-  static const String _serverHost = "http://192.168.0.106:8000";
-
-  static const String currentHost = _serverHost;
+  static const String currentHost = String.fromEnvironment('ApiHost', defaultValue: _localIp);
 
   static const String currentHostApi = '$currentHost/api';
 }

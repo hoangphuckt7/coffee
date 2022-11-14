@@ -29,6 +29,8 @@ services:
     build:
          context: ./batender_app
          dockerfile: ./Dockerfile
+         args:
+           ApiHost: http://192.168.0.106:8000
     container_name: batender_app
     depends_on:
       - bluebirdcoffee-api
@@ -41,6 +43,8 @@ services:
     build:
          context: ./order_app
          dockerfile: ./Dockerfile
+         args:
+           ApiHost: http://192.168.0.106:8000
     container_name: order_app
     depends_on:
       - bluebirdcoffee-api
