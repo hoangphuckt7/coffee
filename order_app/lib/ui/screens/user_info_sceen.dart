@@ -118,7 +118,7 @@ class UserInfoScreen extends StatelessWidget {
                 errName = state.errMsg;
               }
               var isEmptyFN = fullNameController.text.isEmpty;
-              isErrName = errName != null && errName != '' && isEmptyFN;
+              isErrName = (errName != null && errName != '') || isEmptyFN;
               return FieldOutline(
                 controller: fullNameController,
                 hintText: 'Nhập Họ & Tên',
@@ -164,7 +164,7 @@ class UserInfoScreen extends StatelessWidget {
               errOP = state.errMsg;
             }
             var isEmptyOP = oldPassController.text.isEmpty;
-            isErrOP = errOP != null && errOP != '' && isEmptyOP;
+            isErrOP = (errOP != null && errOP != '') || isEmptyOP;
             isErrPass = isErrOP || isErrNP || isErrNPC;
             return FieldOutline(
               controller: oldPassController,
@@ -173,6 +173,7 @@ class UserInfoScreen extends StatelessWidget {
               eFieldType: EFieldType.password,
               errorText: errOP,
               onChanged: (val) {
+                errName = null;
                 BlocProvider.of<UserInfoBloc>(context)
                     .add(UIChangeOldPassEvent(val));
               },
@@ -189,7 +190,7 @@ class UserInfoScreen extends StatelessWidget {
               errNP = state.errMsgNewPass;
             }
             var isEmptyNP = newPassController.text.isEmpty;
-            isErrNP = errNP != null && errNP != '' && isEmptyNP;
+            isErrNP = (errNP != null && errNP != '') || isEmptyNP;
             isErrPass = isErrOP || isErrNP || isErrNPC;
             return FieldOutline(
               controller: newPassController,
@@ -198,6 +199,7 @@ class UserInfoScreen extends StatelessWidget {
               eFieldType: EFieldType.password,
               errorText: errNP,
               onChanged: (val) {
+                errName = null;
                 BlocProvider.of<UserInfoBloc>(context)
                     .add(UIChangeNewPassEvent(val));
               },
@@ -214,8 +216,8 @@ class UserInfoScreen extends StatelessWidget {
             }
             var isEmptyNP = newPassController.text.isEmpty;
             var isEmptyNPC = newPassConfirmController.text.isEmpty;
-            isErrNP = errNP != null && errNP != '' && isEmptyNP;
-            isErrNPC = errNPC != null && errNPC != '' && isEmptyNPC;
+            isErrNP = (errNP != null && errNP != '') || isEmptyNP;
+            isErrNPC = (errNPC != null && errNPC != '') || isEmptyNPC;
             isErrPass = isErrOP || isErrNP || isErrNPC;
             return FieldOutline(
               controller: newPassConfirmController,
@@ -224,6 +226,7 @@ class UserInfoScreen extends StatelessWidget {
               eFieldType: EFieldType.password,
               errorText: errNPC,
               onChanged: (val) {
+                errName = null;
                 BlocProvider.of<UserInfoBloc>(context).add(
                     UIChangeNewPassConfirmEvent(newPassController.text, val));
               },
