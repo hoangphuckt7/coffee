@@ -45,7 +45,7 @@ namespace Service.Services
         }
         public List<CouponViewModel> Get(string? seachValue)
         {
-            var coupons = _dbContext.Coupons.Where(f => string.IsNullOrEmpty(seachValue) || f.Description.Contains(seachValue)).OrderByDescending(f => f.DateCreated).ToList();
+            var coupons = _dbContext.Coupons.Where(f => string.IsNullOrEmpty(seachValue) || f.Description.Contains(seachValue) && f.IsDeleted == false).OrderByDescending(f => f.DateCreated).ToList();
 
             return _mapper.Map<List<CouponViewModel>>(coupons);
 
