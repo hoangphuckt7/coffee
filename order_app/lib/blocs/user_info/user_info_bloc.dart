@@ -33,7 +33,7 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
       String? erMsg;
       if (fullName == null || fullName == '') {
         erMsg = 'Họ và tên không được trống.';
-      } else if (!Fn.validHumanName(TiengViet.parse(fullName))) {
+      } else if (!Fn.validHumanName(TiengViet.parse(fullName.toLowerCase()))) {
         erMsg = 'Họ và tên không được chứa số hoặc ký tự đặc biệt.';
       }
       emit(UIInvalidFullNameState(erMsg));

@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:orderr_app/blocs/pick_tabel/pick_table_bloc.dart';
@@ -168,8 +169,6 @@ class PickTableScreen extends StatelessWidget {
                     }
                   } else if (state is PTChangedFloorState) {
                     selectedFloor = state.floor;
-                    lstTable = state.listTable;
-                    selectedTable = state.selectedTable;
                   }
                   return DropdownFloor(
                     listFloor: lstFloor,
@@ -192,13 +191,20 @@ class PickTableScreen extends StatelessWidget {
                     isLoading = false;
                     lstTable = state.listTable;
                     if (order != null && order?.table != null) {
-                      selectedTable =
-                          lstTable.firstWhere((x) => x.id == order?.tableId);
+                      var lstByTableId = lstTable
+                          .where((x) => x.id == order?.tableId)
+                          .toList();
+                      if (lstByTableId.isNotEmpty) {
+                        selectedTable = lstByTableId.first;
+                      }
                     } else {
                       selectedTable = state.selectedTable;
                     }
                   } else if (state is PTChangedTableState) {
                     selectedTable = state.table;
+                  } else if (state is PTChangedFloorState) {
+                    lstTable = state.listTable;
+                    selectedTable = state.selectedTable;
                   }
                   return DropdownTable(
                     listTable: lstTable,

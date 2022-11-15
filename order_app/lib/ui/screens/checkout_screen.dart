@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CheckOutScreen extends StatelessWidget {
-  final OrderCreateModel order;
+  final OrderCreateModel? order;
   CheckOutScreen({
     super.key,
     required this.order,
@@ -28,8 +28,8 @@ class CheckOutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (order.orderDetail!.isNotEmpty) {
-      for (var detail in order.orderDetail!) {
+    if (order!.orderDetail!.isNotEmpty) {
+      for (var detail in order!.orderDetail!) {
         List<TextEditingController> lstTEC = <TextEditingController>[];
         for (var dct in detail.listDct!) {
           lstTEC.add(TextEditingController(text: dct.Note));
@@ -99,26 +99,26 @@ class CheckOutScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is COChangedQuantityState) {
             OrderDetailCreateModel detail = state.detail;
-            var index = order.orderDetail!.indexWhere(
+            var index = order!.orderDetail!.indexWhere(
               (x) => x.itemId == detail.itemId,
             );
             if (detail.quantity == 0) {
-              if (order.orderDetail!.isNotEmpty) {
-                order.orderDetail!.removeAt(index);
+              if (order!.orderDetail!.isNotEmpty) {
+                order!.orderDetail!.removeAt(index);
                 lstListController.removeAt(index);
               }
             } else {
-              order.orderDetail![index] = detail;
+              order!.orderDetail![index] = detail;
               lstListController[index] = state.listController;
             }
 
-            if (order.orderDetail == null || order.orderDetail!.isEmpty) {
+            if (order!.orderDetail == null || order!.orderDetail!.isEmpty) {
               BlocProvider.of<CheckoutBloc>(context).add(COGoBackOrderEvent());
             }
           }
           return Column(
-            children: List.generate(order.orderDetail!.length, (i) {
-              OrderDetailCreateModel model = order.orderDetail![i];
+            children: List.generate(order!.orderDetail!.length, (i) {
+              OrderDetailCreateModel model = order!.orderDetail![i];
               if (state is COChangedSugarState) {
                 OrderDetailCreateModel detail = state.detail;
                 if (model.itemId == detail.itemId) {
@@ -163,8 +163,8 @@ class CheckOutScreen extends StatelessWidget {
       child: BlocBuilder<CheckoutBloc, CheckoutState>(
         builder: (context, state) {
           int totalItem = 0;
-          if (order.orderDetail!.isNotEmpty) {
-            for (var detail in order.orderDetail!) {
+          if (order!.orderDetail!.isNotEmpty) {
+            for (var detail in order!.orderDetail!) {
               totalItem += detail.quantity;
             }
           }
@@ -225,7 +225,7 @@ class CheckOutScreen extends StatelessWidget {
             ),
             SizedBox(
               child: Text(
-                order.floor!.description!,
+                order!.floor!.description!,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -235,7 +235,7 @@ class CheckOutScreen extends StatelessWidget {
             ),
             SizedBox(
               child: Text(
-                order.table!.description!,
+                order!.table!.description!,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
