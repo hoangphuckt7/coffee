@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>blue-tr.ico</ApplicationIcon>
+    <ApplicationIcon>f-modified.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="blue-tr.ico" />
+    <Content Include="f-modified.ico" />
   </ItemGroup>
 
   <ItemGroup>
