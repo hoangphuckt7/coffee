@@ -2,6 +2,6 @@
 {
     public class Sessions
     {
-        public static string HOST = "https://localhost:7244/";
+        public static string HOST = "http://localhost:8000/";
     }
 }

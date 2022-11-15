@@ -1,0 +1,171 @@
+﻿@using AdminManager.Models
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1>Thêm mã giảm giá</h1>
+        </div>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="card">
+                        @if (!string.IsNullOrEmpty(ViewBag.Mes))
+                        {
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label style="color:red">@ViewBag.Mes</label>
+                                </div>
+                            </div>
+                        }
+                        @using (Html.BeginForm("add", "coupon", FormMethod.Post))
+                        {
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Mã giảm giá</label>
+                                    <input name="model.Description" type="text" class="form-control" required="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Từ ngày</label>
+                                    <input name="model.FromDate" type="date" class="form-control" required="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tới ngày</label>
+                                    <input name="model.ToDate" type="date" class="form-control" required="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Giới hạn số lần (có thể trống)</label>
+                                    <input name="model.Limit" type="number" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Giảm giá (%)</label>
+                                    <input name="model.Discount" type="number" class="form-control" required="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Giảm giá tối đa (VND - có thể trống)</label>
+                                    <input name="model.Maximum" type="number" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Giảm giá tối thiểu (VND - có thể trống)</label>
+                                    <input name="model.Minium" type="number" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Đặt làm mặc định</label>
+                                    <input name="model.Default" type="checkbox" value="true" checked>
+                                </div>
+                            </div>
+                            <div class="card-footer text-right">
+                                <button class="btn btn-primary" type="submit">Thêm</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="section-header">
+            <h1>Danh sách mã giảm giá</h1>
+        </div>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            @if (!(string.IsNullOrEmpty(((string)ViewBag.TableMes))) && ((string)ViewBag.TableMes).Contains("thành công"))
+                            {
+                                <h4 style="color:green">@ViewBag.TableMes</h4>
+                            }
+                            else
+                            {
+                                <h4 style="color:red">@ViewBag.TableMes</h4>
+                            }
+
+                            <div class="card-header-form">
+                                <div>
+                                    <input id="searchValue" type="text" class="form-control" placeholder="Search" onchange="search(this.value)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+
+                            <div class="table-responsive">
+                                <table id="dataTable" class="table table-striped v_center">
+                                    <tr>
+                                        <th>Mã giảm giá</th>
+                                        <th>Từ ngày</th>
+                                        <th>Tới hết ngày</th>
+                                        <th>Giới hạn còn lại</th>
+                                        <th>Giảm giá (%)</th>
+                                        <th>Giảm giá tối đa</th>
+                                        <th>Giảm giá tối thiểu</th>
+                                        <th>Mặc định</th>
+                                    </tr>
+                                    @foreach (CouponViewModel item in ViewBag.Coupons)
+                                    {
+                                        <tr>
+                                            <td>@item.Description</td>
+                                            <td>@item.FromDate?.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.ToDate?.ToString("dd/MM/yyyy")</td>
+                                            @if (item.Limit == null)
+                                            {
+                                                <td>Không giới hạn</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@item.Limit</td>
+                                            }
+                                            <td>@item.Discount</td>
+                                            <td>@item.Maximum</td>
+                                            <td>@item.Minium</td>
+
+                                            @if (item.Default == true)
+                                            {
+                                                <td>Mặc định</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+
+                                            @*<td><a href="employee/resetpassword?username=@item.Username" class="btn btn-success">Khôi phục mật khẩu</a></td>*@
+                                            <td><a href="coupon/remove?id=@item.Id" class="btn btn-danger">Xóa</a></td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    function search(value) {
+        document.getElementById("searchValue").value = value;
+
+        console.log(value);
+
+        var input, filter, table, tr, td, i, txtValue;
+        input = value;
+        filter = input.toUpperCase();
+        table = document.getElementById("dataTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
