@@ -90,8 +90,11 @@ class Routes {
                 create: (context) => AuthBloc()..add(AuthLoadUserInfoEvent()),
               ),
               BlocProvider(
-                create: (context) =>
-                    PickTableBloc()..add(PTLoadFloorTableEvent()),
+                create: (context) => PickTableBloc()
+                  ..add(PTLoadFloorTableEvent(
+                    order?.floor,
+                    order?.table,
+                  )),
               ),
             ],
             child: PickTableScreen(order: order),
@@ -123,7 +126,7 @@ class Routes {
         }
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (context) => UserInfoBloc(),
+            create: (context) => UserInfoBloc()..add(UILoadInfoEvent()),
             child: UserInfoScreen(order: order),
           ),
         );

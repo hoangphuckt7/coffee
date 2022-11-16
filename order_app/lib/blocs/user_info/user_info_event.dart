@@ -13,6 +13,12 @@ class UIErrorEvent extends UserInfoEvent {
   UIErrorEvent(this.errMsg);
 }
 
+class UISuccessEvent extends UserInfoEvent {
+  final sucMsg;
+
+  UISuccessEvent(this.sucMsg);
+}
+
 class UIShowPopupConfirmPasswordEvent extends UserInfoEvent {
   final isVisible;
 

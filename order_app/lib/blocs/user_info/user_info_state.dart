@@ -13,6 +13,12 @@ class UIErrorState extends UserInfoState {
   UIErrorState(this.errMsg);
 }
 
+class UISuccessState extends UserInfoState {
+  final sucMsg;
+
+  UISuccessState(this.sucMsg);
+}
+
 class UIUpdatedLoadingState extends UserInfoState {
   final isLoading;
   final labelLoading;
@@ -51,12 +57,8 @@ class UIInvalidNewPassConfirmState extends UserInfoState {
   UIInvalidNewPassConfirmState(this.errMsgNewPass, this.errMsgNewPassConfirm);
 }
 
-class UILoadedInfoState extends UserInfoState {}
-
-class UIUpdatedInfoState extends UserInfoState {
+class UILoadedInfoState extends UserInfoState {
   final fullname;
 
-  UIUpdatedInfoState(this.fullname);
+  UILoadedInfoState(this.fullname);
 }
-
-class UIUpdatedPasswordState extends UserInfoState {}

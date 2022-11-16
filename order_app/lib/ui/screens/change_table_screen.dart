@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, unrelated_type_equality_checks
 
 import 'package:orderr_app/blocs/change_table/change_table_bloc.dart';
 import 'package:orderr_app/models/common/base_model.dart';
@@ -269,8 +269,8 @@ class ChangeTableScreen extends StatelessWidget {
           },
           onRightBtnPressed: () {
             BlocProvider.of<ChangeTableBloc>(context).add(CTConfirmChangeEvent(
-              selectedTableOld!.id,
-              selectedTableNew!.id,
+              selectedTableOld?.id,
+              selectedTableNew?.id,
             ));
           },
         );

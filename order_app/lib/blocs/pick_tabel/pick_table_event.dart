@@ -13,7 +13,12 @@ class PTErrorEvent extends PickTableEvent {
   PTErrorEvent(this.errMsg);
 }
 
-class PTLoadFloorTableEvent extends PickTableEvent {}
+class PTLoadFloorTableEvent extends PickTableEvent {
+  final floor;
+  final table;
+
+  PTLoadFloorTableEvent(this.floor, this.table);
+}
 
 class PTChangeFloorEvent extends PickTableEvent {
   final floor;

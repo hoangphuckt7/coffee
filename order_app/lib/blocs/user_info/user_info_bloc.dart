@@ -107,7 +107,7 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
       var resp =
           await _userRepo.updateInfo(UserModel(event.fullname, null, null));
       if (resp is bool && resp) {
-        emit(UIUpdatedInfoState(event.fullname));
+        emit(UISuccessState('Cập nhật thông tin thành công!'));
         return;
       }
       emit(UIErrorState(resp ?? 'Cập nhật thông tin thất bại'));
@@ -126,7 +126,7 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
         event.newPass,
       ));
       if (resp is bool && resp) {
-        emit(UIUpdatedPasswordState());
+        emit(UISuccessState('Đổi mật khẩu thành công!'));
         return;
       }
       emit(UIErrorState(resp ?? 'Cập nhật mật khẩu thất bại'));

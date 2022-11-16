@@ -31,15 +31,15 @@ class PickTableBloc extends Bloc<PickTableEvent, PickTableState> {
     try {
       var lstFloor = await _floorRepo.getAll();
       await LocalStorage.setItem(KeyLS.floors, jsonEncode(lstFloor));
-      BaseModel? selectedFloor;
-      if (lstFloor.isNotEmpty) {
+      BaseModel? selectedFloor = event.floor;
+      if (lstFloor.isNotEmpty && selectedFloor == null) {
         selectedFloor = lstFloor[0];
       }
 
       var lstTable = await _tableRepo.getAll();
       await LocalStorage.setItem(KeyLS.tables, jsonEncode(lstTable));
-      TableModel? selectedTable;
-      if (selectedFloor != null) {
+      TableModel? selectedTable = event.table;
+      if (selectedFloor != null && selectedTable == null) {
         lstTable =
             lstTable.where((x) => x.floor!.id == selectedFloor!.id).toList();
         if (lstTable.isNotEmpty) {

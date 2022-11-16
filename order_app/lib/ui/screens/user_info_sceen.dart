@@ -22,13 +22,13 @@ class UserInfoScreen extends StatelessWidget {
     this.order,
   });
 
-  var fullNameController = TextEditingController();
+  var fullNameTEC = TextEditingController();
   String? errName;
-  var oldPassController = TextEditingController();
+  var oldPassTEC = TextEditingController();
   String? errOP;
-  var newPassController = TextEditingController();
+  var newPassTEC = TextEditingController();
   String? errNP;
-  var newPassConfirmController = TextEditingController();
+  var newPassConfirmTEC = TextEditingController();
   String? errNPC;
 
   bool isLoading = false;
@@ -74,6 +74,8 @@ class UserInfoScreen extends StatelessWidget {
         } else if (state is UIUpdatedLoadingState) {
           isLoading = state.isLoading;
           loadingMsg = state.labelLoading;
+        } else if (state is UISuccessState) {
+          Fn.showToast(eToast: EToast.success, msg: state.sucMsg.toString());
         }
         return Processing(msg: loadingMsg, show: isLoading);
       },
@@ -114,13 +116,15 @@ class UserInfoScreen extends StatelessWidget {
           Row(children: [Text('Họ & Tên', style: textStyle)]),
           BlocBuilder<UserInfoBloc, UserInfoState>(
             builder: (context, state) {
-              if (state is UIInvalidFullNameState) {
+              if (state is UILoadedInfoState) {
+                fullNameTEC.text = state.fullname;
+              } else if (state is UIInvalidFullNameState) {
                 errName = state.errMsg;
               }
-              var isEmptyFN = fullNameController.text.isEmpty;
+              var isEmptyFN = fullNameTEC.text.isEmpty;
               isErrName = (errName != null && errName != '') || isEmptyFN;
               return FieldOutline(
-                controller: fullNameController,
+                controller: fullNameTEC,
                 hintText: 'Nhập Họ & Tên',
                 paddingHorizontal: 0,
                 errorText: errName,
@@ -141,7 +145,10 @@ class UserInfoScreen extends StatelessWidget {
                 label: 'Cập nhật',
                 btnBgColor: isErrName ? EColor.dark : EColor.primary,
                 onPressed: () {
-                  if (!isErrName) {}
+                  if (!isErrName) {
+                    BlocProvider.of<UserInfoBloc>(context)
+                        .add(UIUpdateInfoEvent(fullNameTEC.text));
+                  }
                 },
               );
             },
@@ -163,11 +170,11 @@ class UserInfoScreen extends StatelessWidget {
             if (state is UIInvalidOldPassState) {
               errOP = state.errMsg;
             }
-            var isEmptyOP = oldPassController.text.isEmpty;
+            var isEmptyOP = oldPassTEC.text.isEmpty;
             isErrOP = (errOP != null && errOP != '') || isEmptyOP;
             isErrPass = isErrOP || isErrNP || isErrNPC;
             return FieldOutline(
-              controller: oldPassController,
+              controller: oldPassTEC,
               hintText: 'Nhập mật khẩu cũ',
               paddingHorizontal: 0,
               eFieldType: EFieldType.password,
@@ -189,11 +196,11 @@ class UserInfoScreen extends StatelessWidget {
             } else if (state is UIInvalidNewPassConfirmState) {
               errNP = state.errMsgNewPass;
             }
-            var isEmptyNP = newPassController.text.isEmpty;
+            var isEmptyNP = newPassTEC.text.isEmpty;
             isErrNP = (errNP != null && errNP != '') || isEmptyNP;
             isErrPass = isErrOP || isErrNP || isErrNPC;
             return FieldOutline(
-              controller: newPassController,
+              controller: newPassTEC,
               hintText: 'Nhập mật khẩu mới',
               paddingHorizontal: 0,
               eFieldType: EFieldType.password,
@@ -214,21 +221,21 @@ class UserInfoScreen extends StatelessWidget {
               errNP = state.errMsgNewPass;
               errNPC = state.errMsgNewPassConfirm;
             }
-            var isEmptyNP = newPassController.text.isEmpty;
-            var isEmptyNPC = newPassConfirmController.text.isEmpty;
+            var isEmptyNP = newPassTEC.text.isEmpty;
+            var isEmptyNPC = newPassConfirmTEC.text.isEmpty;
             isErrNP = (errNP != null && errNP != '') || isEmptyNP;
             isErrNPC = (errNPC != null && errNPC != '') || isEmptyNPC;
             isErrPass = isErrOP || isErrNP || isErrNPC;
             return FieldOutline(
-              controller: newPassConfirmController,
+              controller: newPassConfirmTEC,
               hintText: 'Nhập lại mật khẩu mới',
               paddingHorizontal: 0,
               eFieldType: EFieldType.password,
               errorText: errNPC,
               onChanged: (val) {
                 errName = null;
-                BlocProvider.of<UserInfoBloc>(context).add(
-                    UIChangeNewPassConfirmEvent(newPassController.text, val));
+                BlocProvider.of<UserInfoBloc>(context)
+                    .add(UIChangeNewPassConfirmEvent(newPassTEC.text, val));
               },
             );
           },
