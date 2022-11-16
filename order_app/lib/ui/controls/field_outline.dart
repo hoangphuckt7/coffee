@@ -74,6 +74,9 @@ class FieldOutline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.selection = TextSelection.fromPosition(
+      TextPosition(offset: controller.text.length),
+    );
     return SizedBox(
       height: height,
       child: TextFormField(
@@ -92,6 +95,7 @@ class FieldOutline extends StatelessWidget {
           focusedBorder: _getFocusBorder(),
           hintText: hintText,
         ),
+        autofocus: false,
         onChanged: onChanged,
         onEditingComplete: onEditingComplete,
       ),

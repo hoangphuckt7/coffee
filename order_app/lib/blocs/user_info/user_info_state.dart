@@ -13,10 +13,11 @@ class UIErrorState extends UserInfoState {
   UIErrorState(this.errMsg);
 }
 
-class UISuccessState extends UserInfoState {
+class UIUpdateSuccessState extends UserInfoState {
   final sucMsg;
+  final isClearPassField;
 
-  UISuccessState(this.sucMsg);
+  UIUpdateSuccessState(this.sucMsg, this.isClearPassField);
 }
 
 class UIUpdatedLoadingState extends UserInfoState {

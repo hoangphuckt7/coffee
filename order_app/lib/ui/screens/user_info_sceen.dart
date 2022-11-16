@@ -24,21 +24,24 @@ class UserInfoScreen extends StatelessWidget {
 
   var fullNameTEC = TextEditingController();
   String? errName;
+  bool isErrName = true;
+
   var oldPassTEC = TextEditingController();
   String? errOP;
+  bool isErrOP = true;
+
   var newPassTEC = TextEditingController();
   String? errNP;
+  bool isErrNP = true;
+
   var newPassConfirmTEC = TextEditingController();
   String? errNPC;
+  bool isErrNPC = true;
+
+  bool isErrPass = true;
 
   bool isLoading = false;
   bool isShowPopupConfirmPassword = false;
-
-  bool isErrName = true;
-  bool isErrOP = true;
-  bool isErrNP = true;
-  bool isErrNPC = true;
-  bool isErrPass = true;
 
   TextStyle textStyle = const TextStyle(
     fontWeight: FontWeight.bold,
@@ -74,8 +77,6 @@ class UserInfoScreen extends StatelessWidget {
         } else if (state is UIUpdatedLoadingState) {
           isLoading = state.isLoading;
           loadingMsg = state.labelLoading;
-        } else if (state is UISuccessState) {
-          Fn.showToast(eToast: EToast.success, msg: state.sucMsg.toString());
         }
         return Processing(msg: loadingMsg, show: isLoading);
       },
@@ -243,11 +244,25 @@ class UserInfoScreen extends StatelessWidget {
         const SizedBox(height: 30),
         BlocBuilder<UserInfoBloc, UserInfoState>(
           builder: (context, state) {
+            if (state is UIUpdateSuccessState) {
+              Fn.showToast(
+                  eToast: EToast.success, msg: state.sucMsg.toString());
+              bool isClear = state.isClearPassField;
+              if (isClear) {
+                oldPassTEC = TextEditingController();
+                newPassTEC = TextEditingController();
+                newPassConfirmTEC = TextEditingController();
+              }
+              isShowPopupConfirmPassword = false;
+            }
             return FillBtn(
               label: 'Đổi mật khẩu',
               btnBgColor: isErrPass ? EColor.dark : EColor.primary,
               onPressed: () {
-                if (!isErrPass) {}
+                if (!isErrPass) {
+                  BlocProvider.of<UserInfoBloc>(context)
+                      .add(UIShowPopupConfirmPasswordEvent(true));
+                }
               },
             );
           },
@@ -257,11 +272,26 @@ class UserInfoScreen extends StatelessWidget {
   }
 
   Widget _popupConfirmChangePassword(BuildContext context) {
-    return PopupConfirm(
-      visible: isShowPopupConfirmPassword,
-      title: 'Xác nhận thay đổi mật khẩu',
-      onLeftBtnPressed: () {},
-      onRightBtnPressed: () {},
+    return BlocBuilder<UserInfoBloc, UserInfoState>(
+      builder: (context, state) {
+        if (state is UIShowPopupConfirmPasswordState) {
+          isShowPopupConfirmPassword = state.isVisible;
+        }
+        return PopupConfirm(
+          visible: isShowPopupConfirmPassword,
+          title: 'Xác nhận thay đổi mật khẩu',
+          onLeftBtnPressed: () {
+            BlocProvider.of<UserInfoBloc>(context)
+                .add(UIShowPopupConfirmPasswordEvent(false));
+          },
+          onRightBtnPressed: () {
+            if (!isErrPass) {
+              BlocProvider.of<UserInfoBloc>(context)
+                  .add(UIUpdatePasswordEvent(oldPassTEC.text, newPassTEC.text));
+            }
+          },
+        );
+      },
     );
   }
 

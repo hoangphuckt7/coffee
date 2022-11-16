@@ -1,13 +1,16 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:orderr_app/models/login/login_res_model/login_res_model.dart';
 import 'package:orderr_app/models/user/user_model.dart';
 import 'package:orderr_app/repositories/user_repo.dart';
 import 'package:orderr_app/utils/const.dart';
 import 'package:orderr_app/utils/function_common.dart';
+import 'package:orderr_app/utils/local_storage.dart';
 import 'package:tiengviet/tiengviet.dart';
 
 part 'user_info_event.dart';
@@ -23,7 +26,8 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
     // action
     on<UILoadInfoEvent>(_onLoadInfo);
     on<UIUpdateInfoEvent>(_onUpdateInfo);
-    on<UIUpdatePasswordEvent>(_onUpdatePasswor);
+    on<UIUpdatePasswordEvent>(_onUpdatePassword);
+    on<UIShowPopupConfirmPasswordEvent>(_onShowPopupConfirmPassword);
   }
 
   void _onChangeFullName(
@@ -99,7 +103,19 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
     }
   }
 
-  void _onLoadInfo(UILoadInfoEvent event, Emitter<UserInfoState> emit) async {}
+  void _onLoadInfo(UILoadInfoEvent event, Emitter<UserInfoState> emit) async {
+    try {
+      LoginResModel? user;
+      String? userJson = await LocalStorage.getItem(KeyLS.user_json);
+      if (userJson != null && userJson != '') {
+        user = LoginResModel.fromJson(jsonDecode(userJson));
+      }
+      emit(UILoadedInfoState(user?.fullName));
+    } catch (e) {
+      emit(UIErrorState(AppInfo.ErrMsg));
+      log('UserInfoBloc - _onLoadInfo - ${e.toString()}');
+    }
+  }
 
   void _onUpdateInfo(
       UIUpdateInfoEvent event, Emitter<UserInfoState> emit) async {
@@ -107,7 +123,7 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
       var resp =
           await _userRepo.updateInfo(UserModel(event.fullname, null, null));
       if (resp is bool && resp) {
-        emit(UISuccessState('Cập nhật thông tin thành công!'));
+        emit(UIUpdateSuccessState('Cập nhật thông tin thành công!', false));
         return;
       }
       emit(UIErrorState(resp ?? 'Cập nhật thông tin thất bại'));
@@ -117,16 +133,16 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
     }
   }
 
-  void _onUpdatePasswor(
+  void _onUpdatePassword(
       UIUpdatePasswordEvent event, Emitter<UserInfoState> emit) async {
     try {
-      var resp = await _userRepo.updateInfo(UserModel(
+      var resp = await _userRepo.updatePassword(UserModel(
         null,
         event.oldPass,
         event.newPass,
       ));
       if (resp is bool && resp) {
-        emit(UISuccessState('Đổi mật khẩu thành công!'));
+        emit(UIUpdateSuccessState('Đổi mật khẩu thành công!', true));
         return;
       }
       emit(UIErrorState(resp ?? 'Cập nhật mật khẩu thất bại'));
@@ -134,5 +150,10 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
       emit(UIErrorState(AppInfo.ErrMsg));
       log('UserInfoBloc - _onUpdatePasswor - ${e.toString()}');
     }
+  }
+
+  void _onShowPopupConfirmPassword(
+      UIShowPopupConfirmPasswordEvent event, Emitter<UserInfoState> emit) {
+    emit(UIShowPopupConfirmPasswordState(event.isVisible));
   }
 }

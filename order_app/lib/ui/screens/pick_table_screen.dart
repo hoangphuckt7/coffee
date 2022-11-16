@@ -124,102 +124,104 @@ class PickTableScreen extends StatelessWidget {
   }
 
   Widget _selectTable(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Divider(
-          color: MColor.primaryBlack,
-          thickness: 1,
-          indent: 50,
-          endIndent: 50,
-        ),
-        const SizedBox(height: 10),
-        const SizedBox(
-          child: Text(
-            'Chọn bàn order',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: MColor.primaryBlack,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Divider(
+            color: MColor.primaryBlack,
+            thickness: 1,
+            indent: 50,
+            endIndent: 50,
+          ),
+          const SizedBox(height: 10),
+          const SizedBox(
+            child: Text(
+              'Chọn bàn order',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: MColor.primaryBlack,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 20),
-        SizedBox(
-          width: Fn.getScreenWidth(context) * .8,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Khu vực:",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+          const SizedBox(height: 20),
+          SizedBox(
+            width: Fn.getScreenWidth(context) * .8,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Khu vực:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              BlocBuilder<PickTableBloc, PickTableState>(
-                builder: (context, state) {
-                  if (state is PTLoadedFloorTableState) {
-                    isLoading = false;
-                    lstFloor = state.listFloor;
-                    if (order != null && order?.floor != null) {
-                      selectedFloor =
-                          lstFloor.firstWhere((x) => x.id == order?.floorId);
-                    } else {
-                      selectedFloor = state.selectedFloor;
-                    }
-                  } else if (state is PTChangedFloorState) {
-                    selectedFloor = state.floor;
-                  }
-                  return DropdownFloor(
-                    listFloor: lstFloor,
-                    selectedFloor: selectedFloor,
-                    onChanged: (value) {
-                      BlocProvider.of<PickTableBloc>(context)
-                          .add(PTChangeFloorEvent(value));
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                "Bàn:",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              BlocBuilder<PickTableBloc, PickTableState>(
-                builder: (context, state) {
-                  if (state is PTLoadedFloorTableState) {
-                    isLoading = false;
-                    lstTable = state.listTable;
-                    if (order != null && order?.table != null) {
-                      var lstByTableId = lstTable
-                          .where((x) => x.id == order?.tableId)
-                          .toList();
-                      if (lstByTableId.isNotEmpty) {
-                        selectedTable = lstByTableId.first;
+                BlocBuilder<PickTableBloc, PickTableState>(
+                  builder: (context, state) {
+                    if (state is PTLoadedFloorTableState) {
+                      isLoading = false;
+                      lstFloor = state.listFloor;
+                      if (order != null && order?.floor != null) {
+                        selectedFloor =
+                            lstFloor.firstWhere((x) => x.id == order?.floorId);
+                      } else {
+                        selectedFloor = state.selectedFloor;
                       }
-                    } else {
+                    } else if (state is PTChangedFloorState) {
+                      selectedFloor = state.floor;
+                    }
+                    return DropdownFloor(
+                      listFloor: lstFloor,
+                      selectedFloor: selectedFloor,
+                      onChanged: (value) {
+                        BlocProvider.of<PickTableBloc>(context)
+                            .add(PTChangeFloorEvent(value));
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "Bàn:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                BlocBuilder<PickTableBloc, PickTableState>(
+                  builder: (context, state) {
+                    if (state is PTLoadedFloorTableState) {
+                      isLoading = false;
+                      lstTable = state.listTable;
+                      if (order != null && order?.table != null) {
+                        var lstByTableId = lstTable
+                            .where((x) => x.id == order?.tableId)
+                            .toList();
+                        if (lstByTableId.isNotEmpty) {
+                          selectedTable = lstByTableId.first;
+                        }
+                      } else {
+                        selectedTable = state.selectedTable;
+                      }
+                    } else if (state is PTChangedTableState) {
+                      selectedTable = state.table;
+                    } else if (state is PTChangedFloorState) {
+                      lstTable = state.listTable;
                       selectedTable = state.selectedTable;
                     }
-                  } else if (state is PTChangedTableState) {
-                    selectedTable = state.table;
-                  } else if (state is PTChangedFloorState) {
-                    lstTable = state.listTable;
-                    selectedTable = state.selectedTable;
-                  }
-                  return DropdownTable(
-                    listTable: lstTable,
-                    selectedTable: selectedTable,
-                    onChanged: (value) {
-                      BlocProvider.of<PickTableBloc>(context)
-                          .add(PTChangeTableEvent(value));
-                    },
-                  );
-                },
-              ),
-            ],
+                    return DropdownTable(
+                      listTable: lstTable,
+                      selectedTable: selectedTable,
+                      onChanged: (value) {
+                        BlocProvider.of<PickTableBloc>(context)
+                            .add(PTChangeTableEvent(value));
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

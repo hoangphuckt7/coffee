@@ -83,7 +83,7 @@ class UserRepo {
         } else {
           user = LoginResModel(model.fullname, null, null);
         }
-        await LocalStorage.setItem(KeyLS.user_json, user);
+        await LocalStorage.setItem(KeyLS.user_json, jsonEncode(user));
 
         return resp.body.isNotEmpty;
       } else if (resp.statusCode == HttpStatusCode.BadRequest) {

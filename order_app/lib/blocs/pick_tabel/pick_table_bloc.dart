@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:orderr_app/models/common/base_model.dart';
 import 'package:orderr_app/models/table/table_model.dart';
@@ -32,18 +33,18 @@ class PickTableBloc extends Bloc<PickTableEvent, PickTableState> {
       var lstFloor = await _floorRepo.getAll();
       await LocalStorage.setItem(KeyLS.floors, jsonEncode(lstFloor));
       BaseModel? selectedFloor = event.floor;
-      if (lstFloor.isNotEmpty && selectedFloor == null) {
-        selectedFloor = lstFloor[0];
+      if (lstFloor.isNotEmpty) {
+        selectedFloor ??= lstFloor[0];
       }
 
       var lstTable = await _tableRepo.getAll();
       await LocalStorage.setItem(KeyLS.tables, jsonEncode(lstTable));
       TableModel? selectedTable = event.table;
-      if (selectedFloor != null && selectedTable == null) {
+      if (selectedFloor != null) {
         lstTable =
             lstTable.where((x) => x.floor!.id == selectedFloor!.id).toList();
         if (lstTable.isNotEmpty) {
-          selectedTable = lstTable[0];
+          selectedTable ??= lstTable[0];
         }
       }
       emit(PTLoadedFloorTableState(
