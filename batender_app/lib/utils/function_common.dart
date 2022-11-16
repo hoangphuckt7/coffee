@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_init_to_null
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -8,8 +10,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class Fn {
-  // var screenWidth = MediaQuery.of(context).size.width;
-  // var screenHeight = MediaQuery.of(context).size.height;
   static getScreenWidth(BuildContext context) {
     return MediaQuery.of(context).size.width;
   }
@@ -17,10 +17,29 @@ class Fn {
   static getScreenHeight(BuildContext context) {
     return MediaQuery.of(context).size.height;
   }
-  // static var vndFormat = NumberFormat.currency(locale: "vi_VN", symbol: "₫");
-  // static formatCurrencyText(String currency) {
-  //   return vndFormat.format(double.parse(currency));
-  // }
+
+  static getColor(EColor? eColor) {
+    switch (eColor) {
+      case EColor.primary:
+        return MColor.primaryGreen;
+      case EColor.danger:
+        return MColor.danger;
+      case EColor.dark:
+        return MColor.primaryBlack;
+      case EColor.black:
+        return MColor.black;
+      case EColor.white:
+        return MColor.white;
+      case EColor.secondary:
+        return MColor.secondary;
+      case EColor.success:
+        return MColor.success;
+      case EColor.warning:
+        return MColor.warning;
+      default:
+        return MColor.primaryBlack;
+    }
+  }
 
   static showToast(EToast eToast, String msg) {
     dynamic toastColor;
@@ -41,6 +60,7 @@ class Fn {
     Fluttertoast.showToast(
       msg: msg,
       backgroundColor: toastColor,
+      gravity: ToastGravity.TOP,
     );
   }
 
@@ -69,5 +89,23 @@ class Fn {
 
   static logObj(title, obj) {
     log('$title: ${jsonEncode(obj)}');
+  }
+
+  static pushScreen(
+    BuildContext context,
+    String route, {
+    Object? arguments = null,
+  }) {
+    return Navigator.pushNamedAndRemoveUntil(
+      context,
+      route,
+      (Route<dynamic> route) => false,
+      arguments: arguments,
+    );
+  }
+
+  // valid
+  static bool validHumanName(input) {
+    return RegExp(r'^[a-z\s]+$').hasMatch(input);
   }
 }

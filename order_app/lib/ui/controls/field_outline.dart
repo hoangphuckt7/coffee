@@ -95,7 +95,6 @@ class FieldOutline extends StatelessWidget {
           focusedBorder: _getFocusBorder(),
           hintText: hintText,
         ),
-        autofocus: false,
         onChanged: onChanged,
         onEditingComplete: onEditingComplete,
       ),

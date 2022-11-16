@@ -2,7 +2,7 @@
 
 class AppInfo {
   static const String Name = "Order";
-  static const List<String> Roles = ["ADMIN", "BARTENDER"];
+  static const List<String> Roles = ["ADMIN", "EMPLOYEE"];
   static const int IncreaseStep = 25;
   static const int DecreaseStep = -25;
   static const String ErrMsg = 'Đã xảy ra lỗi!';

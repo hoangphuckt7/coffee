@@ -41,7 +41,10 @@ class FillBtn extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           label,
-          style: TextStyle(fontSize: 13, color: Fn.getColor(labelColor)),
+          style: TextStyle(
+            fontSize: 13,
+            color: Fn.getColor(labelColor),
+          ),
         ),
       ),
     );

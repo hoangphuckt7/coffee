@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Padding(
                           padding: const EdgeInsets.only(top: 15),
                           child: FillBtn(
-                            title: isNew ? 'Hoàn thành' : 'Hoàn tác',
+                            label: isNew ? 'Hoàn thành' : 'Hoàn tác',
                             btnBgColor: isNew ? EColor.primary : EColor.danger,
                             onPressed: () {
                               BlocProvider.of<HomeBloc>(context).add(

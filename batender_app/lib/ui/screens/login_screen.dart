@@ -110,7 +110,7 @@ class LoginScreen extends StatelessWidget {
                             ), // ----------------------------------------------------------------------------------------------------
                             const SizedBox(height: 20),
                             FillBtn(
-                              title: "Đăng nhập",
+                              label: "Đăng nhập",
                               onPressed: () {
                                 FocusManager.instance.primaryFocus?.unfocus();
                                 BlocProvider.of<AuthBloc>(context)

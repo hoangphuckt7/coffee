@@ -72,8 +72,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     var userJson = await LocalStorage.getItem(KeyLS.user_json);
     log('userJson: $userJson');
     var user = LoginResModel.fromJson(jsonDecode(userJson));
-    log('fullName: ${user.fullName!}');
-    emit(LoadedUserInfoState(user.fullName!));
+    log('fullName: ${user.fullname!}');
+    emit(LoadedUserInfoState(user.fullname!));
   }
 
   void _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {

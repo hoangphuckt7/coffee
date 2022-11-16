@@ -16,4 +16,13 @@ enum EColor {
   primary,
   danger,
   dark,
+  secondary,
+  white,
+  warning,
+  black,
+}
+
+enum EBorder {
+  all,
+  underline,
 }

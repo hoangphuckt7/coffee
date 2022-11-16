@@ -4,6 +4,9 @@ class AppInfo {
   static const String Name = "Bartender";
   static const List<String> Roles = ["ADMIN", "BARTENDER"];
   static const NumOfPinned = 1;
+  static const int IncreaseStep = 25;
+  static const int DecreaseStep = -25;
+  static const String ErrMsg = 'Đã xảy ra lỗi!';
 }
 
 // LS = Local Storage
