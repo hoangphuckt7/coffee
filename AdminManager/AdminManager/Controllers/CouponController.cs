@@ -32,5 +32,11 @@ namespace AdminManager.Controllers
             var rawData = await ApiBuilder.SendRequest<object>($"api/Coupon/{id}", null, RequestMethod.DELETE, true, Request.GetDisplayUrl(), HttpContext.Session);
             return RedirectToAction("index", "coupon");
         }
+
+        public async Task<IActionResult> SetDefault(Guid id)
+        {
+            var rawData = await ApiBuilder.SendRequest<object>($"api/Coupon/Default/{id}", null, RequestMethod.PUT, true, Request.GetDisplayUrl(), HttpContext.Session);
+            return RedirectToAction("index", "coupon");
+        }
     }
 }

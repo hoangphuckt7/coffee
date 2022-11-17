@@ -80,5 +80,13 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(_orderService.SetUnCompletedOrder(id));
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
+        [HttpDelete("MissingOrders")]
+        public IActionResult RemoveMissingOrders()
+        {
+            _orderService.RemoveMissingOrders();
+            return Ok();
+        }
     }
 }

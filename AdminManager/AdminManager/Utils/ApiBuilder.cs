@@ -1,19 +1,10 @@
 ﻿using AdminManager.Models;
 using AdminManager.Utils;
 using Data.AppException;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BlueBirdCoffeManager.DataAccessLayer
 {
@@ -42,8 +33,8 @@ namespace BlueBirdCoffeManager.DataAccessLayer
                         await fileData.CopyToAsync(memoryStream);
                         result.Add(new ByteArrayContent(memoryStream.ToArray()), propertyInfo.Name, fileData.FileName);
                     }
-                    
-                }else if (propertyInfo.PropertyType == typeof(IFormFile))
+                }
+                else if (propertyInfo.PropertyType == typeof(IFormFile))
                 {
                     var fileData = (IFormFile)propData;
                     await using var memoryStream = new MemoryStream();
@@ -118,21 +109,21 @@ namespace BlueBirdCoffeManager.DataAccessLayer
             return JsonConvert.DeserializeObject<T>(json)!;
         }
 
-        //public static async Task<byte[]?> SendImageRequest(HttpResponseMessage responseMessage)
-        //{
-        //    try
-        //    {
-        //        if (responseMessage.IsSuccessStatusCode)
-        //        {
-        //            var json = await responseMessage.Content.ReadAsByteArrayAsync();
-        //            return json;
-        //        }
-        //    }
-        //    catch (HttpRequestException)
-        //    {
+        public static async Task<byte[]?> ReadImageFromRequest(HttpResponseMessage responseMessage)
+        {
+            try
+            {
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    var json = await responseMessage.Content.ReadAsByteArrayAsync();
+                    return json;
+                }
+            }
+            catch (HttpRequestException)
+            {
 
-        //    }
-        //    return null;
-        //}
+            }
+            return null;
+        }
     }
 }

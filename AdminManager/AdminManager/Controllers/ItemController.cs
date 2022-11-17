@@ -2,6 +2,7 @@
 using BlueBirdCoffeManager.DataAccessLayer;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace AdminManager.Controllers
 {
@@ -47,6 +48,48 @@ namespace AdminManager.Controllers
                 mesColor = "red";
             }
             return RedirectToAction("Add", "Item", new { mes = mes, mesColor = mesColor });
+        }
+
+        public async Task<IActionResult> Edit(Guid id, string? mes)
+        {
+            var categoryRawData = await ApiBuilder.SendRequest<object>($"api/Category", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
+            ViewBag.Categories = (await ApiBuilder.ParseToData<List<DescriptionViewModel>>(categoryRawData)).OrderBy(f => f.Description).ToList();
+
+            var rawData = await ApiBuilder.SendRequest<object>($"api/Item?id={id}", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
+            ViewBag.Item = (await ApiBuilder.ParseToData<List<ItemViewModel>>(rawData)).FirstOrDefault();
+            ViewBag.Mes = mes;
+            return View();
+        }
+
+        public async Task<IActionResult> Update(ItemUpdateModel model)
+        {
+            var rawData = await ApiBuilder.SendRequest<object>($"api/Item/{model.Id}", model, RequestMethod.PUT, true, Request.GetDisplayUrl(), HttpContext.Session);
+            string mes = "";
+            if (!rawData.IsSuccessStatusCode)
+            {
+                mes = await rawData.Content.ReadAsStringAsync();
+            }
+
+            return RedirectToAction("edit", "item", new { id = model.Id, mes = mes });
+        }
+
+        public async Task<IActionResult> RemoveImg(Guid id, Guid itemId)
+        {
+            await ApiBuilder.SendRequest<object>($"api/Item/Image/{id}", null, RequestMethod.DELETE, true, Request.GetDisplayUrl(), HttpContext.Session);
+            return RedirectToAction("edit", "item", new { id = itemId });
+        }
+
+        public async Task<IActionResult> AddImg(Guid id, List<IFormFile> images)
+        {
+            var rawData = await ApiBuilder.SendRequest<object>($"api/Item/Image/{id}", new ItemImageUpdateModel() { Images = images }, RequestMethod.MULTIPART_PUT, true, Request.GetDisplayUrl(), HttpContext.Session);
+
+            string mes = "";
+            if (!rawData.IsSuccessStatusCode)
+            {
+                mes = await rawData.Content.ReadAsStringAsync();
+            }
+
+            return RedirectToAction("edit", "item", new { id = id, mes = mes });
         }
     }
 }

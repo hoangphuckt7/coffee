@@ -36,6 +36,12 @@ namespace BlueBirdCoffeManager.Forms
             {
                 Sessions.Sessions.DEFAULT_COUPON = coupon.Description;
             }
+
+            try
+            {
+                await ApiBuilder.SendRequest<object>("api/Order/MissingOrders", null, RequestMethod.DELETE);
+            }
+            catch (Exception) { }
             #endregion
 
             #region screen setup
