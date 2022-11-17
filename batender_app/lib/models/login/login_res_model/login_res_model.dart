@@ -5,12 +5,12 @@ part 'login_res_model.g.dart';
 
 @JsonSerializable()
 class LoginResModel {
-  String? fullname;
+  String? fullName;
   final String? token;
   final String? role;
 
   LoginResModel(
-    this.fullname,
+    this.fullName,
     this.token,
     this.role,
   );

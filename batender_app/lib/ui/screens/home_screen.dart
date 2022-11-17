@@ -6,6 +6,7 @@ import 'package:bartender_app/models/order/order_detail_model.dart';
 import 'package:bartender_app/models/order/order_model.dart';
 import 'package:bartender_app/routes.dart';
 import 'package:bartender_app/ui/controls/fill_btn.dart';
+import 'package:bartender_app/ui/controls/icon_btn.dart';
 import 'package:bartender_app/ui/widgets/card_custom.dart';
 import 'package:bartender_app/ui/widgets/empty.dart';
 import 'package:bartender_app/ui/widgets/order_card.dart';
@@ -78,13 +79,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         padding: const EdgeInsets.all(15),
         child: Row(
           children: [
-            _leftSide(context),
+            Expanded(flex: 4, child: _leftSide(context)),
             const Icon(
               Icons.keyboard_arrow_left_rounded,
               color: MColor.primaryGreen,
-              size: 45,
+              size: 30,
             ),
-            _rightSide(context),
+            Expanded(flex: 3, child: _rightSide(context)),
           ],
         ),
       ),
@@ -114,77 +115,72 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             lstOrderDetails = state.lstDetail;
           }
         }
-        return Expanded(
-          flex: 5,
-          child: SizedBox(
-            height: Fn.getScreenHeight(context),
-            child: CardCustom(
-              padding: const EdgeInsets.all(20),
-              child: lstOrderDetails.isEmpty
-                  ? const Center(child: Empty())
-                  : Column(
-                      children: [
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children:
-                                  List.generate(lstOrderDetails.length, (i) {
-                                var orderDetailModel = lstOrderDetails[i];
-                                return BlocBuilder<HomeBloc, HomeState>(
-                                  builder: (context, state) {
-                                    List<String> itemCheck = <String>[];
-                                    if (state is HomeItemCheckboxChangedState) {
-                                      itemCheck = state.check;
-                                    }
-                                    return OrderDetailCard(
-                                      model: orderDetailModel,
-                                      itemCheck: itemCheck,
-                                      showCheckItem: isNew,
-                                      onItemCheckChanged: (value) {
-                                        if (value == true) {
-                                          itemCheck
-                                              .add(orderDetailModel.itemId!);
-                                        } else {
-                                          itemCheck = itemCheck
-                                              .where((x) =>
-                                                  x != orderDetailModel.itemId!)
-                                              .toList();
-                                        }
-                                        BlocProvider.of<HomeBloc>(context).add(
-                                          HomeItemCheckboxChangeEvent(
-                                              itemCheck),
-                                        );
-                                      },
-                                    );
-                                  },
-                                );
-                              }),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15),
-                          child: FillBtn(
-                            label: isNew ? 'Hoàn thành' : 'Hoàn tác',
-                            btnBgColor: isNew ? EColor.primary : EColor.danger,
-                            onPressed: () {
-                              BlocProvider.of<HomeBloc>(context).add(
-                                HomeOrderSubmitEvent(
-                                  isNew,
-                                  selectedOrder,
-                                  lstOrders,
-                                  selectedOrderDone,
-                                  lstOrdersDone,
-                                  lstOrderDetails,
-                                  pinnedOrder,
-                                ),
+        return SizedBox(
+          height: Fn.getScreenHeight(context),
+          child: CardCustom(
+            padding: const EdgeInsets.all(20),
+            child: lstOrderDetails.isEmpty
+                ? const Center(child: Empty())
+                : Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children:
+                                List.generate(lstOrderDetails.length, (i) {
+                              var orderDetailModel = lstOrderDetails[i];
+                              return BlocBuilder<HomeBloc, HomeState>(
+                                builder: (context, state) {
+                                  List<String> itemCheck = <String>[];
+                                  if (state is HomeItemCheckboxChangedState) {
+                                    itemCheck = state.check;
+                                  }
+                                  return OrderDetailCard(
+                                    model: orderDetailModel,
+                                    itemCheck: itemCheck,
+                                    showCheckItem: isNew,
+                                    onItemCheckChanged: (value) {
+                                      if (value == true) {
+                                        itemCheck.add(orderDetailModel.itemId!);
+                                      } else {
+                                        itemCheck = itemCheck
+                                            .where((x) =>
+                                                x != orderDetailModel.itemId!)
+                                            .toList();
+                                      }
+                                      BlocProvider.of<HomeBloc>(context).add(
+                                        HomeItemCheckboxChangeEvent(itemCheck),
+                                      );
+                                    },
+                                  );
+                                },
                               );
-                            },
+                            }),
                           ),
                         ),
-                      ],
-                    ),
-            ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: FillBtn(
+                          label: isNew ? 'Hoàn thành' : 'Hoàn tác',
+                          btnBgColor: isNew ? EColor.primary : EColor.danger,
+                          onPressed: () {
+                            BlocProvider.of<HomeBloc>(context).add(
+                              HomeOrderSubmitEvent(
+                                isNew,
+                                selectedOrder,
+                                lstOrders,
+                                selectedOrderDone,
+                                lstOrdersDone,
+                                lstOrderDetails,
+                                pinnedOrder,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
           ),
         );
       },
@@ -193,40 +189,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _rightSide(BuildContext context) {
     TabController tabController = TabController(length: 2, vsync: this);
-    return Expanded(
-      flex: 3,
-      child: SizedBox(
-        height: Fn.getScreenHeight(context),
-        child: Column(
-          children: [
-            _userInfo(context),
-            Expanded(
-              child: CardCustom(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 15,
-                ),
-                child: Column(
-                  children: [
-                    _tabOrder(context, tabController),
-                    const SizedBox(height: 10),
-                    Expanded(
-                      child: TabBarView(
-                        controller: tabController,
-                        children: [
-                          // _orderArrorUp(context),
-                          Column(children: [_listOrder(context, true)]),
-                          Column(children: [_listOrder(context, false)]),
-                          // _orderArrorDown(context),
-                        ],
-                      ),
+    return SizedBox(
+      height: Fn.getScreenHeight(context),
+      child: Column(
+        children: [
+          _userInfo(context),
+          Expanded(
+            child: CardCustom(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 15,
+              ),
+              child: Column(
+                children: [
+                  _tabOrder(context, tabController),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: TabBarView(
+                      controller: tabController,
+                      children: [
+                        Column(children: [_listOrder(context, true)]),
+                        Column(children: [_listOrder(context, false)]),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -371,43 +362,48 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 fullName = state.fullName;
               }
               return Expanded(
-                child: SizedBox(
-                  child: Text(
-                    Fn.renderData(fullName, ''),
-                    style: TextStyle(
-                      fontSize: fontSize1,
-                      fontWeight: FontWeight.bold,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              child: Text(
+                                Fn.renderData(fullName, ''),
+                                style: TextStyle(
+                                  fontSize: fontSize1,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 5),
+                    IconBtn(
+                      icons: Icons.edit_outlined,
+                      onPressed: () {
+                        Fn.pushScreen(context, RouteName.userInfo);
+                      },
+                    ),
+                  ],
                 ),
               );
             },
           ),
-          const SizedBox(width: 5),
+          const SizedBox(width: 10),
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
-              return InkWell(
-                onTap: () {
+              return IconBtn(
+                icons: Icons.refresh_outlined,
+                label: 'Tải lại',
+                fontSize: fontSize2,
+                onPressed: () {
                   BlocProvider.of<HomeBloc>(context).add(HomeLoadDataEvent());
                 },
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.refresh_outlined,
-                      color: MColor.primaryGreen,
-                      size: 30,
-                    ),
-                    SizedBox(
-                      child: Text(
-                        'Tải lại',
-                        style: TextStyle(
-                          fontSize: fontSize2,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               );
             },
           ),
@@ -418,28 +414,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 Navigator.pushNamed(context, RouteName.login);
               }
             },
-            child: InkWell(
-              onTap: () {
+            child: IconBtn(
+              icons: Icons.logout_outlined,
+              label: 'Đăng xuất',
+              btnBgColor: EColor.danger,
+              fontSize: fontSize2,
+              onPressed: () {
                 BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
               },
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.logout_outlined,
-                    color: MColor.danger,
-                    size: 30,
-                  ),
-                  SizedBox(
-                    child: Text(
-                      'Đăng xuất',
-                      style: TextStyle(
-                        fontSize: fontSize2,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         ],

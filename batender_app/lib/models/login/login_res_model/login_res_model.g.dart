@@ -8,14 +8,14 @@ part of 'login_res_model.dart';
 
 LoginResModel _$LoginResModelFromJson(Map<String, dynamic> json) =>
     LoginResModel(
-      json['fullame'] as String?,
+      json['fullName'] as String?,
       json['token'] as String?,
       json['role'] as String?,
     );
 
 Map<String, dynamic> _$LoginResModelToJson(LoginResModel instance) =>
     <String, dynamic>{
-      'fullame': instance.fullname,
+      'fullName': instance.fullName,
       'token': instance.token,
       'role': instance.role,
     };

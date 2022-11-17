@@ -110,7 +110,7 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
       if (userJson != null && userJson != '') {
         user = LoginResModel.fromJson(jsonDecode(userJson));
       }
-      emit(UILoadedInfoState(user?.fullname));
+      emit(UILoadedInfoState(user?.fullName));
     } catch (e) {
       emit(UIErrorState(AppInfo.ErrMsg));
       log('UserInfoBloc - _onLoadInfo - ${e.toString()}');

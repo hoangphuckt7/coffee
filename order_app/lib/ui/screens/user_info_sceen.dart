@@ -253,7 +253,8 @@ class UserInfoScreen extends StatelessWidget {
                 newPassTEC = TextEditingController();
                 newPassConfirmTEC = TextEditingController();
               }
-              isShowPopupConfirmPassword = false;
+              BlocProvider.of<UserInfoBloc>(context)
+                  .add(UIShowPopupConfirmPasswordEvent(false));
             }
             return FillBtn(
               label: 'Đổi mật khẩu',

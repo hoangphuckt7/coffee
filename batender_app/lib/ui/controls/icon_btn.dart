@@ -2,16 +2,19 @@
 
 import 'package:bartender_app/utils/enum.dart';
 import 'package:bartender_app/utils/function_common.dart';
-import 'package:bartender_app/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
 class IconBtn extends StatelessWidget {
+  String label;
+  double? fontSize;
   final EColor btnBgColor;
   final double? size;
   final IconData? icons;
   final void Function() onPressed;
-  const IconBtn({
+  IconBtn({
     super.key,
+    this.label = '',
+    this.fontSize,
     required this.icons,
     this.size = 30,
     this.btnBgColor = EColor.primary,
@@ -23,10 +26,26 @@ class IconBtn extends StatelessWidget {
     return SizedBox(
       child: InkWell(
         onTap: onPressed,
-        child: Icon(
-          icons,
-          size: size,
-          color: Fn.getColor(btnBgColor),
+        child: Row(
+          children: [
+            Icon(
+              icons,
+              size: size,
+              color: Fn.getColor(btnBgColor),
+            ),
+            Visibility(
+              visible: (label.isNotEmpty),
+              child: SizedBox(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

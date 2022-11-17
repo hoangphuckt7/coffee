@@ -23,7 +23,7 @@ class UserRepo {
         await LocalStorage.setItem(KeyLS.login_info, jsonEncode(model));
         await LocalStorage.setItem(
           KeyLS.user_json,
-          jsonEncode(LoginResModel(data.fullname, null, data.role)),
+          jsonEncode(LoginResModel(data.fullName, null, data.role)),
         );
 
         return data;
@@ -52,7 +52,7 @@ class UserRepo {
 
           await LocalStorage.setItem(
             KeyLS.user_json,
-            jsonEncode(LoginResModel(data.fullname, null, data.role)),
+            jsonEncode(LoginResModel(data.fullName, null, data.role)),
           );
 
           return true;
@@ -79,7 +79,7 @@ class UserRepo {
         String? userJson = await LocalStorage.getItem(KeyLS.user_json);
         if (userJson != null && userJson.isNotEmpty) {
           user = LoginResModel.fromJson(jsonDecode(userJson));
-          user.fullname = model.fullname;
+          user.fullName = model.fullname;
         } else {
           user = LoginResModel(model.fullname, null, null);
         }

@@ -241,14 +241,17 @@ class UserInfoScreen extends StatelessWidget {
           builder: (context, state) {
             if (state is UIUpdateSuccessState) {
               Fn.showToast(
-                  eToast: EToast.success, msg: state.sucMsg.toString());
+                eToast: EToast.success,
+                msg: state.sucMsg.toString(),
+              );
               bool isClear = state.isClearPassField;
               if (isClear) {
                 oldPassTEC = TextEditingController();
                 newPassTEC = TextEditingController();
                 newPassConfirmTEC = TextEditingController();
               }
-              isShowPopupConfirmPassword = false;
+              BlocProvider.of<UserInfoBloc>(context)
+                  .add(UIShowPopupConfirmPasswordEvent(false));
             }
             return FillBtn(
               label: 'Đổi mật khẩu',
