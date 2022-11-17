@@ -29,6 +29,7 @@ namespace Service.Services
         List<OrderViewModel> GetUnknowLocaltionOrders();
         List<OrderViewModel> TodayCompletedOrders(int count);
         object GetBartenderOrders(int count);
+        void RemoveMissingOrders();
     }
     public class OrderService : IOrderService
     {
@@ -130,7 +131,6 @@ namespace Service.Services
 
             return order.Id;
         }
-
         public int GetCurrentOrderNumber()
         {
             var lastestOrder = _dbContext.Orders.OrderByDescending(s => s.DateCreated).FirstOrDefault();
@@ -142,16 +142,14 @@ namespace Service.Services
 
             return 1;
         }
-
         public List<OrderViewModel> GetByTable(Guid tableId)
         {
             var orders = _dbContext.Orders
                 //.Include(f => f.OrderDetails)
-                .Where(o => o.TableId == tableId && o.IsDeleted == false && o.IsCheckout == false)
+                .Where(o => o.TableId == tableId && o.IsDeleted == false && o.IsCheckout == false && o.IsMissing == false)
                 .ToList();
             return _mapper.Map<List<OrderViewModel>>(orders);
         }
-
         public List<OrderViewModel> TodayCompletedOrders(int count)
         {
             var orders = _dbContext.Orders
@@ -162,7 +160,6 @@ namespace Service.Services
                 .ToList();
             return _mapper.Map<List<OrderViewModel>>(orders);
         }
-
         public List<OrderViewModel> GetByIds(List<Guid> ids)
         {
             var orders = _dbContext.Orders
@@ -171,7 +168,6 @@ namespace Service.Services
                 .ToList();
             return _mapper.Map<List<OrderViewModel>>(orders);
         }
-
         public Guid SetMissingOrder(SetMissingOrders model, string emp)
         {
             var order = _dbContext.Orders.FirstOrDefault(f => model.OrderIds.Contains(f.Id));
@@ -187,13 +183,11 @@ namespace Service.Services
 
             return order.Id;
         }
-
         public List<OrderViewModel> GetCurrentOrders()
         {
             var ordres = _dbContext.Orders.Include(f => f.OrderDetails).Include(f => f.Table).Where(s => s.IsCheckout == false && s.IsCompleted == false && s.IsDeleted == false && s.IsMissing == false).OrderBy(f => f.DateCreated).ToList();
             return _mapper.Map<List<Order>, List<OrderViewModel>>(ordres);
         }
-
         public Guid SetCompletedOrder(Guid orderId)
         {
             var order = _dbContext.Orders.FirstOrDefault(f => f.Id == orderId);
@@ -207,7 +201,6 @@ namespace Service.Services
 
             return order.Id;
         }
-
         public Guid SetUnCompletedOrder(Guid orderId)
         {
             var order = _dbContext.Orders.FirstOrDefault(f => f.Id == orderId);
@@ -221,7 +214,6 @@ namespace Service.Services
 
             return order.Id;
         }
-
         public List<OrderViewModel> GetUnknowLocaltionOrders()
         {
             var orders = _dbContext.Orders
@@ -230,7 +222,6 @@ namespace Service.Services
                 .ToList();
             return _mapper.Map<List<OrderViewModel>>(orders);
         }
-
         public object GetBartenderOrders(int count)
         {
             return new
@@ -238,6 +229,52 @@ namespace Service.Services
                 ListOrderNew = GetCurrentOrders(),
                 ListOrderCompleted = TodayCompletedOrders(count),
             };
+        }
+        public void RemoveMissingOrders()
+        {
+            var now = DateTime.UtcNow.AddHours(7);
+
+            var orders = _dbContext.Orders
+                .Where(s => s.DateCreated.AddHours(8) <= now && s.IsCheckout == false && s.IsDeleted == false && s.IsRejected == false)
+                .ToList();
+
+            var orderDetails = _dbContext.OrderDetails.Where(s => orders.Select(s => s.Id).Contains(s.OrderId)).ToList();
+
+            foreach (var order in orders)
+            {
+                order.IsMissing = true;
+                order.DateUpdated = DateTime.UtcNow.AddHours(7);
+
+                if (order.TableId != null)
+                {
+                    var table = _dbContext.Tables.FirstOrDefault(f => f.Id == order.TableId);
+                    if (table != null)
+                    {
+                        table.CurrentOrder -= 1;
+                        _dbContext.Tables.Update(table);
+                    }
+                }
+
+                _dbContext.Orders.Update(order);
+            }
+
+            foreach (var orderDetail in orderDetails)
+            {
+                orderDetail.FinalQuantity = 0;
+                orderDetail.DateUpdated = DateTime.UtcNow.AddHours(7);
+                orderDetail.MissingReason = "Quá thời gian";
+
+                _dbContext.OrderDetails.Update(orderDetail);
+            }
+
+            var tables = _dbContext.Tables.Where(f => f.CurrentOrder < 0).ToList();
+            foreach (var table in tables)
+            {
+                table.CurrentOrder = 0;
+                _dbContext.Update(table);
+            }
+
+            _dbContext.SaveChanges();
         }
     }
 }
