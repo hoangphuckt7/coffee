@@ -17,30 +17,31 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final _userRepo = UserRepo();
-  AuthBloc() : super(InitialState()) {
-    on<DataChangedEvent>(_onDataChanged);
-    on<SubmittedEvent>(_onLoginSubmitted);
-    on<LoadUserInfoEvent>(_onLoadUserInfo);
-    on<LogoutEvent>(_onLogout);
+  AuthBloc() : super(AuthInitialState()) {
+    on<AuthDataChangedEvent>(_onDataChanged);
+    on<AuthSubmittedEvent>(_onLoginSubmitted);
+    on<AuthLoadUserInfoEvent>(_onLoadUserInfo);
+    on<AuthLogoutEvent>(_onLogout);
   }
 
-  void _onDataChanged(DataChangedEvent event, Emitter<AuthState> emit) {
-    emit(SubmittingState());
+  void _onDataChanged(AuthDataChangedEvent event, Emitter<AuthState> emit) {
+    emit(AuthSubmittingState());
     var errUsername = Validations.validUsername(event.username);
     var errPassword = Validations.validPassword(event.password);
     if (errUsername != null || errPassword != null) {
-      emit(DataInvalidState(errUsername, errPassword));
+      emit(AuthDataInvalidState(errUsername, errPassword));
       return;
     }
-    emit(InitialState());
+    emit(AuthInitialState());
   }
 
-  void _onLoginSubmitted(SubmittedEvent event, Emitter<AuthState> emit) async {
-    emit(SubmittingState());
+  void _onLoginSubmitted(
+      AuthSubmittedEvent event, Emitter<AuthState> emit) async {
+    emit(AuthSubmittingState());
     var errUsername = Validations.validUsername(event.username);
     var errPassword = Validations.validPassword(event.password);
     if (errUsername != null || errPassword != null) {
-      emit(DataInvalidState(errUsername, errPassword));
+      emit(AuthDataInvalidState(errUsername, errPassword));
     } else {
       // LocalStorage.setItem(KeyLS.login_info, "alo");
       // emit(SubmitSuccessState());
@@ -55,29 +56,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (resp != null) {
           if (resp is String) {
             log(resp);
-            emit(SubmitFailState(resp));
+            emit(AuthSubmitFailState(resp));
           } else {
-            emit(SubmitSuccessState());
+            emit(AuthSubmitSuccessState());
           }
         }
       } catch (e) {
         log(e.toString());
-        emit(SubmitFailState(e.toString()));
+        emit(AuthSubmitFailState(e.toString()));
       }
     }
   }
 
-  void _onLoadUserInfo(LoadUserInfoEvent event, Emitter<AuthState> emit) async {
+  void _onLoadUserInfo(
+      AuthLoadUserInfoEvent event, Emitter<AuthState> emit) async {
     // lay thong tin user --------------------------------------------------
     var userJson = await LocalStorage.getItem(KeyLS.user_json);
     log('userJson: $userJson');
     var user = LoginResModel.fromJson(jsonDecode(userJson));
     log('fullName: ${user.fullname!}');
-    emit(LoadedUserInfoState(user.fullname!));
+    emit(AuthLoadedUserInfoState(user.fullname!));
   }
 
-  void _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
+  void _onLogout(AuthLogoutEvent event, Emitter<AuthState> emit) async {
     await LocalStorage.removeAll();
-    emit(LogoutState());
+    emit(AuthLogoutState());
   }
 }

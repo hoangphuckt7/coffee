@@ -27,7 +27,7 @@ class LoginScreen extends StatelessWidget {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is SubmitSuccessState) {
+        if (state is AuthSubmitSuccessState) {
           Navigator.pushNamed(context, RouteName.home);
         }
       },
@@ -52,12 +52,12 @@ class LoginScreen extends StatelessWidget {
             String? errUsername;
             String? errPassword;
             bool isLoading = false;
-            if (state is DataInvalidState) {
+            if (state is AuthDataInvalidState) {
               errUsername = state.errUsername;
               errPassword = state.errPassword;
-            } else if (state is SubmitFailState) {
-              Fn.showToast(EToast.danger, state.errMsg);
-            } else if (state is SubmittingState) {
+            } else if (state is AuthSubmitFailState) {
+              Fn.showToast(eToast: EToast.danger, msg: state.errMsg);
+            } else if (state is AuthSubmittingState) {
               isLoading = true;
             }
             return Stack(
@@ -82,27 +82,27 @@ class LoginScreen extends StatelessWidget {
                             ), // ----------------------------------------------------------------------------------------------------
                             const SizedBox(height: 10),
                             // Username
-                            FieldOutnine(
+                            FieldOutline(
                               labelText: 'Tên đăng nhập',
                               controller: usernameTEC,
                               errorText: errUsername,
                               onChanged: (val) {
                                 BlocProvider.of<AuthBloc>(context)
-                                    .add(DataChangedEvent(
+                                    .add(AuthDataChangedEvent(
                                   usernameTEC.text,
                                   passwordTEC.text,
                                 ));
                               },
                             ), // ----------------------------------------------------------------------------------------------------
                             // Password
-                            FieldOutnine(
+                            FieldOutline(
                               labelText: 'Mật khẩu',
                               controller: passwordTEC,
                               eFieldType: EFieldType.password,
                               errorText: errPassword,
                               onChanged: (val) {
                                 BlocProvider.of<AuthBloc>(context)
-                                    .add(DataChangedEvent(
+                                    .add(AuthDataChangedEvent(
                                   usernameTEC.text,
                                   passwordTEC.text,
                                 ));
@@ -114,7 +114,7 @@ class LoginScreen extends StatelessWidget {
                               onPressed: () {
                                 FocusManager.instance.primaryFocus?.unfocus();
                                 BlocProvider.of<AuthBloc>(context)
-                                    .add(SubmittedEvent(
+                                    .add(AuthSubmittedEvent(
                                   usernameTEC.text,
                                   passwordTEC.text,
                                 ));

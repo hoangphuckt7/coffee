@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../utils/ui_setting.dart';
 
 // ignore: must_be_immutable
-class FieldOutnine extends StatelessWidget {
+class FieldOutline extends StatelessWidget {
   final Key? fieldKey;
   final String? labelText;
   final String? hintText;
@@ -21,7 +21,7 @@ class FieldOutnine extends StatelessWidget {
   final double paddingHorizontal;
   final Function(String)? onChanged;
   final Function()? onEditingComplete;
-  const FieldOutnine({
+  const FieldOutline({
     super.key,
     this.fieldKey,
     this.labelText,

@@ -11,22 +11,22 @@ part 'splash_state.dart';
 
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   final UserRepo _userRepo = UserRepo();
-  SplashBloc() : super(InitialState()) {
-    on<CheckLoginEvent>(_onCheckLogin);
+  SplashBloc() : super(SPInitialState()) {
+    on<SPCheckLoginEvent>(_onCheckLogin);
   }
 
-  void _onCheckLogin(CheckLoginEvent event, Emitter<SplashState> emit) async {
-    emit(InitialState());
+  void _onCheckLogin(SPCheckLoginEvent event, Emitter<SplashState> emit) async {
+    emit(SPInitialState());
     try {
       var isLoginSuccess = await _userRepo.checkLogin();
       if (isLoginSuccess) {
-        emit(LoginSuccessState());
+        emit(SPLoginSuccessState());
       } else {
-        emit(LoginFailState());
+        emit(SPLoginFailState());
       }
     } catch (e) {
       log(e.toString());
-      emit(LoginFailState());
+      emit(SPLoginFailState());
     }
   }
 }

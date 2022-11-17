@@ -6,37 +6,37 @@ part of 'home_bloc.dart';
 abstract class HomeState {}
 
 // -------------------------------------------------- Common
-class InitialState extends HomeState {}
+class HomeInitialState extends HomeState {}
 
-class UserInfoLoadedState extends HomeState {
+class HomeUserInfoLoadedState extends HomeState {
   final fullName;
 
-  UserInfoLoadedState(this.fullName);
+  HomeUserInfoLoadedState(this.fullName);
 }
 
-class ErrorState extends HomeState {
+class HomeErrorState extends HomeState {
   final errMsg;
 
-  ErrorState(this.errMsg);
+  HomeErrorState(this.errMsg);
 }
 
-class UpdateLoadingState extends HomeState {
+class HomeUpdateLoadingState extends HomeState {
   final isLoading;
   final labelLoading;
 
-  UpdateLoadingState(this.isLoading, this.labelLoading);
+  HomeUpdateLoadingState(this.isLoading, this.labelLoading);
 }
 
 // -------------------------------------------------- Items
-class ItemsLoadedState extends HomeState {
+class HomeItemsLoadedState extends HomeState {
   final isSuccess;
   final msg;
 
-  ItemsLoadedState(this.isSuccess, this.msg);
+  HomeItemsLoadedState(this.isSuccess, this.msg);
 }
 
 // -------------------------------------------------- Orders
-class OrdersLoadedState extends HomeState {
+class HomeOrdersLoadedState extends HomeState {
   final selectedOrder;
   final lstOrders;
   final selectedOrderDone;
@@ -44,7 +44,7 @@ class OrdersLoadedState extends HomeState {
   final lstOrderDetails;
   // final fullName;
 
-  OrdersLoadedState(
+  HomeOrdersLoadedState(
     this.selectedOrder,
     this.lstOrders,
     this.selectedOrderDone,
@@ -54,50 +54,50 @@ class OrdersLoadedState extends HomeState {
   );
 }
 
-class OrdersChangedState extends HomeState {
+class HomeOrdersChangedState extends HomeState {
   final orderId;
   final lstOrderDetails;
 
-  OrdersChangedState(this.orderId, this.lstOrderDetails);
+  HomeOrdersChangedState(this.orderId, this.lstOrderDetails);
 }
 
-class OrdersDoneChangedState extends HomeState {
+class HomeOrdersDoneChangedState extends HomeState {
   final orderId;
   final lstOrderDetails;
 
-  OrdersDoneChangedState(this.orderId, this.lstOrderDetails);
+  HomeOrdersDoneChangedState(this.orderId, this.lstOrderDetails);
 }
 
-class OrdersPinnedState extends HomeState {
+class HomeOrdersPinnedState extends HomeState {
   final order;
   final lstOrders;
 
-  OrdersPinnedState(this.order, this.lstOrders);
+  HomeOrdersPinnedState(this.order, this.lstOrders);
 }
 
-class OrderScrolledState extends HomeState {
+class HomeOrderScrolledState extends HomeState {
   final showArrowTop;
   final showArrowBot;
 
-  OrderScrolledState(this.showArrowTop, this.showArrowBot);
+  HomeOrderScrolledState(this.showArrowTop, this.showArrowBot);
 }
 
-class ItemCheckboxChangedState extends HomeState {
+class HomeItemCheckboxChangedState extends HomeState {
   final check;
 
-  ItemCheckboxChangedState(this.check);
+  HomeItemCheckboxChangedState(this.check);
 }
 
-class OrderTabChangedState extends HomeState {
+class HomeOrderTabChangedState extends HomeState {
   final isNew;
   final lstCurrentOrder;
   final lstCurrentOrderDetail;
 
-  OrderTabChangedState(
+  HomeOrderTabChangedState(
       this.isNew, this.lstCurrentOrder, this.lstCurrentOrderDetail);
 }
 
-class OrderSubmitSuccessState extends HomeState {
+class HomeOrderSubmitSuccessState extends HomeState {
   final selectedOrder;
   final lstOrders;
   final selectedOrderDone;
@@ -105,7 +105,7 @@ class OrderSubmitSuccessState extends HomeState {
   final lstDetails;
   final pinnedOrder;
 
-  OrderSubmitSuccessState(
+  HomeOrderSubmitSuccessState(
     this.selectedOrder,
     this.lstOrders,
     this.selectedOrderDone,
@@ -115,15 +115,15 @@ class OrderSubmitSuccessState extends HomeState {
   );
 }
 
-class OrderSubmitFailState extends HomeState {
+class HomeOrderSubmitFailState extends HomeState {
   final errMsg;
 
-  OrderSubmitFailState(this.errMsg);
+  HomeOrderSubmitFailState(this.errMsg);
 }
 
-class RecieveNewOrderState extends HomeState {
+class HomeRecieveNewOrderState extends HomeState {
   final lstOrder;
   final lstDetail;
 
-  RecieveNewOrderState(this.lstOrder, this.lstDetail);
+  HomeRecieveNewOrderState(this.lstOrder, this.lstDetail);
 }

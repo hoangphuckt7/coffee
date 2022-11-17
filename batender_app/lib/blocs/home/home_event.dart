@@ -5,64 +5,64 @@ part of 'home_bloc.dart';
 @immutable
 abstract class HomeEvent {}
 
-class InitialEvent extends HomeEvent {}
+class HomeInitialEvent extends HomeEvent {}
 
-class LoadDataEvent extends HomeEvent {}
+class HomeLoadDataEvent extends HomeEvent {}
 
-class UpdateLoadingEvent extends HomeEvent {
+class HomeUpdateLoadingEvent extends HomeEvent {
   final isLoading;
   final labelLoading;
 
-  UpdateLoadingEvent(this.isLoading, this.labelLoading);
+  HomeUpdateLoadingEvent(this.isLoading, this.labelLoading);
 }
 
-class OrderChangeEvent extends HomeEvent {
+class HomeOrderChangeEvent extends HomeEvent {
   final orderId;
   final lstOrderDetails;
 
-  OrderChangeEvent(this.orderId, this.lstOrderDetails);
+  HomeOrderChangeEvent(this.orderId, this.lstOrderDetails);
 }
 
-class OrderDoneChangeEvent extends HomeEvent {
+class HomeOrderDoneChangeEvent extends HomeEvent {
   final orderId;
   final lstOrderDetails;
 
-  OrderDoneChangeEvent(this.orderId, this.lstOrderDetails);
+  HomeOrderDoneChangeEvent(this.orderId, this.lstOrderDetails);
 }
 
-class OrderPinEvent extends HomeEvent {
+class HomeOrderPinEvent extends HomeEvent {
   final order;
   final lstOrders;
 
-  OrderPinEvent(this.order, this.lstOrders);
+  HomeOrderPinEvent(this.order, this.lstOrders);
 }
 
-class OrderScrollEvent extends HomeEvent {
+class HomeOrderScrollEvent extends HomeEvent {
   final showArrowTop;
   final showArrowBot;
 
-  OrderScrollEvent(this.showArrowTop, this.showArrowBot);
+  HomeOrderScrollEvent(this.showArrowTop, this.showArrowBot);
 }
 
-class ItemCheckboxChangeEvent extends HomeEvent {
+class HomeItemCheckboxChangeEvent extends HomeEvent {
   final check;
 
-  ItemCheckboxChangeEvent(this.check);
+  HomeItemCheckboxChangeEvent(this.check);
 }
 
-class OrderTabChangeEvent extends HomeEvent {
+class HomeOrderTabChangeEvent extends HomeEvent {
   final isNew;
   final lstCurrentOrder;
   final lstCurrentOrderDetail;
 
-  OrderTabChangeEvent(
+  HomeOrderTabChangeEvent(
     this.isNew,
     this.lstCurrentOrder,
     this.lstCurrentOrderDetail,
   );
 }
 
-class OrderSubmitEvent extends HomeEvent {
+class HomeOrderSubmitEvent extends HomeEvent {
   final isNew;
   final selectedOrder;
   final lstOrders;
@@ -71,7 +71,7 @@ class OrderSubmitEvent extends HomeEvent {
   final lstDetails;
   final pinnedOrder;
 
-  OrderSubmitEvent(
+  HomeOrderSubmitEvent(
     this.isNew,
     this.selectedOrder,
     this.lstOrders,
@@ -82,10 +82,10 @@ class OrderSubmitEvent extends HomeEvent {
   );
 }
 
-class RecieveNewOrderEvent extends HomeEvent {
+class HomeRecieveNewOrderEvent extends HomeEvent {
   final lstOrder;
 
-  RecieveNewOrderEvent(this.lstOrder);
+  HomeRecieveNewOrderEvent(this.lstOrder);
 }
 
-class ListenRecieveNewOrderEvent extends HomeEvent {}
+class HomeListenRecieveNewOrderEvent extends HomeEvent {}

@@ -41,26 +41,37 @@ class Fn {
     }
   }
 
-  static showToast(EToast eToast, String msg) {
+  static showToast({
+    EToast? eToast,
+    String msg = '',
+    ToastGravity? index = ToastGravity.TOP,
+  }) {
     dynamic toastColor;
+    dynamic hexColor;
     switch (eToast) {
       case EToast.success:
         toastColor = MColor.success;
+        hexColor = HexColor.success;
         break;
       case EToast.danger:
         toastColor = MColor.danger;
+        hexColor = HexColor.danger;
         break;
       case EToast.warning:
         toastColor = MColor.warning;
+        hexColor = HexColor.warning;
         break;
       default:
         toastColor = MColor.black;
+        hexColor = HexColor.black;
         break;
     }
     Fluttertoast.showToast(
       msg: msg,
       backgroundColor: toastColor,
-      gravity: ToastGravity.TOP,
+      gravity: index,
+      webBgColor: hexColor,
+      webPosition: 'center', //	String (left, center or right)
     );
   }
 

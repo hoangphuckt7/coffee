@@ -20,20 +20,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ItemRepo _itemRepo = ItemRepo();
   final OrderRepo _orderRepo = OrderRepo();
   final SignalR _signalr = SignalR();
-  HomeBloc() : super(InitialState()) {
-    on<LoadDataEvent>(_onLoadData);
-    on<OrderChangeEvent>(_onOrderChange);
-    on<OrderDoneChangeEvent>(_onOrderDoneChange);
-    on<OrderPinEvent>(_onOrderPin);
-    on<ItemCheckboxChangeEvent>(_onItemCheckboxChange);
-    on<OrderTabChangeEvent>(_onOrderTabChange);
-    on<OrderSubmitEvent>(_onOrderSubmit);
-    on<ListenRecieveNewOrderEvent>(_onListenRecieveNewOrder);
-    on<RecieveNewOrderEvent>(_onRecieveNewOrder);
+  HomeBloc() : super(HomeInitialState()) {
+    on<HomeLoadDataEvent>(_onLoadData);
+    on<HomeOrderChangeEvent>(_onOrderChange);
+    on<HomeOrderDoneChangeEvent>(_onOrderDoneChange);
+    on<HomeOrderPinEvent>(_onOrderPin);
+    on<HomeItemCheckboxChangeEvent>(_onItemCheckboxChange);
+    on<HomeOrderTabChangeEvent>(_onOrderTabChange);
+    on<HomeOrderSubmitEvent>(_onOrderSubmit);
+    on<HomeListenRecieveNewOrderEvent>(_onListenRecieveNewOrder);
+    on<HomeRecieveNewOrderEvent>(_onRecieveNewOrder);
   }
 
-  void _onLoadData(LoadDataEvent event, Emitter<HomeState> emit) async {
-    emit(UpdateLoadingState(true, "Đang tải Menu..."));
+  void _onLoadData(HomeLoadDataEvent event, Emitter<HomeState> emit) async {
+    emit(HomeUpdateLoadingState(true, "Đang tải Menu..."));
 
     try {
       // Load List Item --------------------------------------------------
@@ -49,8 +49,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
       // Load List Order --------------------------------------------------
       if (lstItem.isNotEmpty) {
-        emit(ItemsLoadedState(true, 'Tải Menu thành công'));
-        emit(UpdateLoadingState(true, "Đang tải Order..."));
+        emit(HomeItemsLoadedState(true, 'Tải Menu thành công'));
+        emit(HomeUpdateLoadingState(true, "Đang tải Order..."));
         var barOrder = await _orderRepo.getBartenderOrders();
 
         String selOrder = '';
@@ -70,7 +70,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           selOrderDone = lstOrderDone[0].id!;
         }
 
-        emit(OrdersLoadedState(
+        emit(HomeOrdersLoadedState(
           selOrder,
           lstOrder,
           selOrderDone,
@@ -79,8 +79,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           // user.fullName,
         ));
       } else {
-        emit(ItemsLoadedState(false, 'Tải Menu thất bại'));
-        emit(OrdersLoadedState(
+        emit(HomeItemsLoadedState(false, 'Tải Menu thất bại'));
+        emit(HomeOrdersLoadedState(
           '',
           const <OrderModel>[],
           '',
@@ -91,20 +91,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     } catch (e) {
       log(e.toString());
-      emit(ErrorState('Lỗi'));
+      emit(HomeErrorState('Lỗi'));
     }
   }
 
-  void _onOrderChange(OrderChangeEvent event, Emitter<HomeState> emit) async {
-    emit(OrdersChangedState(event.orderId, event.lstOrderDetails));
+  void _onOrderChange(
+      HomeOrderChangeEvent event, Emitter<HomeState> emit) async {
+    emit(HomeOrdersChangedState(event.orderId, event.lstOrderDetails));
   }
 
   void _onOrderDoneChange(
-      OrderDoneChangeEvent event, Emitter<HomeState> emit) async {
-    emit(OrdersDoneChangedState(event.orderId, event.lstOrderDetails));
+      HomeOrderDoneChangeEvent event, Emitter<HomeState> emit) async {
+    emit(HomeOrdersDoneChangedState(event.orderId, event.lstOrderDetails));
   }
 
-  void _onOrderPin(OrderPinEvent event, Emitter<HomeState> emit) {
+  void _onOrderPin(HomeOrderPinEvent event, Emitter<HomeState> emit) {
     var pinOrder = event.order;
     if (pinOrder != null) {
       List<OrderModel> lstOrderUnpinned =
@@ -113,21 +114,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       var lstOrderNew = <OrderModel>[];
       lstOrderNew.add(pinOrder);
       lstOrderNew.addAll(lstOrderUnpinned);
-      emit(OrdersPinnedState(event.order, lstOrderNew));
+      emit(HomeOrdersPinnedState(event.order, lstOrderNew));
     } else {
       List<OrderModel> lstOrders = event.lstOrders;
       lstOrders.sort((a, b) => a.orderNumber!.compareTo(b.orderNumber!));
-      emit(OrdersPinnedState(pinOrder, event.lstOrders));
+      emit(HomeOrdersPinnedState(pinOrder, event.lstOrders));
     }
   }
 
   void _onItemCheckboxChange(
-      ItemCheckboxChangeEvent event, Emitter<HomeState> emit) async {
-    emit(ItemCheckboxChangedState(event.check));
+      HomeItemCheckboxChangeEvent event, Emitter<HomeState> emit) async {
+    emit(HomeItemCheckboxChangedState(event.check));
   }
 
-  void _onOrderSubmit(OrderSubmitEvent event, Emitter<HomeState> emit) async {
-    emit(UpdateLoadingState(true, 'Đang tải...'));
+  void _onOrderSubmit(
+      HomeOrderSubmitEvent event, Emitter<HomeState> emit) async {
+    emit(HomeUpdateLoadingState(true, 'Đang tải...'));
     try {
       var pinnedOrder = event.pinnedOrder;
       if (pinnedOrder == event.selectedOrder) {
@@ -159,7 +161,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             selOrderDone = lstOrdersDone[0].id!;
           }
 
-          emit(OrderSubmitSuccessState(
+          emit(HomeOrderSubmitSuccessState(
             selOrder,
             lstOrdersNew,
             selOrderDone,
@@ -194,7 +196,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             selOrder = lstOrders[0].id!;
           }
 
-          emit(OrderSubmitSuccessState(
+          emit(HomeOrderSubmitSuccessState(
             selOrder,
             lstOrders,
             selOrderDone,
@@ -207,18 +209,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } catch (e) {
       log(e.toString());
       emit(
-        ErrorState('Không thể hoàn ${event.isNew ? 'thành' : 'tác'} Order này'),
+        HomeErrorState(
+            'Không thể hoàn ${event.isNew ? 'thành' : 'tác'} Order này'),
       );
     }
   }
 
-  void _onOrderTabChange(OrderTabChangeEvent event, Emitter<HomeState> emit) {
-    emit(OrderTabChangedState(
+  void _onOrderTabChange(
+      HomeOrderTabChangeEvent event, Emitter<HomeState> emit) {
+    emit(HomeOrderTabChangedState(
         event.isNew, event.lstCurrentOrder, event.lstCurrentOrderDetail));
   }
 
   void _onListenRecieveNewOrder(
-      ListenRecieveNewOrderEvent event, Emitter<HomeState> emit) async {
+      HomeListenRecieveNewOrderEvent event, Emitter<HomeState> emit) async {
     var hubConnect = await _signalr.newConnect(HubSignalR.notificationHub);
     hubConnect!.on(MethodSignalR.newNotify, (data) {
       String json = jsonEncode(data);
@@ -226,12 +230,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         jsonDecode(json).map((model) => OrderModel.fromJson(model)),
       );
       // log('hub: $json');
-      add(RecieveNewOrderEvent(lstOrders));
+      add(HomeRecieveNewOrderEvent(lstOrders));
     });
   }
 
   void _onRecieveNewOrder(
-      RecieveNewOrderEvent event, Emitter<HomeState> emit) async {
+      HomeRecieveNewOrderEvent event, Emitter<HomeState> emit) async {
     // Load List Item
     var lstItem = <ItemModel>[];
     var lstItemJson = await LocalStorage.getItem(KeyLS.items);
@@ -248,7 +252,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (lstOrder.isNotEmpty) {
       lstDetail = lstOrder[0].orderDetails!;
     }
-    emit(RecieveNewOrderState(lstOrder, lstDetail));
+    emit(HomeRecieveNewOrderState(lstOrder, lstDetail));
   }
 
   List<OrderModel> _assignItemToOrder(

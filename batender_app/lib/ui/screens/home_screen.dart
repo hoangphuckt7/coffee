@@ -1,13 +1,9 @@
 // ignore_for_file: non_constant_identifier_names, must_be_immutable
 
-import 'dart:developer';
-
 import 'package:bartender_app/blocs/auth/auth_bloc.dart';
 import 'package:bartender_app/blocs/home/home_bloc.dart';
 import 'package:bartender_app/models/order/order_detail_model.dart';
 import 'package:bartender_app/models/order/order_model.dart';
-import 'package:bartender_app/repositories/item_repo.dart';
-import 'package:bartender_app/repositories/order_repo.dart';
 import 'package:bartender_app/routes.dart';
 import 'package:bartender_app/ui/controls/fill_btn.dart';
 import 'package:bartender_app/ui/widgets/card_custom.dart';
@@ -55,19 +51,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         String loadingMsg = "";
-        if (state is ErrorState) {
+        if (state is HomeErrorState) {
           isLoading = false;
-          Fn.showToast(EToast.danger, state.errMsg.toString());
-        } else if (state is UpdateLoadingState) {
+          Fn.showToast(eToast: EToast.danger, msg: state.errMsg.toString());
+        } else if (state is HomeUpdateLoadingState) {
           isLoading = true;
           loadingMsg = state.labelLoading.toString();
-        } else if (state is ItemsLoadedState) {
+        } else if (state is HomeItemsLoadedState) {
           EToast eToast = EToast.success;
           if (!state.isSuccess) eToast = EToast.danger;
-          Fn.showToast(eToast, state.msg.toString());
-        } else if (state is OrdersLoadedState ||
-            state is OrderSubmitSuccessState ||
-            state is OrderSubmitFailState) {
+          Fn.showToast(eToast: eToast, msg: state.msg.toString());
+        } else if (state is HomeOrdersLoadedState ||
+            state is HomeOrderSubmitSuccessState ||
+            state is HomeOrderSubmitFailState) {
           isLoading = false;
         }
         return Processing(msg: loadingMsg, show: isLoading);
@@ -99,21 +95,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     bool isNew = true;
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state is OrdersLoadedState) {
+        if (state is HomeOrdersLoadedState) {
           lstOrderDetails = state.lstOrderDetails;
-        } else if (state is OrdersChangedState) {
+        } else if (state is HomeOrdersChangedState) {
           lstOrderDetails = state.lstOrderDetails;
           selectedOrder = state.orderId;
-        } else if (state is OrdersDoneChangedState) {
+        } else if (state is HomeOrdersDoneChangedState) {
           lstOrderDetails = state.lstOrderDetails;
           selectedOrderDone = state.orderId;
-        } else if (state is OrderTabChangedState) {
+        } else if (state is HomeOrderTabChangedState) {
           isNew = state.isNew;
           lstOrderDetails = state.lstCurrentOrderDetail;
-        } else if (state is OrderSubmitSuccessState) {
+        } else if (state is HomeOrderSubmitSuccessState) {
           lstOrderDetails = state.lstDetails;
           pinnedOrder = state.pinnedOrder;
-        } else if (state is RecieveNewOrderState) {
+        } else if (state is HomeRecieveNewOrderState) {
           if (selectedOrder.isEmpty) {
             lstOrderDetails = state.lstDetail;
           }
@@ -137,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 return BlocBuilder<HomeBloc, HomeState>(
                                   builder: (context, state) {
                                     List<String> itemCheck = <String>[];
-                                    if (state is ItemCheckboxChangedState) {
+                                    if (state is HomeItemCheckboxChangedState) {
                                       itemCheck = state.check;
                                     }
                                     return OrderDetailCard(
@@ -155,7 +151,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                               .toList();
                                         }
                                         BlocProvider.of<HomeBloc>(context).add(
-                                          ItemCheckboxChangeEvent(itemCheck),
+                                          HomeItemCheckboxChangeEvent(
+                                              itemCheck),
                                         );
                                       },
                                     );
@@ -172,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             btnBgColor: isNew ? EColor.primary : EColor.danger,
                             onPressed: () {
                               BlocProvider.of<HomeBloc>(context).add(
-                                OrderSubmitEvent(
+                                HomeOrderSubmitEvent(
                                   isNew,
                                   selectedOrder,
                                   lstOrders,
@@ -237,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _tabOrder(BuildContext context, TabController tabController) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state is OrdersLoadedState) {
+        if (state is HomeOrdersLoadedState) {
           tabController.index = 0;
           // fullName = state.fullName;
         }
@@ -251,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     .orderDetails!;
               }
               BlocProvider.of<HomeBloc>(context).add(
-                OrderTabChangeEvent(true, lstOrders, lstDetail),
+                HomeOrderTabChangeEvent(true, lstOrders, lstDetail),
               );
               break;
             case 1:
@@ -262,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     .orderDetails!;
               }
               BlocProvider.of<HomeBloc>(context).add(
-                OrderTabChangeEvent(false, lstOrdersDone, lstDetail),
+                HomeOrderTabChangeEvent(false, lstOrdersDone, lstDetail),
               );
               break;
           }
@@ -287,20 +284,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     String currentId = '';
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state is OrdersLoadedState) {
+        if (state is HomeOrdersLoadedState) {
           selectedOrder = state.selectedOrder;
           lstOrders = state.lstOrders;
           lstOrdersDone = state.lstOrdersDone;
           selectedOrderDone = state.selectedOrderDone;
-        } else if (state is OrdersPinnedState) {
+        } else if (state is HomeOrdersPinnedState) {
           pinnedOrder = state.order?.id;
           lstOrders = state.lstOrders;
-        } else if (state is OrderSubmitSuccessState) {
+        } else if (state is HomeOrderSubmitSuccessState) {
           selectedOrder = state.selectedOrder;
           lstOrders = state.lstOrders;
           selectedOrderDone = state.selectedOrderDone;
           lstOrdersDone = state.lstOrdersDone;
-        } else if (state is RecieveNewOrderState) {
+        } else if (state is HomeRecieveNewOrderState) {
           lstOrders.addAll(state.lstOrder);
           if (selectedOrder.isEmpty) {
             selectedOrder = lstOrders[0].id!;
@@ -329,14 +326,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         onClick: () {
                           if (isNew) {
                             BlocProvider.of<HomeBloc>(context).add(
-                              OrderChangeEvent(
+                              HomeOrderChangeEvent(
                                 orderModel.id,
                                 orderModel.orderDetails,
                               ),
                             );
                           } else {
                             BlocProvider.of<HomeBloc>(context).add(
-                              OrderDoneChangeEvent(
+                              HomeOrderDoneChangeEvent(
                                 orderModel.id,
                                 orderModel.orderDetails,
                               ),
@@ -349,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             data = null;
                           }
                           BlocProvider.of<HomeBloc>(context).add(
-                            OrderPinEvent(data, currentLstOrder),
+                            HomeOrderPinEvent(data, currentLstOrder),
                           );
                         },
                       );
@@ -370,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         children: [
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
-              if (state is LoadedUserInfoState) {
+              if (state is AuthLoadedUserInfoState) {
                 fullName = state.fullName;
               }
               return Expanded(
@@ -391,7 +388,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             builder: (context, state) {
               return InkWell(
                 onTap: () {
-                  BlocProvider.of<HomeBloc>(context).add(LoadDataEvent());
+                  BlocProvider.of<HomeBloc>(context).add(HomeLoadDataEvent());
                 },
                 child: Row(
                   children: [
@@ -417,13 +414,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           const SizedBox(width: 10),
           BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
-              if (state is LogoutState) {
+              if (state is AuthLogoutState) {
                 Navigator.pushNamed(context, RouteName.login);
               }
             },
             child: InkWell(
               onTap: () {
-                BlocProvider.of<AuthBloc>(context).add(LogoutEvent());
+                BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
               },
               child: Row(
                 children: [

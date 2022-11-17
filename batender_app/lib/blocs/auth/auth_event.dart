@@ -5,20 +5,20 @@ part of 'auth_bloc.dart';
 @immutable
 abstract class AuthEvent {}
 
-class DataChangedEvent extends AuthEvent {
+class AuthDataChangedEvent extends AuthEvent {
   final username;
   final password;
 
-  DataChangedEvent(this.username, this.password);
+  AuthDataChangedEvent(this.username, this.password);
 }
 
-class SubmittedEvent extends AuthEvent {
+class AuthSubmittedEvent extends AuthEvent {
   final username;
   final password;
 
-  SubmittedEvent(this.username, this.password);
+  AuthSubmittedEvent(this.username, this.password);
 }
 
-class LoadUserInfoEvent extends AuthEvent {}
+class AuthLoadUserInfoEvent extends AuthEvent {}
 
-class LogoutEvent extends AuthEvent {}
+class AuthLogoutEvent extends AuthEvent {}

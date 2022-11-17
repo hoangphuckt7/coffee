@@ -13,9 +13,9 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<SplashBloc, SplashState>(
       listener: (context, state) {
-        if (state is LoginSuccessState) {
+        if (state is SPLoginSuccessState) {
           Navigator.pushNamed(context, RouteName.home);
-        } else if (state is LoginFailState) {
+        } else if (state is SPLoginFailState) {
           Navigator.pushNamed(context, RouteName.login);
         }
       },
