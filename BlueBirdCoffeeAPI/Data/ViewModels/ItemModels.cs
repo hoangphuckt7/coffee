@@ -20,7 +20,7 @@ namespace Data.ViewModels
     public class ItemUpdateModel
     {
         public string? Description { get; set; }
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
         public double Price { get; set; }
         public Guid CategoryId { get; set; }
     }
@@ -34,5 +34,10 @@ namespace Data.ViewModels
         public bool Available { get; set; }
         public DescriptionViewModel? Category { get; set; }
         public List<Guid>? Images { get; set; }
+    }
+
+    public class ItemImageUpdateModel
+    {
+        public List<IFormFile> Images { get; set; } = null!;
     }
 }

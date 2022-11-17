@@ -21,6 +21,7 @@ namespace Service.Services
         Guid Delete(Guid id);
         double CheckCoupon(string coupon, double total);
         double UseCoupon(string coupon, double total);
+        Guid SetDefault(Guid id);
     }
     public class CouponService : ICouponService
     {
@@ -45,13 +46,31 @@ namespace Service.Services
         }
         public List<CouponViewModel> Get(string? seachValue)
         {
-            var coupons = _dbContext.Coupons.Where(f => string.IsNullOrEmpty(seachValue) || f.Description.Contains(seachValue) && f.IsDeleted == false).OrderByDescending(f => f.DateCreated).ToList();
-
+            var coupons = _dbContext.Coupons.Where(f => string.IsNullOrEmpty(seachValue) || f.Description.Contains(seachValue)).Where(f => f.IsDeleted == false).OrderByDescending(f => f.DateCreated).ToList();
             return _mapper.Map<List<CouponViewModel>>(coupons);
-
         }
         public Guid Add(CouponAddModel model)
         {
+            var exsitedCoupon = _dbContext.Coupons.FirstOrDefault(f => f.Description == model.Description);
+
+            if (exsitedCoupon.IsDeleted == false) throw new AppException("Mã giảm giá đã tồn tại");
+
+            if (exsitedCoupon != null)
+            {
+                exsitedCoupon.FromDate = model.FromDate;
+                exsitedCoupon.ToDate = model.ToDate;
+                exsitedCoupon.Limit = model.Limit;
+                exsitedCoupon.Maximum = model.Maximum;
+                exsitedCoupon.Minium = model.Minium;
+                exsitedCoupon.Discount = model.Discount;
+                exsitedCoupon.Default = model.Default;
+                exsitedCoupon.IsDeleted = false;
+
+                _dbContext.Update(exsitedCoupon);
+                _dbContext.SaveChanges();
+
+                return exsitedCoupon.Id;
+            }
             var newCoupon = _mapper.Map<Coupon>(model);
 
             _dbContext.Add(newCoupon);
@@ -138,6 +157,26 @@ namespace Service.Services
             _dbContext.SaveChanges();
 
             return result;
+        }
+        public Guid SetDefault(Guid id)
+        {
+            var coupon = _dbContext.Coupons.FirstOrDefault(f => f.Id == id);
+            if (coupon == null) throw new AppException("Mã giảm giá không tồn tại");
+
+            var currentDefault = _dbContext.Coupons.Where(f => f.Default == true).ToList();
+            foreach (var item in currentDefault)
+            {
+                item.Default = false;
+
+                _dbContext.Update(item);
+            }
+
+            coupon.Default = true;
+            _dbContext.Update(coupon);
+
+            _dbContext.SaveChanges();
+
+            return coupon.Id;
         }
     }
 }

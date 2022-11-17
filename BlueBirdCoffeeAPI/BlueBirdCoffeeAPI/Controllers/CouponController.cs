@@ -33,6 +33,13 @@ namespace BlueBirdCoffeeAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
+        [HttpPut("Default/{id}")]
+        public IActionResult SetDefault(Guid id)
+        {
+            return Ok(_couponService.SetDefault(id));
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpGet]
         public IActionResult GetAll(string? searchValue)
         {

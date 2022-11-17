@@ -47,6 +47,12 @@ namespace Service.Services
                 .OrderBy(f => f.Description)
                 .ToList();
 
+            try
+            {
+                tables = tables.OrderBy(f => int.Parse(f.Description)).ToList();
+            }
+            catch (Exception) { }
+
             return _mapper.Map<List<TableViewModel>>(tables);
         }
 
@@ -151,7 +157,7 @@ namespace Service.Services
                     await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableNew), casher.Id);
                     await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableOld), casher.Id);
                 }
-            }   
+            }
             //Ignore errors
             catch (Exception) { }
 

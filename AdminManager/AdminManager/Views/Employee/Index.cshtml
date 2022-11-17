@@ -105,7 +105,9 @@
                                                 }
                                             </td>
                                             <td><a href="employee/resetpassword?username=@item.Username" class="btn btn-success">Khôi phục mật khẩu</a></td>
-                                            <td><a href="employee/remove?username=@item.Username" class="btn btn-danger">Xóa</a></td>
+                                            <td>
+                                                <a class="btn btn-danger btn-action" data-toggle="tooltip" title="Xóa" data-confirm="Xác nhận xóa @item.FullName?" data-confirm-yes="deleteItem('@item.Username')"><i class="fas fa-trash"></i></a>
+                                            </td>
                                         </tr>
                                     }
                                 </table>
@@ -119,6 +121,9 @@
 </div>
 
 <script>
+    function deleteItem(value) {
+        window.location.href = '/employee/remove?username=' + value;
+    }
     function search(value) {
         document.getElementById("searchValue").value = value;
 

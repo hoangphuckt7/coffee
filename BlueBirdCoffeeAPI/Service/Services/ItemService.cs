@@ -113,21 +113,10 @@ namespace Service.Services
             var data = _dbContext.Items.FirstOrDefault(f => f.Id == id);
             if (data == null) throw new AppException("Invalid id");
 
-            data = _mapper.Map<Item>(model);
-
-            //if (model.Images != null)
-            //{
-            //    foreach (var item in model.Images)
-            //    {
-            //        var itemImage = new ItemImage()
-            //        {
-            //            ItemId = data.Id,
-            //            Image = ImageToBytes(item)
-            //        };
-
-            //        _dbContext.Add(itemImage);
-            //    }
-            //}
+            data.Description = model.Description;
+            data.Name = model.Name;
+            data.Price = model.Price;
+            data.CategoryId = model.CategoryId;
 
             _dbContext.Update(data);
             _dbContext.SaveChanges();

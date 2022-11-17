@@ -26,4 +26,18 @@
 
         public List<IFormFile>? Images { get; set; }
     }
+
+    public class ItemUpdateModel
+    {
+        public string? Description { get; set; }
+        public string Name { get; set; } = null!;
+        public double Price { get; set; }
+        public Guid CategoryId { get; set; }
+        public Guid Id { get; set; }
+    }
+
+    public class ItemImageUpdateModel
+    {
+        public List<IFormFile> Images { get; set; } = null!;
+    }
 }

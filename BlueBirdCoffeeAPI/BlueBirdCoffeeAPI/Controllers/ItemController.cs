@@ -28,7 +28,6 @@ namespace BlueBirdCoffeeAPI.Controllers
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [Consumes("multipart/form-data")]
-        //[Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
         public IActionResult Add([FromForm] ItemAddModel model)
         {
             return Ok(_itemService.Add(model));
@@ -36,7 +35,6 @@ namespace BlueBirdCoffeeAPI.Controllers
 
         [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
-        //[Consumes("multipart/form-data")]
         public IActionResult Update(Guid id, [FromBody] ItemUpdateModel model)
         {
             return Ok(_itemService.Update(id, model));
@@ -59,9 +57,9 @@ namespace BlueBirdCoffeeAPI.Controllers
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpPut("Image/{itemId}")]
         [Consumes("multipart/form-data")]
-        public IActionResult AddImages(Guid itemId, [FromForm] List<IFormFile> images)
+        public IActionResult AddImages(Guid itemId, [FromForm] ItemImageUpdateModel images)
         {
-            return Ok(_itemService.AddImages(itemId, images));
+            return Ok(_itemService.AddImages(itemId, images.Images));
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]

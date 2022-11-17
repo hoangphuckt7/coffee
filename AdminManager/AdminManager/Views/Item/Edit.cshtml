@@ -1,0 +1,127 @@
+﻿@using AdminManager.Models
+@using System.Globalization
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="main-content">
+    @{
+        ItemViewModel data = ViewBag.Item;
+    }
+    <section class="section">
+        <div class="section-header">
+            <h1>Thêm sản phẩm</h1>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 style="color:@ViewBag.MesColor">@ViewBag.Mes</h4>
+                    </div>
+                    @using (Html.BeginForm("Update", "Item", FormMethod.Post))
+                    {
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Tên</label>
+                                <input name="model.Name" value="@data.Name" type="text" class="form-control">
+                                <input name="model.Id" value="@data.Id" type="hidden" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Giá</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            $
+                                        </div>
+                                    </div>
+                                    <input name="model.Price" value="@data.Price" type="number" class="form-control currency">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Mô tả</label>
+                                <input name="model.Description" value="@data.Description" type="text" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Danh mục</label>
+                                <select name="model.CategoryId" class="form-control">
+                                    @foreach (var item in (List<DescriptionViewModel>)ViewBag.Categories)
+                                    {
+                                        if (data.Category?.Id == item.Id)
+                                        {
+                                            <option class="form-control" value="@item.Id" selected>@item.Description</option>
+                                        }
+                                        else
+                                        {
+                                            <option class="form-control" value="@item.Id">@item.Description</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 style="color:@ViewBag.MesColor">Ảnh hiện tại</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="form-group">
+                            @{
+                                if (data.Images != null)
+                                {
+                                    foreach (var item in data.Images)
+                                    {
+                                        <img width="200" src="@(AdminManager.Utils.Sessions.HOST + $"api/Item/Image/{item}")" />
+                                        <a class="btn btn-danger btn-action" data-toggle="tooltip" title="Xóa" data-confirm="Xác nhận xóa ảnh này?" data-confirm-yes="deleteItemImg('@item', '@data.Id')"><i class="fas fa-trash"></i></a>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 style="color:@ViewBag.MesColor">Thêm ảnh mới</h4>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("AddImg", "Item", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <div class="form-group">
+                                <label>Ảnh</label>
+                                <input name="images" type="file" multiple class="form-control" accept="image/png, image/jpeg">
+                                <input name="id" type="hidden" value="@data.Id">
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn btn-primary">Thêm</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    function deleteItemImg(value, itemId) {
+        window.location.href = '/item/RemoveImg?id=' + value + "&itemId=" + itemId;
+    }
+</script>
