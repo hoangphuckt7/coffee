@@ -19,6 +19,13 @@ namespace BlueBirdCoffeeAPI.Controllers
             _billService = billService;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN_CASHIER)]
+        [HttpGet("ExportData")]
+        public IActionResult ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize)
+        {
+            return Ok(_billService.ExportData(date, fromDate, toDate, isNewest, pageIndex, pageSize));
+        }
+
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpPost("Checkout")]
         public IActionResult Checkout([FromBody] CheckoutModel model)
@@ -56,7 +63,7 @@ namespace BlueBirdCoffeeAPI.Controllers
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpPut("Reason")]
-        public IActionResult UpdateReason([FromBody]BillMissingItemUpdateModel model)
+        public IActionResult UpdateReason([FromBody] BillMissingItemUpdateModel model)
         {
             return Ok(_billService.UpdateReason(model));
         }

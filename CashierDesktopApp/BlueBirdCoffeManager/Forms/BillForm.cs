@@ -1,4 +1,5 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
+using BlueBirdCoffeManager.Forms.DialogForms;
 using BlueBirdCoffeManager.Models;
 using BlueBirdCoffeManager.Utils;
 using Newtonsoft.Json;
@@ -97,10 +98,16 @@ namespace BlueBirdCoffeManager.Forms
 
             areaToolPanel.Height = lbArea.Top * 2 + lbArea.Height;
 
-            btnAdd.Left = 2 * areaPanel.Width / 100;
-            btnAdd.Width = 96 * areaPanel.Width / 100;
+            btnSetMissing.Left = 2 * areaPanel.Width / 100;
+            btnSetMissing.Width = 30 * areaPanel.Width / 100;
+            btnSetMissing.BackColor = Color.Gray;
+
+            btnAdd.Left = btnSetMissing.Left + btnSetMissing.Width;
+            btnAdd.Width = 66 * areaPanel.Width / 100;
             btnAdd.Top = areaPanel.Height - btnAdd.Height - 1 * Height / 100;
             btnAdd.BackColor = Sessions.Sessions.BUTTON_COLOR;
+
+            btnSetMissing.Top = btnAdd.Top;
 
             tableOrderDataPn.Top = areaToolPanel.Top + areaToolPanel.Height;
             tableOrderDataPn.Height = areaPanel.Height - tableOrderDataPn.Top - btnAdd.Height - (int)(1.5 * Height / 100);
@@ -156,7 +163,7 @@ namespace BlueBirdCoffeManager.Forms
             var oldOrdersDataJson = await ApiBuilder.SendRequest<List<BillViewModel>>("api/Bill/History/10", null, RequestMethod.GET);
             var oldOrdersData = JsonConvert.DeserializeObject<List<BillViewModel>>(oldOrdersDataJson);
 
-            if(oldOrdersData == null) oldOrdersData = new List<BillViewModel>();
+            if (oldOrdersData == null) oldOrdersData = new List<BillViewModel>();
 
             foreach (var item in oldOrdersData)
             {
@@ -687,6 +694,27 @@ namespace BlueBirdCoffeManager.Forms
                     astep += astepstep;
                 }
             }
+        }
+
+        private void btnSetMissing_Click(object sender, EventArgs e)
+        {
+            if (currentOrders.Count == 0)
+            {
+                return;
+            }
+
+            if (currentOrders.Count != 1)
+            {
+                MessageBox.Show("Vui lòng chọn một đơn duy nhất");
+                return;
+            }
+
+            SetMissingOrderForm form = new SetMissingOrderForm(currentOrders.First().Id);
+            form.ShowDialog();
+
+            this.Controls.Clear();
+            this.InitializeComponent();
+            BillForm_Load(sender, e);
         }
     }
 }

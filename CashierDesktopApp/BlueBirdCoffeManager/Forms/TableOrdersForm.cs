@@ -212,10 +212,10 @@ namespace BlueBirdCoffeManager.Forms
 
                 Label timeLb = new();
                 timeLb.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
-                timeLb.Text = "Giờ vào: " + order.DateCreated.Hour + ":" + order.DateCreated.Minute;
+                timeLb.Text = "Giờ vào: " + order.DateCreated.ToString("HH:mm");
                 timeLb.Top = 0;
                 timeLb.Left = 0;
-                timeLb.Width = orderData.Width * 20 / 100;
+                timeLb.Width = orderData.Width * 60 / 100;
 
                 Label quantity = new();
                 var quantityNumber = 0;
@@ -229,7 +229,7 @@ namespace BlueBirdCoffeManager.Forms
                 quantity.Text = "Số món: " + quantityNumber;
                 quantity.Top = timeLb.Height;
                 quantity.Left = 0;
-                quantity.Width = orderData.Width * 20 / 100;
+                quantity.Width = orderData.Width * 60 / 100;
 
                 CheckBox select = new();
                 select.Left = Width - 50;
@@ -267,22 +267,11 @@ namespace BlueBirdCoffeManager.Forms
 
                 pnSlide.Controls.Add(orderData);
 
-                //Panel space = new();
-                //space.Top = orderData.Top + orderData.Height;
-                //space.Left = 0;
-                //space.Width = Width;
-                //space.Height = this.Height * 1 / 100;
-                //space.BackColor = Color.White;
-
                 mainData.Controls.Add(pnSlide);
-                //mainData.Controls.Add(space);
 
                 top += orderData.Height;
-                //top += space.Height;
                 timer.Start();
             }
-
-            //mainData.Height = top;
 
             AutoDisableButton(btnRemove);
             AutoDisableButton(btnCheckout);

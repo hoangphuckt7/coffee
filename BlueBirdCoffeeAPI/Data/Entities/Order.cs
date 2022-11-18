@@ -25,6 +25,10 @@ namespace Data.Entities
         public string? EmployeeId { get; set; }
         public virtual User? Employee { get; set; }
 
+        [ForeignKey("Bartender")]
+        public string? BartenderId { get; set; }
+        public virtual User? Bartender { get; set; }
+
         [ForeignKey("UserRejected")]
         public string? UserRejectedId { get; set; }
         public virtual User? UserRejected { get; set; }

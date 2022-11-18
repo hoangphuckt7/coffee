@@ -1,0 +1,68 @@
+version: '2'
+services:
+  
+  postgreslq:
+    image: postgres
+    ports:
+       - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+
+  bluebirdcoffee-api:
+    image: bluebirdcoffee-api
+    build:
+         context: ./bluebirdcoffeeapi
+         dockerfile: ./bluebirdcoffeeapi/Dockerfile
+    container_name: bluebirdcoffeeapi
+    depends_on:
+      - postgreslq
+    ports:
+       - "8000:80"
+    environment:  
+      - ConnectionString=Server=postgreslq;Port=5432;Database=BlueBirdCoffee;Username=postgres;Password=mysecretpassword;CommandTimeout=200;Trust Server Certificate=true
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: always
+
+  bartender-web:
+    image: bartender-web
+    build:
+         context: ./batender_app
+         dockerfile: ./Dockerfile
+         args:
+           ApiHost: http://192.168.1.14:8000
+    container_name: batender_app
+    depends_on:
+      - bluebirdcoffee-api
+    ports:
+       - "8001:80"
+    restart: always
+
+  employee-web:
+    image: employee-web
+    build:
+         context: ./order_app
+         dockerfile: ./Dockerfile
+         args:
+           ApiHost: http://192.168.1.14:8000
+    container_name: order_app
+    depends_on:
+      - bluebirdcoffee-api
+    ports:
+       - "8002:80"
+    restart: always
+
+  admin-website:
+    image: admin-website
+    build:
+         context: ./adminmanager
+         dockerfile: ./adminmanager/Dockerfile
+    container_name: adminmanager
+    depends_on:
+      - bluebirdcoffee-api
+    ports:
+       - "80:80"
+    environment:  
+      - Host=http://192.168.1.14:8000/
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: always

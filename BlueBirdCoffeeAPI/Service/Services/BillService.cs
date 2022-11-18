@@ -22,6 +22,7 @@ namespace Service.Services
         List<ChartViewModel> ChartData();
         StatisticsModels Statistics();
         Guid UpdateReason(BillMissingItemUpdateModel model);
+        List<BillStatisticModel> ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize);
     }
 
     public class BillService : IBillService
@@ -56,7 +57,6 @@ namespace Service.Services
                 IncomeLastMonth = lastMonth.Income
             };
         }
-
         public StatisticsModels GetStatisticsForMonth(DateTime monthOfYear, List<Item>? items)
         {
             var data = _dbContext.OrderDetails.Where(f => f.DateUpdated.Year == monthOfYear.Year
@@ -83,7 +83,6 @@ namespace Service.Services
                 BestSellerItemName = items.First(f => f.Id == bestSellerThisMonth!.Id).Name!
             };
         }
-
         public int GetCurrentBillNumber()
         {
             var lastestBill = _dbContext.Bills.OrderByDescending(s => s.DateCreated).FirstOrDefault();
@@ -303,9 +302,9 @@ namespace Service.Services
                 .ToList();
 
             List<ChartViewModel> result = new List<ChartViewModel>();
-            for (int i = 1; i <= DateTime.Now.Day; i++)
+            for (int i = 1; i <= DateTime.UtcNow.AddHours(7).Day; i++)
             {
-                var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, i);
+                var date = new DateTime(DateTime.UtcNow.AddHours(7).Year, DateTime.UtcNow.AddHours(7).Month, i);
                 var total = currentMonthData.Where(f => f.DateCreated.Day == i).ToList().Count;
 
                 TimeSpan t = date - new DateTime(1970, 1, 1);
@@ -320,13 +319,11 @@ namespace Service.Services
             }
             return result;
         }
-
         public BillViewModel GetById(Guid id)
         {
             var bills = _dbContext.Bills.Where(f => f.Id == id).ToList();
             return GetByList(bills).First();
         }
-
         private List<BillViewModel> GetByList(List<Bill>? bills)
         {
             var billOrders = _dbContext.BillOrders.Where(s => bills.Select(s => s.Id).Contains(s.BillId)).ToList();
@@ -366,7 +363,6 @@ namespace Service.Services
             }
             return result;
         }
-
         public Guid UpdateReason(BillMissingItemUpdateModel model)
         {
             var bill = _dbContext.Bills.FirstOrDefault(f => f.Id == model.Id);
@@ -379,6 +375,47 @@ namespace Service.Services
             _dbContext.SaveChanges();
 
             return bill.Id;
+        }
+        public List<BillStatisticModel> ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize)
+        {
+            var querry = _dbContext.Bills.Where(f => date == null || date.Value.Date == f.DateCreated.Date)
+                .Where(f => (fromDate == null || toDate == null) || (f.DateCreated.Date >= fromDate.Value.Date && f.DateCreated.Date <= toDate.Value.Date));
+
+            if (isNewest)
+            {
+                querry = querry.OrderByDescending(f => f.DateCreated);
+            }
+            else
+            {
+                querry = querry.OrderBy(f => f.DateCreated);
+            }
+
+            var total = querry.Count();
+
+            List<Bill> data;
+            if (pageIndex != null && pageSize != null)
+            {
+                data = querry.Skip((pageIndex.Value - 1) * pageSize.Value).Take(pageSize.Value).ToList();
+            }
+            else
+            {
+                data = querry.ToList();
+            }
+
+            List<BillStatisticModel> result = _mapper.Map<List<BillStatisticModel>>(data);
+
+            var billOrders = _dbContext.BillOrders.Where(f => result.Select(s => s.Id).Contains(f.BillId)).ToList();
+            var orders = _dbContext.Orders.Where(f => billOrders.Select(s => s.OrderId).Contains(f.Id)).ToList();
+
+            foreach (var bill in result)
+            {
+                var currentBillOrders = billOrders.Where(f => f.BillId == bill.Id);
+
+                var currentOrders = orders.Where(f => currentBillOrders.Select(s => s.OrderId).Contains(f.Id)).ToList();
+                bill.Orders = _mapper.Map<List<OrderStatisticModel>>(currentOrders);
+            }
+
+            return result;
         }
     }
 }
