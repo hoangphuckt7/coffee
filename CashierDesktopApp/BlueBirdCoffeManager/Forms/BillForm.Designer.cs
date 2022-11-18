@@ -30,6 +30,7 @@
         {
             this.oldBillPanel = new System.Windows.Forms.Panel();
             this.areaPanel = new System.Windows.Forms.Panel();
+            this.btnSetMissing = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.areaToolPanel = new System.Windows.Forms.Panel();
             this.lbArea = new System.Windows.Forms.Label();
             this.lbTable = new System.Windows.Forms.Label();
@@ -52,6 +53,7 @@
             // 
             // areaPanel
             // 
+            this.areaPanel.Controls.Add(this.btnSetMissing);
             this.areaPanel.Controls.Add(this.areaToolPanel);
             this.areaPanel.Controls.Add(this.tableOrderDataPn);
             this.areaPanel.Controls.Add(this.btnAdd);
@@ -59,6 +61,25 @@
             this.areaPanel.Name = "areaPanel";
             this.areaPanel.Size = new System.Drawing.Size(440, 407);
             this.areaPanel.TabIndex = 0;
+            // 
+            // btnSetMissing
+            // 
+            this.btnSetMissing.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnSetMissing.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnSetMissing.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btnSetMissing.BorderRadius = 40;
+            this.btnSetMissing.BorderSize = 0;
+            this.btnSetMissing.FlatAppearance.BorderSize = 0;
+            this.btnSetMissing.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSetMissing.ForeColor = System.Drawing.Color.White;
+            this.btnSetMissing.Location = new System.Drawing.Point(0, 364);
+            this.btnSetMissing.Name = "btnSetMissing";
+            this.btnSetMissing.Size = new System.Drawing.Size(90, 40);
+            this.btnSetMissing.TabIndex = 7;
+            this.btnSetMissing.Text = "Hủy đơn";
+            this.btnSetMissing.TextColor = System.Drawing.Color.White;
+            this.btnSetMissing.UseVisualStyleBackColor = false;
+            this.btnSetMissing.Click += new System.EventHandler(this.btnSetMissing_Click);
             // 
             // areaToolPanel
             // 
@@ -124,9 +145,9 @@
             this.btnAdd.FlatAppearance.BorderSize = 0;
             this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(25, 368);
+            this.btnAdd.Location = new System.Drawing.Point(96, 368);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(407, 40);
+            this.btnAdd.Size = new System.Drawing.Size(336, 40);
             this.btnAdd.TabIndex = 4;
             this.btnAdd.Text = "Thêm toàn bộ>>>";
             this.btnAdd.TextColor = System.Drawing.Color.White;
@@ -179,5 +200,6 @@
         private Utils.RoundedButton btnAdd;
         private Panel tableOrderDataPn;
         private Panel areaToolPanel;
+        private Utils.RoundedButton btnSetMissing;
     }
 }

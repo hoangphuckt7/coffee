@@ -53,7 +53,7 @@ namespace Service.Services
         {
             var exsitedCoupon = _dbContext.Coupons.FirstOrDefault(f => f.Description == model.Description);
 
-            if (exsitedCoupon.IsDeleted == false) throw new AppException("Mã giảm giá đã tồn tại");
+            if (exsitedCoupon != null && exsitedCoupon.IsDeleted == false) throw new AppException("Mã giảm giá đã tồn tại");
 
             if (exsitedCoupon != null)
             {

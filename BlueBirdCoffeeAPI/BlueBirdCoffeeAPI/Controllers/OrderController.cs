@@ -71,14 +71,21 @@ namespace BlueBirdCoffeeAPI.Controllers
         [HttpPut("Complete/{id}")]
         public IActionResult CompleteOrders(Guid id)
         {
-            return Ok(_orderService.SetCompletedOrder(id));
+            return Ok(_orderService.SetCompletedOrder(id, User.GetId()));
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpPut("UnComplete/{id}")]
         public IActionResult UnCompleteOrders(Guid id)
         {
-            return Ok(_orderService.SetUnCompletedOrder(id));
+            return Ok(_orderService.SetUnCompletedOrder(id, User.GetId()));
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
+        [HttpPut("MissingOrders")]
+        public IActionResult MissingOrders(SetMissingOrders model)
+        {
+            return Ok(_orderService.SetMissingOrder(model, User.GetId()));
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]

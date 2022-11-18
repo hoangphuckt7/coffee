@@ -24,8 +24,8 @@ namespace Service.Services
         Guid SetMissingOrder(SetMissingOrders model, string emp);
         List<OrderViewModel> GetByIds(List<Guid> ids);
         List<OrderViewModel> GetCurrentOrders();
-        Guid SetCompletedOrder(Guid orderId);
-        Guid SetUnCompletedOrder(Guid orderId);
+        Guid SetCompletedOrder(Guid orderId, string empId);
+        Guid SetUnCompletedOrder(Guid orderId, string empId);
         List<OrderViewModel> GetUnknowLocaltionOrders();
         List<OrderViewModel> TodayCompletedOrders(int count);
         object GetBartenderOrders(int count);
@@ -170,13 +170,33 @@ namespace Service.Services
         }
         public Guid SetMissingOrder(SetMissingOrders model, string emp)
         {
-            var order = _dbContext.Orders.FirstOrDefault(f => model.OrderIds.Contains(f.Id));
+            var order = _dbContext.Orders.FirstOrDefault(f => model.OrderId == f.Id);
             if (order == null) throw new AppException("Invalid order id");
 
             order.IsMissing = true;
             order.EmployeeId = emp;
 
-            order.DateUpdated = DateTime.Now;
+            var orderDetails = _dbContext.OrderDetails.Where(s => s.OrderId == model.OrderId).ToList();
+
+            foreach (var item in orderDetails)
+            {
+                item.FinalQuantity = 0;
+                item.MissingReason = model.Reason;
+
+                item.DateUpdated = DateTime.UtcNow.AddHours(7);
+
+                _dbContext.Update(item);
+            }
+
+            if (order.TableId != null)
+            {
+                var table = _dbContext.Tables.First(f => order.TableId == f.Id);
+                table.CurrentOrder -= 1;
+
+                _dbContext.Update(table);
+            }
+
+            order.DateUpdated = DateTime.UtcNow.AddHours(7);
 
             _dbContext.Update(order);
             _dbContext.SaveChanges();
@@ -188,26 +208,28 @@ namespace Service.Services
             var ordres = _dbContext.Orders.Include(f => f.OrderDetails).Include(f => f.Table).Where(s => s.IsCheckout == false && s.IsCompleted == false && s.IsDeleted == false && s.IsMissing == false).OrderBy(f => f.DateCreated).ToList();
             return _mapper.Map<List<Order>, List<OrderViewModel>>(ordres);
         }
-        public Guid SetCompletedOrder(Guid orderId)
+        public Guid SetCompletedOrder(Guid orderId, string empId)
         {
             var order = _dbContext.Orders.FirstOrDefault(f => f.Id == orderId);
             if (order == null) throw new AppException("Invalid order id");
 
             order.IsCompleted = true;
             order.DateUpdated = DateTime.UtcNow.AddHours(7);
+            order.BartenderId = empId;
 
             _dbContext.Update(order);
             _dbContext.SaveChanges();
 
             return order.Id;
         }
-        public Guid SetUnCompletedOrder(Guid orderId)
+        public Guid SetUnCompletedOrder(Guid orderId, string empId)
         {
             var order = _dbContext.Orders.FirstOrDefault(f => f.Id == orderId);
             if (order == null) throw new AppException("Invalid order id");
 
             order.IsCompleted = false;
             order.DateUpdated = DateTime.UtcNow.AddHours(7);
+            order.BartenderId = empId;
 
             _dbContext.Update(order);
             _dbContext.SaveChanges();

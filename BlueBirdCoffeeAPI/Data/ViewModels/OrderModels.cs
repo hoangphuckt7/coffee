@@ -40,7 +40,8 @@ namespace Data.ViewModels
 
     public class SetMissingOrders
     {
-        public List<Guid> OrderIds { get; set; }
+        public Guid OrderId { get; set; }
+        public string Reason { get; set; }
     }
 
     public class SetMissingItem

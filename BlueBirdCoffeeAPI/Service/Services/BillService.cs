@@ -303,9 +303,9 @@ namespace Service.Services
                 .ToList();
 
             List<ChartViewModel> result = new List<ChartViewModel>();
-            for (int i = 1; i <= DateTime.Now.Day; i++)
+            for (int i = 1; i <= DateTime.UtcNow.AddHours(7).Day; i++)
             {
-                var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, i);
+                var date = new DateTime(DateTime.UtcNow.AddHours(7).Year, DateTime.UtcNow.AddHours(7).Month, i);
                 var total = currentMonthData.Where(f => f.DateCreated.Day == i).ToList().Count;
 
                 TimeSpan t = date - new DateTime(1970, 1, 1);
