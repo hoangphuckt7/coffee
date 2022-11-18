@@ -362,35 +362,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 fullName = state.fullName;
               }
               return Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              child: Text(
-                                Fn.renderData(fullName, ''),
-                                style: TextStyle(
-                                  fontSize: fontSize1,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        child: Text(
+                          Fn.renderData(fullName, ''),
+                          style: TextStyle(
+                            fontSize: fontSize1,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 5),
-                    IconBtn(
-                      icons: Icons.edit_outlined,
-                      onPressed: () {
-                        Fn.pushScreen(context, RouteName.userInfo);
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+              );
+            },
+          ),
+          const SizedBox(width: 10),
+          BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, state) {
+              return IconBtn(
+                icons: Icons.edit_outlined,
+                label: 'Sửa',
+                fontSize: fontSize2,
+                onPressed: () {
+                  BlocProvider.of<HomeBloc>(context).add(HomeLoadDataEvent());
+                },
               );
             },
           ),

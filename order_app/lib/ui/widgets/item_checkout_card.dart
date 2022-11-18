@@ -155,29 +155,15 @@ class ItemCheckoutCard extends StatelessWidget {
   Widget _itemInfo(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          flex: 6,
-          child: Row(
-            children: [
-              const SizedBox(
-                child: Text(
-                  'Tên món:',
-                  style: textStyle,
-                ),
-              ),
-              const SizedBox(width: 5),
-              Expanded(child: Text(model.item!.name!)),
-            ],
-          ),
-        ),
+        Expanded(flex: 3, child: Text(model.item!.name!, style: textStyle)),
         const SizedBox(width: 10),
         Expanded(
-          flex: 5,
+          flex: 2,
           child: Row(
             children: [
               const SizedBox(
                 child: Text(
-                  'Số lượng:',
+                  'SL:',
                   style: textStyle,
                 ),
               ),

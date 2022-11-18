@@ -92,15 +92,20 @@ class UserInfoScreen extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: Fn.getScreenHeight(context) * .3,
-              child: _info(context),
+            _info(context),
+            // SizedBox(
+            //   height: Fn.getScreenHeight(context) * .3,
+            //   child: _info(context),
+            // ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Divider(color: MColor.primaryBlack, thickness: 3),
             ),
-            const Divider(color: MColor.primaryBlack, thickness: 3),
-            SizedBox(
-              height: Fn.getScreenHeight(context) * .5,
-              child: _password(context),
-            ),
+            _password(context),
+            // SizedBox(
+            //   height: Fn.getScreenHeight(context) * .5,
+            //   child: _password(context),
+            // ),
           ],
         ),
       ),
@@ -268,6 +273,7 @@ class UserInfoScreen extends StatelessWidget {
             );
           },
         ),
+        const SizedBox(height: 20),
       ],
     );
   }

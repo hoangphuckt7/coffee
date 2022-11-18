@@ -48,6 +48,7 @@ dependencies:
   intl: ^0.17.0
   signalr_core: ^1.1.1
   tiengviet: ^0.5.0
+  responsive_framework: ^0.2.0
 
 dev_dependencies:
   flutter_test:

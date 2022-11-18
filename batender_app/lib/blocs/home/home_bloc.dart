@@ -156,6 +156,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           }
           lstOrdersDone
               .add(lstOrdersOld.firstWhere((x) => x.id == event.selectedOrder));
+          lstOrdersDone
+              .sort((a, b) => b.dateCreated!.compareTo(a.dateCreated!));
           var selOrderDone = event.selectedOrderDone;
           if (lstOrdersDone.length == 1) {
             selOrderDone = lstOrdersDone[0].id!;
@@ -191,6 +193,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           }
           lstOrders.add(lstOrdersDoneOld
               .firstWhere((x) => x.id == event.selectedOrderDone));
+          lstOrders.sort((a, b) => a.dateCreated!.compareTo(b.dateCreated!));
           var selOrder = event.selectedOrder;
           if (lstOrders.length == 1) {
             selOrder = lstOrders[0].id!;
