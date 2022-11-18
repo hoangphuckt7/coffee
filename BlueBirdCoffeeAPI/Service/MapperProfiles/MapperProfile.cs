@@ -50,6 +50,33 @@ namespace Service.MapperProfiles
 
             CreateMap<Coupon, CouponUseableModel>()
                 .ReverseMap();
+
+            //Statistic
+            CreateMap<Bill, BillStatisticModel>()
+                .ForMember(f => f.Casher, map => map.MapFrom(m => m.Casher))
+                .ForMember(f => f.Customer, map => map.MapFrom(m => m.Customer))
+               .ReverseMap();
+
+            CreateMap<Order, OrderStatisticModel>()
+                .ForMember(f => f.Table, map => map.MapFrom(m => m.Table))
+                .ForMember(f => f.Employee, map => map.MapFrom(m => m.Employee))
+                .ForMember(f => f.Bartender, map => map.MapFrom(m => m.Bartender))
+                .ForMember(f => f.UserRejected, map => map.MapFrom(m => m.UserRejected))
+                .ForMember(f => f.OrderDetails, map => map.MapFrom(m => m.OrderDetails))
+               .ReverseMap();
+
+            CreateMap<OrderDetail, OrderDetailStatisticModel>()
+                .ForMember(f => f.Item, map => map.MapFrom(m => m.Item))
+               .ReverseMap();
+
+            CreateMap<User, BaseStringModel>()
+            .ForMember(f => f.Description, map => map.MapFrom(m => m.Fullname))
+            .ReverseMap();
+
+            CreateMap<Table, DescriptionViewModel>().ReverseMap();
+            CreateMap<Item, DescriptionViewModel>()
+                .ForMember(f => f.Description, map => map.MapFrom(m => m.Name))
+                .ReverseMap();
         }
     }
 }

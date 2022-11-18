@@ -40,6 +40,7 @@ namespace Service.Services
                 .Where(f => f.FromDate <= DateTime.UtcNow.AddHours(7) && f.ToDate >= DateTime.UtcNow.AddHours(7))
                 .Where(f => f.Limit == null || f.Limit > 0)
                 .Where(f => f.IsDeleted == false)
+                .Where(f => f.Default == true)
                 .FirstOrDefault();
 
             return _mapper.Map<CouponUseableModel>(coupons);
@@ -134,14 +135,18 @@ namespace Service.Services
                 result = current.Maximum.Value;
             }
 
-            if (current.Maximum != null && current.Maximum.Value != 0 && result > current.Maximum)
+            if (current.Discount == null)
             {
-                result = current.Maximum.Value;
+                if (current.Minium != null && current.Minium.Value != 0 && result < current.Maximum)
+                {
+                    result = current.Minium.Value;
+                }
+                if (current.Maximum != null && current.Maximum.Value != 0 && result > current.Maximum)
+                {
+                    result = current.Maximum.Value;
+                }
             }
-            if (current.Minium != null && current.Minium.Value != 0 && result < current.Maximum)
-            {
-                result = current.Minium.Value;
-            }
+
             return result;
         }
         public double UseCoupon(string coupon, double total)
