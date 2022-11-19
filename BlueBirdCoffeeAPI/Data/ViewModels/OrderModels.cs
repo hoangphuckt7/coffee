@@ -64,4 +64,20 @@ namespace Data.ViewModels
         public Guid ItemId { get; set; }
         public int Quantity { get; set; }
     }
+
+    public class OrderUpdateModel
+    {
+        public Guid Id { get; set; }
+        public Guid? TableId { get; set; }
+        public DateTime DateCreated { get; set; }
+        public List<OrderDetailUpdateModel> OrderDetails { get; set; }
+    }
+
+    public class OrderDetailUpdateModel
+    {
+        public Guid ItemId { get; set; }
+        public int Quantity { get; set; }
+        public string? Description { get; set; }
+        public DateTime DateCreated { get; set; } = DateTime.Now;
+    }
 }

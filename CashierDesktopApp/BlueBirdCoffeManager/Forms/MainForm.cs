@@ -1,6 +1,7 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
 using BlueBirdCoffeManager.Models;
 using BlueBirdCoffeManager.Sessions;
+using BlueBirdCoffeManager.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,28 @@ namespace BlueBirdCoffeManager.Forms
                 var itemsRequest = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET);
                 ItemSession.ItemData = JsonConvert.DeserializeObject<List<ItemViewModel>>(itemsRequest);
             }
+            if (ItemSession.Categories.Count == 0)
+            {
+                var categoriesRequest = await ApiBuilder.SendRequest<List<DescriptionViewModel>>("api/Category", null, RequestMethod.GET);
+                ItemSession.Categories = JsonConvert.DeserializeObject<List<DescriptionViewModel>>(categoriesRequest);
+            }
+            if (ItemSession.Items.Count == 0)
+            {
+                List<ItemImages> items = new List<ItemImages>();
+                foreach (var item in ItemSession.ItemData)
+                {
+                    var itemImage = new ItemImages() { Id = item.Id };
+                    foreach (var imageId in item.Images)
+                    {
+                        var imageRequest = await ApiBuilder.SendImageRequest("api/Item/Image/" + imageId);
+                        Image image = ImageUtils.ByteArrayToImage(imageRequest);
+                        itemImage.Images.Add(image);
+                    }
+                    items.Add(itemImage);
+                }
+                ItemSession.Items = items;
+            }
+
             var rawCoupon = await ApiBuilder.SendRequest<object>("api/Coupon/Default", null, RequestMethod.GET);
             var coupon = JsonConvert.DeserializeObject<CouponUseableModel>(rawCoupon);
             if (coupon != null && !string.IsNullOrEmpty(coupon.Description))
@@ -169,7 +192,7 @@ namespace BlueBirdCoffeManager.Forms
 
             dataPanel.Controls.Clear();
 
-            OrderForm myForm = new OrderForm();
+            OrderForm myForm = new OrderForm(null);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             dataPanel.Controls.Add(myForm);

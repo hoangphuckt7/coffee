@@ -60,7 +60,7 @@
             this.btnBill.Name = "btnBill";
             this.btnBill.Size = new System.Drawing.Size(75, 23);
             this.btnBill.TabIndex = 5;
-            this.btnBill.Text = "Bill";
+            this.btnBill.Text = "Thanh toán";
             this.btnBill.UseVisualStyleBackColor = true;
             this.btnBill.Click += new System.EventHandler(this.btnBill_Click);
             // 
@@ -98,7 +98,7 @@
             this.btnOrder.Name = "btnOrder";
             this.btnOrder.Size = new System.Drawing.Size(75, 23);
             this.btnOrder.TabIndex = 1;
-            this.btnOrder.Text = "Order";
+            this.btnOrder.Text = "Đặt món";
             this.btnOrder.UseVisualStyleBackColor = true;
             this.btnOrder.Click += new System.EventHandler(this.btnOrder_Click);
             // 
