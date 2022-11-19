@@ -9,6 +9,14 @@
         <div class="section-header">
             <h1>Thống kê hóa đơn</h1>
         </div>
+        <div class="card-header">
+            <div class="card-header-form">
+                <div>
+                    <div class="card-header">Thu nhập ước tính: @ViewBag.EstimateIncome.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat)₫</div>
+                    <div class="card-header">Thu nhập thực tế: @ViewBag.Income.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat)₫</div>
+                </div>
+            </div>
+        </div>
         <div class="section-body">
             <div class="row">
                 <div class="col-12">
@@ -16,10 +24,22 @@
                         <div class="card-header">
                             <div class="card-header-form">
                                 <div>
-                                    <input id="searchValue" type="text" class="form-control" placeholder="Search" onchange="search(this.value)">
+                                    @if (ViewBag.CurrentDate == null)
+                                    {
+                                        <input id="date-single" type="date" onchange="updateInput(this.value)" class="form-control" required="">
+                                    }
+                                    else
+                                    {
+                                        var date = ((DateTime)ViewBag.CurrentDate).ToString("yyyy-MM-dd");
+                                        <input id="date-single" value="@date" type="date" onchange="updateInput(this.value)" class="form-control" required="">
+                                    }
                                 </div>
+                                @*<div>
+                                <input id="searchValue" type="text" class="form-control" placeholder="Search" onchange="search(this.value)">
+                                </div>*@
                             </div>
                         </div>
+
                         <div class="card-body p-0">
                             <div class="table-responsive">
                                 <table class="table table-striped table-md v_center">
@@ -142,5 +162,12 @@
     function toggleRow(e) {
         var subRow = e.parentNode.parentNode.nextElementSibling;
         subRow.style.display = subRow.style.display === 'none' ? 'table-row' : 'none';
+    }
+
+    function updateInput(ish) {
+        document.getElementById("date-single").value = ish;
+        console.log(ish);
+
+        window.location.href = '/Bill/index?singleDate=' + ish;
     }
 </script>

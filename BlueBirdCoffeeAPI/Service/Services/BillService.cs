@@ -22,7 +22,7 @@ namespace Service.Services
         List<ChartViewModel> ChartData();
         StatisticsModels Statistics();
         Guid UpdateReason(BillMissingItemUpdateModel model);
-        List<BillStatisticModel> ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize);
+        BilPagingModel ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize);
     }
 
     public class BillService : IBillService
@@ -144,7 +144,7 @@ namespace Service.Services
 
                 Bill newBill = new()
                 {
-                    Discount = model.Discout,
+                    Discount = model.Discout == null ? 0 : model.Discout.Value,
                     CouponCode = model.Coupon,
                     IsTakeAway = model.IsTakeAway,
                     BillNumber = GetCurrentBillNumber(),
@@ -185,6 +185,12 @@ namespace Service.Services
                             }
                             isMissing = true;
                         }
+
+                        if (item.FinalQuantity < 0)
+                        {
+                            item.FinalQuantity = 0;
+                        }
+
                         _dbContext.Update(item);
                         total += item.FinalQuantity * item.Price;
                     }
@@ -218,6 +224,10 @@ namespace Service.Services
                 {
                     newBill.Coupon = _couponService.UseCoupon(model.Coupon, total);
                     newBill.CouponCode = model.Coupon;
+                }
+                else
+                {
+                    newBill.Coupon = 0;
                 }
                 _dbContext.Update(newBill);
                 _dbContext.SaveChanges();
@@ -376,7 +386,7 @@ namespace Service.Services
 
             return bill.Id;
         }
-        public List<BillStatisticModel> ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize)
+        public BilPagingModel ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize)
         {
             var querry = _dbContext.Bills.Where(f => date == null || date.Value.Date == f.DateCreated.Date)
                 .Where(f => (fromDate == null || toDate == null) || (f.DateCreated.Date >= fromDate.Value.Date && f.DateCreated.Date <= toDate.Value.Date));
@@ -391,6 +401,8 @@ namespace Service.Services
             }
 
             var total = querry.Count();
+            double estimateIncome = querry.Sum(s => s.Total);
+            double income = querry.Sum(s => s.Total - s.Discount - s.Coupon);
 
             List<Bill> data;
             if (pageIndex != null && pageSize != null)
@@ -415,7 +427,7 @@ namespace Service.Services
                 bill.Orders = _mapper.Map<List<OrderStatisticModel>>(currentOrders);
             }
 
-            return result;
+            return new BilPagingModel() { Data = result, EstimateIncome = estimateIncome, Income = income, Total = total };
         }
     }
 }
