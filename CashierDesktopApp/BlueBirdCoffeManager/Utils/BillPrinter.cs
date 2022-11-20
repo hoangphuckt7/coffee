@@ -1,4 +1,5 @@
 ﻿using BlueBirdCoffeManager.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -257,12 +258,10 @@ namespace BlueBirdCoffeManager.Utils
             Font font = new Font("Calibri", 10F, GraphicsUnit.Point);
             Font boldFont = new Font("Calibri", 13, FontStyle.Bold, GraphicsUnit.Point);
 
-            Bitmap bmp = new(270, 20 + model.OrderDetails.Count * 20 * 5);
+            Bitmap bmp = new(270, 20 + model.OrderDetails.Count * 20 * 10);
             var line = 65;
             using (Graphics g = Graphics.FromImage(bmp))
             {
-                string date = DateTime.Now.Hour + ":" + DateTime.Now.Minute + "p - " + DateTime.Now.Day + "/" + DateTime.Now.Month + "/" + DateTime.Now.Year;
-
                 g.Clear(Color.White);
 
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
@@ -274,11 +273,11 @@ namespace BlueBirdCoffeManager.Utils
                 //of clear type as necessary
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                g.DrawString("Bàn: " + (model.Table == null ? "Không rõ" : model.Table.Description), font, Brushes.Black, 0, 0);
-                g.DrawString("#" + model.OrderNumber.ToString() + $" - {model.DateCreated.ToString("HH:mm")}", font, Brushes.Black, 0, 20);
+                g.DrawString("Bàn: " + (model.Table == null ? "Không rõ" : model.Table.Description), boldFont, Brushes.Black, 0, 0);
+                g.DrawString("#" + model.OrderNumber.ToString() + $" - {model.DateCreated.ToString("HH:mm")}", boldFont, Brushes.Black, 0, 20);
 
-                g.DrawString("SL", font, Brushes.Black, 0, 40);
-                g.DrawString("Tên món", font, Brushes.Black, 25, 40);
+                g.DrawString("SL", boldFont, Brushes.Black, 0, 40);
+                g.DrawString("Tên món", boldFont, Brushes.Black, 25, 40);
                 g.DrawString("───────────────────────────────────────────────────────", font, Brushes.Black, 0, 50);
 
                 for (int i = 0; i < model.OrderDetails.Count; i++)
@@ -286,18 +285,43 @@ namespace BlueBirdCoffeManager.Utils
                     var itemData = Sessions.ItemSession.ItemData.First(f => f.Id == model.OrderDetails[i].ItemId);
 
                     //g.DrawString(i + 1 + "", font, Brushes.Black, 0, line);
-                    g.DrawString(model.OrderDetails[i].Quantity + "", font, Brushes.Black, 0, line);
+                    g.DrawString(model.OrderDetails[i].Quantity + "", boldFont, Brushes.Black, 0, line);
 
-                    var nameLines = BreakLines(new List<string>() { itemData.Name }, 40);
+                    var nameLines = BreakLines(new List<string>() { itemData.Name }, 25);
 
-                    int nLine = line;
                     foreach (var item in nameLines)
                     {
-                        g.DrawString(item, font, Brushes.Black, 25, nLine);
-                        nLine += 20;
+                        g.DrawString(item, boldFont, Brushes.Black, 25, line);
+                        line += 20;
                     }
 
-                    line = line + 20 + (nameLines.Count - 1) * 20;
+                    var data = JsonConvert.DeserializeObject<List<DetailValue>>(model.OrderDetails[i].Description);
+                    foreach (var item in data)
+                    {
+                        if (item.Ice != 100 || item.Sugar != 100 || !string.IsNullOrEmpty(item.Note))
+                        {
+                            string noteLine = "●";
+                            if (item.Sugar != 100)
+                            {
+                                noteLine += $"Đường: {item.Sugar}% ";
+                            }
+                            if (item.Ice != 100)
+                            {
+                                noteLine += $"Đá: {item.Ice}% ";
+                            }
+                            if (!string.IsNullOrEmpty(item.Note))
+                            {
+                                noteLine += $"Ghi chú: {item.Note}";
+                            }
+                            var noteLines = BreakLines(new List<string>() { noteLine }, 35);
+
+                            foreach (var note in noteLines)
+                            {
+                                g.DrawString(note, font, Brushes.Black, 25, line);
+                                line += 20;
+                            }
+                        }
+                    }
                 }
             }
             System.Drawing.Imaging.BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format1bppIndexed);

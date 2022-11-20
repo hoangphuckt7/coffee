@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -45,6 +46,9 @@ namespace BlueBirdCoffeManager.Forms
                 {
                     current = model;
                     printDocument1.Print();
+
+                    SoundPlayer snd = new SoundPlayer(Properties.Resources.notification_sound_7062);
+                    snd.Play();
                 }));
             });
 
