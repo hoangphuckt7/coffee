@@ -53,31 +53,39 @@ namespace Hubs
 
         public override Task OnConnectedAsync()
         {
-            Trace.TraceInformation("MapHub started. ID: {0}", Context.ConnectionId);
-
-            List<string> existingUserConnectionIds;
-            ConnectedUsers.TryGetValue(Context.User.GetId(), out existingUserConnectionIds);
-
-            if (existingUserConnectionIds == null)
+            try
             {
-                existingUserConnectionIds = new List<string>();
-            }
+                Trace.TraceInformation("MapHub started. ID: {0}", Context.ConnectionId);
 
-            existingUserConnectionIds.Add(Context.ConnectionId);
-            ConnectedUsers.TryAdd(Context.User.GetId(), existingUserConnectionIds);
+                List<string> existingUserConnectionIds;
+                ConnectedUsers.TryGetValue(Context.User.GetId(), out existingUserConnectionIds);
+
+                if (existingUserConnectionIds == null)
+                {
+                    existingUserConnectionIds = new List<string>();
+                }
+
+                existingUserConnectionIds.Add(Context.ConnectionId);
+                ConnectedUsers.TryAdd(Context.User.GetId(), existingUserConnectionIds);
+            }
+            catch (Exception) { }
             return base.OnConnectedAsync();
         }
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            List<string> existingUserConnectionIds;
-            ConnectedUsers.TryGetValue(Context.User.GetId(), out existingUserConnectionIds);
-
-            existingUserConnectionIds.Remove(Context.ConnectionId);
-            if (existingUserConnectionIds.Count == 0)
+            try
             {
-                List<string> garbage;
-                ConnectedUsers.TryRemove(Context.User.GetId(), out garbage);
+                List<string> existingUserConnectionIds;
+                ConnectedUsers.TryGetValue(Context.User.GetId(), out existingUserConnectionIds);
+
+                existingUserConnectionIds.Remove(Context.ConnectionId);
+                if (existingUserConnectionIds.Count == 0)
+                {
+                    List<string> garbage;
+                    ConnectedUsers.TryRemove(Context.User.GetId(), out garbage);
+                }
             }
+            catch (Exception) { }
             return base.OnDisconnectedAsync(exception);
         }
     }

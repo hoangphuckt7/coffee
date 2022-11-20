@@ -30,6 +30,7 @@ namespace Service.Services
         List<OrderViewModel> TodayCompletedOrders(int count);
         object GetBartenderOrders(int count);
         void RemoveMissingOrders();
+        Guid Update(OrderUpdateModel model);
     }
     public class OrderService : IOrderService
     {
@@ -48,6 +49,58 @@ namespace Service.Services
             _tableHub = tableHub;
         }
 
+        public Guid Update(OrderUpdateModel model)
+        {
+            var data = _dbContext.Orders.FirstOrDefault(f => f.Id == model.Id && f.IsCheckout == false);
+            if (data == null) throw new AppException("Order không hợp lệ hoặc đã tính tiền!");
+
+            var orderDetails = _dbContext.OrderDetails.Where(f => f.OrderId == data.Id);
+
+            foreach (var orderDetail in orderDetails)
+            {
+                //deleted
+                if (!model.OrderDetails.Select(s => s.ItemId).ToList().Contains(orderDetail.ItemId))
+                {
+                    _dbContext.OrderDetails.Remove(orderDetail);
+                }
+                //no change, updated
+                else
+                {
+                    var current = model.OrderDetails.First(f => f.ItemId == orderDetail.ItemId);
+                    orderDetail.Description = current.Description;
+                    orderDetail.Quantity = current.Quantity;
+
+                    _dbContext.Update(orderDetail);
+                }
+            }
+
+            var news = model.OrderDetails.Where(s => !orderDetails.Select(o => o.ItemId).ToList().Contains(s.ItemId)).ToList();
+
+            foreach (var item in news)
+            {
+                var itemDetail = _dbContext.Items.FirstOrDefault(f => f.Id == item.ItemId);
+
+                var newOrderDetail = new OrderDetail()
+                {
+                    Description = item.Description,
+                    ItemId = itemDetail.Id,
+                    OrderId = data.Id,
+                    Price = itemDetail.Price,
+                    Quantity = item.Quantity
+                };
+
+                _dbContext.Add(newOrderDetail);
+            }
+
+            if (orderDetails.Count() == 0 && news.Count == 0)
+            {
+                _dbContext.Remove(data);
+            }
+
+            _dbContext.SaveChanges();
+
+            return data.Id;
+        }
         public async Task<Guid> CreateOrder(string employeeId, OrderCreateModel models)
         {
             Table? table = null;
@@ -126,6 +179,12 @@ namespace Service.Services
                 foreach (var casher in cashers)
                 {
                     await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(table), casher.Id);
+                }
+
+                var admins = await _userManager.GetUsersInRoleAsync(SystemRoles.ADMIN);
+                foreach (var admin in admins)
+                {
+                    await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(table), admin.Id);
                 }
             }
 

@@ -11,6 +11,7 @@ namespace BlueBirdCoffeManager.Sessions
     {
         public static List<ItemImages> Items = new();
         public static List<ItemViewModel> ItemData = new();
+        public static List<DescriptionViewModel> Categories = new();
     }
     public class ItemImages
     {

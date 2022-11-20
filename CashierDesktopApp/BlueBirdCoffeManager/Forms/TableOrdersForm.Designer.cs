@@ -32,7 +32,7 @@
             this.pnButton = new System.Windows.Forms.Panel();
             this.btnCheckoutAll = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.btnCheckout = new BlueBirdCoffeManager.Utils.RoundedButton();
-            this.btnRemove = new BlueBirdCoffeManager.Utils.RoundedButton();
+            this.btnEdit = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.pnButton.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,7 +48,7 @@
             // 
             this.pnButton.Controls.Add(this.btnCheckoutAll);
             this.pnButton.Controls.Add(this.btnCheckout);
-            this.pnButton.Controls.Add(this.btnRemove);
+            this.pnButton.Controls.Add(this.btnEdit);
             this.pnButton.Location = new System.Drawing.Point(12, 338);
             this.pnButton.Name = "pnButton";
             this.pnButton.Size = new System.Drawing.Size(329, 100);
@@ -96,23 +96,23 @@
             // 
             // btnRemove
             // 
-            this.btnRemove.BackColor = System.Drawing.Color.MediumSlateBlue;
-            this.btnRemove.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
-            this.btnRemove.BorderColor = System.Drawing.Color.PaleVioletRed;
-            this.btnRemove.BorderRadius = 40;
-            this.btnRemove.BorderSize = 0;
-            this.btnRemove.FlatAppearance.BorderSize = 0;
-            this.btnRemove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRemove.ForeColor = System.Drawing.Color.White;
-            this.btnRemove.Location = new System.Drawing.Point(3, 3);
-            this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(167, 40);
-            this.btnRemove.TabIndex = 0;
-            this.btnRemove.Text = "Ẩn";
-            this.btnRemove.TextColor = System.Drawing.Color.White;
-            this.btnRemove.UseVisualStyleBackColor = false;
-            this.btnRemove.Visible = false;
-            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            this.btnEdit.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnEdit.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnEdit.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btnEdit.BorderRadius = 40;
+            this.btnEdit.BorderSize = 0;
+            this.btnEdit.FlatAppearance.BorderSize = 0;
+            this.btnEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEdit.ForeColor = System.Drawing.Color.White;
+            this.btnEdit.Location = new System.Drawing.Point(3, 3);
+            this.btnEdit.Name = "btnRemove";
+            this.btnEdit.Size = new System.Drawing.Size(167, 40);
+            this.btnEdit.TabIndex = 0;
+            this.btnEdit.Text = "Thêm món";
+            this.btnEdit.TextColor = System.Drawing.Color.White;
+            this.btnEdit.UseVisualStyleBackColor = false;
+            this.btnEdit.Visible = false;
+            this.btnEdit.Click += new System.EventHandler(this.btnRemove_Click);
             // 
             // TableOrdersForm
             // 
@@ -135,6 +135,6 @@
         private Panel pnButton;
         private Utils.RoundedButton btnCheckoutAll;
         private Utils.RoundedButton btnCheckout;
-        private Utils.RoundedButton btnRemove;
+        private Utils.RoundedButton btnEdit;
     }
 }

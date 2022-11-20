@@ -222,7 +222,7 @@
             this.Controls.Add(this.orderPanel);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "OrderForm";
-            this.Text = "OrderForm";
+            this.Text = "Đặt món";
             this.Load += new System.EventHandler(this.OrderForm_Load);
             this.orderPanel.ResumeLayout(false);
             this.oHeaderPanel.ResumeLayout(false);

@@ -20,12 +20,16 @@ namespace BlueBirdCoffeManager.Forms
     {
         private readonly Panel _orderDataPanel;
         List<TableViewModel> tables;
-        public OrderDataForm(Panel orderDataPanel)
+        private readonly OrderViewModel? _editOrder;
+
+        public OrderDataForm(Panel orderDataPanel, OrderViewModel? editOrder)
         {
             InitializeComponent();
             _orderDataPanel = orderDataPanel;
+            _editOrder = editOrder;
         }
 
+        List<OrderDetailViewModel> currentOrders;
         private async void OrderDataForm_Load(object sender, EventArgs e)
         {
             #region Order
@@ -55,7 +59,9 @@ namespace BlueBirdCoffeManager.Forms
 
             double total = 0;
             var curTop = 10;
-            var currentOrders = Sessions.Order.CurrentOrder.OrderDetail.OrderBy(d => d.DateCreated);
+
+            currentOrders = Sessions.Order.CurrentOrder.OrderDetail.OrderBy(d => d.DateCreated).ToList();
+            if (_editOrder != null) currentOrders = _editOrder.OrderDetails;
 
             foreach (var item in currentOrders)
             {
@@ -282,15 +288,25 @@ namespace BlueBirdCoffeManager.Forms
 
                             var changedValue = new DetailValue() { Ice = iceValue, Sugar = sgValue, Note = note.Text };
 
-                            var curItem = Sessions.Order.CurrentOrder.OrderDetail.First(f => f.ItemId == item.ItemId);
+                            var curItem = currentOrders.First(f => f.ItemId == item.ItemId);
 
-                            Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
+                            //Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
 
                             var de = JsonConvert.DeserializeObject<List<DetailValue>>(curItem.Description);
                             de[curValuePos] = changedValue;
                             curItem.Description = JsonConvert.SerializeObject(de);
 
-                            Sessions.Order.CurrentOrder.OrderDetail.Add(curItem);
+                            currentOrders.Add(curItem);
+
+                            //var curItem = Sessions.Order.CurrentOrder.OrderDetail.First(f => f.ItemId == item.ItemId);
+
+                            //Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
+
+                            //var de = JsonConvert.DeserializeObject<List<DetailValue>>(curItem.Description);
+                            //de[curValuePos] = changedValue;
+                            //curItem.Description = JsonConvert.SerializeObject(de);
+
+                            //Sessions.Order.CurrentOrder.OrderDetail.Add(curItem);
                         };
 
                         pnData.Controls.Add(lbsugar);
@@ -498,14 +514,21 @@ namespace BlueBirdCoffeManager.Forms
 
             cbTable.DataSource = tables.Select(s => s.Description).ToList();
 
-            submitButton.Text = "Order";
+            if (_editOrder == null)
+            {
+                submitButton.Text = "Order";
+            }
+            else
+            {
+                submitButton.Text = "Cập nhật";
+            }
             submitButton.Height = 13 * oFooterPanel.Height / 100;
             submitButton.Width = 96 * Width / 100;
             submitButton.Left = 2 * Width / 100;
             submitButton.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             submitButton.BackColor = Sessions.Sessions.BUTTON_COLOR;
             submitButton.Top = oFooterPanel.Height - submitButton.Height - 10;
-            if (Sessions.Order.CurrentOrder.OrderDetail.Count < 1) { submitButton.Enabled = false; submitButton.BackColor = Color.Gray; }
+            if (Sessions.Order.CurrentOrder.OrderDetail.Count < 1 && _editOrder == null) { submitButton.Enabled = false; submitButton.BackColor = Color.Gray; }
 
             isTable.CheckedChanged += (sender, e) =>
             {
@@ -563,6 +586,24 @@ namespace BlueBirdCoffeManager.Forms
 
             submitButton.Click += async (sender, ev) =>
             {
+                if (_editOrder != null)
+                {
+                    try
+                    {
+                        await ApiBuilder.SendRequest<object>("api/Order", _editOrder, RequestMethod.PUT);
+                    }
+                    catch (Exception) { }
+
+                    if (sender != null)
+                    {
+                        var parent = ((Control)sender)?.Parent.Parent.Parent.Parent.Parent;
+                        parent.Visible = false;
+                        parent.Dispose();
+                        parent = null;
+                    }
+
+                    return;
+                }
                 if (Sessions.Order.CurrentOrder.OrderDetail.Count < 1)
                 {
                     return;
@@ -610,32 +651,35 @@ namespace BlueBirdCoffeManager.Forms
                 Order.Option = new();
 
                 _orderDataPanel.Controls.Clear();
-                OrderDataForm myForm = new(_orderDataPanel);
+                OrderDataForm myForm = new(_orderDataPanel, _editOrder);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 _orderDataPanel.Controls.Add(myForm);
                 myForm.Show();
             };
 
-            oFooterPanel.Controls.Add(quanLable);
-            oFooterPanel.Controls.Add(quanDataLable);
+            if (_editOrder == null)
+            {
+                oFooterPanel.Controls.Add(quanLable);
+                oFooterPanel.Controls.Add(quanDataLable);
 
-            oFooterPanel.Controls.Add(ttLabel);
-            oFooterPanel.Controls.Add(ttDataLabel);
+                oFooterPanel.Controls.Add(ttLabel);
+                oFooterPanel.Controls.Add(ttDataLabel);
 
-            //Split
-            oFooterPanel.Controls.Add(splitPanel1);
+                //Split
+                oFooterPanel.Controls.Add(splitPanel1);
 
-            oFooterPanel.Controls.Add(type);
-            oFooterPanel.Controls.Add(isTable);
-            oFooterPanel.Controls.Add(isTakeAway);
-            oFooterPanel.Controls.Add(unknow);
+                oFooterPanel.Controls.Add(type);
+                oFooterPanel.Controls.Add(isTable);
+                oFooterPanel.Controls.Add(isTakeAway);
+                oFooterPanel.Controls.Add(unknow);
 
-            oFooterPanel.Controls.Add(lableArea);
-            oFooterPanel.Controls.Add(cbArea);
+                oFooterPanel.Controls.Add(lableArea);
+                oFooterPanel.Controls.Add(cbArea);
 
-            oFooterPanel.Controls.Add(lableTable);
-            oFooterPanel.Controls.Add(cbTable);
+                oFooterPanel.Controls.Add(lableTable);
+                oFooterPanel.Controls.Add(cbTable);
+            }
 
             //take away
             lbDiscout.Text = "Giảm giá: ";
@@ -718,13 +762,24 @@ namespace BlueBirdCoffeManager.Forms
 
         private void ChangeQuantity(Guid itemId, bool minus)
         {
-            var curItem = Sessions.Order.CurrentOrder.OrderDetail.FirstOrDefault(f => f.ItemId == itemId);
+            var curItem = currentOrders.FirstOrDefault(f => f.ItemId == itemId);
 
-            Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
+            //currentOrders.Remove(curItem);
 
             if (minus)
             {
-                curItem.Quantity -= 1;
+                if (curItem.Quantity == 1)
+                {
+                    currentOrders.Remove(curItem);
+                    if (_editOrder == null)
+                    {
+                        Sessions.Order.CurrentOrder.OrderDetail.Remove(curItem);
+                    }
+                }
+                else
+                {
+                    curItem.Quantity -= 1;
+                }
             }
             else
             {
@@ -736,11 +791,15 @@ namespace BlueBirdCoffeManager.Forms
 
             if (curItem.Quantity > 0)
             {
-                Sessions.Order.CurrentOrder.OrderDetail.Add(curItem);
+                //currentOrders.Add(curItem);
             }
 
             _orderDataPanel.Controls.Clear();
-            OrderDataForm myForm = new OrderDataForm(_orderDataPanel);
+            if (_editOrder != null)
+            {
+                _editOrder.OrderDetails = currentOrders;
+            }
+            OrderDataForm myForm = new OrderDataForm(_orderDataPanel, _editOrder);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             _orderDataPanel.Controls.Add(myForm);

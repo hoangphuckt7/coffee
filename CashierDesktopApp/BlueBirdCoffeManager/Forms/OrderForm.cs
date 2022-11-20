@@ -3,36 +3,43 @@ using BlueBirdCoffeManager.Models;
 using BlueBirdCoffeManager.Sessions;
 using BlueBirdCoffeManager.Utils;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Collections.Specialized.BitVector32;
-using System.Xml.Linq;
 
 namespace BlueBirdCoffeManager.Forms
 {
     public partial class OrderForm : Form
     {
-        private List<DescriptionViewModel> CATEGORIES = new();
         private int CATEGORY_INDEX = 0;
+        private readonly OrderViewModel? _editOrder;
 
-        public OrderForm()
+        public OrderForm(OrderViewModel? isEdit)
         {
             InitializeComponent();
+            _editOrder = isEdit;
         }
 
-        private async void OrderForm_Load(object sender, EventArgs e)
+        private void OrderForm_Load(object sender, EventArgs e)
         {
             #region Item screen setup
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.WindowState = FormWindowState.Maximized;
-            this.MaximizeBox = false;
+
+            if (_editOrder == null)
+            {
+                this.FormBorderStyle = FormBorderStyle.None;
+                this.WindowState = FormWindowState.Maximized;
+                this.MaximizeBox = false;
+            }
+            else
+            {
+                this.FormBorderStyle = FormBorderStyle.None;
+                this.MaximizeBox = false;
+                this.MinimizeBox = false;
+                this.Height = Screen.PrimaryScreen.WorkingArea.Height * 80 / 100;
+                this.Width = Screen.PrimaryScreen.WorkingArea.Width * 80 / 100;
+
+                this.BackColor = Color.LightGray;
+
+                this.ControlBox = false;
+                this.CenterToScreen();
+            }
 
             //Disable everything
             this.orderPanel.Visible = false;
@@ -45,14 +52,14 @@ namespace BlueBirdCoffeManager.Forms
             this.btnRemoveFilter.Visible = false;
             this.cbDetails.Visible = false;
 
-            this.orderPanel.Left = 0;
-            this.orderPanel.Top = 0;
-            this.orderPanel.Size = new Size(Width * 30 / 100, Height);
+            this.orderPanel.Left = 1;
+            this.orderPanel.Top = 1;
+            this.orderPanel.Size = new Size(Width * 30 / 100, Height - 2);
             //this.orderPanel.BackColor = Color.Black;
 
-            this.itemPanel.Left = orderPanel.Width;
-            this.itemPanel.Top = 0;
-            this.itemPanel.Size = new Size(Width - orderPanel.Width, Height);
+            this.itemPanel.Left = orderPanel.Width - 1;
+            this.itemPanel.Top = 1;
+            this.itemPanel.Size = new Size(Width - orderPanel.Width, Height - 2);
 
             this.toolboxPanel.Top = 0;
             this.toolboxPanel.Left = 0;
@@ -65,12 +72,9 @@ namespace BlueBirdCoffeManager.Forms
             this.itemDataPanel.Height = itemPanel.Height - toolboxPanel.Height;
 
             //Get data for cbCategory
-            var categoriesRequest = await ApiBuilder.SendRequest<List<DescriptionViewModel>>("api/Category", null, RequestMethod.GET);
-            CATEGORIES = JsonConvert.DeserializeObject<List<DescriptionViewModel>>(categoriesRequest);
-
             List<string> cbCategoryData = new();
             cbCategoryData.Add("Tất cả");
-            foreach (var item in CATEGORIES)
+            foreach (var item in ItemSession.Categories)
             {
                 cbCategoryData.Add(item.Description);
             }
@@ -96,29 +100,6 @@ namespace BlueBirdCoffeManager.Forms
 
             this.cbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            if (ItemSession.ItemData.Count == 0)
-            {
-                var itemsRequest = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET);
-                ItemSession.ItemData = JsonConvert.DeserializeObject<List<ItemViewModel>>(itemsRequest);
-            }
-
-            if (ItemSession.Items.Count == 0)
-            {
-                List<ItemImages> items = new List<ItemImages>();
-                foreach (var item in ItemSession.ItemData)
-                {
-                    var itemImage = new ItemImages() { Id = item.Id };
-                    foreach (var imageId in item.Images)
-                    {
-                        var imageRequest = await ApiBuilder.SendImageRequest("api/Item/Image/" + imageId);
-                        Image image = ImageUtils.ByteArrayToImage(imageRequest);
-                        itemImage.Images.Add(image);
-                    }
-                    items.Add(itemImage);
-                }
-                ItemSession.Items = items;
-            }
-
             this.btnRemoveFilter.BackColor = Color.DarkGray;
             this.btnRemoveFilter.Text = "Xóa lọc";
             this.btnRemoveFilter.Width = (int)4 * Width / 100;
@@ -127,7 +108,7 @@ namespace BlueBirdCoffeManager.Forms
             this.btnRemoveFilter.Left = cbCategory.Left + cbCategory.Width + 5 * toolboxPanel.Width / 100;
 
             itemDataPanel.Controls.Clear();
-            ItemDataForm myForm = new ItemDataForm(txtSearch.Text, null, oDataPanel);
+            ItemDataForm myForm = new ItemDataForm(txtSearch.Text, null, oDataPanel, _editOrder);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             itemDataPanel.Controls.Add(myForm);
@@ -165,12 +146,6 @@ namespace BlueBirdCoffeManager.Forms
             this.oDataPanel.Width = orderPanel.Width;
             this.oDataPanel.Height = orderPanel.Height * 90 / 100;
 
-            //this.oFooterPanel.Top = oDataPanel.Top + oDataPanel.Height + 1;
-            //this.oFooterPanel.Left = 0;
-            //this.oFooterPanel.Width = orderPanel.Width;
-            //this.oFooterPanel.Height = orderPanel.Height * 20 / 100;
-            //this.oFooterPanel.BackColor = Color.White;
-
             this.lbName.Top = oHeaderPanel.Height - lbName.Height;
             this.lbQuantity.Top = oHeaderPanel.Height - lbName.Height;
             this.lbPrice.Top = oHeaderPanel.Height - lbName.Height;
@@ -187,7 +162,7 @@ namespace BlueBirdCoffeManager.Forms
             this.cbDetails.Checked = Sessions.Sessions.SHOW_ORDER_ITEM_DETAILS;
 
             oDataPanel.Controls.Clear();
-            OrderDataForm orderDataForm = new OrderDataForm(oDataPanel);
+            OrderDataForm orderDataForm = new OrderDataForm(oDataPanel, _editOrder);
             orderDataForm.TopLevel = false;
             orderDataForm.AutoScroll = true;
             oDataPanel.Controls.Add(orderDataForm);
@@ -211,11 +186,11 @@ namespace BlueBirdCoffeManager.Forms
             Guid? categoryId = null;
             if (CATEGORY_INDEX > 0)
             {
-                categoryId = CATEGORIES[CATEGORY_INDEX - 1].Id;
+                categoryId = ItemSession.Categories[CATEGORY_INDEX - 1].Id;
             }
 
             itemDataPanel.Controls.Clear();
-            ItemDataForm myForm = new ItemDataForm(txtSearch.Text, categoryId, oDataPanel);
+            ItemDataForm myForm = new ItemDataForm(txtSearch.Text, categoryId, oDataPanel, _editOrder);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             itemDataPanel.Controls.Add(myForm);
@@ -257,10 +232,10 @@ namespace BlueBirdCoffeManager.Forms
                 Guid? categoryId = null;
                 if (CATEGORY_INDEX > 0)
                 {
-                    categoryId = CATEGORIES[CATEGORY_INDEX - 1].Id;
+                    categoryId = ItemSession.Categories[CATEGORY_INDEX - 1].Id;
                 }
                 itemDataPanel.Controls.Clear();
-                ItemDataForm myForm = new ItemDataForm(txtSearch.Text, categoryId, oDataPanel);
+                ItemDataForm myForm = new ItemDataForm(txtSearch.Text, categoryId, oDataPanel, _editOrder);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 itemDataPanel.Controls.Add(myForm);
@@ -287,7 +262,7 @@ namespace BlueBirdCoffeManager.Forms
                 this.cbCategory.SelectedIndex = 0;
 
                 itemDataPanel.Controls.Clear();
-                ItemDataForm myForm = new ItemDataForm("", null, oDataPanel);
+                ItemDataForm myForm = new ItemDataForm("", null, oDataPanel, _editOrder);
                 myForm.TopLevel = false;
                 myForm.AutoScroll = true;
                 itemDataPanel.Controls.Add(myForm);
@@ -301,7 +276,7 @@ namespace BlueBirdCoffeManager.Forms
             Sessions.Sessions.SHOW_ORDER_ITEM_DETAILS = cbDetails.Checked;
 
             oDataPanel.Controls.Clear();
-            OrderDataForm orderDataForm = new(oDataPanel);
+            OrderDataForm orderDataForm = new(oDataPanel, _editOrder);
             orderDataForm.TopLevel = false;
             orderDataForm.AutoScroll = true;
             oDataPanel.Controls.Add(orderDataForm);

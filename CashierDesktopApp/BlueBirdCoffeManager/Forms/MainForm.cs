@@ -1,6 +1,8 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
 using BlueBirdCoffeManager.Models;
 using BlueBirdCoffeManager.Sessions;
+using BlueBirdCoffeManager.Utils;
+using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,9 +20,38 @@ namespace BlueBirdCoffeManager.Forms
     public partial class MainForm : Form
     {
         private readonly Font MAIN_MENU_BUTTON_FONT = new Font("time new roman", 10, FontStyle.Bold);
+        HubConnection connection;
         public MainForm()
         {
             InitializeComponent();
+
+            var urlSignalR = Sessions.Sessions.HOST + "notificationHub";
+
+            connection = new HubConnectionBuilder()
+          .WithUrl(urlSignalR, opt =>
+          {
+              opt.AccessTokenProvider = () => Task.FromResult(Sessions.Sessions.TOKEN);
+          })
+          .Build();
+
+            connection.Closed += async (error) =>
+            {
+                await Task.Delay(new Random().Next(0, 5) * 100);
+                await connection.StartAsync();
+            };
+
+            connection.On<OrderReceiverModel>("newNotify", (model) =>
+            {
+                this.Invoke((Action)(() =>
+                {
+                    current = model;
+                    printDocument1.Print();
+
+                    SoundPlayer snd = new SoundPlayer(Properties.Resources.notification_sound_7062);
+                    snd.Play();
+                }));
+            });
+
         }
 
         private async void MainForm_Load(object sender, EventArgs e)
@@ -30,18 +62,34 @@ namespace BlueBirdCoffeManager.Forms
                 var itemsRequest = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET);
                 ItemSession.ItemData = JsonConvert.DeserializeObject<List<ItemViewModel>>(itemsRequest);
             }
+            if (ItemSession.Categories.Count == 0)
+            {
+                var categoriesRequest = await ApiBuilder.SendRequest<List<DescriptionViewModel>>("api/Category", null, RequestMethod.GET);
+                ItemSession.Categories = JsonConvert.DeserializeObject<List<DescriptionViewModel>>(categoriesRequest);
+            }
+            if (ItemSession.Items.Count == 0)
+            {
+                List<ItemImages> items = new List<ItemImages>();
+                foreach (var item in ItemSession.ItemData)
+                {
+                    var itemImage = new ItemImages() { Id = item.Id };
+                    foreach (var imageId in item.Images)
+                    {
+                        var imageRequest = await ApiBuilder.SendImageRequest("api/Item/Image/" + imageId);
+                        Image image = ImageUtils.ByteArrayToImage(imageRequest);
+                        itemImage.Images.Add(image);
+                    }
+                    items.Add(itemImage);
+                }
+                ItemSession.Items = items;
+            }
+
             var rawCoupon = await ApiBuilder.SendRequest<object>("api/Coupon/Default", null, RequestMethod.GET);
             var coupon = JsonConvert.DeserializeObject<CouponUseableModel>(rawCoupon);
             if (coupon != null && !string.IsNullOrEmpty(coupon.Description))
             {
                 Sessions.Sessions.DEFAULT_COUPON = coupon.Description;
             }
-
-            try
-            {
-                await ApiBuilder.SendRequest<object>("api/Order/MissingOrders", null, RequestMethod.DELETE);
-            }
-            catch (Exception) { }
             #endregion
 
             #region screen setup
@@ -144,6 +192,14 @@ namespace BlueBirdCoffeManager.Forms
             dataPanel.Controls.Add(myForm);
             myForm.Show();
 
+            try
+            {
+                await connection.StartAsync();
+            }
+            catch (Exception)
+            {
+                //listBox1.Items.Add(ex.Message);
+            }
             ActiveButton(this.btnTable);
         }
 
@@ -169,7 +225,7 @@ namespace BlueBirdCoffeManager.Forms
 
             dataPanel.Controls.Clear();
 
-            OrderForm myForm = new OrderForm();
+            OrderForm myForm = new OrderForm(null);
             myForm.TopLevel = false;
             myForm.AutoScroll = true;
             dataPanel.Controls.Add(myForm);
@@ -217,6 +273,13 @@ namespace BlueBirdCoffeManager.Forms
             myForm.AutoScroll = true;
             dataPanel.Controls.Add(myForm);
             myForm.Show();
+        }
+        OrderReceiverModel current;
+        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            var curImg = BillPrinter.SetupOrder(current);
+            //var final = ImageUtils.ResizeImage(curImg, curImg.Width / 2, curImg.Height / 2);
+            e.Graphics.DrawImage(curImg, 0, 0);
         }
     }
 }

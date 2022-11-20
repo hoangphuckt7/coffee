@@ -37,6 +37,7 @@
             this.btnOrder = new System.Windows.Forms.Button();
             this.btnTable = new System.Windows.Forms.Button();
             this.dataPanel = new System.Windows.Forms.Panel();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.menuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -60,7 +61,7 @@
             this.btnBill.Name = "btnBill";
             this.btnBill.Size = new System.Drawing.Size(75, 23);
             this.btnBill.TabIndex = 5;
-            this.btnBill.Text = "Bill";
+            this.btnBill.Text = "Thanh toán";
             this.btnBill.UseVisualStyleBackColor = true;
             this.btnBill.Click += new System.EventHandler(this.btnBill_Click);
             // 
@@ -98,7 +99,7 @@
             this.btnOrder.Name = "btnOrder";
             this.btnOrder.Size = new System.Drawing.Size(75, 23);
             this.btnOrder.TabIndex = 1;
-            this.btnOrder.Text = "Order";
+            this.btnOrder.Text = "Đặt món";
             this.btnOrder.UseVisualStyleBackColor = true;
             this.btnOrder.Click += new System.EventHandler(this.btnOrder_Click);
             // 
@@ -118,6 +119,10 @@
             this.dataPanel.Name = "dataPanel";
             this.dataPanel.Size = new System.Drawing.Size(723, 232);
             this.dataPanel.TabIndex = 3;
+            // 
+            // printDocument1
+            // 
+            this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage);
             // 
             // MainForm
             // 
@@ -146,5 +151,6 @@
         private Label lbUsername;
         private PictureBox pictureBox1;
         private Button btnBill;
+        private System.Drawing.Printing.PrintDocument printDocument1;
     }
 }

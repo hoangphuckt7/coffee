@@ -1,4 +1,5 @@
 ﻿using BlueBirdCoffeManager.DataAccessLayer;
+using BlueBirdCoffeManager.Forms.DialogForms;
 using BlueBirdCoffeManager.Models;
 using Newtonsoft.Json;
 using System;
@@ -44,7 +45,7 @@ namespace BlueBirdCoffeManager.Forms
             pnButton.Left = 0;
             pnButton.Width = mainData.Width;
 
-            pnButton.Height = btnCheckout.Height + btnRemove.Height + 3 * Height / 100;
+            pnButton.Height = btnCheckout.Height + btnEdit.Height + 3 * Height / 100;
             mainData.Height = Height - pnButton.Height;
             pnButton.Top = mainData.Height;
 
@@ -52,14 +53,14 @@ namespace BlueBirdCoffeManager.Forms
             btnCheckoutAll.Width = pnButton.Width;
             btnCheckoutAll.Left = 0;
 
-            btnRemove.Left = 0;
-            btnRemove.Width = (int)(49.5 * Width / 100);
-            btnRemove.Top = pnButton.Height - 1 * Height / 100 - btnCheckout.Height - btnRemove.Height;
-            btnRemove.BackColor = Color.Gray;
+            btnEdit.Left = 0;
+            btnEdit.Width = (int)(49.5 * Width / 100);
+            btnEdit.Top = pnButton.Height - 1 * Height / 100 - btnCheckout.Height - btnEdit.Height;
+            btnEdit.BackColor = Color.Gray;
 
-            btnCheckout.Top = btnRemove.Top;
-            btnCheckout.Width = btnRemove.Width;
-            btnCheckout.Left = btnRemove.Width + btnRemove.Left + 1 * Width / 100;
+            btnCheckout.Top = btnEdit.Top;
+            btnCheckout.Width = btnEdit.Width;
+            btnCheckout.Left = btnEdit.Width + btnEdit.Left + 1 * Width / 100;
             btnCheckout.BackColor = Color.Gray;
 
             mainData.AutoScroll = true;
@@ -248,16 +249,23 @@ namespace BlueBirdCoffeManager.Forms
 
                     if (checkSelecteds.Any(f => f.Check))
                     {
-                        btnRemove.BackColor = Color.FromArgb(142, 142, 142);
                         btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
                     }
                     else
                     {
-                        btnRemove.BackColor = Color.Gray;
                         btnCheckout.BackColor = Color.Gray;
                     }
 
-                    AutoDisableButton(btnRemove);
+                    if (checkSelecteds.Count(s => s.Check) == 1)
+                    {
+                        btnEdit.BackColor = Sessions.Sessions.BUTTON_COLOR;
+                    }
+                    else
+                    {
+                        btnEdit.BackColor = Color.Gray;
+                    }
+
+                    AutoDisableButton(btnEdit);
                     AutoDisableButton(btnCheckout);
                 };
 
@@ -273,13 +281,13 @@ namespace BlueBirdCoffeManager.Forms
                 timer.Start();
             }
 
-            AutoDisableButton(btnRemove);
+            AutoDisableButton(btnEdit);
             AutoDisableButton(btnCheckout);
             AutoDisableButton(btnCheckoutAll);
 
             btnCheckout.Visible = true;
             btnCheckoutAll.Visible = true;
-            btnRemove.Visible = true;
+            btnEdit.Visible = true;
         }
 
         private void mainData_Paint(object sender, PaintEventArgs e)
@@ -327,7 +335,13 @@ namespace BlueBirdCoffeManager.Forms
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
+            var current = GetCheckedItem();
+            OrderForm form = new OrderForm(current.FirstOrDefault());
+            form.ShowDialog();
 
+            this.Controls.Clear();
+            this.InitializeComponent();
+            TableOrdersForm_LoadAsync(sender, e);
         }
 
         private List<OrderViewModel> GetCheckedItem()

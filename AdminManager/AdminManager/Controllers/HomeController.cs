@@ -30,7 +30,7 @@ namespace AdminManager.Controllers
             }
 
             var statisticsRaw = await ApiBuilder.SendRequest<object>("api/Bill/Statistics", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
-            if (request.IsSuccessStatusCode)
+            if (statisticsRaw.IsSuccessStatusCode)
             {
                 var data = await ApiBuilder.ParseToData<StatisticsModels>(statisticsRaw);
                 ViewBag.Statistics = data;

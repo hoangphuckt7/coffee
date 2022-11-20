@@ -26,6 +26,13 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(await _orderService.CreateOrder(User.GetId(), model));
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN_CASHIER)]
+        [HttpPut]
+        public IActionResult Update(OrderUpdateModel model)
+        {
+            return Ok(_orderService.Update(model));
+        }
+
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpGet("Table/{id}")]
         public IActionResult GetByTable(Guid id)

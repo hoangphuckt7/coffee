@@ -10,8 +10,8 @@ namespace Data.Entities
     public class Bill: BaseEntity
     {
         public string? ItemMissingReason { get; set; }
-        public double? Coupon { get; set; }
-        public double? Discount { get; set; }
+        public double Coupon { get; set; }
+        public double Discount { get; set; }
         public bool IsTakeAway { get; set; }
         public int BillNumber { get; set; }
         public double Total { get; set; }

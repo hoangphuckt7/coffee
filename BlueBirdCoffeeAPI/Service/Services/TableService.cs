@@ -47,13 +47,37 @@ namespace Service.Services
                 .OrderBy(f => f.Description)
                 .ToList();
 
+            var temp = _mapper.Map<List<TableViewModel>>(tables);
+
+            var result = new List<TableViewModel>();
+            foreach (var item in temp)
+            {
+                try
+                {
+                    int.Parse(item.Description);
+                    result.Add(item);
+                }
+                catch (Exception) { }
+            }
+
             try
             {
-                tables = tables.OrderBy(f => int.Parse(f.Description)).ToList();
+                result = result.OrderBy(f => int.Parse(f.Description)).ToList();
             }
             catch (Exception) { }
 
-            return _mapper.Map<List<TableViewModel>>(tables);
+            var stringTable = temp.Where(f => !result.Select(s => s.Id).Contains(f.Id)).ToList();
+
+            stringTable = stringTable.OrderBy(f => f.Description).ToList();
+
+            result.AddRange(stringTable);
+
+            foreach (var item in result)
+            {
+                item.CurrentOrder = _dbContext.Orders.Count(f => f.IsMissing == false && f.IsCheckout == false && f.IsDeleted == false && f.TableId == item.Id);
+            }
+
+            return result;
         }
 
         public Guid Add(TableAddModel model)
