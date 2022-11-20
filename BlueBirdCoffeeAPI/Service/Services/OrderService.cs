@@ -92,6 +92,11 @@ namespace Service.Services
                 _dbContext.Add(newOrderDetail);
             }
 
+            if (orderDetails.Count() == 0 && news.Count == 0)
+            {
+                _dbContext.Remove(data);
+            }
+
             _dbContext.SaveChanges();
 
             return data.Id;
@@ -174,6 +179,12 @@ namespace Service.Services
                 foreach (var casher in cashers)
                 {
                     await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(table), casher.Id);
+                }
+
+                var admins = await _userManager.GetUsersInRoleAsync(SystemRoles.ADMIN);
+                foreach (var admin in admins)
+                {
+                    await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(table), admin.Id);
                 }
             }
 

@@ -2,6 +2,7 @@
 using BlueBirdCoffeManager.Models;
 using BlueBirdCoffeManager.Sessions;
 using BlueBirdCoffeManager.Utils;
+using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,35 @@ namespace BlueBirdCoffeManager.Forms
     public partial class MainForm : Form
     {
         private readonly Font MAIN_MENU_BUTTON_FONT = new Font("time new roman", 10, FontStyle.Bold);
+        HubConnection connection;
         public MainForm()
         {
             InitializeComponent();
+
+            var urlSignalR = Sessions.Sessions.HOST + "notificationHub";
+
+            connection = new HubConnectionBuilder()
+          .WithUrl(urlSignalR, opt =>
+          {
+              opt.AccessTokenProvider = () => Task.FromResult(Sessions.Sessions.TOKEN);
+          })
+          .Build();
+
+            connection.Closed += async (error) =>
+            {
+                await Task.Delay(new Random().Next(0, 5) * 100);
+                await connection.StartAsync();
+            };
+
+            connection.On<OrderReceiverModel>("newNotify", (model) =>
+            {
+                this.Invoke((Action)(() =>
+                {
+                    current = model;
+                    printDocument1.Print();
+                }));
+            });
+
         }
 
         private async void MainForm_Load(object sender, EventArgs e)
@@ -161,6 +188,14 @@ namespace BlueBirdCoffeManager.Forms
             dataPanel.Controls.Add(myForm);
             myForm.Show();
 
+            try
+            {
+                await connection.StartAsync();
+            }
+            catch (Exception)
+            {
+                //listBox1.Items.Add(ex.Message);
+            }
             ActiveButton(this.btnTable);
         }
 
@@ -234,6 +269,13 @@ namespace BlueBirdCoffeManager.Forms
             myForm.AutoScroll = true;
             dataPanel.Controls.Add(myForm);
             myForm.Show();
+        }
+        OrderReceiverModel current;
+        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            var curImg = BillPrinter.SetupOrder(current);
+            //var final = ImageUtils.ResizeImage(curImg, curImg.Width / 2, curImg.Height / 2);
+            e.Graphics.DrawImage(curImg, 0, 0);
         }
     }
 }

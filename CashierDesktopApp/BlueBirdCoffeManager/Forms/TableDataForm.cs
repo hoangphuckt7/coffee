@@ -38,39 +38,43 @@ namespace BlueBirdCoffeManager.Forms
 
             InitializeComponent();
 
-            var urlSignalR = Sessions.Sessions.HOST + "tableHub";
-
-            connection = new HubConnectionBuilder()
-               .WithUrl(urlSignalR, opt =>
-               {
-                   opt.AccessTokenProvider = () => Task.FromResult(Sessions.Sessions.TOKEN);
-               })
-               .Build();
-
-            connection.Closed += async (error) =>
+            try
             {
-                await Task.Delay(new Random().Next(0, 5) * 1000);
-                await connection.StartAsync();
-            };
+                var urlSignalR = Sessions.Sessions.HOST + "tableHub";
 
-            connection.On<TableViewModel>("ChangeStatus", (model) =>
-            {
-                this.Invoke((Action)(() =>
+                connection = new HubConnectionBuilder()
+                   .WithUrl(urlSignalR, opt =>
+                   {
+                       opt.AccessTokenProvider = () => Task.FromResult(Sessions.Sessions.TOKEN);
+                   })
+                   .Build();
+
+                connection.Closed += async (error) =>
                 {
-                    var table = tables.First(f => f.Id == model.Id);
-                    table.Id = model.Id;
-                    table.Description = model.Description;
-                    table.CurrentOrder = model.CurrentOrder;
-                    table.Position = model.Position;
-                    table.Size = model.Size;
-                    table.Shape = model.Shape;
-                    table.Floor = model.Floor;
-                    table.Rectangle = model.Rectangle;
-                    table.Rotation = model.Rotation;
+                    await Task.Delay(new Random().Next(0, 5) * 100);
+                    await connection.StartAsync();
+                };
 
-                    pictureBox.Invalidate();
-                }));
-            });
+                connection.On<TableViewModel>("ChangeStatus", (model) =>
+                {
+                    this.Invoke((Action)(() =>
+                    {
+                        var table = tables.First(f => f.Id == model.Id);
+                        table.Id = model.Id;
+                        table.Description = model.Description;
+                        table.CurrentOrder = model.CurrentOrder;
+                        table.Position = model.Position;
+                        table.Size = model.Size;
+                        table.Shape = model.Shape;
+                        table.Floor = model.Floor;
+                        table.Rectangle = model.Rectangle;
+                        table.Rotation = model.Rotation;
+
+                        pictureBox.Invalidate();
+                    }));
+                });
+            }
+            catch (Exception) { }
         }
 
         private async void TableDataForm_Load(object sender, EventArgs e)

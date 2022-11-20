@@ -37,6 +37,7 @@
             this.btnOrder = new System.Windows.Forms.Button();
             this.btnTable = new System.Windows.Forms.Button();
             this.dataPanel = new System.Windows.Forms.Panel();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.menuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -119,6 +120,10 @@
             this.dataPanel.Size = new System.Drawing.Size(723, 232);
             this.dataPanel.TabIndex = 3;
             // 
+            // printDocument1
+            // 
+            this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -146,5 +151,6 @@
         private Label lbUsername;
         private PictureBox pictureBox1;
         private Button btnBill;
+        private System.Drawing.Printing.PrintDocument printDocument1;
     }
 }

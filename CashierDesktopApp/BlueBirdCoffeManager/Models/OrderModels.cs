@@ -1,11 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BlueBirdCoffeManager.Models
 {
+    public class OrderReceiverModel
+    {
+        public Guid Id { get; set; }
+        public int OrderNumber { get; set; }
+        public Guid? TableId { get; set; }
+        public DescriptionModel? Table { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateUpdated { get; set; }
+        public List<OrderDetailViewModel> OrderDetails { get; set; }
+    }
+
+    public class DescriptionModel
+    {
+        [Required]
+        public string? Description { get; set; }
+    }
+
     public class OrderViewModel
     {
         public Guid Id { get; set; }
