@@ -1,5 +1,4 @@
 import 'package:bartender_app/blocs/splash/splash_bloc.dart';
-import 'package:bartender_app/repositories/user_repo.dart';
 import 'package:bartender_app/routes.dart';
 import 'package:bartender_app/ui/widgets/loader.dart';
 import 'package:bartender_app/utils/ui_setting.dart';
@@ -24,10 +23,7 @@ class SplashScreen extends StatelessWidget {
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              // Text(AppInfo.Name),
-              Loader(),
-            ],
+            children: const [Loader()],
           ),
         ),
       ),

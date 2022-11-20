@@ -36,6 +36,7 @@ class OrderApp extends StatelessWidget {
         ],
         background: Container(color: const Color(0xFFF5F5F5)),
       ),
+      scrollBehavior: NoThumbScrollBehavior().copyWith(scrollbars: false),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.onGenerateRoute,
       initialRoute: RouteName.splash,

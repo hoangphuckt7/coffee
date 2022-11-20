@@ -1,9 +1,7 @@
 import 'package:bartender_app/utils/enum.dart';
+import 'package:bartender_app/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 
-import '../../utils/ui_setting.dart';
-
-// ignore: must_be_immutable
 class FieldOutline extends StatelessWidget {
   final Key? fieldKey;
   final String? labelText;
@@ -34,7 +32,7 @@ class FieldOutline extends StatelessWidget {
       Radius.circular(BtnSetting.border_radius),
     ),
     this.width,
-    this.height = 55,
+    this.height,
     this.fontSize = ScreenSetting.fontSize,
     this.focusBorderSideColor = MColor.primaryBlack,
     this.paddingVertical = 5,
@@ -79,6 +77,7 @@ class FieldOutline extends StatelessWidget {
       TextPosition(offset: controller.text.length),
     );
     return SizedBox(
+      height: height,
       child: TextFormField(
         key: fieldKey,
         controller: controller,

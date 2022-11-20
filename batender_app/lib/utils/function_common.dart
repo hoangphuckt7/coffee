@@ -8,6 +8,7 @@ import 'package:bartender_app/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Fn {
   static getScreenWidth(BuildContext context) {
@@ -45,6 +46,8 @@ class Fn {
     EToast? eToast,
     String msg = '',
     ToastGravity? index = ToastGravity.TOP,
+    bool soundEnable = false,
+    String soundUrl = 'assets/audios/new_order.mp3',
   }) {
     dynamic toastColor;
     dynamic hexColor;
@@ -66,13 +69,25 @@ class Fn {
         hexColor = HexColor.black;
         break;
     }
+    playNotiSound(enable: true);
     Fluttertoast.showToast(
       msg: msg,
       backgroundColor: toastColor,
       gravity: index,
       webBgColor: hexColor,
       webPosition: 'center', //	String (left, center or right)
+      timeInSecForIosWeb: 3,
     );
+  }
+
+  static playNotiSound({
+    bool enable = false,
+    String srcUrl = 'assets/audios/new_order.mp3',
+  }) {
+    if (enable) {
+      final audio = AudioPlayer();
+      audio.play(UrlSource(srcUrl));
+    }
   }
 
   static formatDate(DateTime? date, DateFormat format) {

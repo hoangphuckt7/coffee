@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, must_be_immutable
 
+import 'dart:developer';
+
 import 'package:bartender_app/blocs/auth/auth_bloc.dart';
 import 'package:bartender_app/blocs/home/home_bloc.dart';
 import 'package:bartender_app/models/order/order_detail_model.dart';
@@ -17,6 +19,7 @@ import 'package:bartender_app/utils/function_common.dart';
 import 'package:bartender_app/utils/ui_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -289,6 +292,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           selectedOrderDone = state.selectedOrderDone;
           lstOrdersDone = state.lstOrdersDone;
         } else if (state is HomeRecieveNewOrderState) {
+          Fn.showToast(
+            eToast: EToast.success,
+            msg: 'Có đơn mới',
+            soundEnable: true,
+          );
           lstOrders.addAll(state.lstOrder);
           if (selectedOrder.isEmpty) {
             selectedOrder = lstOrders[0].id!;

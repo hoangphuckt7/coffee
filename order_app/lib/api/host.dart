@@ -1,7 +1,7 @@
 // ignore_for_file: unused_field
 
 class Host {
-  static const String _localHost = 'https://localhost:7244';
+  static const String _localHost = 'http://localhost:7244';
 
   static const String _vmHost = 'https://10.0.2.2:7244';
 
