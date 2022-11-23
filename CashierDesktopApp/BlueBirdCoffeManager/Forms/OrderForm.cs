@@ -32,8 +32,8 @@ namespace BlueBirdCoffeManager.Forms
                 this.FormBorderStyle = FormBorderStyle.None;
                 this.MaximizeBox = false;
                 this.MinimizeBox = false;
-                this.Height = Screen.PrimaryScreen.WorkingArea.Height * 80 / 100;
-                this.Width = Screen.PrimaryScreen.WorkingArea.Width * 80 / 100;
+                this.Height = Screen.PrimaryScreen.WorkingArea.Height * 90 / 100;
+                this.Width = Screen.PrimaryScreen.WorkingArea.Width * 90 / 100;
 
                 this.BackColor = Color.LightGray;
 

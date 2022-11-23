@@ -98,17 +98,32 @@ namespace BlueBirdCoffeManager
 
         private void LoginForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter) btnLogin.PerformClick();
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnLogin.PerformClick();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            };
         }
 
         private void txtPassword_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter) btnLogin.PerformClick();
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnLogin.PerformClick();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            };
         }
 
         private void txtUserName_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter) btnLogin.PerformClick();
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnLogin.PerformClick();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            };
         }
     }
 }

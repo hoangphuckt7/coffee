@@ -100,4 +100,10 @@ namespace BlueBirdCoffeManager.Models
         public Guid OrderId { get; set; }
         public string Reason { get; set; }
     }
+
+    public class ChangeOrdersTable
+    {
+        public List<Guid> OrderIds { get; set; }
+        public Guid NewTableId { get; set; }
+    }
 }

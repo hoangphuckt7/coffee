@@ -50,8 +50,14 @@ namespace BlueBirdCoffeManager.Forms
             pnButton.Top = mainData.Height;
 
             btnCheckoutAll.Top = pnButton.Height - btnCheckout.Height;
-            btnCheckoutAll.Width = pnButton.Width;
-            btnCheckoutAll.Left = 0;
+
+            btnMove.Top = btnCheckoutAll.Top;
+            btnMove.Left = 0;
+            btnMove.Width = pnButton.Width * 30 / 100;
+            btnMove.BackColor = Color.Gray;
+
+            btnCheckoutAll.Width = pnButton.Width * 70 / 100;
+            btnCheckoutAll.Left = btnMove.Left + btnMove.Width;
 
             btnEdit.Left = 0;
             btnEdit.Width = (int)(49.5 * Width / 100);
@@ -104,7 +110,6 @@ namespace BlueBirdCoffeManager.Forms
 
                 orderData.BackColor = Color.FromArgb(238, 238, 238);
 
-                bool isCollapsed = true;
                 System.Windows.Forms.Timer timer = new();
 
                 #region Title
@@ -182,6 +187,7 @@ namespace BlueBirdCoffeManager.Forms
                 pnSlide.MaximumSize = new Size(mainData.Width, MinimumSize.Height + itemTop);
 
                 #region Tick
+                bool isCollapsed = true;
                 timer.Tick += (sender, e) =>
                 {
                     if (isCollapsed)
@@ -194,16 +200,16 @@ namespace BlueBirdCoffeManager.Forms
                         }
                         Refresh();
                     }
-                    else
-                    {
-                        pnSlide.Height -= 50;
-                        if (pnSlide.Height <= pnSlide.MinimumSize.Height)
-                        {
-                            timer.Stop();
-                            isCollapsed = true;
-                        }
-                        Refresh();
-                    }
+                    //else
+                    //{
+                    //    pnSlide.Height -= 50;
+                    //    if (pnSlide.Height <= pnSlide.MinimumSize.Height)
+                    //    {
+                    //        timer.Stop();
+                    //        isCollapsed = true;
+                    //    }
+                    //    Refresh();
+                    //}
                 };
                 orderData.Click += (sender, e) =>
                 {
@@ -250,10 +256,12 @@ namespace BlueBirdCoffeManager.Forms
                     if (checkSelecteds.Any(f => f.Check))
                     {
                         btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
+                        btnMove.BackColor = Sessions.Sessions.BUTTON_COLOR;
                     }
                     else
                     {
                         btnCheckout.BackColor = Color.Gray;
+                        btnMove.BackColor = Color.Gray;
                     }
 
                     if (checkSelecteds.Count(s => s.Check) == 1)
@@ -267,6 +275,7 @@ namespace BlueBirdCoffeManager.Forms
 
                     AutoDisableButton(btnEdit);
                     AutoDisableButton(btnCheckout);
+                    AutoDisableButton(btnMove);
                 };
 
                 orderData.Controls.Add(timeLb);
@@ -284,6 +293,7 @@ namespace BlueBirdCoffeManager.Forms
             AutoDisableButton(btnEdit);
             AutoDisableButton(btnCheckout);
             AutoDisableButton(btnCheckoutAll);
+            AutoDisableButton(btnMove);
 
             btnCheckout.Visible = true;
             btnCheckoutAll.Visible = true;
@@ -355,6 +365,17 @@ namespace BlueBirdCoffeManager.Forms
                 }
             }
             return checkedOrders;
+        }
+
+        private void btnMove_Click(object sender, EventArgs e)
+        {
+            var current = GetCheckedItem();
+            MoveOrder form = new MoveOrder(current.Select(s => s.Id).ToList());
+            form.ShowDialog();
+
+            this.Controls.Clear();
+            this.InitializeComponent();
+            TableOrdersForm_LoadAsync(sender, e);
         }
     }
     public class CheckSelected
