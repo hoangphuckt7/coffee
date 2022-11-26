@@ -1,0 +1,178 @@
+﻿@using AdminManager.Models
+@using System.Globalization
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1>Danh sách sản phẩm</h1>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4></h4>
+                        <div class="card-header-form">
+                            <div class="modal-footer">
+                                @if (ViewBag.CurrentDate == null)
+                                {
+                                    <label>Ngày</label>
+                                    <input id="date-single" type="date" onchange="updatePageSingleDate()" class="form-control" required="">
+                                }
+                                else
+                                {
+                                    var date = ((DateTime)ViewBag.CurrentDate).ToString("yyyy-MM-dd");
+                                    <label>Ngày</label>
+                                    <input id="date-single" value="@date" type="date" onchange="updatePageSingleDate()" class="form-control" required="">
+                                }
+                                <p>&nbsp;&nbsp;-&nbsp;&nbsp;</p>
+
+                                <label>Từ</label>
+
+                                @if (ViewBag.FromDate == null)
+                                {
+                                    <input id="fromDate" type="date" onchange="updateFromToDate()" class="form-control" required="">
+                                }
+                                else
+                                {
+                                    var date = ((DateTime)ViewBag.FromDate).ToString("yyyy-MM-dd");
+                                    <input id="fromDate" value="@date" type="date" onchange="updateFromToDate()" class="form-control" required="">
+                                }
+
+                                <label>Tới</label>
+
+                                @if (ViewBag.ToDate == null)
+                                {
+                                    <input id="toDate" type="date" onchange="updateFromToDate()" class="form-control" required="">
+                                }
+                                else
+                                {
+                                    var date = ((DateTime)ViewBag.ToDate).ToString("yyyy-MM-dd");
+                                    <input id="toDate" value="@date" type="date" onchange="updateFromToDate()" class="form-control" required="">
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table id="dataTable" class="table table-striped mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Tên</th>
+                                        <th>Danh mục</th>
+                                        <th>Giá</th>
+                                        <th>Đã bán - Đóng góp</th>
+                                        <th>Tổng - Đóng góp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in (List<ItemStatisticModel>)ViewBag.Items)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <img alt="avatar" width="30" src="@(AdminManager.Utils.Sessions.HOST + $"api/Item/Image/{item.Images!.FirstOrDefault()}")" />
+                                                @item.Name
+                                                <div class="table-links">
+                                                    <a href="#">@item.Description</a>
+                                                </div>
+                                            </td>
+                                            <td>@item.Category!.Description</td>
+                                            <td>@item.Price.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat)₫</td>
+                                            <td>@item.Selled (@(Math.Round((double)(item.Selled * 100 / ViewBag.SelledS), 2))%)</td>
+                                            <td>@item.Total.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat)₫ (@((Math.Round((double)(item.Total * 100 / ViewBag.TotalS), 2))) %)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+
+    function search(value) {
+        document.getElementById("searchValue").value = value;
+
+        console.log(value);
+
+        var input, filter, table, tr, td, i, txtValue;
+        input = value;
+        filter = input.toUpperCase();
+        table = document.getElementById("dataTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function updatePage() {
+        var url = '/Bill/item';
+
+        var dateSingle = document.getElementById("date-single").value;
+        var fromDate = document.getElementById("fromDate").value;
+        var toDate = document.getElementById("toDate").value;
+
+        var first = true;
+
+        if (fromDate || toDate) {
+            dateSingle = null;
+        }
+
+        if (dateSingle) {
+            if (first) {
+                url += '?singleDate=' + dateSingle;
+                first = false;
+            } else {
+                url += '&singleDate=' + dateSingle;
+            }
+        }
+
+        if (fromDate) {
+            if (first) {
+                url += '?fromDate=' + fromDate;
+                first = false;
+            } else {
+                url += '&fromDate=' + fromDate;
+            }
+        }
+
+        if (toDate) {
+            if (first) {
+                url += '?toDate=' + toDate;
+                first = false;
+            } else {
+                url += '&toDate=' + toDate;
+            }
+        }
+
+        window.location.href = url;
+    }
+
+    function updatePageSingleDate() {
+        document.getElementById("fromDate").value = null;
+        document.getElementById("toDate").value = null;
+        updatePage();
+    }
+
+    function updateFromToDate() {
+        if (fromDate && toDate) {
+            updatePage();
+        }
+    }
+
+</script>

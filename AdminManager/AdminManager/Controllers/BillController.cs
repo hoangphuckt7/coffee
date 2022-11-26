@@ -52,5 +52,51 @@ namespace AdminManager.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> Item(DateTime? singleDate, DateTime? fromDate, DateTime? toDate)
+        {
+            if (singleDate == null && fromDate == null && toDate == null)
+            {
+                fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+            }
+
+            string path = "api/Item/Statistic";
+            bool first = false;
+            if (singleDate != null)
+            {
+                first = true;
+                path += "?date=" + singleDate.Value.ToShortDateString();
+            }
+
+            if (fromDate != null)
+            {
+                path += !first ? "?fromDate=" : "&fromDate=";
+                path += fromDate.Value.ToShortDateString();
+                first = true;
+            }
+
+            if (toDate != null)
+            {
+                path += !first ? "?toDate=" : "&toDate=";
+                path += toDate.Value.ToShortDateString();
+            }
+
+            var rawData = await ApiBuilder.SendRequest<object>(path, null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
+
+            var result = await ApiBuilder.ParseToData<List<ItemStatisticModel>>(rawData);
+            ViewBag.Items = result;
+
+            var total = result.Sum(s => s.Total);
+            ViewBag.TotalS = total > 0 ? total : 1;
+
+            var selled = result.Sum(s => s.Selled);
+            ViewBag.SelledS = selled > 0 ? selled : 1;
+
+            ViewBag.FromDate = fromDate;
+            ViewBag.ToDate = toDate;
+            ViewBag.CurrentDate = singleDate;
+            return View();
+        }
     }
 }

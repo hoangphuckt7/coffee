@@ -40,4 +40,17 @@
     {
         public List<IFormFile> Images { get; set; } = null!;
     }
+
+    public class ItemStatisticModel
+    {
+        public Guid Id { get; set; }
+        public string? Description { get; set; }
+        public string? Name { get; set; }
+        public double Price { get; set; }
+        public bool Available { get; set; }
+        public DescriptionViewModel? Category { get; set; }
+        public List<Guid>? Images { get; set; }
+        public int Selled { get; set; }
+        public double Total { get; set; }
+    }
 }
