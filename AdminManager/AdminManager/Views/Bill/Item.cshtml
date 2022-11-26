@@ -8,6 +8,14 @@
         <div class="section-header">
             <h1>Danh sách sản phẩm</h1>
         </div>
+        <div class="card-header">
+            <div class="card-header-form">
+                <div>
+                    <div class="card-header">Bán tổng cộng: @(ViewBag.SelledS)</div>
+                    <div class="card-header">Thu nhập ước tính: @ViewBag.TotalS.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat)₫</div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -79,7 +87,7 @@
                                             </td>
                                             <td>@item.Category!.Description</td>
                                             <td>@item.Price.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat)₫</td>
-                                            <td>@item.Selled (@(Math.Round((double)(item.Selled * 100 / ViewBag.SelledS), 2))%)</td>
+                                            <td>@item.Selled (@(Math.Round((double)((double)item.Selled * 100 / (double)ViewBag.SelledS), 2))%)</td>
                                             <td>@item.Total.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat)₫ (@((Math.Round((double)(item.Total * 100 / ViewBag.TotalS), 2))) %)</td>
                                         </tr>
                                     }
@@ -170,6 +178,10 @@
     }
 
     function updateFromToDate() {
+
+        var fromDate = document.getElementById("fromDate").value;
+        var toDate = document.getElementById("toDate").value;
+
         if (fromDate && toDate) {
             updatePage();
         }

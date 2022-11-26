@@ -22,6 +22,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
+                            <h4></h4>
                             <div class="card-header-form">
                                 <div class="modal-footer">
                                     @if (ViewBag.CurrentDate == null)
@@ -41,24 +42,24 @@
 
                                     @if (ViewBag.FromDate == null)
                                     {
-                                        <input id="fromDate" type="date" onchange="updatePage()" class="form-control" required="">
+                                        <input id="fromDate" type="date" onchange="updateFromToDate()" class="form-control" required="">
                                     }
                                     else
                                     {
                                         var date = ((DateTime)ViewBag.FromDate).ToString("yyyy-MM-dd");
-                                        <input id="fromDate" value="@date" type="date" onchange="updatePage()" class="form-control" required="">
+                                        <input id="fromDate" value="@date" type="date" onchange="updateFromToDate()" class="form-control" required="">
                                     }
 
                                     <label>Tới</label>
 
                                     @if (ViewBag.ToDate == null)
                                     {
-                                        <input id="toDate" type="date" onchange="updatePage()" class="form-control" required="">
+                                        <input id="toDate" type="date" onchange="updateFromToDate()" class="form-control" required="">
                                     }
                                     else
                                     {
                                         var date = ((DateTime)ViewBag.ToDate).ToString("yyyy-MM-dd");
-                                        <input id="toDate" value="@date" type="date" onchange="updatePage()" class="form-control" required="">
+                                        <input id="toDate" value="@date" type="date" onchange="updateFromToDate()" class="form-control" required="">
                                     }
 
                                     <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
@@ -321,4 +322,15 @@
         document.getElementById("pageIndex").value = null;
         updatePage();
     }
+
+    function updateFromToDate() {
+
+        var fromDate = document.getElementById("fromDate").value;
+        var toDate = document.getElementById("toDate").value;
+
+        if (fromDate && toDate) {
+            updatePage();
+        }
+    }
+
 </script>
