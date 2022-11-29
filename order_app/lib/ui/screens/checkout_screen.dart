@@ -168,7 +168,9 @@ class CheckOutScreen extends StatelessWidget {
               totalItem += detail.quantity;
             }
           }
-
+          if (state is COShowConfirmCheckoutPopupState) {
+            isShowPopupConfirmCheckout = state.isVisible;
+          }
           return Container(
             decoration: const BoxDecoration(
               boxShadow: [
@@ -199,10 +201,15 @@ class CheckOutScreen extends StatelessWidget {
                   Expanded(child: Text('$totalItem món')),
                   FillBtn(
                     label: 'Xác nhận',
+                    btnBgColor: !isShowPopupConfirmCheckout
+                        ? EColor.primary
+                        : EColor.dark,
                     onPressed: () {
-                      BlocProvider.of<CheckoutBloc>(context).add(
-                        COShowPopupConfirmCheckoutEvent(true),
-                      );
+                      if (!isShowPopupConfirmCheckout) {
+                        BlocProvider.of<CheckoutBloc>(context).add(
+                          COShowPopupConfirmCheckoutEvent(true),
+                        );
+                      }
                     },
                   ),
                 ],
@@ -257,6 +264,8 @@ class CheckOutScreen extends StatelessWidget {
       builder: (context, state) {
         if (state is COShowConfirmCheckoutPopupState) {
           isShowPopupConfirmCheckout = state.isVisible;
+        } else if (state is COUpdatedLoadingState) {
+          isShowPopupConfirmCheckout = false;
         }
         return PopupConfirm(
           visible: isShowPopupConfirmCheckout,

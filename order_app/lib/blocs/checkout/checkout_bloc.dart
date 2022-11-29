@@ -121,6 +121,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
   void _onConfirmOrder(
       COConfirmOrderEvent event, Emitter<CheckoutState> emit) async {
+    emit(COUpdatedLoadingState(true, 'Đang order...'));
     try {
       var resp = await _orderRepo.create(event.order);
       if (resp is bool) {
