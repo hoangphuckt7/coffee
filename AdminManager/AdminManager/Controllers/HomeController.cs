@@ -14,6 +14,7 @@ namespace AdminManager.Controllers
             _logger = logger;
         }
 
+        [ResponseCache(NoStore = true, Duration = 0)]
         public async Task<IActionResult> Index()
         {
             var request = await ApiBuilder.SendRequest<object>("api/Bill/Chart", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);

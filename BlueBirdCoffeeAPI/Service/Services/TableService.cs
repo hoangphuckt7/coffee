@@ -22,6 +22,7 @@ namespace Service.Services
         int UpdateOrAdd(List<TableUpdateModel> models);
         int Delete(List<Guid> ids);
         Task<Guid> ChangeTable(Guid oldTableId, Guid newTableId);
+        Task<Guid> ChangeOrdersTable(List<Guid> orderIds, Guid newTableId);
     }
     public class TableService : ITableService
     {
@@ -72,9 +73,25 @@ namespace Service.Services
 
             result.AddRange(stringTable);
 
+            var tableChanged = false;
+
             foreach (var item in result)
             {
                 item.CurrentOrder = _dbContext.Orders.Count(f => f.IsMissing == false && f.IsCheckout == false && f.IsDeleted == false && f.TableId == item.Id);
+
+                var curTable = tables.FirstOrDefault(f => f.Id == item.Id);
+
+                if (curTable != null && curTable.CurrentOrder != item.CurrentOrder)
+                {
+                    curTable.CurrentOrder = item.CurrentOrder;
+                    _dbContext.Update(curTable);
+                    tableChanged = true;
+                }
+            }
+
+            if (tableChanged)
+            {
+                _dbContext.SaveChanges();
             }
 
             return result;
@@ -169,6 +186,9 @@ namespace Service.Services
             tableNew.CurrentOrder += tableOld.CurrentOrder;
             tableOld.CurrentOrder = 0;
 
+            _dbContext.Update(tableNew);
+            _dbContext.Update(tableOld);
+
             _dbContext.UpdateRange(lstOrderByTable);
             _dbContext.SaveChanges();
 
@@ -180,6 +200,81 @@ namespace Service.Services
                 {
                     await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableNew), casher.Id);
                     await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableOld), casher.Id);
+                }
+
+                var admins = await _userManager.GetUsersInRoleAsync(SystemRoles.ADMIN);
+
+                foreach (var admin in admins)
+                {
+                    await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableNew), admin.Id);
+                    await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableOld), admin.Id);
+                }
+            }
+            //Ignore errors
+            catch (Exception) { }
+
+            return newTableId;
+        }
+
+        public async Task<Guid> ChangeOrdersTable(List<Guid> orderIds, Guid newTableId)
+        {
+            var tableNew = _dbContext.Tables.FirstOrDefault(x => x.Id == newTableId);
+            if (tableNew == null)
+            {
+                throw new AppException("Mã số bàn mới không hợp lệ!");
+            }
+
+            var lstOrderByTable = _dbContext.Orders.Where(x => orderIds.Contains(x.Id)).ToList();
+
+            var oldTables = _dbContext.Tables.Where(f => lstOrderByTable.Select(s => s.TableId).Contains(f.Id)).ToList();
+
+            foreach (var oldTable in oldTables)
+            {
+                var removedOrders = lstOrderByTable.Where(f => f.TableId == oldTable.Id).Count();
+                if (oldTable.CurrentOrder > 0)
+                {
+                    oldTable.CurrentOrder -= removedOrders;
+                }
+                _dbContext.Update(oldTable);
+            }
+
+            foreach (var order in lstOrderByTable)
+            {
+                order.TableId = newTableId;
+                order.DateUpdated = DateTime.UtcNow.AddHours(7);
+            }
+
+            tableNew.CurrentOrder += orderIds.Count;
+
+            _dbContext.Update(tableNew);
+
+            _dbContext.UpdateRange(lstOrderByTable);
+            _dbContext.SaveChanges();
+
+            try
+            {
+                var cashers = await _userManager.GetUsersInRoleAsync(SystemRoles.CASHIER);
+
+                foreach (var casher in cashers)
+                {
+                    await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableNew), casher.Id);
+
+                    foreach (var tableOld in oldTables)
+                    {
+                        await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableOld), casher.Id);
+                    }
+                }
+
+                var admins = await _userManager.GetUsersInRoleAsync(SystemRoles.ADMIN);
+
+                foreach (var admin in admins)
+                {
+                    await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableNew), admin.Id);
+
+                    foreach (var tableOld in oldTables)
+                    {
+                        await _tableHub.ChangeStatus(_mapper.Map<TableViewModel>(tableOld), admin.Id);
+                    }
                 }
             }
             //Ignore errors

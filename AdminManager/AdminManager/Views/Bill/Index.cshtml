@@ -22,21 +22,95 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
+                            <h4></h4>
                             <div class="card-header-form">
-                                <div>
+                                <div class="modal-footer">
                                     @if (ViewBag.CurrentDate == null)
                                     {
-                                        <input id="date-single" type="date" onchange="updateInput(this.value)" class="form-control" required="">
+                                        <label>Ngày</label>
+                                        <input id="date-single" type="date" onchange="updatePageSingleDate()" class="form-control" required="">
                                     }
                                     else
                                     {
                                         var date = ((DateTime)ViewBag.CurrentDate).ToString("yyyy-MM-dd");
-                                        <input id="date-single" value="@date" type="date" onchange="updateInput(this.value)" class="form-control" required="">
+                                        <label>Ngày</label>
+                                        <input id="date-single" value="@date" type="date" onchange="updatePageSingleDate()" class="form-control" required="">
                                     }
+                                    <p>&nbsp;&nbsp;-&nbsp;&nbsp;</p>
+
+                                    <label>Từ</label>
+
+                                    @if (ViewBag.FromDate == null)
+                                    {
+                                        <input id="fromDate" type="date" onchange="updateFromToDate()" class="form-control" required="">
+                                    }
+                                    else
+                                    {
+                                        var date = ((DateTime)ViewBag.FromDate).ToString("yyyy-MM-dd");
+                                        <input id="fromDate" value="@date" type="date" onchange="updateFromToDate()" class="form-control" required="">
+                                    }
+
+                                    <label>Tới</label>
+
+                                    @if (ViewBag.ToDate == null)
+                                    {
+                                        <input id="toDate" type="date" onchange="updateFromToDate()" class="form-control" required="">
+                                    }
+                                    else
+                                    {
+                                        var date = ((DateTime)ViewBag.ToDate).ToString("yyyy-MM-dd");
+                                        <input id="toDate" value="@date" type="date" onchange="updateFromToDate()" class="form-control" required="">
+                                    }
+
+                                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                    <select id="isNewest" class="form-control" onchange="updatePage()">
+                                        @if (ViewBag.IsNewest == true)
+                                        {
+                                            <option value="true" selected>Mới nhất</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="true">Mới nhất</option>
+                                        }
+
+                                        @if (ViewBag.IsNewest == false)
+                                        {
+                                            <option value="false" selected>Cũ nhất</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="false">Cũ nhất</option>
+                                        }
+                                    </select>
+                                    <select id="pageSize" class="form-control" onchange="updatePageSize()">
+                                        @if (ViewBag.PageSize == 10 || ViewBag.PageSize == 0 || ViewBag.PageSize == null)
+                                        {
+                                            <option value="10" selected>Hiển thị 10</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="10">Hiển thị 10</option>
+                                        }
+
+                                        @if (ViewBag.PageSize == 20)
+                                        {
+                                            <option value="20" selected>Hiển thị 20</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="20">Hiển thị 20</option>
+                                        }
+
+                                        @if (ViewBag.PageSize == -1)
+                                        {
+                                            <option value="-1" selected>Hiển thị tất cả</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="-1">Hiển thị tất cả</option>
+                                        }
+                                    </select>
                                 </div>
-                                @*<div>
-                                <input id="searchValue" type="text" class="form-control" placeholder="Search" onchange="search(this.value)">
-                                </div>*@
                             </div>
                         </div>
 
@@ -101,7 +175,7 @@
                                                         }
                                                     }@pay!.Value.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat)₫
                                                 </th>
-                                                <th><a href="#" onclick="toggleRow(this);">chi tiết</a></th>
+                                                <th><p onclick="toggleRow(this);">hiện chi tiết</p></th>
                                             </tr>
                                             <tr style="display: none;">
                                                 <td></td>
@@ -150,6 +224,36 @@
                                     }
                                 </table>
                             </div>
+                            <div class="card-footer text-right">
+
+                                <input type="hidden" id="pageIndex" value="@ViewBag.PageIndex" />
+
+                                <nav class="d-inline-block">
+                                    <ul class="pagination mb-0">
+
+                                        @if (ViewBag.PageIndex > 1)
+                                        {
+                                            <li class="page-item"><a class="page-link" onclick="updatePageIndex(@(ViewBag.PageIndex -1))"><i class="fas fa-chevron-left"></i></a></li>
+                                        }
+
+                                        @if (ViewBag.PageIndex > 1)
+                                        {
+                                            <li class="page-item"><a class="page-link" onclick="updatePageIndex(@(ViewBag.PageIndex -1))">@(ViewBag.PageIndex - 1)</a></li>
+                                        }
+                                        <li class="page-item active"><a class="page-link" href="#">@ViewBag.PageIndex <span class="sr-only">(current)</span></a></li>
+
+                                        @if (ViewBag.TotalPage > ViewBag.PageIndex)
+                                        {
+                                            <li class="page-item"><a class="page-link" onclick="updatePageIndex(@(ViewBag.PageIndex +1))">@(ViewBag.PageIndex + 1)</a></li>
+                                        }
+
+                                        @if (ViewBag.TotalPage > ViewBag.PageIndex)
+                                        {
+                                            <li class="page-item"><a class="page-link" onclick="updatePageIndex(@(ViewBag.PageIndex +1))"><i class="fas fa-chevron-right"></i></a></li>
+                                        }
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -164,10 +268,69 @@
         subRow.style.display = subRow.style.display === 'none' ? 'table-row' : 'none';
     }
 
-    function updateInput(ish) {
-        document.getElementById("date-single").value = ish;
-        console.log(ish);
+    function updatePage() {
+        var isNewest = document.getElementById("isNewest").value;
+        var url = '/Bill/index?isNewest=' + isNewest;
 
-        window.location.href = '/Bill/index?singleDate=' + ish;
+        var dateSingle = document.getElementById("date-single").value;
+        var pageSize = document.getElementById("pageSize").value;
+
+        var fromDate = document.getElementById("fromDate").value;
+        var toDate = document.getElementById("toDate").value;
+        var pageIndex = document.getElementById("pageIndex").value;
+
+        if (fromDate || toDate) {
+            dateSingle = null;
+        }
+
+        if (dateSingle) {
+            url += '&singleDate=' + dateSingle;
+        }
+
+        if (pageSize) {
+            url += '&pageSize=' + pageSize;
+        }
+
+        if (fromDate) {
+            url += '&fromDate=' + fromDate;
+        }
+
+        if (toDate) {
+            url += '&toDate=' + toDate;
+        }
+
+        if (pageIndex) {
+            url += '&pageIndex=' + pageIndex;
+        }
+
+        window.location.href = url;
     }
+
+    function updatePageSingleDate() {
+        document.getElementById("fromDate").value = null;
+        document.getElementById("toDate").value = null;
+        updatePage();
+    }
+
+    function updatePageIndex(val) {
+        console.log(val);
+        document.getElementById("pageIndex").value = val;
+        updatePage();
+    }
+
+    function updatePageSize() {
+        document.getElementById("pageIndex").value = null;
+        updatePage();
+    }
+
+    function updateFromToDate() {
+
+        var fromDate = document.getElementById("fromDate").value;
+        var toDate = document.getElementById("toDate").value;
+
+        if (fromDate && toDate) {
+            updatePage();
+        }
+    }
+
 </script>

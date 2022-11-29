@@ -80,4 +80,10 @@ namespace Data.ViewModels
         public string? Description { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.Now;
     }
+
+    public class ChangeOrdersTable
+    {
+        public List<Guid> OrderIds { get; set; }
+        public Guid NewTableId { get; set; }
+    }
 }

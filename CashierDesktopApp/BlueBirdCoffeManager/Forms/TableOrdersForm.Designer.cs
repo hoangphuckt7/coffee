@@ -30,6 +30,7 @@
         {
             this.mainData = new System.Windows.Forms.Panel();
             this.pnButton = new System.Windows.Forms.Panel();
+            this.btnMove = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.btnCheckoutAll = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.btnCheckout = new BlueBirdCoffeManager.Utils.RoundedButton();
             this.btnEdit = new BlueBirdCoffeManager.Utils.RoundedButton();
@@ -46,6 +47,7 @@
             // 
             // pnButton
             // 
+            this.pnButton.Controls.Add(this.btnMove);
             this.pnButton.Controls.Add(this.btnCheckoutAll);
             this.pnButton.Controls.Add(this.btnCheckout);
             this.pnButton.Controls.Add(this.btnEdit);
@@ -53,6 +55,25 @@
             this.pnButton.Name = "pnButton";
             this.pnButton.Size = new System.Drawing.Size(329, 100);
             this.pnButton.TabIndex = 1;
+            // 
+            // btnMove
+            // 
+            this.btnMove.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnMove.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnMove.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btnMove.BorderRadius = 40;
+            this.btnMove.BorderSize = 0;
+            this.btnMove.FlatAppearance.BorderSize = 0;
+            this.btnMove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMove.ForeColor = System.Drawing.Color.White;
+            this.btnMove.Location = new System.Drawing.Point(3, 49);
+            this.btnMove.Name = "btnMove";
+            this.btnMove.Size = new System.Drawing.Size(96, 40);
+            this.btnMove.TabIndex = 3;
+            this.btnMove.Text = "Chuyển bàn";
+            this.btnMove.TextColor = System.Drawing.Color.White;
+            this.btnMove.UseVisualStyleBackColor = false;
+            this.btnMove.Click += new System.EventHandler(this.btnMove_Click);
             // 
             // btnCheckoutAll
             // 
@@ -64,9 +85,9 @@
             this.btnCheckoutAll.FlatAppearance.BorderSize = 0;
             this.btnCheckoutAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCheckoutAll.ForeColor = System.Drawing.Color.White;
-            this.btnCheckoutAll.Location = new System.Drawing.Point(3, 49);
+            this.btnCheckoutAll.Location = new System.Drawing.Point(105, 49);
             this.btnCheckoutAll.Name = "btnCheckoutAll";
-            this.btnCheckoutAll.Size = new System.Drawing.Size(323, 40);
+            this.btnCheckoutAll.Size = new System.Drawing.Size(221, 40);
             this.btnCheckoutAll.TabIndex = 2;
             this.btnCheckoutAll.Text = "Thanh toán tất cả";
             this.btnCheckoutAll.TextColor = System.Drawing.Color.White;
@@ -94,7 +115,7 @@
             this.btnCheckout.Visible = false;
             this.btnCheckout.Click += new System.EventHandler(this.btnCheckout_Click);
             // 
-            // btnRemove
+            // btnEdit
             // 
             this.btnEdit.BackColor = System.Drawing.Color.MediumSlateBlue;
             this.btnEdit.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
@@ -105,10 +126,10 @@
             this.btnEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEdit.ForeColor = System.Drawing.Color.White;
             this.btnEdit.Location = new System.Drawing.Point(3, 3);
-            this.btnEdit.Name = "btnRemove";
+            this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(167, 40);
             this.btnEdit.TabIndex = 0;
-            this.btnEdit.Text = "Thêm món";
+            this.btnEdit.Text = "Sửa đơn";
             this.btnEdit.TextColor = System.Drawing.Color.White;
             this.btnEdit.UseVisualStyleBackColor = false;
             this.btnEdit.Visible = false;
@@ -136,5 +157,6 @@
         private Utils.RoundedButton btnCheckoutAll;
         private Utils.RoundedButton btnCheckout;
         private Utils.RoundedButton btnEdit;
+        private Utils.RoundedButton btnMove;
     }
 }

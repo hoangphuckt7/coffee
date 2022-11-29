@@ -4,6 +4,7 @@ using Data.DataAccessLayer;
 using Data.Entities;
 using Data.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,7 +21,7 @@ namespace Service.Services
         List<ItemViewModel> Search(Guid? id, string? name, Guid? categoryId);
         Guid Update(Guid id, ItemUpdateModel model);
         Guid Delete(Guid id);
-
+        List<ItemStatisticModel> Statistic(DateTime? date, DateTime? fromDate, DateTime? toDate);
         FileViewModel GetItemImage(Guid id);
         Guid AddImages(Guid itemId, List<IFormFile> images);
         Guid RemoveImage(Guid imageId);
@@ -58,7 +59,6 @@ namespace Service.Services
 
             return result;
         }
-
         private static readonly string[] VietNamChar = new string[]{
         "aAeEoOuUiIdDyY",
         "áàạảãâấầậẩẫăắằặẳẵ",
@@ -84,7 +84,6 @@ namespace Service.Services
             }
             return str;
         }
-
         public Guid Add(ItemAddModel model)
         {
             var data = _mapper.Map<ItemAddModel, Item>(model);
@@ -136,7 +135,6 @@ namespace Service.Services
 
             return data.Id;
         }
-
         public FileViewModel GetItemImage(Guid id)
         {
             var result = new FileViewModel();
@@ -176,7 +174,6 @@ namespace Service.Services
 
             return image.Id;
         }
-
         private byte[]? ImageToBytes(IFormFile image)
         {
             if (image.Length > 0)
@@ -189,6 +186,33 @@ namespace Service.Services
                 }
             }
             return null;
+        }
+        public List<ItemStatisticModel> Statistic(DateTime? date, DateTime? fromDate, DateTime? toDate)
+        {
+            var items = _dbContext.Items
+                .Where(f => f.IsDeleted == false)
+                .ToList();
+
+            var ordersQuerry = _dbContext.Orders.Where(f => f.IsDeleted == false & f.IsCheckout == true)
+                .Where(f => date == null || date.Value.Date == f.DateCreated.Date)
+                .Where(f => (fromDate == null || toDate == null) || (f.DateCreated.Date >= fromDate.Value.Date && f.DateCreated.Date <= toDate.Value.Date));
+
+            var itemImages = _dbContext.ItemImages.Where(f => f.IsDeleted == false).ToList();
+
+            var result = _mapper.Map<List<ItemStatisticModel>>(items);
+
+            foreach (var item in result)
+            {
+                item.Selled = ordersQuerry.Sum(f => f.OrderDetails.Where(o => o.ItemId == item.Id).Sum(o => o.FinalQuantity));
+                item.Total = ordersQuerry.Sum(f => f.OrderDetails.Where(o => o.ItemId == item.Id).Sum(o => o.FinalQuantity * o.Price));
+
+                item.Images = itemImages
+                    .Where(f => f.ItemId == item.Id)
+                    .Select(s => s.Id).ToList();
+            }
+
+            result = result.OrderByDescending(f => f.Selled).ToList();
+            return result;
         }
     }
 }

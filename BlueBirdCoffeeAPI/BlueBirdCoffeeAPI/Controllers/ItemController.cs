@@ -68,5 +68,12 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(_itemService.RemoveImage(imageId));
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
+        [HttpGet("Statistic")]
+        public IActionResult Statistic(DateTime? date, DateTime? fromDate, DateTime? toDate)
+        {
+            return Ok(_itemService.Statistic(date, fromDate, toDate));
+        }
     }
 }

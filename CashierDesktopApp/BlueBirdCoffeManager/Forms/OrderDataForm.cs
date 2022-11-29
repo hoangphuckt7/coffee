@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace BlueBirdCoffeManager.Forms
 {
@@ -530,6 +531,36 @@ namespace BlueBirdCoffeManager.Forms
             submitButton.Top = oFooterPanel.Height - submitButton.Height - 10;
             if (Sessions.Order.CurrentOrder.OrderDetail.Count < 1 && _editOrder == null) { submitButton.Enabled = false; submitButton.BackColor = Color.Gray; }
 
+            if (_editOrder != null)
+            {
+                RoundedButton btnCancel = new RoundedButton();
+                btnCancel.Top = submitButton.Top;
+                btnCancel.Left = submitButton.Left;
+                btnCancel.Width = 30 * Width / 100;
+                btnCancel.BackColor = Color.Gray;
+                btnCancel.Text = "Hủy";
+
+                btnCancel.Click += (sender, ev) =>
+                {
+                    var result = MessageBox.Show("Hủy bỏ thay đổi", "Hủy bỏ", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                    if (result == DialogResult.OK)
+                    {
+                        if (sender != null)
+                        {
+                            var parent = ((Control)sender)?.Parent.Parent.Parent.Parent.Parent;
+                            parent.Visible = false;
+                            parent.Dispose();
+                        }
+                        return;
+                    }
+                };
+
+                submitButton.Left = btnCancel.Left + btnCancel.Width;
+                submitButton.Width = 96 * Width / 100 - btnCancel.Left - btnCancel.Width;
+
+                oFooterPanel.Controls.Add(btnCancel);
+            }
+
             isTable.CheckedChanged += (sender, e) =>
             {
                 lbDiscout.Visible = false;
@@ -588,21 +619,24 @@ namespace BlueBirdCoffeManager.Forms
             {
                 if (_editOrder != null)
                 {
-                    try
+                    var rs = MessageBox.Show("Xác nhận cập nhật thông tin cho order này", "Xác nhận", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                    if (rs == DialogResult.OK)
                     {
-                        await ApiBuilder.SendRequest<object>("api/Order", _editOrder, RequestMethod.PUT);
-                    }
-                    catch (Exception) { }
+                        try
+                        {
+                            await ApiBuilder.SendRequest<object>("api/Order", _editOrder, RequestMethod.PUT);
+                        }
+                        catch (Exception) { }
 
-                    if (sender != null)
-                    {
-                        var parent = ((Control)sender)?.Parent.Parent.Parent.Parent.Parent;
-                        parent.Visible = false;
-                        parent.Dispose();
-                        parent = null;
-                    }
+                        if (sender != null)
+                        {
+                            var parent = ((Control)sender)?.Parent.Parent.Parent.Parent.Parent;
+                            parent.Visible = false;
+                            parent.Dispose();
+                        }
 
-                    return;
+                        return;
+                    }
                 }
                 if (Sessions.Order.CurrentOrder.OrderDetail.Count < 1)
                 {

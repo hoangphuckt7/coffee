@@ -28,6 +28,11 @@ namespace Service.MapperProfiles
 
             CreateMap<Item, ItemViewModel>().ForMember(f => f.Images, map => map.Ignore());
 
+            CreateMap<Item, ItemStatisticModel>()
+                .ForMember(f => f.Selled, map => map.Ignore())
+                .ForMember(f => f.Total, map => map.Ignore())
+                .ForMember(f => f.Images, map => map.Ignore());
+
             //Pair
             CreateMap<SystemSetting, PairModel>()
                 .ForMember(f => f.Key, map => map.MapFrom(f => f.Key))

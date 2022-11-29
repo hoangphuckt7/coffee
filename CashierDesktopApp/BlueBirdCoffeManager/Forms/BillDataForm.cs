@@ -527,7 +527,7 @@ namespace BlueBirdCoffeManager.Forms
                 }
                 const string message = "Hoàn tất hóa đơn?";
                 const string caption = "Thông báo";
-                var rr = MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                var rr = MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.None);
                 // If the no button was pressed ...
                 if (rr == DialogResult.Yes)
                 {

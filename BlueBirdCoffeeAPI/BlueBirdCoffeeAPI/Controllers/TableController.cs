@@ -51,5 +51,12 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(await _tableService.ChangeTable(oldTableId, newTableId));
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
+        [HttpPut("ChangeOrders")]
+        public async Task<IActionResult> ChangeOrdersTable(ChangeOrdersTable model)
+        {
+            return Ok(await _tableService.ChangeOrdersTable(model.OrderIds, model.NewTableId));
+        }
     }
 }
