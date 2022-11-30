@@ -10,6 +10,12 @@ namespace AdminManager.Controllers
     {
         public async Task<IActionResult> Index(DateTime? singleDate, DateTime? fromDate, DateTime? toDate, int? pageSize = 10, int? pageIndex = 1, bool? isNewest = true)
         {
+            if (singleDate == null && fromDate == null && toDate == null)
+            {
+                fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+            }
+
             string path = "api/Bill/ExportData?isNewest=" + isNewest;
             if (singleDate != null)
             {
@@ -101,6 +107,12 @@ namespace AdminManager.Controllers
 
         public async Task<IActionResult> Order(DateTime? singleDate, DateTime? fromDate, DateTime? toDate, int? pageSize = 10, int? pageIndex = 1, bool? isNewest = true)
         {
+            if (singleDate == null && fromDate == null && toDate == null)
+            {
+                fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+            }
+
             string path = "api/Order/ExportData?isNewest=" + isNewest;
             if (singleDate != null)
             {
