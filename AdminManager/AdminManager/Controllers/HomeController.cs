@@ -26,23 +26,7 @@ namespace AdminManager.Controllers
                 string seriesData = "[";
                 foreach (var item in data)
                 {
-                    string total;
-                    if (billCountChart == true)
-                    {
-                        total = item.Total.ToString();
-                    }
-                    else
-                    {
-                        var sum = item.Total.ToString();
-                        //var sum = item.Total.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat);
-                        //if (string.IsNullOrEmpty(sum)) sum = "0";
-                        //if (sum.ToCharArray().Count(f => f == '.') > 1)
-                        //{
-
-                        //}
-                        total = sum;
-                    }
-                    seriesData += $"[{item.Date},{total}],";
+                    seriesData += $"[{item.Date},{item.Total}],";
                 }
                 seriesData += "]";
                 ViewBag.SeriesData = seriesData;
@@ -53,15 +37,45 @@ namespace AdminManager.Controllers
             {
                 var data = await ApiBuilder.ParseToData<StatisticsModels>(statisticsRaw);
                 ViewBag.Statistics = data;
+
+                //Current date
+                if (data.ChartTodateIncome > data.ChartLastDateIncome)
+                {
+                    ViewBag.UpChartTodateIncome = true;
+                    ViewBag.ChartTodateIncome = data.ChartTodateIncome == 0 ? 0 : Math.Round((data.ChartTodateIncome - data.ChartLastDateIncome) * 100 / data.ChartTodateIncome, 2);
+                }
+                else
+                {
+                    ViewBag.UpChartTodateIncome = false;
+                    ViewBag.ChartTodateIncome = data.ChartLastDateIncome == 0 ? 0 : Math.Round((data.ChartLastDateIncome - data.ChartTodateIncome) * 100 / data.ChartLastDateIncome, 2);
+                }
+
+                //this week
+                if (data.ChartThisWeekIncome > data.ChartLastWeekIncome)
+                {
+                    ViewBag.UpChartThisWeekIncome = true;
+                    ViewBag.ChartThisWeekIncome = data.ChartThisWeekIncome == 0 ? 0 : Math.Round((data.ChartThisWeekIncome - data.ChartLastWeekIncome) * 100 / data.ChartThisWeekIncome, 2);
+                }
+                else
+                {
+                    ViewBag.UpChartThisWeekIncome = false;
+                    ViewBag.ChartThisWeekIncome = data.ChartLastWeekIncome == 0 ? 0 : Math.Round((data.ChartLastWeekIncome - data.ChartThisWeekIncome) * 100 / data.ChartLastWeekIncome, 2);
+                }
+
+                //this month
+                if (data.ChartThisMonthIncome > data.ChartLastMonthIncome)
+                {
+                    ViewBag.UpChartThisMonthIncome = true;
+                    ViewBag.ChartThisMonthIncome = data.ChartThisMonthIncome == 0 ? 0 : Math.Round((data.ChartThisMonthIncome - data.ChartLastMonthIncome) * 100 / data.ChartThisMonthIncome, 2);
+                }
+                else
+                {
+                    ViewBag.UpChartThisMonthIncome = false;
+                    ViewBag.ChartThisMonthIncome = data.ChartLastMonthIncome == 0 ? 0 : Math.Round((data.ChartLastMonthIncome - data.ChartThisMonthIncome) * 100 / data.ChartLastMonthIncome, 2);
+                }
+
+                ViewBag.BillCountChart = billCountChart;
             }
-
-            ViewBag.BillCountChart = billCountChart;
-            return View();
-        }
-
-        public async Task<IActionResult> Privacy()
-        {
-            await ApiBuilder.SendRequest<object>("x", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
             return View();
         }
     }

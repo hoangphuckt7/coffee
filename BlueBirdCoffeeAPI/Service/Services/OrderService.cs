@@ -93,13 +93,14 @@ namespace Service.Services
                 _dbContext.Add(newOrderDetail);
             }
 
-            if (orderDetails.Count() == 0 && news.Count == 0)
-            {
-                _dbContext.Remove(data);
-            }
-
             _dbContext.SaveChanges();
 
+            var reCheck = _dbContext.Orders.Include(o => o.OrderDetails).FirstOrDefault(f => f.Id == model.Id && f.IsCheckout == false);
+            if (reCheck != null && reCheck.OrderDetails.Count == 0)
+            {
+                _dbContext.Remove(reCheck);
+                _dbContext.SaveChanges();
+            }
             return data.Id;
         }
         public async Task<Guid> CreateOrder(string employeeId, OrderCreateModel models)

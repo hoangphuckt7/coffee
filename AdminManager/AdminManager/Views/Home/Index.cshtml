@@ -81,35 +81,72 @@
                     <div class="card-header">
                         <h4>Thống kê tháng này</h4>
                         <div class="card-header-action">
-                            <button class="btn btn-sm btn-outline-secondary mr-1" id="one_month">Theo doanh thu</button>
+                            <button class="btn btn-sm btn-outline-secondary mr-1" id="one_month1" onclick="clicked(false)">Theo doanh thu</button>
+                            <button class="btn btn-sm btn-outline-secondary mr-1" id="all1" onclick="clicked(true)">Theo số hóa đơn</button>
+
+                            <button hidden class="btn btn-sm btn-outline-secondary mr-1" id="one_month">Theo doanh thu</button>
                             <button hidden class="btn btn-sm btn-outline-secondary mr-1" id="six_months">6M</button>
                             <button hidden class="btn btn-sm btn-outline-secondary mr-1 active" id="one_year">Từng tháng</button>
                             <button hidden class="btn btn-sm btn-outline-secondary mr-1" id="ytd">YTD</button>
-                            <button class="btn btn-sm btn-outline-secondary mr-1" id="all">Theo số hóa đơn</button>
+                            <button hidden class="btn btn-sm btn-outline-secondary mr-1" id="all" onclick="clicked(true)">Theo số hóa đơn</button>
+
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="statistic-details mb-sm-4">
                             <div class="statistic-details-item">
-                                <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span> 7%</span>
-                                <div class="detail-value">$243</div>
-                                <div class="detail-name">Today's Sales</div>
+                                <span class="text-muted">
+                                    <span class="text-primary">
+                                        @if (ViewBag.UpChartTodateIncome == true)
+                                        {
+                                            <i class="fas fa-caret-up"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-caret-down"></i>
+                                        }
+                                    </span> @(ViewBag.ChartTodateIncome)%
+                                </span>
+                                <div class="detail-value">@(ViewBag.Statistics.ChartTodateIncome == 0 ? 0 : ViewBag.Statistics.ChartTodateIncome.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat))₫</div>
+                                <div class="detail-name">Hôm nay</div>
                             </div>
                             <div class="statistic-details-item">
-                                <span class="text-muted"><span class="text-danger"><i class="fas fa-caret-down"></i></span> 23%</span>
-                                <div class="detail-value">$2,902</div>
-                                <div class="detail-name">This Week's Sales</div>
+                                <span class="text-muted">
+                                    <span class="text-danger">
+                                        @if (ViewBag.UpChartThisWeekIncome == true)
+                                        {
+                                            <i class="fas fa-caret-up"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-caret-down"></i>
+                                        }
+                                    </span>@(ViewBag.ChartThisWeekIncome)%
+                                </span>
+                                <div class="detail-value">@(ViewBag.Statistics.ChartThisWeekIncome == 0 ? 0 : ViewBag.Statistics.ChartThisWeekIncome.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat))₫</div>
+                                <div class="detail-name">Tuần này</div>
                             </div>
                             <div class="statistic-details-item">
-                                <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span>9%</span>
-                                <div class="detail-value">$12,821</div>
-                                <div class="detail-name">This Month's Sales</div>
+                                <span class="text-muted">
+                                    <span class="text-primary">
+                                        @if (ViewBag.UpChartThisMonthIncome == true)
+                                        {
+                                            <i class="fas fa-caret-up"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-caret-down"></i>
+                                        }
+                                    </span>@(ViewBag.ChartThisMonthIncome)%
+                                </span>
+                                <div class="detail-value">@(ViewBag.Statistics.ChartThisMonthIncome == 0 ? 0 : ViewBag.Statistics.ChartThisMonthIncome.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat))₫</div>
+                                <div class="detail-name">Tháng này</div>
                             </div>
-                            <div class="statistic-details-item">
-                                <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span> 19%</span>
-                                <div class="detail-value">$92,142</div>
-                                <div class="detail-name">This Year's Sales</div>
-                            </div>
+                            @* <div class="statistic-details-item">
+                            <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span> 19%</span>
+                            <div class="detail-value">$92,142</div>
+                            <div class="detail-name">This Year's Sales</div>
+                            </div>*@
                         </div>
                         <div id="apex-timeline-chart"></div>
                     </div>
@@ -126,10 +163,24 @@
         TimeSpan t = DateTime.Now - new DateTime(1970, 1, 1);
         double secondsSinceEpoch = (double)t.TotalMilliseconds;
     }
+        window.addEventListener("load", (event) => {
+            var check = @(ViewBag.billCountChart.ToString().ToLower());
+            if (check == true) {
+                document.getElementById("all1").style.backgroundColor = '#5a5278';
+                document.getElementById("all1").style.color = '#fff';
+            } else {
+                document.getElementById("one_month1").style.backgroundColor = '#5a5278';
+                document.getElementById("one_month1").style.color = '#fff';
+            }
+        });
 
-        window.onload = function() {
-            document.getElementById('one_month').click();
+    function clicked(input) {
+        var check = @(ViewBag.billCountChart.ToString().ToLower());
+        if (check != input) {
+            window.location.href = '?billCountChart=' + input;
         }
+    }
+
     $(document).ready(function () {
         var options = {
             annotations: {

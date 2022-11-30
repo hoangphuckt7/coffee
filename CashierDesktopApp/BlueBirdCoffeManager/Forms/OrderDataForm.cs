@@ -536,6 +536,7 @@ namespace BlueBirdCoffeManager.Forms
                 RoundedButton btnCancel = new RoundedButton();
                 btnCancel.Top = submitButton.Top;
                 btnCancel.Left = submitButton.Left;
+                btnCancel.Height = submitButton.Height;
                 btnCancel.Width = 30 * Width / 100;
                 btnCancel.BackColor = Color.Gray;
                 btnCancel.Text = "Hủy";

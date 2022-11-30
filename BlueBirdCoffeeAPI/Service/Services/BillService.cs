@@ -11,6 +11,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Service.Services
 {
@@ -43,8 +44,19 @@ namespace Service.Services
             var items = _dbContext.Items.ToList();
 
             var thisMonth = GetStatisticsForMonth(DateTime.UtcNow.AddHours(7), items);
-
             var lastMonth = GetStatisticsForMonth(DateTime.UtcNow.AddHours(7).AddMonths(-1), items);
+
+            var now = DateTime.UtcNow.AddHours(7);
+
+            var todateIncome = GetIncomeByDate(now);
+            var lastDateIncome = GetIncomeByDate(now.AddDays(-1));
+
+            var thisWeekIncome = GetIncomeByFromToDate(GetFirstDayOfWeek(now), now);
+            var lastWeekIncome = GetIncomeByFromToDate(GetFirstDayOfWeek(now).AddDays(-7), GetFirstDayOfWeek(now).AddDays(-1));
+
+            var lastMonthD = now.AddMonths(-1);
+            var thisMonthIncome = GetIncomeByFromToDate(new DateTime(now.Year, now.Month, 1), now);
+            var lastMonthIncome = GetIncomeByFromToDate(new DateTime(lastMonthD.Year, lastMonthD.Month, 1), new DateTime(lastMonthD.Year, lastMonthD.Month, DateTime.DaysInMonth(lastMonthD.Year, lastMonthD.Month)));
 
             return new StatisticsModels()
             {
@@ -54,8 +66,33 @@ namespace Service.Services
 
                 BestSellerLastMonthCount = lastMonth.BestSellerCount,
                 BestSellerLastMonthItemName = lastMonth.BestSellerItemName,
-                IncomeLastMonth = lastMonth.Income
+                IncomeLastMonth = lastMonth.Income,
+
+                ChartTodateIncome = todateIncome,
+                ChartLastDateIncome = lastDateIncome,
+                ChartThisWeekIncome = thisWeekIncome,
+                ChartLastWeekIncome = lastWeekIncome,
+                ChartThisMonthIncome = thisMonthIncome,
+                ChartLastMonthIncome = lastMonthIncome
             };
+        }
+
+        private DateTime GetFirstDayOfWeek(DateTime date)
+        {
+            do
+            {
+                if (date.DayOfWeek == DayOfWeek.Monday) return date;
+                date = date.AddDays(-1);
+            } while (date.DayOfWeek != DayOfWeek.Monday);
+            return date;
+        }
+        private double GetIncomeByFromToDate(DateTime fromDate, DateTime toDate)
+        {
+            return _dbContext.Bills.Where(f => f.DateCreated.Date >= fromDate.Date && f.DateCreated.Date <= toDate.Date).Sum(s => s.Total - s.Discount - s.Coupon);
+        }
+        private double GetIncomeByDate(DateTime date)
+        {
+            return _dbContext.Bills.Where(f => f.DateCreated.Date == date.Date).Sum(s => s.Total - s.Discount - s.Coupon);
         }
         public StatisticsModels GetStatisticsForMonth(DateTime monthOfYear, List<Item>? items)
         {
