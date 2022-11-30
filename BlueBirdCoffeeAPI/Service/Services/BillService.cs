@@ -19,7 +19,7 @@ namespace Service.Services
         BillViewModel Checkout(CheckoutModel model, string userId);
         List<BillViewModel> History(int count);
         List<BillMissingItemViewModel> MissingBillItemWithin48Hours();
-        List<ChartViewModel> ChartData();
+        List<ChartViewModel> ChartData(bool isBillCountChart);
         StatisticsModels Statistics();
         Guid UpdateReason(BillMissingItemUpdateModel model);
         BilPagingModel ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize);
@@ -304,7 +304,7 @@ namespace Service.Services
             }
             return result;
         }
-        public List<ChartViewModel> ChartData()
+        public List<ChartViewModel> ChartData(bool isBillCountChart)
         {
             var currentMonthData = _dbContext.Bills
                 .Where(f => f.DateCreated.Year == DateTime.UtcNow.AddHours(7).Year)
@@ -315,7 +315,16 @@ namespace Service.Services
             for (int i = 1; i <= DateTime.UtcNow.AddHours(7).Day; i++)
             {
                 var date = new DateTime(DateTime.UtcNow.AddHours(7).Year, DateTime.UtcNow.AddHours(7).Month, i);
-                var total = currentMonthData.Where(f => f.DateCreated.Day == i).ToList().Count;
+
+                double total;
+                if (isBillCountChart)
+                {
+                    total = currentMonthData.Where(f => f.DateCreated.Day == i).Count();
+                }
+                else
+                {
+                    total = currentMonthData.Where(f => f.DateCreated.Day == i).Sum(f => f.Total - f.Discount - f.Coupon);
+                }
 
                 TimeSpan t = date - new DateTime(1970, 1, 1);
                 double secondsSinceEpoch = (double)t.TotalMilliseconds;

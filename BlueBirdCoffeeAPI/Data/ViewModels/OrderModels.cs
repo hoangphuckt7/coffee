@@ -86,4 +86,5 @@ namespace Data.ViewModels
         public List<Guid> OrderIds { get; set; }
         public Guid NewTableId { get; set; }
     }
+
 }

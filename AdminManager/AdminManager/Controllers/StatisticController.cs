@@ -6,14 +6,14 @@ using Newtonsoft.Json;
 
 namespace AdminManager.Controllers
 {
-    public class BillController : Controller
+    public class StatisticController : Controller
     {
         public async Task<IActionResult> Index(DateTime? singleDate, DateTime? fromDate, DateTime? toDate, int? pageSize = 10, int? pageIndex = 1, bool? isNewest = true)
         {
             string path = "api/Bill/ExportData?isNewest=" + isNewest;
             if (singleDate != null)
             {
-                path += "&date=" + singleDate;
+                path += "&date=" + singleDate.Value.ToString("yyyy-MM-dd");
             }
             if (pageSize != null)
             {
@@ -22,12 +22,12 @@ namespace AdminManager.Controllers
 
             if (fromDate != null)
             {
-                path += "&fromDate=" + fromDate;
+                path += "&fromDate=" + fromDate.Value.ToString("yyyy-MM-dd");
             }
 
             if (toDate != null)
             {
-                path += "&toDate=" + toDate;
+                path += "&toDate=" + toDate.Value.ToString("yyyy-MM-dd");
             }
 
             path += "&pageIndex=" + pageIndex;
@@ -66,20 +66,20 @@ namespace AdminManager.Controllers
             if (singleDate != null)
             {
                 first = true;
-                path += "?date=" + singleDate.Value.ToShortDateString();
+                path += "?date=" + singleDate.Value.ToString("yyyy-MM-dd");
             }
 
             if (fromDate != null)
             {
                 path += !first ? "?fromDate=" : "&fromDate=";
-                path += fromDate.Value.ToShortDateString();
+                path += fromDate.Value.ToString("yyyy-MM-dd");
                 first = true;
             }
 
             if (toDate != null)
             {
                 path += !first ? "?toDate=" : "&toDate=";
-                path += toDate.Value.ToShortDateString();
+                path += toDate.Value.ToString("yyyy-MM-dd");
             }
 
             var rawData = await ApiBuilder.SendRequest<object>(path, null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
@@ -98,5 +98,48 @@ namespace AdminManager.Controllers
             ViewBag.CurrentDate = singleDate;
             return View();
         }
+
+        public async Task<IActionResult> Order(DateTime? singleDate, DateTime? fromDate, DateTime? toDate, int? pageSize = 10, int? pageIndex = 1, bool? isNewest = true)
+        {
+            string path = "api/Order/ExportData?isNewest=" + isNewest;
+            if (singleDate != null)
+            {
+                path += "&date=" + singleDate.Value.ToString("yyyy-MM-dd");
+            }
+            if (pageSize != null)
+            {
+                if (pageSize != -1) path += "&pageSize=" + pageSize;
+            }
+
+            if (fromDate != null)
+            {
+                path += "&fromDate=" + fromDate.Value.ToString("yyyy-MM-dd");
+            }
+
+            if (toDate != null)
+            {
+                path += "&toDate=" + toDate.Value.ToString("yyyy-MM-dd");
+            }
+
+            path += "&pageIndex=" + pageIndex;
+
+            var rawData = await ApiBuilder.SendRequest<object>(path, null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
+
+            var data = await ApiBuilder.ParseToData<PagingModel>(rawData);
+            ViewBag.Orders = (JsonConvert.DeserializeObject<List<OrderStatisticModel>>(data.Data.ToString()!))?.OrderBy(f => f.Description).ToList();
+
+            ViewBag.CurrentDate = singleDate;
+            ViewBag.PageSize = pageSize;
+            ViewBag.IsNewest = isNewest;
+
+            ViewBag.FromDate = fromDate;
+            ViewBag.ToDate = toDate;
+
+            ViewBag.PageIndex = pageIndex;
+            ViewBag.TotalPage = Math.Ceiling((decimal)data.Total / (decimal)pageSize!.Value);
+
+            return View();
+        }
+
     }
 }

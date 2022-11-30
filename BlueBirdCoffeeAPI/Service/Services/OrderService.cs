@@ -31,6 +31,7 @@ namespace Service.Services
         object GetBartenderOrders(int count);
         void RemoveMissingOrders();
         Guid Update(OrderUpdateModel model);
+        PagingModel ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize);
     }
     public class OrderService : IOrderService
     {
@@ -356,6 +357,38 @@ namespace Service.Services
             }
 
             _dbContext.SaveChanges();
+        }
+        public PagingModel ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize)
+        {
+            var querry = _dbContext.Orders.Include(f => f.OrderDetails).Where(f => date == null || date.Value.Date == f.DateCreated.Date)
+                .Where(f => (fromDate == null || toDate == null) || (f.DateCreated.Date >= fromDate.Value.Date && f.DateCreated.Date <= toDate.Value.Date));
+
+            if (isNewest)
+            {
+                querry = querry.OrderByDescending(f => f.DateCreated);
+            }
+            else
+            {
+                querry = querry.OrderBy(f => f.DateCreated);
+            }
+
+            var total = querry.Count();
+
+            List<Order> data;
+            if (pageIndex != null && pageSize != null)
+            {
+                data = querry.Skip((pageIndex.Value - 1) * pageSize.Value).Take(pageSize.Value).ToList();
+            }
+            else
+            {
+                data = querry.ToList();
+            }
+
+            return new PagingModel()
+            {
+                Data = _mapper.Map<List<OrderStatisticModel>>(data),
+                Total = total
+            };
         }
     }
 }

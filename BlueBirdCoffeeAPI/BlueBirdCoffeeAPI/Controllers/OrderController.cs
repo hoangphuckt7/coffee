@@ -95,12 +95,19 @@ namespace BlueBirdCoffeeAPI.Controllers
             return Ok(_orderService.SetMissingOrder(model, User.GetId()));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
-        [HttpDelete("MissingOrders")]
-        public IActionResult RemoveMissingOrders()
+        //[Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
+        //[HttpDelete("MissingOrders")]
+        //public IActionResult RemoveMissingOrders()
+        //{
+        //    _orderService.RemoveMissingOrders();
+        //    return Ok();
+        //}
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN_CASHIER)]
+        [HttpGet("ExportData")]
+        public IActionResult ExportData(DateTime? date, DateTime? fromDate, DateTime? toDate, bool isNewest, int? pageIndex, int? pageSize)
         {
-            _orderService.RemoveMissingOrders();
-            return Ok();
+            return Ok(_orderService.ExportData(date, fromDate, toDate, isNewest, pageIndex, pageSize));
         }
     }
 }

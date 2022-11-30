@@ -49,9 +49,9 @@ namespace BlueBirdCoffeeAPI.Controllers
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpGet("Chart")]
-        public IActionResult ChartData()
+        public IActionResult ChartData(bool? isBillCountChart = false)
         {
-            return Ok(_billService.ChartData());
+            return Ok(_billService.ChartData(isBillCountChart!.Value));
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
