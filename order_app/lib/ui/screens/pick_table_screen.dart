@@ -94,30 +94,64 @@ class PickTableScreen extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FillBtn(
-          label: 'Chuyển / Gộp bàn',
-          height: 40,
-          onPressed: () {
-            if (order == null) {
-              order = OrderCreateModel(
-                selectedTable?.id,
-                selectedTable,
-                selectedFloor?.id,
-                selectedFloor,
-                const <OrderDetailCreateModel>[],
-              );
-            } else {
-              order?.floor = selectedFloor;
-              order?.floorId = selectedFloor?.id;
-              order?.table = selectedTable;
-              order?.tableId = selectedTable?.id;
-            }
-            Fn.pushScreen(
-              context,
-              RouteName.changeTable,
-              arguments: [order],
-            );
-          },
+        Row(
+          children: [
+            Expanded(
+              child: FillBtn(
+                label: 'Chuyển / Gộp bàn',
+                height: 40,
+                onPressed: () {
+                  if (order == null) {
+                    order = OrderCreateModel(
+                      selectedTable?.id,
+                      selectedTable,
+                      selectedFloor?.id,
+                      selectedFloor,
+                      const <OrderDetailCreateModel>[],
+                    );
+                  } else {
+                    order?.floor = selectedFloor;
+                    order?.floorId = selectedFloor?.id;
+                    order?.table = selectedTable;
+                    order?.tableId = selectedTable?.id;
+                  }
+                  Fn.pushScreen(
+                    context,
+                    RouteName.changeTable,
+                    arguments: [order, true],
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: FillBtn(
+                label: 'Xem thông tin order',
+                height: 40,
+                onPressed: () {
+                  if (order == null) {
+                    order = OrderCreateModel(
+                      selectedTable?.id,
+                      selectedTable,
+                      selectedFloor?.id,
+                      selectedFloor,
+                      const <OrderDetailCreateModel>[],
+                    );
+                  } else {
+                    order?.floor = selectedFloor;
+                    order?.floorId = selectedFloor?.id;
+                    order?.table = selectedTable;
+                    order?.tableId = selectedTable?.id;
+                  }
+                  Fn.pushScreen(
+                    context,
+                    RouteName.changeTable,
+                    arguments: [order, false],
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -230,38 +264,42 @@ class PickTableScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const SizedBox(height: 20),
-        FillBtn(
-          label: 'Tiếp theo',
-          onPressed: () {
-            if (selectedTable != null && selectedFloor != null) {
-              if (order == null) {
-                order = OrderCreateModel(
-                  selectedTable?.id,
-                  selectedTable,
-                  selectedFloor?.id,
-                  selectedFloor,
-                  const <OrderDetailCreateModel>[],
-                );
-              } else {
-                order?.floor = selectedFloor;
-                order?.floorId = selectedFloor?.id;
-                order?.table = selectedTable;
-                order?.tableId = selectedTable?.id;
+        SizedBox(
+          width: Fn.getScreenWidth(context) / 2,
+          child: FillBtn(
+            label: 'Tiếp theo',
+            height: 40,
+            onPressed: () {
+              if (selectedTable != null && selectedFloor != null) {
+                if (order == null) {
+                  order = OrderCreateModel(
+                    selectedTable?.id,
+                    selectedTable,
+                    selectedFloor?.id,
+                    selectedFloor,
+                    const <OrderDetailCreateModel>[],
+                  );
+                } else {
+                  order?.floor = selectedFloor;
+                  order?.floorId = selectedFloor?.id;
+                  order?.table = selectedTable;
+                  order?.tableId = selectedTable?.id;
+                }
+                Fn.pushScreen(context, RouteName.order, arguments: [order]);
               }
-              Fn.pushScreen(context, RouteName.order, arguments: [order]);
-            }
-            if (selectedFloor == null) {
-              Fn.showToast(
-                eToast: EToast.danger,
-                msg: 'Vui lòng chọn khu vục!',
-              );
-            } else if (selectedTable == null) {
-              Fn.showToast(
-                eToast: EToast.danger,
-                msg: 'Vui lòng chọn bàn!',
-              );
-            }
-          },
+              if (selectedFloor == null) {
+                Fn.showToast(
+                  eToast: EToast.danger,
+                  msg: 'Vui lòng chọn khu vục!',
+                );
+              } else if (selectedTable == null) {
+                Fn.showToast(
+                  eToast: EToast.danger,
+                  msg: 'Vui lòng chọn bàn!',
+                );
+              }
+            },
+          ),
         ),
       ],
     );

@@ -59,9 +59,13 @@ class Routes {
         );
       case RouteName.changeTable:
         OrderCreateModel? order;
+        bool isChange = false;
         if (settings.arguments != null) {
           var lstArg = settings.arguments! as List;
           order = lstArg.isNotEmpty ? lstArg[0] as OrderCreateModel? : null;
+          if (lstArg.length > 1) {
+            isChange = lstArg[1];
+          }
         }
         return MaterialPageRoute(
           builder: (context) => MultiBlocProvider(
@@ -74,7 +78,7 @@ class Routes {
                     ChangeTableBloc()..add(CTLoadFloorTableEvent()),
               ),
             ],
-            child: ChangeTableScreen(order: order),
+            child: ChangeTableScreen(order: order, isChange: isChange),
           ),
         );
       case RouteName.pickTable:

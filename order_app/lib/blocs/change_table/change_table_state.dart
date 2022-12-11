@@ -28,6 +28,7 @@ class CTLoadedFloorTableState extends ChangeTableState {
   final lstFloor;
   final lstTableOld;
   final lstTableNew;
+  final lstOrders;
 
   CTLoadedFloorTableState(
     this.selectedFloorOld,
@@ -37,6 +38,7 @@ class CTLoadedFloorTableState extends ChangeTableState {
     this.lstFloor,
     this.lstTableOld,
     this.lstTableNew,
+    this.lstOrders,
   );
 }
 
@@ -44,8 +46,14 @@ class CTChangedFloorOldState extends ChangeTableState {
   final floor;
   final listTable;
   final selectedTable;
+  final listOrder;
 
-  CTChangedFloorOldState(this.floor, this.listTable, this.selectedTable);
+  CTChangedFloorOldState(
+    this.floor,
+    this.listTable,
+    this.selectedTable,
+    this.listOrder,
+  );
 }
 
 class CTChangedFloorNewState extends ChangeTableState {
@@ -53,13 +61,18 @@ class CTChangedFloorNewState extends ChangeTableState {
   final listTable;
   final selectedTable;
 
-  CTChangedFloorNewState(this.floor, this.listTable, this.selectedTable);
+  CTChangedFloorNewState(
+    this.floor,
+    this.listTable,
+    this.selectedTable,
+  );
 }
 
 class CTChangedTableOldState extends ChangeTableState {
   final table;
+  final lstOrder;
 
-  CTChangedTableOldState(this.table);
+  CTChangedTableOldState(this.table, this.lstOrder);
 }
 
 class CTChangedTableNewState extends ChangeTableState {
@@ -75,3 +88,21 @@ class CTShowPopupConfirmChangeState extends ChangeTableState {
 }
 
 class CTGoToPickTableState extends ChangeTableState {}
+
+class CTUpdateSelectedOrdersState extends ChangeTableState {
+  final listSelectedOrders;
+
+  CTUpdateSelectedOrdersState(this.listSelectedOrders);
+}
+
+class CTUpdateCbxAllState extends ChangeTableState {
+  final listSelectedOrder;
+
+  CTUpdateCbxAllState(this.listSelectedOrder);
+}
+
+class CTShowPopupSelectTableNewState extends ChangeTableState {
+  final isVisible;
+
+  CTShowPopupSelectTableNewState(this.isVisible);
+}

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:orderr_app/api/fetch.dart';
 import 'package:orderr_app/api/host.dart';
 import 'package:orderr_app/api/status_code.dart';
+import 'package:orderr_app/models/table/change_orders_model.dart';
 import 'package:orderr_app/models/table/table_model.dart';
 import 'package:orderr_app/utils/const.dart';
 import 'package:orderr_app/utils/local_storage.dart';
@@ -30,6 +31,21 @@ class TableRepo {
     try {
       var resp = await Fetch.PUT(
           '$controllerUrl/Change/$tableIdOld/$tableIdNew', null);
+      if (resp.statusCode == HttpStatusCode.OK) {
+        return resp.body.isNotEmpty;
+      } else if (resp.statusCode == HttpStatusCode.BadRequest) {
+        return resp.body.toString();
+      }
+    } catch (e) {
+      log(e.toString());
+      throw Exception('Lỗi! Chuyển / Gộp bàn thất bại');
+    }
+    return false;
+  }
+
+  Future<dynamic> changeTableOrders(ChangeOrdersModel model) async {
+    try {
+      var resp = await Fetch.PUT('$controllerUrl/ChangeOrders', model);
       if (resp.statusCode == HttpStatusCode.OK) {
         return resp.body.isNotEmpty;
       } else if (resp.statusCode == HttpStatusCode.BadRequest) {

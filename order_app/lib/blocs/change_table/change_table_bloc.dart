@@ -5,8 +5,11 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:orderr_app/models/common/base_model.dart';
+import 'package:orderr_app/models/order/order_model.dart';
+import 'package:orderr_app/models/table/change_orders_model.dart';
 import 'package:orderr_app/models/table/table_model.dart';
 import 'package:orderr_app/repositories/floor_repo.dart';
+import 'package:orderr_app/repositories/order_repo.dart';
 import 'package:orderr_app/repositories/table_repo.dart';
 
 part 'change_table_event.dart';
@@ -15,6 +18,7 @@ part 'change_table_state.dart';
 class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
   final _floorRepo = FloorRepo();
   final _tableRepo = TableRepo();
+  final _orderRepo = OrderRepo();
   ChangeTableBloc() : super(CTInitialState()) {
     on<CTLoadFloorTableEvent>(_onLoadFloorTable);
     on<CTShowPopupConfirmChangeEvent>(_onChangeVisibleConfirmPopup);
@@ -26,6 +30,9 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
     on<CTChangeTableNewEvent>(_onChangeTableNew);
     // confirm
     on<CTConfirmChangeEvent>(_onConfirmChange);
+    on<CTUpdateSelectedOrdersEvent>(_onUpdateSelectedOrders);
+    on<CTUpdateCbxAllEvent>(_onUpdateCbxAll);
+    on<CTShowPopupSelectTableNewEvent>(_onChangeVisibleSelectTablweNewPopup);
   }
 
   void _onLoadFloorTable(
@@ -46,6 +53,7 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
       TableModel? selectedTableNew;
       List<TableModel> lstTableOld = await _tableRepo.fetchListTable();
       List<TableModel> lstTableNew = lstTableOld;
+      List<OrderModel> lstOrder = <OrderModel>[];
 
       if (lstTableOld.isNotEmpty && selectedFloorOld != null) {
         lstTableOld = lstTableOld
@@ -53,6 +61,7 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
             .toList();
         if (lstTableOld.isNotEmpty) {
           selectedTableOld = lstTableOld[0];
+          lstOrder = await _orderRepo.getNewOrdersByTable(selectedTableOld.id!);
         }
       }
 
@@ -73,6 +82,7 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
         lstFloor,
         lstTableOld,
         lstTableNew,
+        lstOrder,
       ));
     } catch (e) {
       log('ChangeTableBloc - _onLoadFloorTable - ${e.toString()}');
@@ -84,6 +94,7 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
         const <BaseModel>[],
         const <TableModel>[],
         const <TableModel>[],
+        const <OrderModel>[],
       ));
     }
   }
@@ -95,15 +106,18 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
 
   void _conChangeFloorOld(
       CTChangeFloorOldEvent event, Emitter<ChangeTableState> emit) async {
+    emit(CTUpdatedLoadingState(true, 'Đang tải Order...'));
     BaseModel floor = event.floor;
     List<TableModel> listTable = await _tableRepo.fetchListTable();
     listTable = listTable.where((x) => x.floor?.id == floor.id).toList();
+    List<OrderModel> lstOrder = <OrderModel>[];
 
     TableModel? selectedTable;
     if (listTable.isNotEmpty) {
       selectedTable = listTable[0];
+      lstOrder = await _orderRepo.getNewOrdersByTable(selectedTable.id!);
     }
-    emit(CTChangedFloorOldState(floor, listTable, selectedTable));
+    emit(CTChangedFloorOldState(floor, listTable, selectedTable, lstOrder));
   }
 
   void _onChangeFloorNew(
@@ -111,7 +125,6 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
     BaseModel floor = event.floor;
     List<TableModel> listTable = await _tableRepo.fetchListTable();
     listTable = listTable.where((x) => x.floor?.id == floor.id).toList();
-
     TableModel? selectedTable;
     if (listTable.isNotEmpty) {
       selectedTable = listTable[0];
@@ -120,8 +133,17 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
   }
 
   void _onChangeTableOld(
-      CTChangeTableOldEvent event, Emitter<ChangeTableState> emit) {
-    emit(CTChangedTableOldState(event.table));
+      CTChangeTableOldEvent event, Emitter<ChangeTableState> emit) async {
+    emit(CTUpdatedLoadingState(true, 'Đang tải Order...'));
+    TableModel table = event.table;
+    try {
+      List<OrderModel> listOrder =
+          await _orderRepo.getNewOrdersByTable(table.id!);
+      emit(CTChangedTableOldState(table, listOrder));
+    } catch (e) {
+      emit(CTErrorState(
+          "Lỗi! không thể tải order của bàn ${table.description}"));
+    }
   }
 
   void _onChangeTableNew(
@@ -132,8 +154,10 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
   void _onConfirmChange(
       CTConfirmChangeEvent event, Emitter<ChangeTableState> emit) async {
     try {
-      var resp =
-          await _tableRepo.changeTable(event.tableIdOld, event.tableIdNew);
+      var resp = await _tableRepo.changeTableOrders(ChangeOrdersModel(
+        event.lstSelectedOrder,
+        event.tableIdNew,
+      ));
       if (resp is bool && resp) {
         emit(CTGoToPickTableState());
         return;
@@ -144,8 +168,49 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
         emit(CTErrorState('Chuyển / Gộp bàn thất bại'));
       }
     } catch (e) {
-      log('ChangeTableBloc - _onLoadFloorTable - ${e.toString()}');
+      log('ChangeTableBloc - _onConfirmChange - ${e.toString()}');
       emit(CTErrorState(e.toString()));
     }
+  }
+
+  void _onUpdateSelectedOrders(
+      CTUpdateSelectedOrdersEvent event, Emitter<ChangeTableState> emit) {
+    String? orderId = event.orderId;
+    List<String?> lstSelectedOrder = event.listSelectedOrder;
+    if (lstSelectedOrder.isEmpty) {
+      lstSelectedOrder = <String?>[];
+    }
+    try {
+      if (event.listSelectedOrder.contains(orderId)) {
+        event.listSelectedOrder.remove(orderId);
+      } else {
+        lstSelectedOrder.add(orderId);
+      }
+      emit(CTUpdateSelectedOrdersState(lstSelectedOrder));
+    } catch (e) {
+      log('ChangeTableBloc - _onUpdateSelectedOrders - ${e.toString()}');
+      emit(CTErrorState(e.toString()));
+    }
+  }
+
+  void _onUpdateCbxAll(
+      CTUpdateCbxAllEvent event, Emitter<ChangeTableState> emit) {
+    List<OrderModel> lstOrder = event.lstOrder;
+    int selLen = event.selLen;
+    try {
+      if (selLen == 0) {
+        emit(CTUpdateCbxAllState(lstOrder.map((e) => e.id).toList()));
+      } else {
+        emit(CTUpdateCbxAllState(const <String?>[]));
+      }
+    } catch (e) {
+      log('ChangeTableBloc - _onUpdateCbxAll - ${e.toString()}');
+      emit(CTErrorState(e.toString()));
+    }
+  }
+
+  void _onChangeVisibleSelectTablweNewPopup(
+      CTShowPopupSelectTableNewEvent event, Emitter<ChangeTableState> emit) {
+    emit(CTShowPopupSelectTableNewState(event.isVisible));
   }
 }

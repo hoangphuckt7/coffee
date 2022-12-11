@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 class Popup extends StatelessWidget {
   final bool show;
   final List<Widget> children;
+  final EdgeInsets padding;
   double? width;
   double? height;
   Popup({
@@ -15,6 +16,7 @@ class Popup extends StatelessWidget {
     this.width,
     this.height,
     required this.children,
+    this.padding = const EdgeInsets.all(10),
   });
 
   @override
@@ -33,7 +35,7 @@ class Popup extends StatelessWidget {
                 borderRadius: BorderRadius.circular(CardSetting.border_radius),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: padding,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: children,
