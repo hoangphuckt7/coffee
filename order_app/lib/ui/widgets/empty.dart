@@ -8,7 +8,7 @@ class Empty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: MColor.danger,
+      color: MColor.white,
       child: Center(
         child: Text(msg),
       ),

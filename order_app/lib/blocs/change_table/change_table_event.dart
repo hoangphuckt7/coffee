@@ -46,8 +46,28 @@ class CTShowPopupConfirmChangeEvent extends ChangeTableEvent {
 }
 
 class CTConfirmChangeEvent extends ChangeTableEvent {
-  final tableIdOld;
   final tableIdNew;
+  final lstSelectedOrder;
 
-  CTConfirmChangeEvent(this.tableIdOld, this.tableIdNew);
+  CTConfirmChangeEvent(this.tableIdNew, this.lstSelectedOrder);
+}
+
+class CTUpdateSelectedOrdersEvent extends ChangeTableEvent {
+  final orderId;
+  final listSelectedOrder;
+
+  CTUpdateSelectedOrdersEvent(this.orderId, this.listSelectedOrder);
+}
+
+class CTUpdateCbxAllEvent extends ChangeTableEvent {
+  final lstOrder;
+  final selLen;
+
+  CTUpdateCbxAllEvent(this.lstOrder, this.selLen);
+}
+
+class CTShowPopupSelectTableNewEvent extends ChangeTableEvent {
+  final isVisible;
+
+  CTShowPopupSelectTableNewEvent(this.isVisible);
 }

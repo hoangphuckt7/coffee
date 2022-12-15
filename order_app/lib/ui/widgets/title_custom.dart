@@ -5,7 +5,7 @@ class TitleCustom extends StatelessWidget {
   final String title;
   const TitleCustom({
     super.key,
-    required this.title,
+    this.title = '',
   });
 
   @override

@@ -22,7 +22,7 @@ class CardCustom extends StatelessWidget {
         borderRadius: BorderRadius.circular(CardSetting.border_radius),
         side: borderSide!,
       ),
-      child: Padding(
+      child: Container(
         padding: padding,
         child: child,
       ),

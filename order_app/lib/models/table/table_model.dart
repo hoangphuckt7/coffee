@@ -14,11 +14,11 @@ class TableModel {
   final int? rotation;
   final BaseModel? floor;
 
-  factory TableModel.fromJson(Map<String, dynamic> json) =>
-      _$TableModelFromJson(json);
-
   TableModel(this.id, this.description, this.currentOrder, this.position,
       this.size, this.shape, this.rotation, this.floor);
+
+  factory TableModel.fromJson(Map<String, dynamic> json) =>
+      _$TableModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TableModelToJson(this);
 }

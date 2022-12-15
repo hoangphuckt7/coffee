@@ -19,6 +19,7 @@ class OrderDetailModel {
   final String? itemId;
   ItemModel? item;
   final String? orderId;
+  List<DetailDctModel?>? listDescription = <DetailDctModel>[];
 
   OrderDetailModel(
     this.uniqueKey,
