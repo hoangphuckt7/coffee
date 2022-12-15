@@ -291,28 +291,33 @@ class ChangeTableScreen extends StatelessWidget {
           return const Expanded(child: Empty());
         }
         return Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: List.generate(lstOrder.length, (i) {
-                var order = lstOrder[i];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: OrderChangeTableCard(
-                    order: order,
-                    lstSelected: lstSelectedOrder,
-                    onTap: () {
-                      if (isChange) {
-                        BlocProvider.of<ChangeTableBloc>(context).add(
-                          CTUpdateSelectedOrdersEvent(
-                            order.id,
-                            lstSelectedOrder,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                );
-              }),
+          child: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              scrollbars: false,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: List.generate(lstOrder.length, (i) {
+                  var order = lstOrder[i];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: OrderChangeTableCard(
+                      order: order,
+                      lstSelected: lstSelectedOrder,
+                      onTap: () {
+                        if (isChange) {
+                          BlocProvider.of<ChangeTableBloc>(context).add(
+                            CTUpdateSelectedOrdersEvent(
+                              order.id,
+                              lstSelectedOrder,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  );
+                }),
+              ),
             ),
           ),
         );
@@ -337,6 +342,7 @@ class ChangeTableScreen extends StatelessWidget {
         }
         return Popup(
           show: isShowPopupSelectTableNew,
+          applyConstraints: true,
           padding: const EdgeInsets.all(20),
           children: [
             const TitleCustom(title: 'Bàn chuyển tới'),

@@ -1,16 +1,22 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:orderr_app/models/common/base_model.dart';
+import 'package:orderr_app/models/item/item_model.dart';
+import 'package:orderr_app/models/order/detail_dct_model.dart';
 import 'package:orderr_app/models/order/order_model.dart';
 import 'package:orderr_app/models/table/change_orders_model.dart';
 import 'package:orderr_app/models/table/table_model.dart';
 import 'package:orderr_app/repositories/floor_repo.dart';
+import 'package:orderr_app/repositories/item_repo.dart';
 import 'package:orderr_app/repositories/order_repo.dart';
 import 'package:orderr_app/repositories/table_repo.dart';
+import 'package:orderr_app/utils/const.dart';
+import 'package:orderr_app/utils/local_storage.dart';
 
 part 'change_table_event.dart';
 part 'change_table_state.dart';
@@ -19,6 +25,7 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
   final _floorRepo = FloorRepo();
   final _tableRepo = TableRepo();
   final _orderRepo = OrderRepo();
+  final _itemRepo = ItemRepo();
   ChangeTableBloc() : super(CTInitialState()) {
     on<CTLoadFloorTableEvent>(_onLoadFloorTable);
     on<CTShowPopupConfirmChangeEvent>(_onChangeVisibleConfirmPopup);
@@ -54,7 +61,6 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
       List<TableModel> lstTableOld = await _tableRepo.fetchListTable();
       List<TableModel> lstTableNew = lstTableOld;
       List<OrderModel> lstOrder = <OrderModel>[];
-
       if (lstTableOld.isNotEmpty && selectedFloorOld != null) {
         lstTableOld = lstTableOld
             .where((x) => x.floor!.id == selectedFloorOld!.id)
@@ -62,6 +68,9 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
         if (lstTableOld.isNotEmpty) {
           selectedTableOld = lstTableOld[0];
           lstOrder = await _orderRepo.getNewOrdersByTable(selectedTableOld.id!);
+          if (lstOrder.isNotEmpty) {
+            lstOrder = await _convertLstOrder(lstOrder);
+          }
         }
       }
 
@@ -116,6 +125,9 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
     if (listTable.isNotEmpty) {
       selectedTable = listTable[0];
       lstOrder = await _orderRepo.getNewOrdersByTable(selectedTable.id!);
+      if (lstOrder.isNotEmpty) {
+        lstOrder = await _convertLstOrder(lstOrder);
+      }
     }
     emit(CTChangedFloorOldState(floor, listTable, selectedTable, lstOrder));
   }
@@ -139,6 +151,7 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
     try {
       List<OrderModel> listOrder =
           await _orderRepo.getNewOrdersByTable(table.id!);
+      listOrder = await _convertLstOrder(listOrder);
       emit(CTChangedTableOldState(table, listOrder));
     } catch (e) {
       emit(CTErrorState(
@@ -194,7 +207,7 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
   }
 
   void _onUpdateCbxAll(
-      CTUpdateCbxAllEvent event, Emitter<ChangeTableState> emit) {
+      CTUpdateCbxAllEvent event, Emitter<ChangeTableState> emit) async {
     List<OrderModel> lstOrder = event.lstOrder;
     int selLen = event.selLen;
     try {
@@ -212,5 +225,35 @@ class ChangeTableBloc extends Bloc<ChangeTableEvent, ChangeTableState> {
   void _onChangeVisibleSelectTablweNewPopup(
       CTShowPopupSelectTableNewEvent event, Emitter<ChangeTableState> emit) {
     emit(CTShowPopupSelectTableNewState(event.isVisible));
+  }
+
+  _convertLstOrder(List<OrderModel> lstOrder) async {
+    List<ItemModel> lstItem = <ItemModel>[];
+    String? itemJson = await LocalStorage.getItem(KeyLS.items);
+    if (itemJson != null && itemJson.isNotEmpty) {
+      lstItem = List<ItemModel>.from(
+        jsonDecode(itemJson).map((model) => ItemModel.fromJson(model)),
+      );
+    }
+    if (lstItem.isEmpty) {
+      lstItem = await _itemRepo.getAll();
+    }
+    if (lstItem.isNotEmpty) {
+      for (var order in lstOrder) {
+        if (order.orderDetails != null && order.orderDetails!.isNotEmpty) {
+          for (var detail in order.orderDetails!) {
+            ItemModel item = lstItem.firstWhere((x) => x.id == detail.itemId);
+            detail.item = item;
+            if (detail.description != null && detail.description!.isNotEmpty) {
+              detail.listDescription = List<DetailDctModel>.from(
+                jsonDecode(detail.description!)
+                    .map((model) => DetailDctModel.fromJson(model)),
+              );
+            }
+          }
+        }
+      }
+    }
+    return lstOrder;
   }
 }

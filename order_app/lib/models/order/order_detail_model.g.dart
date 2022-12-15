@@ -22,9 +22,15 @@ OrderDetailModel _$OrderDetailModelFromJson(Map<String, dynamic> json) =>
           ? null
           : ItemModel.fromJson(json['item'] as Map<String, dynamic>),
       json['orderId'] as String?,
-    )..dctModel = json['dctModel'] == null
-        ? null
-        : DetailDctModel.fromJson(json['dctModel'] as Map<String, dynamic>);
+    )
+      ..dctModel = json['dctModel'] == null
+          ? null
+          : DetailDctModel.fromJson(json['dctModel'] as Map<String, dynamic>)
+      ..listDescription = (json['listDescription'] as List<dynamic>?)
+          ?.map((e) => e == null
+              ? null
+              : DetailDctModel.fromJson(e as Map<String, dynamic>))
+          .toList();
 
 Map<String, dynamic> _$OrderDetailModelToJson(OrderDetailModel instance) =>
     <String, dynamic>{
@@ -39,4 +45,5 @@ Map<String, dynamic> _$OrderDetailModelToJson(OrderDetailModel instance) =>
       'itemId': instance.itemId,
       'item': instance.item,
       'orderId': instance.orderId,
+      'listDescription': instance.listDescription,
     };

@@ -8,6 +8,7 @@ class Popup extends StatelessWidget {
   final bool show;
   final List<Widget> children;
   final EdgeInsets padding;
+  final bool applyConstraints;
   double? width;
   double? height;
   Popup({
@@ -17,28 +18,42 @@ class Popup extends StatelessWidget {
     this.height,
     required this.children,
     this.padding = const EdgeInsets.all(10),
+    this.applyConstraints = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = Fn.getScreenWidth(context);
+    var screenHeight = Fn.getScreenHeight(context);
     return Visibility(
       visible: show,
       child: Container(
         color: Colors.black.withOpacity(.6),
         child: Center(
           child: SizedBox(
-            width: width ??= Fn.getScreenWidth(context) * .8,
-            height: height ??= Fn.getScreenHeight(context) * .3,
-            child: Card(
-              color: MColor.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(CardSetting.border_radius),
-              ),
-              child: Padding(
-                padding: padding,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: children,
+            width: !applyConstraints ? (width ?? screenWidth * .8) : null,
+            height: !applyConstraints ? (height ?? screenHeight * .3) : null,
+            child: Container(
+              constraints: applyConstraints
+                  ? BoxConstraints(
+                      minWidth: 200,
+                      maxWidth: screenWidth * .8,
+                      minHeight: 300,
+                      maxHeight: screenHeight * .6,
+                    )
+                  : null,
+              child: Card(
+                color: MColor.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(CardSetting.border_radius),
+                ),
+                child: Padding(
+                  padding: padding,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: children,
+                  ),
                 ),
               ),
             ),
