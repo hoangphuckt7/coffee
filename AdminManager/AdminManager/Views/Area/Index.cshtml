@@ -1,0 +1,131 @@
+﻿@using AdminManager.Models
+@using System.Globalization
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1>Danh sách khu vực</h1>
+        </div>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            @if (!(string.IsNullOrEmpty(((string)ViewBag.TableMes))) && ((string)ViewBag.TableMes).Contains("thành công"))
+                            {
+                                <h4 style="color:green">@ViewBag.TableMes</h4>
+                            }
+                            else
+                            {
+                                <h4 style="color:red">@ViewBag.TableMes</h4>
+                            }
+
+                            <div class="card-header-form">
+                                <div>
+                                    <input id="searchValue" type="text" class="form-control" placeholder="Search" onchange="search(this.value)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+
+                            <div class="table-responsive">
+                                <table id="dataTable" class="table table-striped v_center">
+                                    <tr>
+                                        <th>Số thứ tự</th>
+                                        <th>Tên danh mục</th>
+                                        <th></th>
+                                    </tr>
+                                    @{
+                                        var data = (List<DescriptionViewModel>)(ViewBag.Categories);
+                                        for (int i = 1; i < data.Count + 1; i++)
+                                        {
+                                            DescriptionViewModel item = data[i - 1];
+                                            <tr>
+                                                @using (Html.BeginForm("update", "area", FormMethod.Post))
+                                                {
+                                                    <th>@i</th>
+                                                    <td><p hidden>@item.Description</p><input name="description" value="@item.Description" /></td>
+                                                    <td>
+                                                        <input name="id" type="hidden" value="@item.Id" />
+                                                        <input type="submit" class="btn btn-primary btn-action mr-1" value="Cập nhật" />
+                                                        <a class="btn btn-danger btn-action" data-toggle="tooltip" title="Xóa" data-confirm="Xác nhận xóa @item.Description?" data-confirm-yes="deleteItem('@item.Id')"><i class="fas fa-trash"></i></a>
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="section-header">
+            <h1>Thêm khu vực</h1>
+        </div>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="card">
+                        @if (!string.IsNullOrEmpty(ViewBag.Mes))
+                        {
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label style="color:red">@ViewBag.Mes</label>
+                                </div>
+                            </div>
+                        }
+                        @using (Html.BeginForm("add", "area", FormMethod.Post))
+                        {
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Khu vực</label>
+                                    <input name="description" type="text" class="form-control" required="">
+                                </div>
+                            </div>
+                            <div class="card-footer text-right">
+                                <button class="btn btn-primary" type="submit">Thêm</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    function deleteItem(value) {
+        window.location.href = '/area/remove?id=' + value;
+    }
+
+    function search(value) {
+        document.getElementById("searchValue").value = value;
+
+        console.log(value);
+
+        var input, filter, table, tr, td, i, txtValue;
+        input = value;
+        filter = input.toUpperCase();
+        table = document.getElementById("dataTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
