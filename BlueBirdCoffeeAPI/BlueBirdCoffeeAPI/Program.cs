@@ -20,13 +20,9 @@ builder.Services.BusinessServices();
 builder.Services.AddSignalR();
 
 #region setup application settings
-try
-{
 #pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
-    builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
+builder.Services.BuildServiceProvider().GetService<ISettingService>().SetupSettings();
 #pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
-}
-catch (Exception) { }
 #endregion
 
 var app = builder.Build();

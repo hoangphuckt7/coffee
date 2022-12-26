@@ -63,6 +63,6 @@ services:
     ports:
        - "80:80"
     environment:  
-      - Host=http://bluebirdcoffee-api/
+      - Host=http://192.168.0.107:8000/
       - ASPNETCORE_ENVIRONMENT=Development
     restart: always
