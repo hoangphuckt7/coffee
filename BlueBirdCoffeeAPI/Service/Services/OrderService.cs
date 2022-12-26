@@ -105,6 +105,10 @@ namespace Service.Services
         }
         public async Task<Guid> CreateOrder(string employeeId, OrderCreateModel models)
         {
+            if (models.OrderDetail.Count == 0)
+            {
+                throw new AppException("Order không được phép trống");
+            }
             Table? table = null;
             var transaction = _dbContext.Database.BeginTransaction();
 
@@ -115,8 +119,20 @@ namespace Service.Services
                 EmployeeId = employeeId
             };
 
+            var defaultItemsRaw = CacheSetting.CacheSettings.FirstOrDefault(f => f.Key == MandatorySettings.ORDER_DEFAULT.ToString());
+            var defaultItemsId = JsonConvert.DeserializeObject<List<Guid>>(defaultItemsRaw.Value);
+
+            var defaultItems = _dbContext.Items.Where(f => defaultItemsId.Contains(f.Id)).ToList();
+
+            bool defaultItemAdded = false;
             try
             {
+                if (models.TableId != null)
+                {
+                    table = _dbContext.Tables.FirstOrDefault(f => f.Id == order.TableId);
+                    if (table == null) throw new AppException("Mã số bàn không hợp lệ!");
+                }
+
                 _dbContext.Add(order);
 
                 foreach (var item in models.OrderDetail)
@@ -135,12 +151,31 @@ namespace Service.Services
                     _dbContext.Add(newOrderDetail);
                 }
 
+                if (table.CurrentOrder == 0)
+                {
+                    foreach (var item in defaultItems)
+                    {
+                        if (!item.IsDeleted && item.Available)
+                        {
+                            var newOrderDetail = new OrderDetail()
+                            {
+                                Description = models.OrderDetail.First().Description,
+                                ItemId = item.Id,
+                                OrderId = order.Id,
+                                Price = item.Price,
+                                Quantity = 1
+                            };
+
+                            _dbContext.Add(newOrderDetail);
+                            defaultItemAdded = true;
+                        }
+                    }
+                }
+
                 _dbContext.SaveChanges();
 
                 if (models.TableId != null)
                 {
-                    table = _dbContext.Tables.FirstOrDefault(f => f.Id == order.TableId);
-                    if (table == null) throw new AppException("Mã số bàn không hợp lệ!");
                     table.CurrentOrder += 1;
                     _dbContext.Tables.Update(table);
                 }
@@ -161,6 +196,22 @@ namespace Service.Services
 
             var notify = _mapper.Map<OrderViewModel>(order);
             notify.Id = order.Id;
+
+            if (defaultItemAdded)
+            {
+                var dfItemAddeds = notify.OrderDetails.Where(f => defaultItems.Select(s => s.Id).Contains(f.ItemId)).ToList();
+                foreach (var dfItemAdded in dfItemAddeds)
+                {
+                    if (dfItemAdded.Quantity == 1)
+                    {
+                        notify.OrderDetails.Remove(dfItemAdded);
+                    }
+                    else
+                    {
+                        dfItemAdded.Quantity -= 1;
+                    }
+                }
+            }
 
             var orderReceivers = CacheSetting.CacheSettings.FirstOrDefault(f => f.Key == MandatorySettings.ORDER_RECEIVER.ToString());
 

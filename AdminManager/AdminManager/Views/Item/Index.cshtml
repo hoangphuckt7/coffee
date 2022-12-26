@@ -27,10 +27,14 @@
                                         <th>Tên</th>
                                         <th>Giá</th>
                                         <th>Danh mục</th>
+                                        <th>Đặt làm mặc định</th>
                                         <th>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @{
+                                        List<Guid> defaultItems = ViewBag.DefaultItems;
+                                    }
                                     @foreach (var item in (List<ItemViewModel>)ViewBag.Items)
                                     {
                                         <tr>
@@ -43,6 +47,15 @@
                                             </td>
                                             <td>@item.Price.ToString("#,###", (new CultureInfo("vi-VN")).NumberFormat)₫</td>
                                             <td>@item.Category!.Description</td>
+                                            @if (defaultItems.Contains(item.Id))
+                                            {
+                                                <td><a href="/item/RemoveDefault?id=@item.Id">Tắt mặc định</a></td>
+                                            }
+                                            else
+                                            {
+                                                <td><a href="/item/SetDefault?id=@item.Id">Cài đặt</a></td>
+                                            }
+
                                             <td>
                                                 <a class="btn btn-primary btn-action mr-1" data-toggle="tooltip" title="Chỉnh sửa" href="/item/edit?id=@item.Id"><i class="fas fa-pencil-alt"></i></a>
                                                 <a class="btn btn-danger btn-action" data-toggle="tooltip" title="Xóa" data-confirm="Xác nhận xóa @item.Name?" data-confirm-yes="deleteItem('@item.Id')"><i class="fas fa-trash"></i></a>

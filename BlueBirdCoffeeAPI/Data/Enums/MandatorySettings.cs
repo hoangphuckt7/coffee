@@ -8,6 +8,7 @@ namespace Data.Enums
 {
     public enum MandatorySettings
     {
-        ORDER_RECEIVER
+        ORDER_RECEIVER,
+        ORDER_DEFAULT
     }
 }

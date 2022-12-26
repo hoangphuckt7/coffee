@@ -12,12 +12,28 @@ namespace AdminManager.Controllers
         {
             var rawData = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
             ViewBag.Items = (await ApiBuilder.ParseToData<List<ItemViewModel>>(rawData)).OrderBy(f => f.Category!.Description).ToList();
+
+            var defaultItems = await ApiBuilder.SendRequest<object>("api/Item/DefaultItems", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
+            ViewBag.DefaultItems = await ApiBuilder.ParseToData<List<Guid>>(defaultItems);
+
             return View();
         }
 
         public async Task<IActionResult> Remove(Guid id)
         {
             var rawData = await ApiBuilder.SendRequest<object>($"api/Item/{id}", null, RequestMethod.DELETE, true, Request.GetDisplayUrl(), HttpContext.Session);
+            return RedirectToAction("Index", "Item");
+        }
+
+        public async Task<IActionResult> SetDefault(Guid id)
+        {
+            var rawData = await ApiBuilder.SendRequest<object>($"api/Item/SetDefault/{id}", null, RequestMethod.PUT, true, Request.GetDisplayUrl(), HttpContext.Session);
+            return RedirectToAction("Index", "Item");
+        }
+
+        public async Task<IActionResult> RemoveDefault(Guid id)
+        {
+            var rawData = await ApiBuilder.SendRequest<object>($"api/Item/RemoveDefault/{id}", null, RequestMethod.PUT, true, Request.GetDisplayUrl(), HttpContext.Session);
             return RedirectToAction("Index", "Item");
         }
 

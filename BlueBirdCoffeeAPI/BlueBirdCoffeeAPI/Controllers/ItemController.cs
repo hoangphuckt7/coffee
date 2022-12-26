@@ -75,5 +75,26 @@ namespace BlueBirdCoffeeAPI.Controllers
         {
             return Ok(_itemService.Statistic(date, fromDate, toDate));
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
+        [HttpPut("SetDefault/{itemId}")]
+        public IActionResult SetDefault(Guid itemId)
+        {
+            return Ok(_itemService.SetDefault(itemId));
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
+        [HttpPut("RemoveDefault/{itemId}")]
+        public IActionResult RemoveDefault(Guid itemId)
+        {
+            return Ok(_itemService.RemoveDefault(itemId));
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
+        [HttpGet("DefaultItems")]
+        public IActionResult DefaultItems()
+        {
+            return Ok(_itemService.DefaultItems());
+        }
     }
 }

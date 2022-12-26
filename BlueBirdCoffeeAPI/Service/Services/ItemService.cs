@@ -2,9 +2,11 @@
 using Data.AppException;
 using Data.DataAccessLayer;
 using Data.Entities;
+using Data.Enums;
 using Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -25,16 +27,21 @@ namespace Service.Services
         FileViewModel GetItemImage(Guid id);
         Guid AddImages(Guid itemId, List<IFormFile> images);
         Guid RemoveImage(Guid imageId);
+        List<Guid> DefaultItems();
+        Guid RemoveDefault(Guid itemId);
+        Guid SetDefault(Guid itemId);
     }
     public class ItemService : IItemService
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ISettingService _settingService;
 
-        public ItemService(AppDbContext dbContext, IMapper mapper)
+        public ItemService(AppDbContext dbContext, IMapper mapper, ISettingService settingService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _settingService = settingService;
         }
 
         public List<ItemViewModel> Search(Guid? id, string? name, Guid? categoryId)
@@ -213,6 +220,59 @@ namespace Service.Services
 
             result = result.OrderByDescending(f => f.Selled).ToList();
             return result;
+        }
+
+        public List<Guid> DefaultItems()
+        {
+            var orderDefaults = _settingService.GetKeys(MandatorySettings.ORDER_DEFAULT.ToString());
+            if (orderDefaults == null || orderDefaults.Count == 0)
+            {
+                throw new AppException("Lỗi khi khởi chạy ứng dụng");
+            }
+            var orderDefault = orderDefaults.First();
+
+            return JsonConvert.DeserializeObject<List<Guid>>(orderDefault.Value);
+        }
+        public Guid RemoveDefault(Guid itemId)
+        {
+            var orderDefaults = _settingService.GetKeys(MandatorySettings.ORDER_DEFAULT.ToString());
+            if (orderDefaults == null || orderDefaults.Count == 0)
+            {
+                throw new AppException("Lỗi khi khởi chạy ứng dụng");
+            }
+            var orderDefault = orderDefaults.First();
+            var currentData = JsonConvert.DeserializeObject<List<Guid>>(orderDefault.Value);
+
+            if (currentData.Contains(itemId))
+            {
+                currentData.Remove(itemId);
+                _settingService.UpdateSetting(MandatorySettings.ORDER_DEFAULT.ToString(), new StringModel() { Description = JsonConvert.SerializeObject(currentData) });
+            }
+
+            return itemId;
+        }
+        public Guid SetDefault(Guid itemId)
+        {
+            var currentItem = _dbContext.Items.Any(f => f.Id == itemId);
+            if (!currentItem)
+            {
+                throw new AppException("Invalid item");
+            }
+            var orderDefaults = _settingService.GetKeys(MandatorySettings.ORDER_DEFAULT.ToString());
+            if (orderDefaults == null || orderDefaults.Count == 0)
+            {
+                throw new AppException("Lỗi khi khởi chạy ứng dụng");
+            }
+            var orderDefault = orderDefaults.First();
+            var currentData = JsonConvert.DeserializeObject<List<Guid>>(orderDefault.Value);
+
+            if (!currentData.Contains(itemId))
+            {
+                currentData.Add(itemId);
+                _settingService.UpdateSetting(MandatorySettings.ORDER_DEFAULT.ToString(), new StringModel() { Description = JsonConvert.SerializeObject(currentData) });
+            }
+
+            return itemId;
         }
     }
 }
