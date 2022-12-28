@@ -1,4 +1,7 @@
-﻿using DataCenter.Services;
+﻿using Data.Cache;
+using DataCenter.Extensions;
+using DataCenter.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,10 +18,11 @@ namespace DataCenter.Controllers
             _restoreService = restoreService;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpGet("ClearAndRestore")]
         public IActionResult ClearAndRestore()
         {
-            return Ok(_restoreService.RestoreFromMongo());
+            return Ok(_restoreService.RestoreFromMongo(User.GetId()));
         }
     }
 }

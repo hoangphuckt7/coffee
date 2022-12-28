@@ -9,7 +9,7 @@ namespace DataCenter.Services
 {
     public interface IRestoreService
     {
-        DateTime RestoreFromMongo();
+        DateTime RestoreFromMongo(string userId);
     }
     public class RestoreService : IRestoreService
     {
@@ -24,8 +24,12 @@ namespace DataCenter.Services
             _mapper = mapper;
         }
 
-        public DateTime RestoreFromMongo()
+        public DateTime RestoreFromMongo(string userId)
         {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new Exception("Vui lòng đăng nhập");
+            }
             RemoveAllData();
 
             var usersBk = _mongoDbContext.Users.Find(f => true).ToList();
@@ -100,7 +104,6 @@ namespace DataCenter.Services
 
             return DateTime.Now;
         }
-
         private void RemoveAllData()
         {
             _dbContext.SystemSettings.RemoveRange(_dbContext.SystemSettings.ToList());
