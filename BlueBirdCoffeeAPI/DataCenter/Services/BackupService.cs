@@ -17,21 +17,28 @@ namespace DataCenter.Services
         private readonly MongoDbContext _mongoDbContext;
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _env;
 
-        public BackupService(MongoDbContext mongoDbContext, AppDbContext dbContext, IMapper mapper)
+        public BackupService(MongoDbContext mongoDbContext, AppDbContext dbContext, IMapper mapper, IWebHostEnvironment env)
         {
             _mongoDbContext = mongoDbContext;
             _dbContext = dbContext;
             _mapper = mapper;
+            _env = env;
         }
 
         public DateTime BackupAllData()
         {
+            if (!_env.IsProduction())
+            {
+                throw new Exception("Backup is only for production");
+            }
             var lastBackup = _mongoDbContext.BackupDates.Find(f => true).FirstOrDefault();
             DateTime? last = null;
             if (lastBackup != null && lastBackup.LastBackupDate != default && lastBackup.LastBackupDate != null)
             {
                 last = lastBackup.LastBackupDate;
+                last = DateTime.SpecifyKind(last.Value, DateTimeKind.Unspecified);
             }
 
             var now = DateTime.UtcNow.AddHours(7);

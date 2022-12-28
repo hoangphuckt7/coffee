@@ -1,4 +1,6 @@
-﻿using DataCenter.Services;
+﻿using Data.Cache;
+using DataCenter.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,11 +17,14 @@ namespace DataCenter.Controllers
             _backupService = backupService;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
         [HttpGet]
         public IActionResult Backup()
         {
             return Ok(_backupService.BackupAllData());
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
 
         [HttpGet("LastBackupDate")]
         public IActionResult LastBackupDate()

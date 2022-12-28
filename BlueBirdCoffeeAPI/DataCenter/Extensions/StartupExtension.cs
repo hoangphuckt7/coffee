@@ -2,6 +2,8 @@
 using Data.Entities;
 using DataCenter.DataAccess;
 using DataCenter.Services;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
@@ -35,6 +37,19 @@ namespace DataCenter.Extensions
             })
                     .AddEntityFrameworkStores<AppDbContext>()
                     .AddDefaultTokenProviders();
+
+            // Add Hangfire services.
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UsePostgreSqlStorage(connectionString, new PostgreSqlStorageOptions
+                {
+                    SchemaName = "hangfire"
+                }));
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
         }
 
         public static void ConfigMongoDbContext(this IServiceCollection services, ConfigurationManager configuration)

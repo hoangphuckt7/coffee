@@ -97,7 +97,15 @@
                         <li><a class="nav-link" href="/coupon"><span>Quản lý mã giảm giá</span></a></li>
                     </ul>
                     <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
-                        <a href="@Url.Action("index","home")" class="btn btn-primary btn-lg btn-block btn-icon-split">Dashboard</a>
+                        @{
+                            var session = Context.Session.GetString("LastBackupDate");
+                            DateTime lastBackupDate = new DateTime();
+                            if (!string.IsNullOrWhiteSpace(session))
+                            {
+                                lastBackupDate = DateTime.Parse(session!);
+                            }
+                        }
+                        <a href="/home/backup" class="btn btn-primary btn-lg btn-block btn-icon-split">Backup dữ liệu<br />Last: @lastBackupDate.ToString("HH:mm - dd/MM/yyyy")</a>
                     </div>
                 </aside>
             </div>
@@ -187,7 +195,7 @@
 
             series: [{
                 data: @ViewBag.SeriesData
-                                                            },
+                                                                    },
 
             ],
             markers: {

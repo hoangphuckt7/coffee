@@ -2,6 +2,8 @@ using Data.DataAccessLayer;
 using DataCenter.DataAccess;
 using DataCenter.Extensions;
 using DataCenter.MapperProfiles;
+using DataCenter.Services;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -35,10 +37,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHangfireDashboard();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+TimeZoneInfo hanoiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+RecurringJob.AddOrUpdate<IBackupService>("BackupAllData", context => context.BackupAllData(), "0 0 12 * * ?", hanoiTimeZone);
 
 app.Run();

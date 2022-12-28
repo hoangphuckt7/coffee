@@ -1,6 +1,7 @@
 ﻿using AdminManager.Models;
 using AdminManager.Utils;
 using BlueBirdCoffeManager.DataAccessLayer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -59,6 +60,19 @@ namespace AdminManager.Controllers
             HttpContext.Session.SetString("FullName", data?.FullName!);
             HttpContext.Session.SetString("Role", data?.Role!);
             HttpContext.Session.SetString("Token", data?.Token.ToString()!);
+
+            try
+            {
+                HttpResponseMessage responseMessage = new();
+                HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + data?.Token.ToString()!);
+                responseMessage = await client.GetAsync(Sessions.DATA_CENTER_HOST + "api/Backup/LastBackupDate");
+                HttpContext.Session.SetString("LastBackupDate", (await ApiBuilder.ParseToData<DateTime>(responseMessage!)).ToString("yyyy-MM-dd HH:mm:ss")!);
+            }
+            catch (Exception)
+            {
+                //ignore
+            }
 
             if (string.IsNullOrEmpty(model.ReturnUrl))
             {

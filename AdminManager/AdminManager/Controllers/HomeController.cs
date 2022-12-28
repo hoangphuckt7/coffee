@@ -1,4 +1,5 @@
 ﻿using AdminManager.Models;
+using AdminManager.Utils;
 using BlueBirdCoffeManager.DataAccessLayer;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -8,12 +9,6 @@ namespace AdminManager.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
 
         [ResponseCache(NoStore = true, Duration = 0)]
         public async Task<IActionResult> Index(bool? billCountChart = false)
@@ -77,6 +72,23 @@ namespace AdminManager.Controllers
                 ViewBag.BillCountChart = billCountChart;
             }
             return View();
+        }
+
+        public async Task<IActionResult> Backup()
+        {
+            HttpResponseMessage responseMessage = new();
+            HttpClient client = new();
+
+            string token = HttpContext.Session.GetString("Token")!;
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+            var rp = await client.GetAsync(Sessions.DATA_CENTER_HOST + "api/Backup");
+
+            if(rp.IsSuccessStatusCode)
+            {
+                responseMessage = await client.GetAsync(Sessions.DATA_CENTER_HOST + "api/Backup/LastBackupDate");
+                HttpContext.Session.SetString("LastBackupDate", (await ApiBuilder.ParseToData<DateTime>(responseMessage!)).ToString("yyyy-MM-dd HH:mm:ss")!);
+            }
+            return RedirectToAction("index", "home");
         }
     }
 }

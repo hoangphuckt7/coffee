@@ -25,6 +25,7 @@ if (!app.Environment.IsDevelopment())
 try
 {
     Sessions.HOST = EnvironmentHelper.GetValue("Host");
+    Sessions.DATA_CENTER_HOST = EnvironmentHelper.GetValue("DATA_CENTER_HOST");
 }
 catch (Exception) { }
 
