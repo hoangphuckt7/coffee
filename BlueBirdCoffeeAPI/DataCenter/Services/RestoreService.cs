@@ -4,6 +4,7 @@ using Data.Entities;
 using DataCenter.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
+using System.Collections.Generic;
 
 namespace DataCenter.Services
 {
@@ -34,6 +35,7 @@ namespace DataCenter.Services
 
             var usersBk = _mongoDbContext.Users.Find(f => true).ToList();
             var users = _mapper.Map<List<User>>(usersBk);
+            //users.ForEach(f => f.DateCreated = );
             _dbContext.AddRange(users);
             _dbContext.SaveChanges();
 
@@ -49,6 +51,10 @@ namespace DataCenter.Services
 
             var couponsBk = _mongoDbContext.Coupons.Find(f => true).ToList();
             var coupons = _mapper.Map<List<Coupon>>(couponsBk);
+            coupons.ForEach(f => f.DateCreated = DateTime.SpecifyKind(f.DateCreated, DateTimeKind.Unspecified));
+            coupons.ForEach(f => f.DateUpdated = DateTime.SpecifyKind(f.DateUpdated, DateTimeKind.Unspecified));
+            coupons.ForEach(f => f.FromDate = f.FromDate == null ? null : DateTime.SpecifyKind(f.FromDate.Value, DateTimeKind.Unspecified));
+            coupons.ForEach(f => f.ToDate = f.ToDate == null ? null : DateTime.SpecifyKind(f.ToDate.Value, DateTimeKind.Unspecified));
             _dbContext.AddRange(coupons);
             _dbContext.SaveChanges();
 

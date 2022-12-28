@@ -7,18 +7,47 @@ namespace DataCenter.MapperProfiles
     {
         public MapperProfile()
         {
-            CreateMap<Collections.Bill, Data.Entities.Bill>().ForMember(f => f.Id, map => map.MapFrom(m => m.Id)).ReverseMap();
-            CreateMap<Data.Entities.BillOrder, Collections.BillOrder>().ReverseMap();
-            CreateMap<Data.Entities.Category, Collections.Category>().ReverseMap();
-            CreateMap<Data.Entities.Coupon, Collections.Coupon>().ReverseMap();
-            CreateMap<Data.Entities.Floor, Collections.Floor>().ReverseMap();
-            CreateMap<Data.Entities.Item, Collections.Item>().ReverseMap();
-            CreateMap<Data.Entities.ItemImage, Collections.ItemImage>().ReverseMap();
-            CreateMap<Data.Entities.Order, Collections.Order>().ReverseMap();
-            CreateMap<Data.Entities.OrderDetail, Collections.OrderDetail>().ReverseMap();
+            CreateMap<Collections.Bill, Data.Entities.Bill>()
+                .ForMember(f => f.Id, map => map.MapFrom(m => m.Id))
+                .ForMember(f => f.DateCreated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateCreated, DateTimeKind.Unspecified)))
+                .ForMember(f => f.DateUpdated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateUpdated, DateTimeKind.Unspecified)))
+                .ReverseMap();
+            CreateMap<Data.Entities.BillOrder, Collections.BillOrder>()
+                .ReverseMap();
+            CreateMap<Collections.Category, Data.Entities.Category>()
+                .ForMember(f => f.DateCreated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateCreated, DateTimeKind.Unspecified)))
+                .ForMember(f => f.DateUpdated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateUpdated, DateTimeKind.Unspecified)))
+                .ReverseMap();
+            CreateMap<Collections.Coupon, Data.Entities.Coupon>()
+                .ReverseMap();
+            CreateMap<Collections.Floor, Data.Entities.Floor>()
+                .ForMember(f => f.DateCreated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateCreated, DateTimeKind.Unspecified)))
+                .ForMember(f => f.DateUpdated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateUpdated, DateTimeKind.Unspecified)))
+                .ReverseMap();
+            CreateMap<Collections.Item, Data.Entities.Item>()
+                .ForMember(f => f.DateCreated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateCreated, DateTimeKind.Unspecified)))
+                .ForMember(f => f.DateUpdated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateUpdated, DateTimeKind.Unspecified)))
+                .ReverseMap();
+            CreateMap<Collections.ItemImage, Data.Entities.ItemImage>()
+                .ForMember(f => f.DateCreated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateCreated, DateTimeKind.Unspecified)))
+                .ForMember(f => f.DateUpdated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateUpdated, DateTimeKind.Unspecified)))
+                .ReverseMap();
+            CreateMap<Collections.Order, Data.Entities.Order>()
+                .ForMember(f => f.DateCreated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateCreated, DateTimeKind.Unspecified)))
+                .ForMember(f => f.DateUpdated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateUpdated, DateTimeKind.Unspecified)))
+                .ReverseMap();
+            CreateMap<Collections.OrderDetail, Data.Entities.OrderDetail>()
+                .ForMember(f => f.DateUpdated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateUpdated, DateTimeKind.Unspecified)))
+                .ReverseMap();
             CreateMap<Data.Entities.SystemSetting, Collections.SystemSetting>().ReverseMap();
-            CreateMap<Data.Entities.Table, Collections.Table>().ReverseMap();
-            CreateMap<Data.Entities.User, Collections.User>().ReverseMap();
+            CreateMap<Collections.Table, Data.Entities.Table>()
+                .ForMember(f => f.DateCreated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateCreated, DateTimeKind.Unspecified)))
+                .ForMember(f => f.DateUpdated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateUpdated, DateTimeKind.Unspecified)))
+                .ReverseMap();
+            CreateMap<Collections.User, Data.Entities.User>()
+                .ForMember(f => f.DateCreated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateCreated, DateTimeKind.Unspecified)))
+                .ForMember(f => f.DateUpdated, map => map.MapFrom(m => DateTime.SpecifyKind(m.DateUpdated, DateTimeKind.Unspecified)))
+                .ReverseMap();
             CreateMap<IdentityRole, Collections.Role>().ReverseMap();
             CreateMap<IdentityUserRole<string>, Collections.UserRole>().ReverseMap();
         }
