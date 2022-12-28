@@ -55,8 +55,6 @@ namespace AdminManager.Controllers
 
             var data = await ApiBuilder.ParseToData<LoginSuccessViewModel>(result);
 
-            var x = HttpContext.Session;
-
             HttpContext.Session.SetString("FullName", data?.FullName!);
             HttpContext.Session.SetString("Role", data?.Role!);
             HttpContext.Session.SetString("Token", data?.Token.ToString()!);
