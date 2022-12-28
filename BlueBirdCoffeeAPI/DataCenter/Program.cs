@@ -1,4 +1,7 @@
+using Data.DataAccessLayer;
+using DataCenter.DataAccess;
 using DataCenter.Extensions;
+using DataCenter.MapperProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -11,7 +14,17 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.ConfigCors();
 builder.Services.ConfigJwt(configuration);
+builder.Services.ConfigIdentityDbContext(configuration);
+builder.Services.ConfigMongoDbContext(configuration);
 builder.Services.AddSwaggerWithAuthentication("Blue Bird Coffee Data Center", "v1.0");
+builder.Services.AddAutoMapper(typeof(MapperProfile));
+builder.Services.BusinessServices();
+
+#region setup application settings
+#pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+builder.Services.BuildServiceProvider().GetService<MongoDbContext>().CreateCollectionsIfNotExists();
+#pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+#endregion
 
 var app = builder.Build();
 

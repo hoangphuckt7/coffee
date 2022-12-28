@@ -1,7 +1,10 @@
 ﻿using Data.DataAccessLayer;
 using Data.Entities;
+using DataCenter.DataAccess;
+using DataCenter.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace DataCenter.Extensions
 {
@@ -34,9 +37,36 @@ namespace DataCenter.Extensions
                     .AddDefaultTokenProviders();
         }
 
+        public static void ConfigMongoDbContext(this IServiceCollection services, ConfigurationManager configuration)
+        {
+            string connectionString = "";
+            try
+            {
+                connectionString = EnvironmentHelper.GetValue("MongoConnectionString");
+            }
+            catch (Exception)
+            {
+                connectionString = configuration["AppDatabaseSettings:ConnectionString"];
+            }
+
+            string databaseName = "";
+            try
+            {
+                databaseName = EnvironmentHelper.GetValue("MongoDbName");
+            }
+            catch (Exception)
+            {
+                databaseName = configuration["AppDatabaseSettings:DatabaseName"];
+            }
+
+            services.AddSingleton<IMongoClient>(s => new MongoClient(connectionString));
+            services.AddScoped(s => new MongoDbContext(s.GetRequiredService<IMongoClient>(), databaseName));
+        }
+
         public static void BusinessServices(this IServiceCollection services)
         {
-
+            services.AddScoped<IBackupService, BackupService>();
+            services.AddScoped<IRestoreService, RestoreService>();
         }
 
         public static void ConfigCors(this IServiceCollection services)

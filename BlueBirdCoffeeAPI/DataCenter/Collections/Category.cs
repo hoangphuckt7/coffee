@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Entities
+namespace DataCenter.Collections
 {
-    public class LostItem
+    public class Category : BaseMongoCollection
     {
     }
 }
