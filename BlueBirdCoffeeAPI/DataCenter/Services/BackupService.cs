@@ -54,7 +54,7 @@ namespace DataCenter.Services
 
                 if (billBk.Count > 0)
                 {
-                    var exsitedData = _mongoDbContext.Bills.Find(f => billBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    var exsitedData = _mongoDbContext.Bills.Find(f => true).ToList().Where(f => billBk.Any(s => s.Id == f.Id)).ToList();
                     if (exsitedData.Count > 0)
                     {
                         foreach (var item in exsitedData)
@@ -65,6 +65,7 @@ namespace DataCenter.Services
                     }
                     _mongoDbContext.Bills.InsertMany(billBk);
                 }
+                billBk = null;
 
                 var billOrders = _dbContext.BillOrders.ToList();
                 var billOrdersBk = _mapper.Map<List<BillOrder>>(billOrders);
@@ -75,6 +76,7 @@ namespace DataCenter.Services
                     _mongoDbContext.BillOrders.DeleteMany(f => true);
                     _mongoDbContext.BillOrders.InsertMany(billOrdersBk);
                 }
+                billOrdersBk = null;
 
                 var categories = _dbContext.Categories.Where(f => last == null || f.DateUpdated >= last).ToList();
                 var categoriesBk = _mapper.Map<List<Category>>(categories);
@@ -82,7 +84,7 @@ namespace DataCenter.Services
 
                 if (categoriesBk.Count > 0)
                 {
-                    var exsitedData = _mongoDbContext.Categories.Find(f => categoriesBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    var exsitedData = _mongoDbContext.Categories.Find(f => true).ToList().Where(f => categoriesBk.Any(s => s.Id == f.Id)).ToList();
                     if (exsitedData.Count > 0)
                     {
                         foreach (var item in exsitedData)
@@ -93,6 +95,7 @@ namespace DataCenter.Services
                     }
                     _mongoDbContext.Categories.InsertMany(categoriesBk);
                 }
+                categoriesBk = null;
 
                 var coupons = _dbContext.Coupons.Where(f => last == null || f.DateUpdated >= last).ToList();
                 var couponsBk = _mapper.Map<List<Coupon>>(coupons);
@@ -100,7 +103,7 @@ namespace DataCenter.Services
 
                 if (couponsBk.Count > 0)
                 {
-                    var exsitedData = _mongoDbContext.Coupons.Find(f => couponsBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    var exsitedData = _mongoDbContext.Coupons.Find(f => true).ToList().Where(f => couponsBk.Any(s => s.Id == f.Id)).ToList();
                     if (exsitedData.Count > 0)
                     {
                         foreach (var item in exsitedData)
@@ -111,13 +114,14 @@ namespace DataCenter.Services
                     }
                     _mongoDbContext.Coupons.InsertMany(couponsBk);
                 }
+                couponsBk = null;
 
                 var floors = _dbContext.Floors.Where(f => last == null || f.DateUpdated >= last).ToList();
                 var floorsBk = _mapper.Map<List<Floor>>(floors);
                 floors = null;
                 if (floorsBk.Count > 0)
                 {
-                    var exsitedData = _mongoDbContext.Floors.Find(f => floorsBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    var exsitedData = _mongoDbContext.Floors.Find(f => true).ToList().Where(f => floorsBk.Any(s => s.Id == f.Id)).ToList();
                     if (exsitedData.Count > 0)
                     {
                         foreach (var item in exsitedData)
@@ -134,7 +138,7 @@ namespace DataCenter.Services
                 items = null;
                 if (itemBk.Count > 0)
                 {
-                    var exsitedData = _mongoDbContext.Items.Find(f => itemBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    var exsitedData = _mongoDbContext.Items.Find(f => true).ToList().Where(f => itemBk.Any(s => s.Id == f.Id)).ToList();
                     if (exsitedData.Count > 0)
                     {
                         foreach (var item in exsitedData)
@@ -145,13 +149,14 @@ namespace DataCenter.Services
                     }
                     _mongoDbContext.Items.InsertMany(itemBk);
                 }
+                itemBk = null;
 
                 var itemImages = _dbContext.ItemImages.Where(f => last == null || f.DateUpdated >= last).ToList();
                 var itemImgBk = _mapper.Map<List<ItemImage>>(itemImages);
                 itemImages = null;
                 if (itemImgBk.Count > 0)
                 {
-                    var exsitedData = _mongoDbContext.ItemImages.Find(f => itemImgBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    var exsitedData = _mongoDbContext.ItemImages.Find(f => true).ToList().Where(f => itemImgBk.Any(s => s.Id == f.Id)).ToList();
                     if (exsitedData.Count > 0)
                     {
                         foreach (var item in exsitedData)
@@ -162,13 +167,14 @@ namespace DataCenter.Services
                     }
                     _mongoDbContext.ItemImages.InsertMany(itemImgBk);
                 }
+                itemImgBk = null;
 
                 var orders = _dbContext.Orders.Where(f => last == null || f.DateUpdated >= last).ToList();
                 var orderBk = _mapper.Map<List<Order>>(orders);
                 orders = null;
                 if (orderBk.Count > 0)
                 {
-                    var exsitedData = _mongoDbContext.Orders.Find(f => orderBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    var exsitedData = _mongoDbContext.Orders.Find(f => true).ToList().Where(f => orderBk.Any(s => s.Id == f.Id)).ToList();
                     if (exsitedData.Count > 0)
                     {
                         foreach (var item in exsitedData)
@@ -179,13 +185,14 @@ namespace DataCenter.Services
                     }
                     _mongoDbContext.Orders.InsertMany(orderBk);
                 }
+                orderBk = null;
 
                 var orderDetails = _dbContext.OrderDetails.Where(f => last == null || f.DateUpdated >= last).ToList();
                 var orDetailBk = _mapper.Map<List<OrderDetail>>(orderDetails);
                 orderDetails = null;
                 if (orDetailBk.Count > 0)
                 {
-                    var exsitedData = _mongoDbContext.OrderDetails.Find(f => orDetailBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    var exsitedData = _mongoDbContext.OrderDetails.Find(f => true).ToList().Where(f => orDetailBk.Any(s => s.Id == f.Id)).ToList();
                     if (exsitedData.Count > 0)
                     {
                         foreach (var item in exsitedData)
@@ -196,6 +203,7 @@ namespace DataCenter.Services
                     }
                     _mongoDbContext.OrderDetails.InsertMany(orDetailBk);
                 }
+                orDetailBk = null;
 
                 var systemSettings = _dbContext.SystemSettings.ToList();
                 var stBk = _mapper.Map<List<SystemSetting>>(systemSettings);
@@ -205,13 +213,14 @@ namespace DataCenter.Services
                     _mongoDbContext.SystemSettings.DeleteMany(f => true);
                     _mongoDbContext.SystemSettings.InsertMany(stBk);
                 }
+                stBk = null;
 
                 var tables = _dbContext.Tables.Where(f => last == null || f.DateUpdated >= last).ToList();
                 var tbBk = _mapper.Map<List<Table>>(tables);
                 tables = null;
                 if (tbBk.Count > 0)
                 {
-                    var exsitedData = _mongoDbContext.Tables.Find(f => tbBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    var exsitedData = _mongoDbContext.Tables.Find(f => true).ToList().Where(f => tbBk.Any(s => s.Id == f.Id)).ToList();
                     if (exsitedData.Count > 0)
                     {
                         foreach (var item in exsitedData)
@@ -222,6 +231,7 @@ namespace DataCenter.Services
                     }
                     _mongoDbContext.Tables.InsertMany(tbBk);
                 }
+                tbBk = null;
 
                 var users = _dbContext.Users.Where(f => last == null || f.DateUpdated >= last).ToList();
                 var userBk = _mapper.Map<List<User>>(users);
@@ -229,7 +239,7 @@ namespace DataCenter.Services
 
                 if (userBk.Count > 0)
                 {
-                    var exsitedData = _mongoDbContext.Users.Find(f => userBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    var exsitedData = _mongoDbContext.Users.Find(f => true).ToList().Where(f => userBk.Any(s => s.Id == f.Id)).ToList();
                     if (exsitedData.Count > 0)
                     {
                         foreach (var item in exsitedData)
@@ -240,6 +250,7 @@ namespace DataCenter.Services
                     }
                     _mongoDbContext.Users.InsertMany(userBk);
                 }
+                userBk = null;
 
                 var roles = _dbContext.Roles.ToList();
                 var roleBk = _mapper.Map<List<Role>>(roles);
@@ -250,6 +261,7 @@ namespace DataCenter.Services
                     _mongoDbContext.Roles.DeleteMany(f => true);
                     _mongoDbContext.Roles.InsertMany(roleBk);
                 }
+                roleBk = null;
 
                 var userRoles = _dbContext.UserRoles.ToList();
                 var userRoleBk = _mapper.Map<List<UserRole>>(userRoles);
@@ -260,6 +272,7 @@ namespace DataCenter.Services
                     _mongoDbContext.UserRoles.DeleteMany(f => true);
                     _mongoDbContext.UserRoles.InsertMany(userRoleBk);
                 }
+                userRoleBk = null;
 
                 if (lastBackup == null)
                 {
