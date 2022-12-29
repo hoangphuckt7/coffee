@@ -28,6 +28,7 @@ namespace AdminManager.Controllers
             }
 
             var statisticsRaw = await ApiBuilder.SendRequest<object>("api/Bill/Statistics", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
+            ViewBag.Statistics = new StatisticsModels();
             if (statisticsRaw.IsSuccessStatusCode)
             {
                 var data = await ApiBuilder.ParseToData<StatisticsModels>(statisticsRaw);
@@ -68,9 +69,8 @@ namespace AdminManager.Controllers
                     ViewBag.UpChartThisMonthIncome = false;
                     ViewBag.ChartThisMonthIncome = data.ChartLastMonthIncome == 0 ? 0 : Math.Round((data.ChartLastMonthIncome - data.ChartThisMonthIncome) * 100 / data.ChartLastMonthIncome, 2);
                 }
-
-                ViewBag.BillCountChart = billCountChart;
             }
+            ViewBag.BillCountChart = billCountChart;
             return View();
         }
 

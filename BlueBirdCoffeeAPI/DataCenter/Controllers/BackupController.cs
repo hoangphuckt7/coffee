@@ -25,7 +25,6 @@ namespace DataCenter.Controllers
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.ADMIN)]
-
         [HttpGet("LastBackupDate")]
         public IActionResult LastBackupDate()
         {

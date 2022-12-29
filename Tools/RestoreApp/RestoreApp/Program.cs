@@ -1,16 +1,17 @@
 ﻿using Newtonsoft.Json;
+using System.Security;
 using System.Text;
 
 string service_host = "http://localhost:8000/";
 string data_center_host = "http://localhost:8008/";
 
-Console.Write("Enter application-api host (press enter to use default): ");
+Console.Write("Enter application-service host (ignore to use default): ");
 string new_service_host = Console.ReadLine()!;
 if (!string.IsNullOrWhiteSpace(new_service_host))
 {
     service_host = new_service_host;
 }
-Console.Write("Enter data-center host (press enter to use default): ");
+Console.Write("Enter data-center host (ignore to use default): ");
 string new_data_center_host = Console.ReadLine()!;
 if (!string.IsNullOrWhiteSpace(new_data_center_host))
 {
@@ -20,15 +21,25 @@ if (!string.IsNullOrWhiteSpace(new_data_center_host))
 Console.Write("Enter admin username: ");
 string username = Console.ReadLine()!;
 Console.Write("Enter admin password: ");
-string password = Console.ReadLine()!;
-
-HttpResponseMessage responseMessage;
+string password = GetPassword();
+Console.WriteLine();
+HttpResponseMessage responseMessage = new();
 HttpClient client = new();
-responseMessage = await client.PostAsync(service_host + "api/User/Login", BuildRequestBody(new { Phone = username, PassWord = password }));
+
+try
+{
+    responseMessage = await client.PostAsync(service_host + "api/User/Login", BuildRequestBody(new { Phone = username, PassWord = password }));
+}
+catch (Exception)
+{
+    Console.WriteLine("Request to application-service failed, press any key to exit.");
+    Console.ReadKey();
+    return;
+}
 
 if (!responseMessage.IsSuccessStatusCode)
 {
-    Console.WriteLine("Login faild!");
+    Console.WriteLine("Login faild, press any key to exit.");
     Console.ReadKey();
     return;
 }
@@ -44,7 +55,18 @@ Console.WriteLine();
 Console.WriteLine("Processing...");
 var data = await ParseToData<LoginSuccessViewModel>(responseMessage);
 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + data?.Token.ToString()!);
-responseMessage = await client.GetAsync(data_center_host + "api/Restore/ClearAndRestore");
+
+try
+{
+
+    responseMessage = await client.GetAsync(data_center_host + "api/Restore/ClearAndRestore");
+}
+catch (Exception)
+{
+    Console.WriteLine("Request to data-center-service failed, press any key to exit.");
+    Console.ReadKey();
+    return;
+}
 
 if (!responseMessage.IsSuccessStatusCode)
 {
@@ -68,7 +90,21 @@ async Task<T> ParseToData<T>(HttpResponseMessage responseMessage)
     string json = await responseMessage.Content.ReadAsStringAsync();
     return JsonConvert.DeserializeObject<T>(json)!;
 }
-
+string GetPassword()
+{
+    string password = "";
+    ConsoleKeyInfo cki;
+    do
+    {
+        cki = Console.ReadKey(true);
+        if (cki.Key != ConsoleKey.Enter)
+        {
+            password += (cki.KeyChar);
+            Console.Write("*");
+        }
+    } while (cki.Key != ConsoleKey.Enter);
+    return password;
+}
 public class LoginSuccessViewModel
 {
     public object Token { get; set; } = null!;

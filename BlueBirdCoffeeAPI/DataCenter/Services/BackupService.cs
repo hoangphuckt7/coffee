@@ -54,6 +54,15 @@ namespace DataCenter.Services
 
                 if (billBk.Count > 0)
                 {
+                    var exsitedData = _mongoDbContext.Bills.Find(f => billBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    if (exsitedData.Count > 0)
+                    {
+                        foreach (var item in exsitedData)
+                        {
+                            _mongoDbContext.Bills.FindOneAndReplace(f => f.Id == item.Id, item);
+                            billBk.Remove(item);
+                        }
+                    }
                     _mongoDbContext.Bills.InsertMany(billBk);
                 }
 
@@ -73,6 +82,15 @@ namespace DataCenter.Services
 
                 if (categoriesBk.Count > 0)
                 {
+                    var exsitedData = _mongoDbContext.Categories.Find(f => categoriesBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    if (exsitedData.Count > 0)
+                    {
+                        foreach (var item in exsitedData)
+                        {
+                            _mongoDbContext.Categories.FindOneAndReplace(f => f.Id == item.Id, item);
+                            categoriesBk.Remove(item);
+                        }
+                    }
                     _mongoDbContext.Categories.InsertMany(categoriesBk);
                 }
 
@@ -82,6 +100,15 @@ namespace DataCenter.Services
 
                 if (couponsBk.Count > 0)
                 {
+                    var exsitedData = _mongoDbContext.Coupons.Find(f => couponsBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    if (exsitedData.Count > 0)
+                    {
+                        foreach (var item in exsitedData)
+                        {
+                            _mongoDbContext.Coupons.FindOneAndReplace(f => f.Id == item.Id, item);
+                            couponsBk.Remove(item);
+                        }
+                    }
                     _mongoDbContext.Coupons.InsertMany(couponsBk);
                 }
 
@@ -90,6 +117,15 @@ namespace DataCenter.Services
                 floors = null;
                 if (floorsBk.Count > 0)
                 {
+                    var exsitedData = _mongoDbContext.Floors.Find(f => floorsBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    if (exsitedData.Count > 0)
+                    {
+                        foreach (var item in exsitedData)
+                        {
+                            _mongoDbContext.Floors.FindOneAndReplace(f => f.Id == item.Id, item);
+                            floorsBk.Remove(item);
+                        }
+                    }
                     _mongoDbContext.Floors.InsertMany(floorsBk);
                 }
 
@@ -98,6 +134,15 @@ namespace DataCenter.Services
                 items = null;
                 if (itemBk.Count > 0)
                 {
+                    var exsitedData = _mongoDbContext.Items.Find(f => itemBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    if (exsitedData.Count > 0)
+                    {
+                        foreach (var item in exsitedData)
+                        {
+                            _mongoDbContext.Items.FindOneAndReplace(f => f.Id == item.Id, item);
+                            itemBk.Remove(item);
+                        }
+                    }
                     _mongoDbContext.Items.InsertMany(itemBk);
                 }
 
@@ -106,6 +151,15 @@ namespace DataCenter.Services
                 itemImages = null;
                 if (itemImgBk.Count > 0)
                 {
+                    var exsitedData = _mongoDbContext.ItemImages.Find(f => itemImgBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    if (exsitedData.Count > 0)
+                    {
+                        foreach (var item in exsitedData)
+                        {
+                            _mongoDbContext.ItemImages.FindOneAndReplace(f => f.Id == item.Id, item);
+                            itemImgBk.Remove(item);
+                        }
+                    }
                     _mongoDbContext.ItemImages.InsertMany(itemImgBk);
                 }
 
@@ -114,6 +168,15 @@ namespace DataCenter.Services
                 orders = null;
                 if (orderBk.Count > 0)
                 {
+                    var exsitedData = _mongoDbContext.Orders.Find(f => orderBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    if (exsitedData.Count > 0)
+                    {
+                        foreach (var item in exsitedData)
+                        {
+                            _mongoDbContext.Orders.FindOneAndReplace(f => f.Id == item.Id, item);
+                            orderBk.Remove(item);
+                        }
+                    }
                     _mongoDbContext.Orders.InsertMany(orderBk);
                 }
 
@@ -122,6 +185,15 @@ namespace DataCenter.Services
                 orderDetails = null;
                 if (orDetailBk.Count > 0)
                 {
+                    var exsitedData = _mongoDbContext.OrderDetails.Find(f => orDetailBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    if (exsitedData.Count > 0)
+                    {
+                        foreach (var item in exsitedData)
+                        {
+                            _mongoDbContext.OrderDetails.FindOneAndReplace(f => f.Id == item.Id, item);
+                            orDetailBk.Remove(item);
+                        }
+                    }
                     _mongoDbContext.OrderDetails.InsertMany(orDetailBk);
                 }
 
@@ -139,6 +211,15 @@ namespace DataCenter.Services
                 tables = null;
                 if (tbBk.Count > 0)
                 {
+                    var exsitedData = _mongoDbContext.Tables.Find(f => tbBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    if (exsitedData.Count > 0)
+                    {
+                        foreach (var item in exsitedData)
+                        {
+                            _mongoDbContext.Tables.FindOneAndReplace(f => f.Id == item.Id, item);
+                            tbBk.Remove(item);
+                        }
+                    }
                     _mongoDbContext.Tables.InsertMany(tbBk);
                 }
 
@@ -148,6 +229,15 @@ namespace DataCenter.Services
 
                 if (userBk.Count > 0)
                 {
+                    var exsitedData = _mongoDbContext.Users.Find(f => userBk.Select(s => s.Id).Contains(f.Id)).ToList();
+                    if (exsitedData.Count > 0)
+                    {
+                        foreach (var item in exsitedData)
+                        {
+                            _mongoDbContext.Users.FindOneAndReplace(f => f.Id == item.Id, item);
+                            userBk.Remove(item);
+                        }
+                    }
                     _mongoDbContext.Users.InsertMany(userBk);
                 }
 

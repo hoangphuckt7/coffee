@@ -13,8 +13,15 @@ namespace AdminManager.Controllers
             var rawData = await ApiBuilder.SendRequest<object>("api/Item", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
             ViewBag.Items = (await ApiBuilder.ParseToData<List<ItemViewModel>>(rawData)).OrderBy(f => f.Category!.Description).ToList();
 
-            var defaultItems = await ApiBuilder.SendRequest<object>("api/Item/DefaultItems", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
-            ViewBag.DefaultItems = await ApiBuilder.ParseToData<List<Guid>>(defaultItems);
+            try
+            {
+                var defaultItems = await ApiBuilder.SendRequest<object>("api/Item/DefaultItems", null, RequestMethod.GET, true, Request.GetDisplayUrl(), HttpContext.Session);
+                ViewBag.DefaultItems = await ApiBuilder.ParseToData<List<Guid>>(defaultItems);
+            }
+            catch (Exception)
+            {
+                ViewBag.DefaultItems = new List<Guid>();
+            }
 
             return View();
         }
