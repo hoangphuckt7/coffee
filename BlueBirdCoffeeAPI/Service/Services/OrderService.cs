@@ -135,6 +135,34 @@ namespace Service.Services
 
                 _dbContext.Add(order);
 
+                if (table != null && table.CurrentOrder == 0)
+                {
+                    foreach (var item in defaultItems)
+                    {
+                        if (!item.IsDeleted && item.Available)
+                        {
+                            if (models.OrderDetail.Select(s => s.ItemId).Contains(item.Id))
+                            {
+                                models.OrderDetail.First(f => f.ItemId == item.Id).Quantity += 1;
+                            }
+                            else
+                            {
+                                var newOrderDetail = new OrderDetail()
+                                {
+                                    Description = models.OrderDetail.First().Description,
+                                    ItemId = item.Id,
+                                    OrderId = order.Id,
+                                    Price = item.Price,
+                                    Quantity = 1
+                                };
+
+                                _dbContext.Add(newOrderDetail);
+                            }
+                            defaultItemAdded = true;
+                        }
+                    }
+                }
+
                 foreach (var item in models.OrderDetail)
                 {
                     var itemDetail = _dbContext.Items.FirstOrDefault(f => f.Id == item.ItemId);
@@ -149,27 +177,6 @@ namespace Service.Services
                     };
 
                     _dbContext.Add(newOrderDetail);
-                }
-
-                if (table.CurrentOrder == 0)
-                {
-                    foreach (var item in defaultItems)
-                    {
-                        if (!item.IsDeleted && item.Available)
-                        {
-                            var newOrderDetail = new OrderDetail()
-                            {
-                                Description = models.OrderDetail.First().Description,
-                                ItemId = item.Id,
-                                OrderId = order.Id,
-                                Price = item.Price,
-                                Quantity = 1
-                            };
-
-                            _dbContext.Add(newOrderDetail);
-                            defaultItemAdded = true;
-                        }
-                    }
                 }
 
                 _dbContext.SaveChanges();
