@@ -70,7 +70,8 @@ catch (Exception)
 
 if (!responseMessage.IsSuccessStatusCode)
 {
-    Console.WriteLine("Restore faild!");
+    Console.WriteLine("Restore faild. Error message: ");
+    Console.WriteLine(await ParseToData<string>(responseMessage));
 }
 else
 {

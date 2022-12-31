@@ -90,6 +90,7 @@ namespace DataCenter.Services
 
             var orderDetailBk = _mongoDbContext.OrderDetails.Find(f => true).ToList();
             var orderDetails = _mapper.Map<List<OrderDetail>>(orderDetailBk);
+            orderDetails = orderDetails.DistinctBy(f => new { f.OrderId, f.ItemId }).ToList();
             _dbContext.AddRange(orderDetails);
             _dbContext.SaveChanges();
 
@@ -100,6 +101,12 @@ namespace DataCenter.Services
 
             var billOrderBk = _mongoDbContext.BillOrders.Find(f => true).ToList();
             var billOrders = _mapper.Map<List<BillOrder>>(billOrderBk);
+            billOrders = billOrders.DistinctBy(f => new { f.OrderId, f.BillId }).ToList();
+            var invalid = billOrders.Where(f => !bills.Select(s => s.Id).Contains(f.BillId) || !orders.Select(s => s.Id).Contains(f.OrderId)).ToList();
+            foreach (var item in invalid)
+            {
+                billOrders.Remove(item);
+            }
             _dbContext.AddRange(billOrders);
             _dbContext.SaveChanges();
 
