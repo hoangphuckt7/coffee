@@ -45,6 +45,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 TimeZoneInfo hanoiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-RecurringJob.AddOrUpdate<IBackupService>("BackupAllData", context => context.BackupAllData(), "0 0 12 * * ?", hanoiTimeZone);
+RecurringJob.AddOrUpdate<IBackupService>("BackupAllData", context => context.BackupAllData(), "0 0 11,21 * * ?", hanoiTimeZone);
 
 app.Run();

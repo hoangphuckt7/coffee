@@ -286,10 +286,10 @@ namespace DataCenter.Services
                 }
                 transaction.CommitTransaction();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 transaction.AbortTransaction();
-                throw new Exception(e.Message);
+                throw;
             }
             finally
             {
