@@ -2,18 +2,8 @@
 using BlueBirdCoffeManager.Models;
 using BlueBirdCoffeManager.Utils;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace BlueBirdCoffeManager.Forms
 {
@@ -63,10 +53,18 @@ namespace BlueBirdCoffeManager.Forms
             lbName.Left = 10 * Width / 100;
             lbSTT.Width = (int)(lbSTT.Text.Length * lbSTT.Font.Size);
 
+            roundedButton1.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
+            roundedButton1.Top = Height - roundedButton1.Height - 10;
+            roundedButton1.Left = 2 * this.Width / 100;
+            roundedButton1.Width = (dataPanel.Width - 4 * dataPanel.Width / 100) * 30 / 100;
+            roundedButton1.BackColor = Sessions.Sessions.BUTTON_COLOR;
+            roundedButton1.Enabled = false;
+            roundedButton1.BackColor = Color.Gray;
+
             btnCheckout.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
             btnCheckout.Top = Height - btnCheckout.Height - 10;
-            btnCheckout.Width = dataPanel.Width - 4 * dataPanel.Width / 100;
-            btnCheckout.Left = 2 * this.Width / 100;
+            btnCheckout.Width = dataPanel.Width - 4 * dataPanel.Width / 100 - roundedButton1.Width;
+            btnCheckout.Left = roundedButton1.Width + 2 * this.Width / 100;
             btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
             btnCheckout.Enabled = false;
             btnCheckout.BackColor = Color.Gray;
@@ -113,10 +111,10 @@ namespace BlueBirdCoffeManager.Forms
                 total.Font = Sessions.Sessions.NORMAL_BOLD_FONT;
 
                 lbapCp.Top = btnCheckout.Top - lbapCp.Height - 5 * Height / 100;
-                lbapCp.Left = btnCheckout.Left;
+                lbapCp.Left = roundedButton1.Left;
 
                 lbapDiscout.Top = lbapCp.Top - lbapDiscout.Height - 20;
-                lbapDiscout.Left = btnCheckout.Left;
+                lbapDiscout.Left = roundedButton1.Left;
 
                 Panel s01 = new()
                 {
@@ -128,10 +126,10 @@ namespace BlueBirdCoffeManager.Forms
                 };
                 this.Controls.Add(s01);
                 lbEx.Top = lbapDiscout.Top - lbEx.Height - 3 * Height / 100;
-                lbEx.Left = btnCheckout.Left;
+                lbEx.Left = roundedButton1.Left;
 
                 lbCustomerP.Top = lbEx.Top - lbCustomerP.Height - 20;
-                lbCustomerP.Left = btnCheckout.Left;
+                lbCustomerP.Left = roundedButton1.Left;
 
                 Panel s02 = new()
                 {
@@ -144,16 +142,16 @@ namespace BlueBirdCoffeManager.Forms
                 this.Controls.Add(s02);
 
                 lbCash.Top = lbCustomerP.Top - lbCash.Height - 3 * Height / 100;
-                lbCash.Left = btnCheckout.Left;
+                lbCash.Left = roundedButton1.Left;
 
                 lbvoucher.Top = lbCash.Top - lbvoucher.Height - 20;
-                lbvoucher.Left = btnCheckout.Left;
+                lbvoucher.Left = roundedButton1.Left;
 
                 lbDiscout.Top = lbvoucher.Top - lbDiscout.Height - 20;
-                lbDiscout.Left = btnCheckout.Left;
+                lbDiscout.Left = roundedButton1.Left;
 
                 lbaTotal.Top = lbDiscout.Top - lbaTotal.Height - 20;
-                lbaTotal.Left = btnCheckout.Left;
+                lbaTotal.Left = roundedButton1.Left;
 
                 txtapCoupon.Top = lbapCp.Top;
 
@@ -217,10 +215,14 @@ namespace BlueBirdCoffeManager.Forms
             this.Controls.Clear();
             this.Controls.Add(oldBillPicture);
             this.Controls.Add(btnCheckout);
+            this.Controls.Add(roundedButton1);
 
             btnCheckout.Text = RE_PRINT;
             btnCheckout.Enabled = true;
             btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
+
+            roundedButton1.Enabled = false;
+            roundedButton1.BackColor = Color.Gray;
         }
 
         List<OrderDetailViewModel> _mergeOders = new();
@@ -233,6 +235,9 @@ namespace BlueBirdCoffeManager.Forms
             {
                 btnCheckout.Enabled = true;
                 btnCheckout.BackColor = Sessions.Sessions.BUTTON_COLOR;
+
+                roundedButton1.Enabled = true;
+                roundedButton1.BackColor = Sessions.Sessions.BUTTON_COLOR;
 
                 foreach (var order in _orders)
                 {
@@ -630,6 +635,25 @@ namespace BlueBirdCoffeManager.Forms
             var temp = txtCustomerP.Text;
             txtCustomerP.Text = "0";
             txtCustomerP.Text = temp;
+        }
+
+        private async void roundedButton1_Click_1(object sender, EventArgs e)
+        {
+            CheckoutModel model = new()
+            {
+                Orders = _orders.Select(s => s.Id).ToList(),
+                RemovedItems = removed,
+                Coupon = btnApplyCode.Enabled == false ? txtapCoupon.Text : null,
+                Discout = txtapDiscout.Text.Length != 0 ? double.Parse(txtapDiscout.Text.Replace(".", "")) : 0,
+                IsTakeAway = false
+            };
+
+            var response = await ApiBuilder.SendRequest("api/Bill/PreCheck", model, RequestMethod.POST);
+            var billData = JsonConvert.DeserializeObject<BillViewModel>(response);
+            var data = BillPrinter.MergeOldBill(billData);
+
+            _img = BillPrinter.SetupPreBill(data, DateTime.Now);
+            printDocument1.Print();
         }
     }
 }

@@ -54,6 +54,7 @@
             this.txtEx = new System.Windows.Forms.Label();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.btnApplyCode = new BlueBirdCoffeManager.Utils.RoundedButton();
+            this.roundedButton1 = new BlueBirdCoffeManager.Utils.RoundedButton();
             ((System.ComponentModel.ISupportInitialize)(this.oldBillPicture)).BeginInit();
             this.dataPanel.SuspendLayout();
             this.SuspendLayout();
@@ -302,11 +303,31 @@
             this.btnApplyCode.UseVisualStyleBackColor = false;
             this.btnApplyCode.Click += new System.EventHandler(this.btnApplyCode_Click);
             // 
+            // roundedButton1
+            // 
+            this.roundedButton1.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.roundedButton1.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
+            this.roundedButton1.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.roundedButton1.BorderRadius = 40;
+            this.roundedButton1.BorderSize = 0;
+            this.roundedButton1.FlatAppearance.BorderSize = 0;
+            this.roundedButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.roundedButton1.ForeColor = System.Drawing.Color.White;
+            this.roundedButton1.Location = new System.Drawing.Point(144, 622);
+            this.roundedButton1.Name = "roundedButton1";
+            this.roundedButton1.Size = new System.Drawing.Size(150, 40);
+            this.roundedButton1.TabIndex = 28;
+            this.roundedButton1.Text = "In tạm tính";
+            this.roundedButton1.TextColor = System.Drawing.Color.White;
+            this.roundedButton1.UseVisualStyleBackColor = false;
+            this.roundedButton1.Click += new System.EventHandler(this.roundedButton1_Click_1);
+            // 
             // BillDataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(872, 698);
+            this.Controls.Add(this.roundedButton1);
             this.Controls.Add(this.btnApplyCode);
             this.Controls.Add(this.txtEx);
             this.Controls.Add(this.txtCustomerP);
@@ -368,5 +389,6 @@
         private Label txtEx;
         private System.Drawing.Printing.PrintDocument printDocument1;
         private Utils.RoundedButton btnApplyCode;
+        private Utils.RoundedButton roundedButton1;
     }
 }

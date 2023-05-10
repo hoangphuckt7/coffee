@@ -34,6 +34,13 @@ namespace BlueBirdCoffeeAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
+        [HttpPost("PreCheck")]
+        public IActionResult PreCheck([FromBody] CheckoutModel model)
+        {
+            return Ok(_billService.PreCheck(model, User.GetId()));
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = SystemRoles.EXCEPT_CUSTOMER)]
         [HttpGet("History/{count}")]
         public IActionResult History(int count)
         {

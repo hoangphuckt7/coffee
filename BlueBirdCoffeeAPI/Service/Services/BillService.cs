@@ -18,6 +18,7 @@ namespace Service.Services
     public interface IBillService
     {
         BillViewModel Checkout(CheckoutModel model, string userId);
+        BillViewModel PreCheck(CheckoutModel model, string userId);
         List<BillViewModel> History(int count);
         List<BillMissingItemViewModel> MissingBillItemWithin48Hours();
         List<ChartViewModel> ChartData(bool isBillCountChart);
@@ -283,6 +284,110 @@ namespace Service.Services
             }
 
             return GetById(id);
+        }
+        public BillViewModel PreCheck(CheckoutModel model, string userId)
+        {
+            var orders = _dbContext.Orders.Include(f => f.OrderDetails).Where(f => model.Orders.Contains(f.Id)).ToList();
+
+            var removedOrders = new List<Order>();
+            foreach (var order in orders)
+            {
+                var check = false;
+                foreach (var item in order.OrderDetails)
+                {
+                    var x = model.RemovedItems.FirstOrDefault(f => f.ItemId == item.ItemId);
+                    if (x == null || x.Quantity < item.Quantity)
+                    {
+                        check = true;
+                        break;
+                    }
+                }
+                if (!check)
+                {
+                    removedOrders.Add(order);
+                    foreach (var item in order.OrderDetails)
+                    {
+                        var x = model.RemovedItems.First(f => f.ItemId == item.ItemId);
+                        model.RemovedItems.Remove(x);
+                        if (x.Quantity > item.Quantity)
+                        {
+                            x.Quantity -= item.Quantity;
+                            model.RemovedItems.Add(x);
+                        }
+                    }
+                    order.IsMissing = true;
+                    order.IsCheckout = true;
+                }
+            }
+            foreach (var item in removedOrders)
+            {
+                orders.Remove(orders.First(f => f.Id == item.Id));
+            }
+
+            orders = orders.OrderByDescending(s => (s.OrderDetails.Select(s => s.ItemId).Intersect(model.RemovedItems.Select(s => s.ItemId))).Count()).ToList();
+            var tables = _dbContext.Tables.Where(f => orders.Select(s => s.TableId).ToList().Contains(f.Id)).ToList();
+
+            Bill newBill = new()
+            {
+                Discount = model.Discout == null ? 0 : model.Discout.Value,
+                CouponCode = model.Coupon,
+                IsTakeAway = model.IsTakeAway,
+                BillNumber = 0,
+                CasherId = userId,
+            };
+
+            double total = 0;
+
+            var result = new BillViewModel()
+            {
+                OrderDetailViewModels = new List<OrderDetailViewModel>(),
+                Discount = 0,
+                BillNumber = 0,
+                Coupon = 0,
+                DateCreated = DateTime.Now,
+                Id = Guid.NewGuid(),
+                IsTakeAway = false
+            };
+            foreach (var order in orders)
+            {
+                foreach (var item in order.OrderDetails)
+                {
+                    var currentRemoveItem = model.RemovedItems.FirstOrDefault(f => f.ItemId == item.ItemId);
+                    if (currentRemoveItem == null)
+                    {
+                        item.FinalQuantity = item.Quantity;
+                    }
+                    else
+                    {
+                        model.RemovedItems.Remove(currentRemoveItem);
+                        if (currentRemoveItem.Quantity == item.Quantity)
+                        {
+                            item.FinalQuantity = 0;
+                        }
+                        else if (currentRemoveItem.Quantity < item.Quantity)
+                        {
+                            item.FinalQuantity -= currentRemoveItem.Quantity;
+                            //model.RemovedItems.Add(currentRemoveItem);
+                        }
+                        else
+                        {
+                            item.FinalQuantity = 0;
+                            currentRemoveItem.Quantity -= item.Quantity;
+                            model.RemovedItems.Add(currentRemoveItem);
+                        }
+                    }
+
+                    if (item.FinalQuantity < 0)
+                    {
+                        item.FinalQuantity = 0;
+                    }
+
+                    total += item.FinalQuantity * item.Price;
+
+                    result.OrderDetailViewModels.Add(new OrderDetailViewModel() { ItemId = item.ItemId, Quantity = item.FinalQuantity });
+                }
+            }
+            return result;
         }
         public List<BillViewModel> History(int count)
         {
