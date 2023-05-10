@@ -335,7 +335,7 @@ namespace Service.Services
                 BillNumber = 0,
                 CasherId = userId,
             };
-
+            
             double total = 0;
 
             var result = new BillViewModel()
