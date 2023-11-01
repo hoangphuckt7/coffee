@@ -9,7 +9,7 @@ namespace BlueBirdCoffeManager.Sessions
 {
     public class Sessions
     {
-        public static readonly string HOST = "http://localhost:8000/";
+        public static readonly string HOST = "http://192.168.2.3:8000/";
 
         public static string TOKEN = "";
         public static string USER_NAME = "";

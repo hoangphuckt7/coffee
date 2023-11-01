@@ -24,44 +24,13 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     restart: always
 
-  data-center:
-    image: data-center
-    build:
-         context: ./bluebirdcoffeeapi
-         dockerfile: ./datacenter/Dockerfile
-    container_name: datacenter
-    depends_on:
-      - postgreslq
-    ports:
-       - "8008:80"
-    environment:  
-      - ConnectionString=Server=postgreslq;Port=5432;Database=BlueBirdCoffee;Username=postgres;Password=mysecretpassword;CommandTimeout=200;Trust Server Certificate=true
-      - MongoConnectionString=mongodb+srv://admin:syaN2SPdgdkMD0wU@cluster0.yzvnrhu.mongodb.net/?retryWrites=true&w=majority
-      - MongoDbName=blue_bird_coffee
-      - ASPNETCORE_ENVIRONMENT=Development
-    restart: always
-
-  bartender-web:
-    image: bartender-web
-    build:
-         context: ./batender_app
-         dockerfile: ./Dockerfile
-         args:
-           ApiHost: http://192.168.0.107:8000
-    container_name: batender_app
-    depends_on:
-      - bluebirdcoffee-api
-    ports:
-       - "8001:80"
-    restart: always
-
   employee-web:
     image: employee-web
     build:
          context: ./order_app
          dockerfile: ./Dockerfile
          args:
-           ApiHost: http://192.168.0.107:8000
+           ApiHost: http://192.168.2.3:8000
     container_name: order_app
     depends_on:
       - bluebirdcoffee-api
@@ -80,7 +49,7 @@ services:
     ports:
        - "80:80"
     environment:  
-      - Host=http://192.168.0.107:8000/
+      - Host=http://192.168.2.3:8000/
       - DATA_CENTER_HOST=http://data-center/
       - ASPNETCORE_ENVIRONMENT=Development
     restart: always
