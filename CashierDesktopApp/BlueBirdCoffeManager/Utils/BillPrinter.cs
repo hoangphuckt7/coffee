@@ -31,13 +31,11 @@ namespace BlueBirdCoffeManager.Utils
 
                 var x = ImageUtils.ResizeImage(Properties.Resources.logo, 100, 100);
                 g.DrawImage(ImageUtils.ResizeImage(Properties.Resources.logo, 110, 110), -5, 0, 110, 110);
-                g.DrawString("THE SUN COFFEE", boldFont, Brushes.Black, 95, 0);
-                g.DrawString("Hotline: 0964101825", font, Brushes.Black, 100, 20);
-                g.DrawString("Đc:359-Trần Khánh Dư,", font, Brushes.Black, 100, 40);
-                g.DrawString("P.Duy Tân, TP Kon Tum.", font, Brushes.Black, 100, 60);
+                g.DrawString("HIGHLANDS COFFEE", boldFont, Brushes.Black, 95, 0);
+                g.DrawString("Đc:455-Trần Khánh Dư,", font, Brushes.Black, 100, 40);
                 g.DrawString($"Thời gian: {FormatDate(orderDate)}", font, Brushes.Black, 100, 80);
 
-                g.DrawString("PHIẾU THANH TOÁN", new Font("Arial", 10, FontStyle.Bold, GraphicsUnit.Point), Brushes.Black, 70, 120);
+                g.DrawString("HÓA ĐƠN BÁN HÀNG", new Font("Arial", 10, FontStyle.Bold, GraphicsUnit.Point), Brushes.Black, 70, 120);
 
                 g.DrawString("TT", font, Brushes.Black, 0, 145);
                 g.DrawString("Tên món", font, Brushes.Black, 25, 145);
@@ -142,10 +140,8 @@ namespace BlueBirdCoffeManager.Utils
 
                 var x = ImageUtils.ResizeImage(Properties.Resources.logo, 100, 100);
                 g.DrawImage(ImageUtils.ResizeImage(Properties.Resources.logo, 110, 110), -5, 0, 110, 110);
-                g.DrawString("THE SUN COFFEE", boldFont, Brushes.Black, 95, 0);
-                g.DrawString("Hotline: 0964101825", font, Brushes.Black, 100, 20);
-                g.DrawString("Đc:359-Trần Khánh Dư,", font, Brushes.Black, 100, 40);
-                g.DrawString("P.Duy Tân, TP Kon Tum.", font, Brushes.Black, 100, 60);
+                g.DrawString("HIGHLANDS COFFEE", boldFont, Brushes.Black, 95, 0);
+                g.DrawString("Đc:455-Trần Khánh Dư,", font, Brushes.Black, 100, 40);
                 g.DrawString($"Thời gian: {FormatDate(orderDate)}", font, Brushes.Black, 100, 80);
 
                 g.DrawString("PHIẾU TẠM TÍNH", new Font("Arial", 10, FontStyle.Bold, GraphicsUnit.Point), Brushes.Black, 70, 120);
