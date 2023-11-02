@@ -47,7 +47,7 @@ services:
          context: ./batender_app
          dockerfile: ./Dockerfile
          args:
-           ApiHost: http://192.168.1.14:8000
+           ApiHost: http://192.168.1.6:8000
     container_name: batender_app
     depends_on:
       - bluebirdcoffee-api
@@ -61,7 +61,7 @@ services:
          context: ./order_app
          dockerfile: ./Dockerfile
          args:
-           ApiHost: http://192.168.1.14:8000
+           ApiHost: http://192.168.1.6:8000
     container_name: order_app
     depends_on:
       - bluebirdcoffee-api
@@ -80,7 +80,7 @@ services:
     ports:
        - "80:80"
     environment:  
-      - Host=http://192.168.1.14:8000/
+      - Host=http://192.168.1.6:8000/
       - DATA_CENTER_HOST=http://data-center/
       - ASPNETCORE_ENVIRONMENT=Production
     restart: always
